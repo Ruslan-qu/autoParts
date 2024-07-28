@@ -12,11 +12,6 @@ RUN apk add --no-cache icu-dev && docker-php-ext-configure intl && docker-php-ex
 # /mysql
 RUN apk add --no-cache libpq-dev && docker-php-ext-install pdo_mysql
 
-# /Nginx
-RUN apk add --update --no-cache nginx
-COPY ./docker/php-fpm/nginx.conf /etc/nginx/
-RUN chown -Rf www-data:www-data /var/lib/nginx
-
 # Configure non-root user.
 ARG PUID=1000
 ARG PGID=1000
