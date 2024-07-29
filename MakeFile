@@ -38,8 +38,6 @@ dc_restart:
 
 app_bash:
 	docker compose -f ./docker/docker-compose.yml exec -u www-data php-fpm bash
-php: app_bash
-
 test:
 	docker compose -f ./docker/docker-compose.yml exec -u www-data php-fpm bin/phpunit
 cache:
