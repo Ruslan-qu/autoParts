@@ -1,7 +1,0 @@
-
-###> docker ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/.env.dist
-###< docker ###
