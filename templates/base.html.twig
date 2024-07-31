@@ -1,16 +1,104 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="ru">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-        {% endblock %}
+         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>
+        
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+            <header>
+                {% block header %}
+                    <div class="header_logo">
+                        <a>{% block logo %}{% endblock %}</a>
+                    </div>
+                    <nav>
+                        <ul>
+                            <li><a>Входящие документы</a></li>
+                            <li><a>Прайс</a></li>
+                            <li><a>Продажи</a></li>
+                            <li><a>Возвраты</a></li>
+                            <li><a>Контрагент</a></li>
+                            <li><a>Детали</a></li>
+                            <li><a>КуДир</a></li>
+                        </ul>
+                    </nav>
+                <button class="green">Войти</button>
+                {% endblock %}
+            </header>
+            <div class="center_block_main">
+                <main>
+                    {% block main %}
+                        <div class="form">
+                            <fieldset>
+                                <legend>{% block legend %}{% endblock legend%}</legend>
+                                    <table>
+                                        <tr>
+                                            {% block form_save_edit_sales %}
+                                            {% endblock form_save_edit_sales %}
+                                        </tr>
+                                    </table> 
+                           <fieldset>
+                        </div> 
+                        <div class="form_search">
+                            <fieldset>
+                                <legend>{% block legend_search %}{% endblock legend_search %}</legend>
+                                    <table>
+                                        <tr>
+                                            {% block form_search %}
+                                            {% endblock form_search %}
+                                        </tr>
+                                    </table> 
+                           <fieldset>
+                        </div>
+                         <div class="total_amount">  
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {% block table_total_amount %}
+                                        {% endblock table_total_amount %}	
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                       
+                                            {% block tbody_total_amount %}
+                                            {% endblock tbody_total_amount %}
+                                        
+                                </tbody>
+                            </table> 
+                        </div>
+                        <div class="table"> 
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {% block table_ku_dir_invoice %}
+                                        {% endblock table_ku_dir_invoice %}	
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% block tbody_ku_dir_invoice %}
+                                        {% endblock tbody_ku_dir_invoice %} 
+                                </tbody>
+                            </table> 
+                            <table>
+                                <thead>
+                                    <tr>
+                                        {% block table_thead_tr %}
+                                        {% endblock table_thead_tr %}	
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        {% block tbody %}
+                                        {% endblock tbody %} 
+                                </tbody>
+                            </table> 
+                        </div>   
+                    {% endblock %}
+                </main>
+            </div>
+        {% endblock %}
+        <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     </body>
 </html>
