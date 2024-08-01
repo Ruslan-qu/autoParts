@@ -12,7 +12,6 @@ class MainController extends AbstractController
     public function index(): Response
     {
         return $this->render('main/main.html.twig', [
-            'main_page' => 'Бугалтерия начало))))',
             'title_logo' => 'Главная'
         ]);
     }

@@ -1,139 +1,168 @@
 <!doctype html>
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8">
-         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}{% endblock %}</title>
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}"/>    
-    </head>
-    <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
-        {% block body %}
-            <header>
-                {% block header %}
-                    <div class="header_logo">
-                        <a>{% block logo %}{% endblock %}</a>
-                    </div>
-                    <nav>
-                        <ul>
-                            <li><a>Входящие документы</a></li>
-                            <li><a>Прайс</a></li>
-                            <li><a>Продажи</a></li>
-                            <li><a>Возвраты</a></li>
-                            <li><a>Контрагент</a></li>
-                            <li><a>Детали</a></li>
-                            <li><a>КуДир</a></li>
-                        </ul>
-                    </nav>
-                <button class="green">Войти</button>
-                {% endblock %}
-            </header>
-            <div class="center_block_main">
-                <main>
-                    {% block main %}
-                        <div class="form">
-                            <fieldset>
-                                <legend>{% block legend %}{% endblock legend%}</legend>
-                                    <table>
-                                        <tr>
-                                            {% block form_save_edit_sales %}
-                                            {% endblock form_save_edit_sales %}
-                                        </tr>
-                                    </table> 
-                           <fieldset>
-                        </div> 
-                        <div class="form_search">
-                            <fieldset>
-                                <legend>{% block legend_search %}{% endblock legend_search %}</legend>
-                                    <table>
-                                        <tr>
-                                            {% block form_search %}
-                                            {% endblock form_search %}
-                                        </tr>
-                                    </table> 
-                           <fieldset>
-                        </div>
-                         <div class="total_amount">  
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {% block table_total_amount %}
-                                        {% endblock table_total_amount %}	
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                       
-                                            {% block tbody_total_amount %}
-                                            {% endblock tbody_total_amount %}
-                                        
-                                </tbody>
-                            </table> 
-                        </div>
-                        <div class="table"> 
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {% block table_ku_dir_invoice %}
-                                        {% endblock table_ku_dir_invoice %}	
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                        {% block tbody_ku_dir_invoice %}
-                                        {% endblock tbody_ku_dir_invoice %} 
-                                </tbody>
-                            </table> 
-                            <table>
-                                <thead>
-                                    <tr>
-                                        {% block table_thead_tr %}
-                                        {% endblock table_thead_tr %}	
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                        {% block tbody %}
-                                        {% endblock tbody %} 
-                                </tbody>
-                            </table> 
-                        </div>   
-                    {% endblock %}
-                </main>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md bg-dark" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand fs-2 ps-3">{% block logo %}{% endblock logo %}</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto pe-4 mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Входящие документы
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                <li><a class="dropdown-item" href="#">Изминить</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Прайс
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                <li><a class="dropdown-item" href="#">Изминить</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Продажи
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                <li><a class="dropdown-item" href="#">Изминить</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Возвраты
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                <li><a class="dropdown-item" href="#">Изминить</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Контрагент
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                <li><a class="dropdown-item" href="#">Изминить</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Детали
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                <li><a class="dropdown-item" href="#">Изминить</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        {% endblock %}
-        <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    </body>
+        </nav>
+    </header>
+    <div class="center_block_main">
+        <main>
+            {% block main %}
+            <div class="form">
+                <fieldset>
+                    <legend>{% block legend %}{% endblock legend%}</legend>
+                    <table>
+                        <tr>
+                            {% block form_save_edit_sales %}
+                            {% endblock form_save_edit_sales %}
+                        </tr>
+                    </table>
+                    <fieldset>
+            </div>
+            <div class="form_search">
+                <fieldset>
+                    <legend>{% block legend_search %}{% endblock legend_search %}</legend>
+                    <table>
+                        <tr>
+                            {% block form_search %}
+                            {% endblock form_search %}
+                        </tr>
+                    </table>
+                    <fieldset>
+            </div>
+            <div class="total_amount">
+                <table>
+                    <thead>
+                        <tr>
+                            {% block table_total_amount %}
+                            {% endblock table_total_amount %}
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% block tbody_total_amount %}
+                        {% endblock tbody_total_amount %}
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            {% block table_ku_dir_invoice %}
+                            {% endblock table_ku_dir_invoice %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% block tbody_ku_dir_invoice %}
+                        {% endblock tbody_ku_dir_invoice %}
+                    </tbody>
+                </table>
+                <table>
+                    <thead>
+                        <tr>
+                            {% block table_thead_tr %}
+                            {% endblock table_thead_tr %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% block tbody %}
+                        {% endblock tbody %}
+                    </tbody>
+                </table>
+            </div>
+            {% endblock %}
+        </main>
+    </div>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+</body>
+
 </html>
