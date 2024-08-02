@@ -22,24 +22,25 @@ services:
       - php-fpm
 
   mysql:
-    container_name: mysqL
+    container_name: mysqlAP
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      - "MYSQL_ROOT_PASSWORD=_TMP"
-      - "MYSQL_USER=lm"
+      - "MYSQL_ROOT_PASSWORD=_AP"
+      - "MYSQL_DATABASE=bdap"
+      - "MYSQL_USER=bdap"
       - "MYSQL_PASSWORD=symfony"
     ports:
-      - "3306:3306"
+      - "33077:3306"
     volumes:
       - mysql:/var/lib/mysql
 
   pma:
-    container_name: pmA
+    container_name: pmaAP
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: mysql
-      PMA_USER: lm
+      PMA_USER: bdap
       PMA_PASSWORD: symfony
     ports:
       - "8080:80"
