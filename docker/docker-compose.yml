@@ -20,4 +20,19 @@ services:
       - ..:/var/www/:rw
     depends_on:
       - php-fpm
-      
+
+
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
+    ports:
+      - "6000:5432"
+    environment:
+      POSTGRES_PASSWORD: zpch
+      POSTGRES_USER: zpch
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+     
+
+volumes:
+  database_data:
