@@ -11,144 +11,137 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-md bg-dark" data-bs-theme="dark">
-            <div class="container-fluid">
-                <a class="navbar-brand fs-2 ps-3">{% block logo %}{% endblock logo %}</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto pe-4 mb-2 mb-lg-0">
-                        <li class="nav-item dropdown pe-2">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Склад
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Поиск</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить в ручную</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить из файла</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить из майла</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить по API</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown px-2">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Продажи
-                            </a>
-                            <ul class="dropdown-menu ">
-                                <li><a class="dropdown-item" href="#">Поиск</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown px-2">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Возвраты
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Поиск</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown px-2">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Контрагент
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Поиск</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown ps-2">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Детали
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Поиск</a></li>
-                                <li><a class="dropdown-item" href="#">Сохранить</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+        {% block Responsive_behaviors %}{% endblock Responsive_behaviors %}
+        <div class="container-fluid">
+            <a class="navbar-brand fs-2 ps-3">{% block logo %}{% endblock logo %}</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto pe-4 mb-2 mb-lg-0">
+                    <li class="nav-item pe-2">
+                        <a class="nav-link" href="{{ path('main_page')}}">Главная</a>
+                    </li>
+                    <li class="nav-item dropdown px-2">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Склад
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Поиск</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ path('save_auto_parts_manually')}}">
+                                    Сохранить в ручную
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" href="#">Сохранить из файла</a></li>
+                            <li><a class="dropdown-item" href="#">Сохранить из майла</a></li>
+                            <li><a class="dropdown-item" href="#">Сохранить по API</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown px-2">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Продажи
+                        </a>
+                        <ul class="dropdown-menu ">
+                            <li><a class="dropdown-item" href="#">Поиск</a></li>
+                            <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown px-2">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Возвраты
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Поиск</a></li>
+                            <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown px-2">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Контрагент
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Поиск</a></li>
+                            <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown ps-2">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Детали
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Поиск</a></li>
+                            <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
+        </div>
         </nav>
     </header>
-    <div class="center_block_main">
-        <main>
-            {% block main %}
-            <div class="form">
+    <main>
+        {% block form_save %}
+        {% endblock form_save %}
+        <div class="form_search">
+            <fieldset>
+                <legend>{% block legend_search %}{% endblock legend_search %}</legend>
+                <table>
+                    <tr>
+                        {% block form_search %}
+                        {% endblock form_search %}
+                    </tr>
+                </table>
                 <fieldset>
-                    <legend>{% block legend %}{% endblock legend%}</legend>
-                    <table>
-                        <tr>
-                            {% block form_save_edit_sales %}
-                            {% endblock form_save_edit_sales %}
-                        </tr>
-                    </table>
-                    <fieldset>
-            </div>
-            <div class="form_search">
-                <fieldset>
-                    <legend>{% block legend_search %}{% endblock legend_search %}</legend>
-                    <table>
-                        <tr>
-                            {% block form_search %}
-                            {% endblock form_search %}
-                        </tr>
-                    </table>
-                    <fieldset>
-            </div>
-            <div class="total_amount">
-                <table>
-                    <thead>
-                        <tr>
-                            {% block table_total_amount %}
-                            {% endblock table_total_amount %}
-                        </tr>
-                    </thead>
-                    <tbody>
+        </div>
+        <div class="total_amount">
+            <table>
+                <thead>
+                    <tr>
+                        {% block table_total_amount %}
+                        {% endblock table_total_amount %}
+                    </tr>
+                </thead>
+                <tbody>
 
-                        {% block tbody_total_amount %}
-                        {% endblock tbody_total_amount %}
+                    {% block tbody_total_amount %}
+                    {% endblock tbody_total_amount %}
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="table">
-                <table>
-                    <thead>
-                        <tr>
-                            {% block table_ku_dir_invoice %}
-                            {% endblock table_ku_dir_invoice %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% block tbody_ku_dir_invoice %}
-                        {% endblock tbody_ku_dir_invoice %}
-                    </tbody>
-                </table>
-                <table>
-                    <thead>
-                        <tr>
-                            {% block table_thead_tr %}
-                            {% endblock table_thead_tr %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% block tbody %}
-                        {% endblock tbody %}
-                    </tbody>
-                </table>
-            </div>
-            {% endblock %}
-        </main>
-    </div>
+                </tbody>
+            </table>
+        </div>
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        {% block table_ku_dir_invoice %}
+                        {% endblock table_ku_dir_invoice %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% block tbody_ku_dir_invoice %}
+                    {% endblock tbody_ku_dir_invoice %}
+                </tbody>
+            </table>
+            <table>
+                <thead>
+                    <tr>
+                        {% block table_thead_tr %}
+                        {% endblock table_thead_tr %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% block tbody %}
+                    {% endblock tbody %}
+                </tbody>
+            </table>
+    </main>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 </body>
 
