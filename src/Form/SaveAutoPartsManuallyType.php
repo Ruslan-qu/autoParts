@@ -33,7 +33,6 @@ class SaveAutoPartsManuallyType extends AbstractType
                 ],
                 'attr' => ['style' => 'width: 140px']
             ])
-
             ->add('manufacturers', TextType::class, [
                 'label' => 'Производитель',
                 'constraints' => [
@@ -45,14 +44,12 @@ class SaveAutoPartsManuallyType extends AbstractType
                 ],
                 'attr' => ['style' => 'width: 140px']
             ])
-
             ->add('id_counterparty', EntityType::class, [
                 'label' => 'Поставщик',
                 'class' => Counterparty::class,
                 'choice_label' => 'counterparty',
                 'required' => false,
             ])
-
             ->add('quantity', IntegerType::class, [
                 'label' => 'Кол-во',
                 'constraints' => [
@@ -62,7 +59,6 @@ class SaveAutoPartsManuallyType extends AbstractType
                     ]),
                 ],
             ])
-
             ->add('price', NumberType::class, [
                 'label' => 'Цена общая',
                 'constraints' => [
@@ -72,20 +68,17 @@ class SaveAutoPartsManuallyType extends AbstractType
                     ]),
                 ],
             ])
-
-            ->add('data_invoice', DateType::class, [
+            ->add('data_document', DateType::class, [
                 'label' => 'Дата нак-ой',
                 'widget' => 'single_text'
             ])
-
             ->add('id_payment_method', EntityType::class, [
                 'label' => 'Способ оплаты',
                 'class' => PaymentMethod::class,
                 'choice_label' => 'method',
                 'required' => false,
             ])
-
-            ->add('button_search_invoice', SubmitType::class);
+            ->add('button_save_manually', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

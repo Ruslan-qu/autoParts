@@ -2,9 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\PaymentMethod;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\AutoPartsWarehouseEntity\PaymentMethod;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<PaymentMethod>
