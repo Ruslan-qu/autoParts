@@ -9,40 +9,68 @@
   {% endblock Responsive_behaviors %}
 
   {% block form_save %}
-  
-    {#Форма сохранения деталей#}
-    
-    {{ form_start(form_save_auto_parts_manually) }}
 
-        {{ form_label(form_save_auto_parts_manually.part_numbers) }}
-        {{ form_widget(form_save_auto_parts_manually.part_numbers) }}
-        {{ form_errors(form_save_auto_parts_manually.part_numbers) }}
+  {#Форма сохранения поступления деталей#}
 
-        {{ form_label(form_save_auto_parts_manually.manufacturers) }}
-        {{ form_widget(form_save_auto_parts_manually.manufacturers) }}
-        {{ form_errors(form_save_auto_parts_manually.manufacturers) }}
+  {{ form_start(form_save_auto_parts_manually, { 'attr': {'class': 'row row-cols-12 justify-content-center text-center
+  mt-2'} }) }}
 
-        {{ form_label(form_save_auto_parts_manually.id_counterparty) }}
-        {{ form_widget(form_save_auto_parts_manually.id_counterparty) }}
-        {{ form_errors(form_save_auto_parts_manually.id_counterparty) }}
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_auto_parts_manually.part_numbers) }}</div>
+    {{ form_widget(form_save_auto_parts_manually.part_numbers, { 'attr': {'class': 'ip-text'} }) }}
+    {{ form_errors(form_save_auto_parts_manually.part_numbers) }}
 
-        {{ form_label(form_save_auto_parts_manually.quantity) }}
-        {{ form_widget(form_save_auto_parts_manually.quantity) }}
-        {{ form_errors(form_save_auto_parts_manually.quantity) }}
+  </div>
 
-        {{ form_label(form_save_auto_parts_manually.price) }}
-        {{ form_widget(form_save_auto_parts_manually.price) }}
-        {{ form_errors(form_save_auto_parts_manually.price) }}
 
-        {{ form_label(form_save_auto_parts_manually.data_document) }}
-        {{ form_widget(form_save_auto_parts_manually.data_document) }}
-        {{ form_errors(form_save_auto_parts_manually.data_document) }}
 
-        {{ form_label(form_save_auto_parts_manually.id_payment_method) }}
-        {{ form_widget(form_save_auto_parts_manually.id_payment_method) }}
-        {{ form_errors(form_save_auto_parts_manually.id_payment_method) }}
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_auto_parts_manually.manufacturers) }}</div>
+    {{ form_widget(form_save_auto_parts_manually.manufacturers, { 'attr': {'class': 'ip-text'} }) }}
+    {{ form_errors(form_save_auto_parts_manually.manufacturers) }}
+  </div>
 
-        {{ form_widget(form_save_auto_parts_manually.button_save_manually, { 'label': 'Сохранить'}) }}
-    
-    {{ form_end(form_save_auto_parts_manually) }}
-  s{% endblock form_save %}
+
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_auto_parts_manually.id_counterparty) }}</div>
+    {{ form_widget(form_save_auto_parts_manually.id_counterparty) }}
+    {{ form_errors(form_save_auto_parts_manually.id_counterparty) }}
+  </div>
+
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_auto_parts_manually.quantity) }}</div>
+    {{ form_widget(form_save_auto_parts_manually.quantity, { 'attr': {'class': 'ip-int'} }) }}
+    {{ form_errors(form_save_auto_parts_manually.quantity) }}
+  </div>
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_auto_parts_manually.price) }}</div>
+    {{ form_widget(form_save_auto_parts_manually.price, { 'attr': {'class': 'ip-int'} }) }}
+    {{ form_errors(form_save_auto_parts_manually.price) }}
+  </div>
+
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_auto_parts_manually.data_document) }}</div>
+    {{ form_widget(form_save_auto_parts_manually.data_document, { 'attr': {'class': 'ip-date'} }) }}
+    {{ form_errors(form_save_auto_parts_manually.data_document) }}
+  </div>
+
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_auto_parts_manually.id_payment_method) }}</div>
+    {{ form_widget(form_save_auto_parts_manually.id_payment_method) }}
+    {{ form_errors(form_save_auto_parts_manually.id_payment_method) }}
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-12 d-grid gap-2">
+      {{ form_widget(form_save_auto_parts_manually.button_save_manually, { 'label': 'Сохранить', 'attr': {'class': 'btn
+      btn-danger mt-2 ms-3'}}) }}
+    </div>
+  </div>
+
+  {{ form_end(form_save_auto_parts_manually) }}
+  {% endblock form_save %}

@@ -30,8 +30,7 @@ class SaveAutoPartsManuallyType extends AbstractType
                         //'match' => false,
                         'message' => 'Форма содержит недопустимые символы'
                     ]),
-                ],
-                'attr' => ['style' => 'width: 140px']
+                ]
             ])
             ->add('manufacturers', TextType::class, [
                 'label' => 'Производитель',
@@ -41,8 +40,7 @@ class SaveAutoPartsManuallyType extends AbstractType
                         //'match' => false,
                         'message' => 'Форма содержит недопустимые символы'
                     ]),
-                ],
-                'attr' => ['style' => 'width: 140px']
+                ]
             ])
             ->add('id_counterparty', EntityType::class, [
                 'label' => 'Поставщик',
