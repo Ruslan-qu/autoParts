@@ -15,3 +15,7 @@ input.ip-int {
 input.ip-date {
     height: 1.6rem !important;
 }
+
+button.scb {
+    width: 21rem !important;
+}

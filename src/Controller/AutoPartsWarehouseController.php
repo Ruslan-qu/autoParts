@@ -20,6 +20,7 @@ class AutoPartsWarehouseController extends AbstractController
         ValidatorInterface $validator
     ): Response {
 
+        /*Подключаем формы */
         $form_save_auto_parts_manually = $this->createForm(SaveAutoPartsManuallyType::class);
 
 
