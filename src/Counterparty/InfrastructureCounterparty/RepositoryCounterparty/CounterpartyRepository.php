@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\Counterparty\InfrastructureCounterparty\RepositoryCounterparty;
 
-use App\Entity\Counterparty;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 
 /**
  * @extends ServiceEntityRepository<Counterparty>

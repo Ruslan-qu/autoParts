@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Counterparty\InfrastructureCounterparty\ApiCounterparty\ControllerCounterparty;
 
-use App\Form\SaveCounterpartyType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
 
 class CounterpartyController extends AbstractController
 {

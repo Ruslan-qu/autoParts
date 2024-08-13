@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

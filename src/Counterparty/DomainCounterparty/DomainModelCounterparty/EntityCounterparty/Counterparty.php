@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity;
+namespace App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty;
 
-use App\Repository\CounterpartyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Counterparty\InfrastructureCounterparty\RepositoryCounterparty\CounterpartyRepository;
 
 #[ORM\Entity(repositoryClass: CounterpartyRepository::class)]
 class Counterparty

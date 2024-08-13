@@ -2,11 +2,11 @@
 
 namespace App\Entity\AutoPartsWarehouseEntity;
 
-use App\Entity\Counterparty;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\AutoPartsWarehouseRepository;
 use App\Entity\PartNumbersFromManufacturersEntity\PartNumbersFromManufacturers;
+use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 
 #[ORM\Entity(repositoryClass: AutoPartsWarehouseRepository::class)]
 class AutoPartsWarehouse
