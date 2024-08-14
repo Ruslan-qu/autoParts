@@ -12,21 +12,21 @@
 
   {#Форма сохранения поступления деталей#}
 
-  {{ form_start(form_save_counterparty) }}
+  {{ form_start(form_save_counterparty, {'method': 'POST'}) }}
 
   <div class="col-auto m-3">
-    {{ form_label(form_save_counterparty.save_counterparty) }}
-    {{ form_widget(form_save_counterparty.save_counterparty, { 'attr': {'class': 'ms-2 ps-3'} }) }}
-    {{ form_errors(form_save_counterparty.save_counterparty) }}
+    {{ form_label(form_save_counterparty.form_save_counterparty) }}
+    {{ form_widget(form_save_counterparty.form_save_counterparty, { 'attr': {'class': 'ms-2 ps-3'} }) }}
+    {{ form_errors(form_save_counterparty.form_save_counterparty) }}
 
   </div>
 
 
 
   <div class="col-auto m-3">
-   {{ form_label(form_save_counterparty.save_mail_counterparty) }}
-    {{ form_widget(form_save_counterparty.save_mail_counterparty, { 'attr': {'class': 'ms-5 ps-3'} }) }}
-    {{ form_errors(form_save_counterparty.save_mail_counterparty) }}
+   {{ form_label(form_save_counterparty.form_save_mail_counterparty) }}
+    {{ form_widget(form_save_counterparty.form_save_mail_counterparty, { 'attr': {'class': 'ms-5 ps-3'} }) }}
+    {{ form_errors(form_save_counterparty.form_save_mail_counterparty) }}
   </div>
 
 
