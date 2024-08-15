@@ -18,7 +18,7 @@ class SaveCounterpartyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('form_save_counterparty', TextType::class, [
+            ->add('form_save_name_counterparty', TextType::class, [
                 'label' => 'Поставщик'
             ])
             ->add('form_save_mail_counterparty', EmailType::class, [

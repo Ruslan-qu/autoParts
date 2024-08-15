@@ -14,7 +14,7 @@ class Counterparty
     private int $id;
 
     #[ORM\Column(length: 28, nullable: true)]
-    private ?string $counterparty = null;
+    private ?string $name_counterparty = null;
 
     #[ORM\Column(length: 48, nullable: true)]
     private ?string $mail_counterparty = null;
@@ -24,14 +24,14 @@ class Counterparty
         return $this->id;
     }
 
-    public function getCounterparty(): ?string
+    public function getNameCounterparty(): ?string
     {
-        return $this->counterparty;
+        return $this->name_counterparty;
     }
 
-    public function setCounterparty(?string $counterparty): static
+    public function setNameCounterparty(?string $name_counterparty): static
     {
-        $this->counterparty = $counterparty;
+        $this->name_counterparty = $name_counterparty;
 
         return $this;
     }

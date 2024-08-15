@@ -8,16 +8,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
-use App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CreateSaveCounterpartyCommand;
-use App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CreateSaveCounterpartyCommandHandler;
+use App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CommandsSaveCounterparty\CreateSaveCounterpartyCommand;
+use App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CommandsSaveCounterparty\CreateSaveCounterpartyCommandHandler;
 
 class CounterpartyController extends AbstractController
 {
     #[Route('/saveCounterparty', name: 'save_counterparty')]
     public function saveCounterparty(
         Request $request,
-        CreateSaveCounterpartyCommandHandler $createSaveCounterpartyCommandHandler,
-
+        CreateSaveCounterpartyCommandHandler $createSaveCounterpartyCommandHandler
     ): Response {
 
         /*Форма сохранения постовщка*/
@@ -29,7 +28,8 @@ class CounterpartyController extends AbstractController
         if ($form_save_counterparty->isSubmitted()) {
             if ($form_save_counterparty->isValid()) {
                 //dd($request->request->all());
-                $createSaveCounterpartyCommandHandler->handler(new CreateSaveCounterpartyCommand($request->request->all()['save_counterparty']));
+                dd($createSaveCounterpartyCommandHandler
+                    ->handler(new CreateSaveCounterpartyCommand($request->request->all()['save_counterparty'])));
             }
         }
 
