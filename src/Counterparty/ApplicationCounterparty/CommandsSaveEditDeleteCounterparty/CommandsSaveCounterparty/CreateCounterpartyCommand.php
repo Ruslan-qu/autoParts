@@ -12,9 +12,8 @@ abstract class CreateCounterpartyCommand
 
     private function loadDataCounterparty(array $data)
     {
-        if (!empty($data)) {
-            $this->name_counterparty = $data['form_save_name_counterparty'];
-            $this->mail_counterparty = $data['form_save_mail_counterparty'];
-        }
+
+        $this->name_counterparty = $data['form_save_name_counterparty'];
+        $this->mail_counterparty = $data['form_save_mail_counterparty'];
     }
 }

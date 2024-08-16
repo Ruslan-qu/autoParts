@@ -19,11 +19,31 @@ class SaveCounterpartyType extends AbstractType
     {
         $builder
             ->add('form_save_name_counterparty', TextType::class, [
-                'label' => 'Поставщик'
+                'label' => 'Поставщик',
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^[\da-z]*$/i',
+                        //'match' => false,
+                        'message' => 'Форма содержит недопустимые символы'
+                    ]),
+                    new NotBlank(
+                        message: 'Форма содержит недопустимые символы',
+                    )
+
+                ]
             ])
             ->add('form_save_mail_counterparty', EmailType::class, [
-                'label' => 'E-mail'
+                'label' => 'E-mail',
+                'constraints' => [
+                    new Email([
+                        'message' => 'Форма содержит недопустимые символы'
+                    ]),
+                    new NotBlank([
+                        'message' => 'Форма содержит недопустимые символы'
+                    ]),
+                ]
             ])
+            ->add('hidden', HiddenType::class)
             ->add('button_save_counterparty', SubmitType::class);
     }
 

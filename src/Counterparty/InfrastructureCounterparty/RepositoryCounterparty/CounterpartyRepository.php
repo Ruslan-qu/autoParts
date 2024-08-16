@@ -5,39 +5,31 @@ namespace App\Counterparty\InfrastructureCounterparty\RepositoryCounterparty;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 /**
  * @extends ServiceEntityRepository<Counterparty>
  */
-class CounterpartyRepository extends ServiceEntityRepository
+class CounterpartyRepository extends ServiceEntityRepository implements CounterpartyRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Counterparty::class);
     }
 
-    //    /**
-    //     * @return Counterparty[] Returns an array of Counterparty objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return int Возвращается число дублей 
+     */
+    public function number_doubles(array $array): int
+    {
+        return $this->count($array);
+    }
 
-    //    public function findOneBySomeField($value): ?Counterparty
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return int Возвращается число дублей 
+     */
+    public function save(): array
+    {
+        return $arr = [];
+    }
 }
