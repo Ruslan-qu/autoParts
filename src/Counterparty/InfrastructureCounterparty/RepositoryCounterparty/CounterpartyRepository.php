@@ -22,14 +22,25 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
      */
     public function number_doubles(array $array): int
     {
-        return $this->count($array);
+
+        //dd($array['name_counterparty']);
+        $number_doubles = 0;
+        foreach ($array as $key => $value) {
+            $number_doubles = $number_doubles + $this->count([$key => $value]);
+        }
+        return $number_doubles;
     }
 
     /**
-     * @return int Возвращается число дублей 
+     * @return array Возвращается массив с данными об успешном сохранении контроагента 
      */
-    public function save(): array
+    public function save($entity_counterparty): array
     {
-        return $arr = [];
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($entity_counterparty);
+        $entityManager->flush();
+
+        return $successfully = ['save' => 'Контрагент успешно сохранен'];
+        //dd($entityManager);
     }
 }

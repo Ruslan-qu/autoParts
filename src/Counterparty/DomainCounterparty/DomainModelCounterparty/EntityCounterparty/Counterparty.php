@@ -11,7 +11,7 @@ class Counterparty
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 28, nullable: true)]
     private ?string $name_counterparty = null;
@@ -19,7 +19,7 @@ class Counterparty
     #[ORM\Column(length: 48, nullable: true)]
     private ?string $mail_counterparty = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -17,6 +17,19 @@ use App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\
 
 final class CreateSaveCounterpartyCommandHandler
 {
+    private $doctrine;
+    private $counterparty_repository_interface;
+    private $entity_counterparty;
+
+    public function __construct(
+        ManagerRegistry $doctrine,
+        CounterpartyRepositoryInterface $counterparty_repository_interface,
+        Counterparty $entity_counterparty
+    ) {
+        $this->counterparty_repository_interface = $counterparty_repository_interface;
+        $this->entity_counterparty = $entity_counterparty;
+        $this->doctrine = $doctrine;
+    }
 
     public function handler(CreateSaveCounterpartyCommand $createSaveCounterpartyCommand): array
     {
@@ -58,36 +71,28 @@ final class CreateSaveCounterpartyCommandHandler
                     'value' => $value_error->getInvalidValue()
                 ];
             }
-            // dd($arr_errors);
+
             return $arr_errors;
         }
-
-        $counterpartyr_repository_interface = new CounterpartyRepository();
-        $number_doubles = $counterpartyr_repository_interface
-            ->number_doubles(['name_counterparty' => $name_counterparty, 'mail_counterparty' => $mail_counterparty]);
-        dd($number_doubles);
         /* Валидация дублей */
-        if ($сount_counterparty == 0) {
+        $number_doubles = $this->counterparty_repository_interface
+            ->number_doubles(['name_counterparty' => $name_counterparty, 'mail_counterparty' => $mail_counterparty]);
+        //  dd($number_doubles);
+        if ($number_doubles == 0) {
 
-            if ($сount_mail_counterparty == 0) {
-                //dd($сount_mail_counterparty);
-                $entity_counterparty->setCounterparty($counterparty_strtolower_preg_replace);
+            //dd($сount_mail_counterparty);
+            $this->entity_counterparty->setNameCounterparty($name_counterparty);
+            $this->entity_counterparty->setMailCounterparty($mail_counterparty);
 
-                $entity_counterparty->setMailCounterparty($mail_counterparty_strtolower_preg_replace);
+            $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
 
-
-                $em = $doctrine->getManager();
-                $em->persist($entity_counterparty);
-                $em->flush();
-            } else {
-
-                $this->addFlash('children[mail_counterparty].data_sales', 'Такой email существует');
-                $this->addFlash('mail_counterparty_sales', $mail_counterparty_strtolower_preg_replace);
-            }
+            $successfully['successfully'] = $successfully_save;
+            return $successfully;
         } else {
-            //dd(1);
-            $this->addFlash('children[counterparty].data_sales', 'Такой поставщик существует');
-            $this->addFlash('counterparty_sales', $counterparty_strtolower_preg_replace);
+            $arr_errors['errors'] = [
+                'doubles' => 'Контрагент существует'
+            ];
+            return $arr_errors;
         }
     }
 }
