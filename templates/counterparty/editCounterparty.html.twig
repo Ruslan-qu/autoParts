@@ -24,33 +24,20 @@
 
 
   <div class="col-auto m-3">
-    {{ form_label(form_save_counterparty.form_save_mail_counterparty) }}
+   {{ form_label(form_save_counterparty.form_save_mail_counterparty) }}
     {{ form_widget(form_save_counterparty.form_save_mail_counterparty, { 'attr': {'class': 'ms-5 ps-1'} }) }}
     {{ form_errors(form_save_counterparty.form_save_mail_counterparty) }}
   </div>
 
 
-  <div class="col-auto m-3">
-    {{ form_label(form_save_counterparty.form_save_manager_phone) }}
-    {{ form_widget(form_save_counterparty.form_save_manager_phone, { 'attr': {'class': 'ms-1 ps-1', 'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_save_counterparty.form_save_manager_phone) }}
-  </div>
-
-
-  <div class="col-auto m-3">
-    {{ form_label(form_save_counterparty.form_save_delivery_phone) }}
-    {{ form_widget(form_save_counterparty.form_save_delivery_phone, { 'attr': {'class': 'ms-2 ps-1', 'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_save_counterparty.form_save_delivery_phone) }}
-  </div>
-
-  <div class="col m-3">
-    {{ form_widget(form_save_counterparty.button_save_counterparty, { 'label': 'Сохранить', 'attr': {'class': 'scb btn
-    btn-danger'}}) }}
-  </div>
-
+    <div class="col m-3">
+      {{ form_widget(form_save_counterparty.button_save_counterparty, { 'label': 'Сохранить', 'attr': {'class': 'scb btn
+      btn-danger'}}) }}
+    </div>
+  
 
   {{ form_end(form_save_counterparty) }}
   <div class="col-auto m-3">
-    <h3>{{ saving_information }}</h3>
+  <h3>{{ saving_information }}</h3>
   </div>
   {% endblock form_save %}

@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+  {% endblock Responsive_behaviors %}
+
+  {% block form_save %}
+
+  {#Форма сохранения поступления деталей#}
+
+  {{ form_start(form_search_counterparty, {'method': 'POST'}) }}
+
+  <div class="col-auto m-3">
+    {{ form_label(form_search_counterparty.form_search_name_counterparty) }}
+    {{ form_widget(form_search_counterparty.form_search_name_counterparty, { 'attr': {'class': 'ms-2 ps-1'} }) }}
+    {{ form_errors(form_search_counterparty.form_search_name_counterparty) }}
+
+  </div>
+
+
+
+  <div class="col-auto m-3">
+   {{ form_label(form_search_counterparty.form_search_mail_counterparty) }}
+    {{ form_widget(form_search_counterparty.form_search_mail_counterparty, { 'attr': {'class': 'ms-5 ps-1'} }) }}
+    {{ form_errors(form_search_counterparty.form_search_mail_counterparty) }}
+  </div>
+
+
+    <div class="col m-3">
+      {{ form_widget(form_search_counterparty.button_search_counterparty, { 'label': 'Поиск', 'attr': {'class': 'scb btn
+      btn-danger'}}) }}
+    </div>
+  
+
+  {{ form_end(form_search_counterparty) }}
+  <div class="col-auto m-3">
+  <h3>{{ search_information }}</h3>
+  </div>
+  {% endblock form_save %}

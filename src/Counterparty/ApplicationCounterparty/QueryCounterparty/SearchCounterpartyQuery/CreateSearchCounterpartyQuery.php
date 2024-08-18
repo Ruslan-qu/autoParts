@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CommandsSaveCounterparty;
+namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery;
 
-final class CreateSaveCounterpartyCommand extends CreateCounterpartyCommand
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchCounterpartyQuery;
+
+final class CreateSearchCounterpartyQuery extends SearchCounterpartyQuery
 {
     protected ?string $name_counterparty = null;
 

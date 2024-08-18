@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CommandsSaveCounterparty;
+namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand;
 
-abstract class CreateCounterpartyCommand
+abstract class SaveCounterpartyCommand
 {
 
     public function __construct(array $data = [])
@@ -15,5 +15,7 @@ abstract class CreateCounterpartyCommand
 
         $this->name_counterparty = $data['form_save_name_counterparty'];
         $this->mail_counterparty = $data['form_save_mail_counterparty'];
+        $this->manager_phone = $data['form_save_manager_phone'];
+        $this->delivery_phone = $data['form_save_delivery_phone'];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CommandsSaveCounterparty;
+namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand;
 
 use Symfony\Component\Mime\Address;
 use Doctrine\Persistence\ManagerRegistry;
@@ -10,10 +10,9 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use App\Counterparty\InfrastructureCounterparty\RepositoryCounterparty\CounterpartyRepository;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
-use App\Counterparty\ApplicationCounterparty\CommandsSaveEditDeleteCounterparty\CommandsSaveCounterparty\CreateSaveCounterpartyCommand;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommand;
 
 final class CreateSaveCounterpartyCommandHandler
 {
@@ -77,10 +76,9 @@ final class CreateSaveCounterpartyCommandHandler
         /* Валидация дублей */
         $number_doubles = $this->counterparty_repository_interface
             ->number_doubles(['name_counterparty' => $name_counterparty, 'mail_counterparty' => $mail_counterparty]);
-        //  dd($number_doubles);
+
         if ($number_doubles == 0) {
 
-            //dd($сount_mail_counterparty);
             $this->entity_counterparty->setNameCounterparty($name_counterparty);
             $this->entity_counterparty->setMailCounterparty($mail_counterparty);
 

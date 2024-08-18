@@ -19,6 +19,12 @@ class Counterparty
     #[ORM\Column(length: 48, nullable: true)]
     private ?string $mail_counterparty = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $manager_phone = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $delivery_phone = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +50,30 @@ class Counterparty
     public function setMailCounterparty(?string $mail_counterparty): static
     {
         $this->mail_counterparty = $mail_counterparty;
+
+        return $this;
+    }
+
+    public function getManagerPhone(): ?int
+    {
+        return $this->manager_phone;
+    }
+
+    public function setManagerPhone(?int $manager_phone): static
+    {
+        $this->manager_phone = $manager_phone;
+
+        return $this;
+    }
+
+    public function getDeliveryPhone(): ?int
+    {
+        return $this->delivery_phone;
+    }
+
+    public function setDeliveryPhone(?int $delivery_phone): static
+    {
+        $this->delivery_phone = $delivery_phone;
 
         return $this;
     }
