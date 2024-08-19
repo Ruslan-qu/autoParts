@@ -2,7 +2,6 @@
 
 namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand;
 
-use Symfony\Component\Mime\Address;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
@@ -38,40 +37,133 @@ final class CreateSaveCounterpartyCommandHandler
             '',
             $createSaveCounterpartyCommand->getNameCounterparty()
         ));
-        $mail_counterparty = $createSaveCounterpartyCommand->getMailCounterparty();
+        $mail_counterparty = preg_replace(
+            '#\s#',
+            '',
+            $createSaveCounterpartyCommand->getMailCounterparty()
+        );
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
         $input = [
-            'name_counterparty_error' => $name_counterparty,
-            'mail_counterparty_error' => $mail_counterparty,
+            'name_counterparty_error' => [
+                'NotBlank' => $name_counterparty,
+                'Type' => $name_counterparty,
+                'Regex' => $name_counterparty,
+            ],
+            'mail_counterparty_error' => [
+                'NotBlank' => $mail_counterparty,
+                'Type' => $mail_counterparty,
+                'Email' => $mail_counterparty,
+            ]
         ];
 
         $constraint = new Collection([
-            'name_counterparty_error' => new NotBlank(),
-            'name_counterparty_error' => new Type('string'),
-            'name_counterparty_error' => new Regex(pattern: '/^[\da-z]*$/i'),
-            'mail_counterparty_error' => new NotBlank(),
-            'mail_counterparty_error' => new Type('Address::class'),
-            'mail_counterparty_error' => new Email(),
+            'name_counterparty_error' => new Collection([
+                'NotBlank' => new NotBlank(
+                    message: 'Форма Поставщик не может быть пустой'
+                ),
+                'Type' => new Type('string'),
+                'Regex' => new Regex(
+                    pattern: '/^[\da-z]*$/i',
+                    message: 'Форма Поставщик содержит недопустимые символы'
+                )
+            ]),
+            'mail_counterparty_error' => new Collection([
+                'NotBlank' => new NotBlank(
+                    message: 'Форма E-mail не может быть пустой'
+                ),
+                'Type' => new Type('string'),
+                'Email' => new Email(
+                    message: 'Форма E-mail содержит недопустимые символы'
+                )
+            ])
         ]);
 
-        $data_errors_counterparty = $validator->validate($input, $constraint);
+        $data_errors_counterparty = [];
+        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-        if (count($data_errors_counterparty) > 0) {
+            $data_errors_counterparty[$key] = [
+                $value_error->getPropertyPath() => $value_error->getMessage()
+            ];
+        }
 
-            $arr_errors = [];
-            foreach ($data_errors_counterparty as $key => $value_error) {
+        $manager_phone = preg_replace(
+            '#\s#',
+            '',
+            $createSaveCounterpartyCommand->getManagerPhone()
+        );
+        if (!empty($manager_phone)) {
+            $input = [
+                'manager_phone_error' => [
+                    'Type' => $manager_phone,
+                    'Regex' => $manager_phone,
+                ]
+            ];
 
-                $arr_errors[$key] = [
-                    'property' => trim($value_error->getPropertyPath(), '[]'),
-                    'message' => $value_error->getMessage(),
-                    'value' => $value_error->getInvalidValue()
+            $constraint = new Collection([
+                'manager_phone_error' => new Collection([
+                    'Type' => new Type('string'),
+                    'Regex' => new Regex(
+                        pattern: '/\+{1}\d{11}/',
+                        message: 'Форма Телефон менеджера содержит:
+                        1) Недопустимые символы
+                        2) Нет знака +
+                        3) Неверное количество цифр'
+                    )
+                ])
+            ]);
+            $data_errors_counterparty_manager_phone = [];
+            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+
+                $data_errors_counterparty_manager_phone[$key] = [
+                    $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
+            // dd($data_errors_counterparty_manager_phone);
+            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
+        }
+        $delivery_phone = preg_replace(
+            '#\s#',
+            '',
+            $createSaveCounterpartyCommand->getDeliveryPhone()
+        );
+        if (!empty($delivery_phone)) {
+            $input = [
+                'delivery_phone_error' => [
+                    'Type' => $delivery_phone,
+                    'Regex' => $delivery_phone,
+                ]
+            ];
 
-            return $arr_errors;
+            $constraint = new Collection([
+                'delivery_phone_error' => new Collection([
+                    'Type' => new Type('string'),
+                    'Regex' => new Regex(
+                        pattern: '/\+{1}\d{11}/',
+                        message: 'Форма Телефон доставки содержит: 
+                        1) Недопустимые символы
+                        2) Нет знака +
+                        3) Неверное количество цифр'
+                    )
+                ])
+            ]);
+
+            $data_errors_counterparty_delivery_phone = [];
+            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+
+                $data_errors_counterparty_delivery_phone[$key] = [
+                    $value_error->getPropertyPath() => $value_error->getMessage()
+                ];
+            }
+            // dd($data_errors_counterparty_manager_phone);
+            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_delivery_phone);
+        }
+        //  dd($data_errors_counterparty);
+        if (!empty($data_errors_counterparty)) {
+
+            return $data_errors_counterparty;
         }
         /* Валидация дублей */
         $number_doubles = $this->counterparty_repository_interface
@@ -87,10 +179,10 @@ final class CreateSaveCounterpartyCommandHandler
             $successfully['successfully'] = $successfully_save;
             return $successfully;
         } else {
-            $arr_errors['errors'] = [
+            $arr_errors_number_doubles['errors'] = [
                 'doubles' => 'Контрагент существует'
             ];
-            return $arr_errors;
+            return $arr_errors_number_doubles;
         }
     }
 }

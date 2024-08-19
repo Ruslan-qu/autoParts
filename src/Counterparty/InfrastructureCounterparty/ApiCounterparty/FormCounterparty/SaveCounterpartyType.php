@@ -23,58 +23,52 @@ class SaveCounterpartyType extends AbstractType
         $builder
             ->add('form_save_name_counterparty', TextType::class, [
                 'label' => 'Поставщик',
-                'constraints' => [
+                'required' => false,
+                /* 'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит недопустимые символы'
                     ]),
                     new NotBlank(
-                        message: 'Форма содержит недопустимые символы',
+                        message: 'Форма не может быть пустой',
                     )
 
-                ]
+                ]*/
             ])
             ->add('form_save_mail_counterparty', EmailType::class, [
                 'label' => 'E-mail',
-                'constraints' => [
+                'required' => false,
+                /*'constraints' => [
                     new Email([
                         'message' => 'Форма содержит недопустимые символы'
                     ]),
                     new NotBlank([
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма не может быть пустой'
                     ]),
-                ]
+                ]*/
             ])
             ->add('form_save_manager_phone', TelType::class, [
                 'label' => 'Тел. мен-ра',
-                'constraints' => [
+                'required' => false,
+                /*'constraints' => [
                     new Regex([
-                        'pattern' => '/\+\d/',
+                        'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
-                        'message' => 'Форма содержит недопустимые символы или нет знака +'
+                        'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
                     ]),
-                    new Length([
-                        'min' => '11',
-                        'max' => '11',
-                        'exactMessage' => 'Номер телефона содержит неверное количество цифр'
-                    ])
-                ]
+                ]*/
             ])
             ->add('form_save_delivery_phone', TelType::class, [
                 'label' => 'Тел. дос-ки',
-                'constraints' => [
+                'required' => false,
+                /*'constraints' => [
                     new Regex([
-                        'pattern' => '/\+\d/',
+                        'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
-                        'message' => 'Форма содержит недопустимые символы или нет знака +'
-                    ]),
-                    new Length([
-                        'min' => '12',
-                        'max' => '12',
-                        'exactMessage' => 'Номер телефона содержит неверное количество цифр',
+                        'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
                     ])
-                ]
+                ]*/
             ])
             ->add('button_save_counterparty', SubmitType::class);
     }

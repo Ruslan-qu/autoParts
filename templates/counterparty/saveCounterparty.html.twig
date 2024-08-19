@@ -32,14 +32,16 @@
 
   <div class="col-auto m-3">
     {{ form_label(form_save_counterparty.form_save_manager_phone) }}
-    {{ form_widget(form_save_counterparty.form_save_manager_phone, { 'attr': {'class': 'ms-1 ps-1', 'placeholder': '+79999999999'} }) }}
+    {{ form_widget(form_save_counterparty.form_save_manager_phone, { 'attr': {'class': 'ms-1 ps-1', 'placeholder':
+    '+79999999999'} }) }}
     {{ form_errors(form_save_counterparty.form_save_manager_phone) }}
   </div>
 
 
   <div class="col-auto m-3">
     {{ form_label(form_save_counterparty.form_save_delivery_phone) }}
-    {{ form_widget(form_save_counterparty.form_save_delivery_phone, { 'attr': {'class': 'ms-2 ps-1', 'placeholder': '+79999999999'} }) }}
+    {{ form_widget(form_save_counterparty.form_save_delivery_phone, { 'attr': {'class': 'ms-2 ps-1', 'placeholder':
+    '+79999999999'} }) }}
     {{ form_errors(form_save_counterparty.form_save_delivery_phone) }}
   </div>
 
@@ -51,6 +53,11 @@
 
   {{ form_end(form_save_counterparty) }}
   <div class="col-auto m-3">
-    <h3>{{ saving_information }}</h3>
+    {% for saving_information in arr_saving_information %}
+    {% for information in saving_information %}
+    {#{{ dump(saving_information) }}#}
+    <h5>{{ information |nl2br }}</h5>
+    {% endfor %}
+    {% endfor %}
   </div>
   {% endblock form_save %}

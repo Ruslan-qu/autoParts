@@ -26,24 +26,19 @@ class CounterpartyController extends AbstractController
         /*Валидация формы */
         $form_save_counterparty->handleRequest($request);
 
-        $saving_information = '';
+        $arr_saving_information = [];
         if ($form_save_counterparty->isSubmitted()) {
             if ($form_save_counterparty->isValid()) {
 
                 $arr_saving_information = $createSaveCounterpartyCommandHandler
                     ->handler(new CreateSaveCounterpartyCommand($request->request->all()['save_counterparty']));
-                foreach ($arr_saving_information as $value_arr_information) {
-                    foreach ($value_arr_information as $value_saving_information) {
-                        $saving_information = $value_saving_information;
-                    }
-                }
             }
         }
 
         return $this->render('counterparty/saveCounterparty.html.twig', [
             'title_logo' => 'Добавление нового поставщика',
             'form_save_counterparty' => $form_save_counterparty->createView(),
-            'saving_information' => $saving_information
+            'arr_saving_information' => $arr_saving_information
         ]);
     }
 
