@@ -173,6 +173,8 @@ final class CreateSaveCounterpartyCommandHandler
 
             $this->entity_counterparty->setNameCounterparty($name_counterparty);
             $this->entity_counterparty->setMailCounterparty($mail_counterparty);
+            $this->entity_counterparty->setManagerPhone($manager_phone);
+            $this->entity_counterparty->setDeliveryPhone($delivery_phone);
 
             $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
 

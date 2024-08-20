@@ -87,60 +87,10 @@
         </nav>
     </header>
     <main>
-        {% block form_save %}
-        {% endblock form_save %}
-        <div class="form_search">
-            <fieldset>
-                <legend>{% block legend_search %}{% endblock legend_search %}</legend>
-                <table>
-                    <tr>
-                        {% block form_search %}
-                        {% endblock form_search %}
-                    </tr>
-                </table>
-                <fieldset>
-        </div>
-        <div class="total_amount">
-            <table>
-                <thead>
-                    <tr>
-                        {% block table_total_amount %}
-                        {% endblock table_total_amount %}
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {% block tbody_total_amount %}
-                    {% endblock tbody_total_amount %}
-
-                </tbody>
-            </table>
-        </div>
-        <div class="table">
-            <table>
-                <thead>
-                    <tr>
-                        {% block table_ku_dir_invoice %}
-                        {% endblock table_ku_dir_invoice %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% block tbody_ku_dir_invoice %}
-                    {% endblock tbody_ku_dir_invoice %}
-                </tbody>
-            </table>
-            <table>
-                <thead>
-                    <tr>
-                        {% block table_thead_tr %}
-                        {% endblock table_thead_tr %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% block tbody %}
-                    {% endblock tbody %}
-                </tbody>
-            </table>
+        {% block form %}
+        {% endblock form %}
+        {% block table %}
+        {% endblock table %}
     </main>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 </body>
