@@ -20,7 +20,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return int Возвращается число дублей 
      */
-    public function number_doubles(array $array): int
+    public function numberDoubles(array $array): int
     {
 
         //dd($array['name_counterparty']);
@@ -42,5 +42,13 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
 
         return $successfully = ['save' => 'Контрагент успешно сохранен'];
         //dd($entityManager);
+    }
+
+    /**
+     * @return Counterparty[] Returns an array of Counterparty objects
+     */
+    public function findAllCounterparty(): array
+    {
+        return $this->findAll();
     }
 }

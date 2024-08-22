@@ -167,7 +167,7 @@ final class CreateSaveCounterpartyCommandHandler
         }
         /* Валидация дублей */
         $number_doubles = $this->counterparty_repository_interface
-            ->number_doubles(['name_counterparty' => $name_counterparty, 'mail_counterparty' => $mail_counterparty]);
+            ->numberDoubles(['name_counterparty' => $name_counterparty, 'mail_counterparty' => $mail_counterparty]);
 
         if ($number_doubles == 0) {
 

@@ -24,7 +24,7 @@ class SaveCounterpartyType extends AbstractType
             ->add('form_save_name_counterparty', TextType::class, [
                 'label' => 'Поставщик',
                 'required' => false,
-                /* 'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
@@ -34,41 +34,41 @@ class SaveCounterpartyType extends AbstractType
                         message: 'Форма не может быть пустой',
                     )
 
-                ]*/
+                ]
             ])
             ->add('form_save_mail_counterparty', EmailType::class, [
                 'label' => 'E-mail',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Email([
                         'message' => 'Форма содержит недопустимые символы'
                     ]),
                     new NotBlank([
                         'message' => 'Форма не может быть пустой'
                     ]),
-                ]*/
+                ]
             ])
             ->add('form_save_manager_phone', TelType::class, [
                 'label' => 'Телефон менеджера',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
                         'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
                     ]),
-                ]*/
+                ]
             ])
             ->add('form_save_delivery_phone', TelType::class, [
                 'label' => 'Телефон доставки',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
                         'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
                     ])
-                ]*/
+                ]
             ])
             ->add('button_save_counterparty', SubmitType::class);
     }

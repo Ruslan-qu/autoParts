@@ -8,5 +8,7 @@ interface  CounterpartyRepositoryInterface
 {
     public function save(Counterparty $entity_counterparty): array;
 
-    public function number_doubles(array $array): int;
+    public function numberDoubles(array $array): int;
+
+    public function findAllCounterparty(): array;
 }

@@ -12,32 +12,81 @@
 
   {#Форма сохранения поступления деталей#}
 
-  {{ form_start(form_search_counterparty, {'method': 'POST'}) }}
+  {{ form_start(form_search_counterparty, {'method': 'GET', 'attr': {'class': 'row row-cols-12 text-center
+  mt-2'}}) }}
 
-  <div class="col-auto m-3">
-    {{ form_label(form_search_counterparty.form_search_name_counterparty) }}
-    {{ form_widget(form_search_counterparty.form_search_name_counterparty, { 'attr': {'class': 'ms-2 ps-1'} }) }}
+
+  <div class="col-auto ms-3">
+    <div class="lb">{{ form_label(form_search_counterparty.form_search_name_counterparty) }}</div>
+    {{ form_widget(form_search_counterparty.form_search_name_counterparty, { 'attr': {'class': ''} }) }}
     {{ form_errors(form_search_counterparty.form_search_name_counterparty) }}
-
   </div>
 
 
-
-  <div class="col-auto m-3">
-   {{ form_label(form_search_counterparty.form_search_mail_counterparty) }}
-    {{ form_widget(form_search_counterparty.form_search_mail_counterparty, { 'attr': {'class': 'ms-5 ps-1'} }) }}
-    {{ form_errors(form_search_counterparty.form_search_mail_counterparty) }}
-  </div>
-
-
-    <div class="col m-3">
-      {{ form_widget(form_search_counterparty.button_search_counterparty, { 'label': 'Поиск', 'attr': {'class': 'scb btn
+  <div class="row mt-3">
+    <div class="col-2 d-grid gap-2 ms-3">
+      {{ form_widget(form_search_counterparty.button_search_counterparty, { 'label': 'Поиск', 'attr': {'class':
+      'button_search btn
       btn-danger'}}) }}
     </div>
-  
+  </div>
+
 
   {{ form_end(form_search_counterparty) }}
-  <div class="col-auto m-3">
-  <h3>{{ search_information }}</h3>
-  </div>
+  {# <div class="col-auto m-3">
+    {% for saving_information in arr_saving_information %}
+    {% for information in saving_information %}#}
+    {#{{ dump(saving_information) }}#}
+    {#<h5>{{ information |nl2br }}</h5>
+    {% endfor %}
+    {% endfor %}
+  </div>#}
   {% endblock form %}
+
+
+
+  {% block table %}
+  <div class="container-fluid text-center pt-4">
+    <table
+      class="table table-bordered table-hover table-striped-columns table-sm border-info shadow p-3 mb-5 bg-body-tertiary rounded">
+      <thead class="table-secondary">
+        {% if arr_search_information %}
+        <tr>
+          <th scope="col">Поставщик</th>
+          <th scope="col">E-mail</th>
+          <th scope="col">Телефон менеджера</th>
+          <th scope="col">Телефон доставки</th>
+          <th scope="col">Редактировать</th>
+          <th scope="col">Удалить</th>
+        </tr>
+        {% endif %}
+      </thead>
+      <tbody class="table-group-divider">
+        {% if arr_search_information %}
+        {% for information in arr_search_information %}
+        <tr>
+          <td>{{ information.getNameCounterparty() }}</td>
+          <td>{{ information.getMailCounterparty() }}</td>
+          <td>{{ information.getManagerPhone() }}</td>
+          <td>{{ information.getDeliveryPhone() }}</td>
+          <form action="/edit_counterparty" name="edit_counterparty" method="GET">
+
+            <td><button class="edit" type="submit" name="edit_counterparty"
+                value="{{ information.getId() }}">Изменить</button></td>
+
+          </form>
+          <form action="/delete_counterparty" name="delete_counterparty" method="GET">
+
+            <td><button class="delete" type="submit" name="delete_counterparty"
+                value="{{ information.getId() }}">Удалить</button></td>
+
+          </form>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <h2>Данные не найдены. Видите параметры в поиск</h2>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+  {% endblock table %}

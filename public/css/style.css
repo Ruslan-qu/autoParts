@@ -15,3 +15,7 @@ input.ip-int {
 input.ip-date {
     height: 1.6rem !important;
 }
+
+.button_search {
+    width: 14rem !important;
+}

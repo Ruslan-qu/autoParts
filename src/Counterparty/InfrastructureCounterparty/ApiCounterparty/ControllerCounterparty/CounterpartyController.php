@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
+use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SearchCounterpartyType;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommand;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommandHandler;
@@ -46,17 +47,18 @@ class CounterpartyController extends AbstractController
     #[Route('/searchCounterparty', name: 'searchCounterparty')]
     public function searchCounterparty(
         Request $request,
-        CreateSaveCounterpartyCommandHandler $createSaveCounterpartyCommandHandler
+        CounterpartyRepositoryInterface $counterparty_repository_interface
     ): Response {
 
-        /*Форма сохранения постовщка*/
+        /*Форма поиска постовщка*/
         $form_search_counterparty = $this->createForm(SearchCounterpartyType::class);
 
         /*Валидация формы */
         $form_search_counterparty->handleRequest($request);
 
-        $search_information = '';
-        if ($form_search_counterparty->isSubmitted()) {
+        $arr_search_information = $counterparty_repository_interface->findAllCounterparty();
+        //dd($arr_search_information);
+        /* if ($form_search_counterparty->isSubmitted()) {
             if ($form_search_counterparty->isValid()) {
 
                 $arr_search_information = $createSaveCounterpartyCommandHandler
@@ -67,12 +69,12 @@ class CounterpartyController extends AbstractController
                     }
                 }
             }
-        }
+        }*/
 
         return $this->render('counterparty/searchCounterparty.html.twig', [
             'title_logo' => 'Поиск поставщика',
             'form_search_counterparty' => $form_search_counterparty->createView(),
-            'search_information' => $search_information
+            'arr_search_information' => $arr_search_information
         ]);
     }
 }
