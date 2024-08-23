@@ -56,11 +56,13 @@ class CounterpartyController extends AbstractController
         /*Валидация формы */
         $form_search_counterparty->handleRequest($request);
 
+        /*Выводим полный список поставщиков*/
         $arr_search_information = $counterparty_repository_interface->findAllCounterparty();
-        //dd($arr_search_information);
-        /* if ($form_search_counterparty->isSubmitted()) {
-            if ($form_search_counterparty->isValid()) {
 
+        //dd($arr_search_information);
+        if ($form_search_counterparty->isSubmitted()) {
+            if ($form_search_counterparty->isValid()) {
+                dd($request->request->all());
                 $arr_search_information = $createSaveCounterpartyCommandHandler
                     ->handler(new CreateSaveCounterpartyCommand($request->request->all()['save_counterparty']));
                 foreach ($arr_search_information as $value_arr_information) {
@@ -69,7 +71,7 @@ class CounterpartyController extends AbstractController
                     }
                 }
             }
-        }*/
+        }
 
         return $this->render('counterparty/searchCounterparty.html.twig', [
             'title_logo' => 'Поиск поставщика',
