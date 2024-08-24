@@ -13,7 +13,6 @@ abstract class SearchCounterpartyQuery
     private function loadDataCounterparty(array $data)
     {
 
-        $this->name_counterparty = $data['form_search_name_counterparty'];
-        $this->mail_counterparty = $data['form_search_mail_counterparty'];
+        $this->name_counterparty = (string)$data['form_search_name_counterparty'];
     }
 }

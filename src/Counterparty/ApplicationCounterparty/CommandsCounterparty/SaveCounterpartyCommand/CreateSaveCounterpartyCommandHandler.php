@@ -121,7 +121,7 @@ final class CreateSaveCounterpartyCommandHandler
                     $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
-            // dd($data_errors_counterparty_manager_phone);
+
             $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
         }
         $delivery_phone = preg_replace(
@@ -157,10 +157,10 @@ final class CreateSaveCounterpartyCommandHandler
                     $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
-            // dd($data_errors_counterparty_manager_phone);
+
             $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_delivery_phone);
         }
-        //  dd($data_errors_counterparty);
+
         if (!empty($data_errors_counterparty)) {
 
             return $data_errors_counterparty;

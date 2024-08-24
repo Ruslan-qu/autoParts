@@ -45,10 +45,18 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     }
 
     /**
-     * @return Counterparty[] Returns an array of Counterparty objects
+     * @return Counterparty[] Возвращает массив объектов-контрагентов
      */
     public function findAllCounterparty(): array
     {
         return $this->findAll();
+    }
+
+    /**
+     * @return Counterparty Возвращает объект контрагента
+     */
+    public function findOneByCounterparty($name_counterparty): ?Counterparty
+    {
+        return $this->findOneBy(['name_counterparty' => $name_counterparty]);
     }
 }
