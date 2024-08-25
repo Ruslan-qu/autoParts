@@ -21,56 +21,66 @@ class SaveCounterpartyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('form_save_name_counterparty', TextType::class, [
+            ->add('name_counterparty', TextType::class, [
                 'label' => 'Поставщик',
                 'required' => false,
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
-                    new NotBlank(
-                        message: 'Форма не может быть пустой',
-                    )
+                    new NotBlank([
+                        'message' => 'Форма не может быть 
+                        пустой'
+                    ])
 
                 ]
             ])
-            ->add('form_save_mail_counterparty', EmailType::class, [
+            ->add('mail_counterparty', EmailType::class, [
                 'label' => 'E-mail',
                 'required' => false,
                 'constraints' => [
                     new Email([
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
                     new NotBlank([
-                        'message' => 'Форма не может быть пустой'
+                        'message' => 'Форма не может быть 
+                        пустой'
                     ]),
                 ]
             ])
-            ->add('form_save_manager_phone', TelType::class, [
+            ->add('manager_phone', TelType::class, [
                 'label' => 'Телефон менеджера',
                 'required' => false,
                 'constraints' => [
                     new Regex([
                         'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
-                        'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
+                        'message' => 'Форма содержит
+                        1) Недопустимые символы
+                        2) Нет знака +
+                        3) Неверное количество цифр'
                     ]),
                 ]
             ])
-            ->add('form_save_delivery_phone', TelType::class, [
+            ->add('delivery_phone', TelType::class, [
                 'label' => 'Телефон доставки',
                 'required' => false,
                 'constraints' => [
                     new Regex([
                         'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
-                        'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
+                        'message' => 'Форма содержит
+                        1) Недопустимые символы
+                        2) Нет знака +
+                        3) Неверное количество цифр'
                     ])
                 ]
             ])
-            ->add('button_save_counterparty', SubmitType::class);
+            ->add('button_counterparty', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

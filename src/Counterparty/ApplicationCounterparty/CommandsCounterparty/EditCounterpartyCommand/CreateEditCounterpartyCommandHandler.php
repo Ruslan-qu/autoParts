@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand;
+namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
@@ -12,7 +12,7 @@ use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterpar
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
-final class CreateSaveCounterpartyCommandHandler
+final class CreateEditCounterpartyCommandHandler
 {
     private $counterparty_repository_interface;
     private $entity_counterparty;
@@ -25,18 +25,18 @@ final class CreateSaveCounterpartyCommandHandler
         $this->entity_counterparty = $entity_counterparty;
     }
 
-    public function handler(CreateCounterpartyCommand $createCounterpartyCommand): array
+    public function handler(CreateCounterpartyCommand $createSaveCounterpartyCommand): array
     {
 
         $name_counterparty = strtolower(preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getNameCounterparty()
+            $createSaveCounterpartyCommand->getNameCounterparty()
         ));
         $mail_counterparty = preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getMailCounterparty()
+            $createSaveCounterpartyCommand->getMailCounterparty()
         );
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -88,7 +88,7 @@ final class CreateSaveCounterpartyCommandHandler
         $manager_phone = preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getManagerPhone()
+            $createSaveCounterpartyCommand->getManagerPhone()
         );
         if (!empty($manager_phone)) {
             $input = [
@@ -123,7 +123,7 @@ final class CreateSaveCounterpartyCommandHandler
         $delivery_phone = preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getDeliveryPhone()
+            $createSaveCounterpartyCommand->getDeliveryPhone()
         );
         if (!empty($delivery_phone)) {
             $input = [

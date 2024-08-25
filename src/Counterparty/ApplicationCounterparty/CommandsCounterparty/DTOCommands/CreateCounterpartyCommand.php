@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand;
+namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands;
 
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\SaveCounterpartyCommand;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 
-final class CreateSaveCounterpartyCommand extends SaveCounterpartyCommand
+
+final class CreateCounterpartyCommand extends CounterpartyCommand
 {
+    protected ?int $id = null;
+
     protected ?string $name_counterparty = null;
 
     protected ?string $mail_counterparty = null;
@@ -13,6 +16,11 @@ final class CreateSaveCounterpartyCommand extends SaveCounterpartyCommand
     protected ?string $manager_phone = null;
 
     protected ?string $delivery_phone = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getNameCounterparty(): ?string
     {

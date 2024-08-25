@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,32 +18,64 @@ class EditCounterpartyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('form_edit_name_counterparty', TextType::class, [
+            ->add('name_counterparty', TextType::class, [
                 'label' => 'Поставщик',
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
-                    new NotBlank(
-                        message: 'Форма содержит недопустимые символы',
-                    )
+                    new NotBlank([
+                        'message' => 'Форма не может быть 
+                        пустой'
+                    ])
 
                 ]
             ])
-            ->add('form_edit_mail_counterparty', EmailType::class, [
+            ->add('mail_counterparty', EmailType::class, [
                 'label' => 'E-mail',
                 'constraints' => [
                     new Email([
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
                     new NotBlank([
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма не может быть 
+                        пустой'
                     ]),
                 ]
             ])
-            ->add('button_edit_counterparty', SubmitType::class);
+            ->add('manager_phone', TelType::class, [
+                'label' => 'Телефон менеджера',
+                'required' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/\+{1}\d{11}/',
+                        //'match' => false,
+                        'message' => 'Форма содержит
+                        1) Недопустимые символы
+                        2) Нет знака +
+                        3) Неверное количество цифр'
+                    ]),
+                ]
+            ])
+            ->add('delivery_phone', TelType::class, [
+                'label' => 'Телефон доставки',
+                'required' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/\+{1}\d{11}/',
+                        //'match' => false,
+                        'message' => 'Форма содержит
+                        1) Недопустимые символы
+                        2) Нет знака +
+                        3) Неверное количество цифр'
+                    ])
+                ]
+            ])
+            ->add('button_counterparty', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

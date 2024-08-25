@@ -10,7 +10,7 @@
 
   {% block form %}
 
-  {#Форма сохранения поступления деталей#}
+  {#Форма поиска постовщиков#}
 
   {{ form_start(form_search_counterparty, {'attr': {'class': 'row row-cols-12 text-center
   mt-2'}}) }}
@@ -32,26 +32,22 @@
 
 
   {{ form_end(form_search_counterparty) }}
-  {# <div class="col-auto m-3">
-    {% for saving_information in arr_saving_information %}
-    {% for information in saving_information %}#}
-    {#{{ dump(saving_information) }}#}
-    {#<h5>{{ information |nl2br }}</h5>
-    {% endfor %}
-    {% endfor %}
-  </div>#}
+  
   {% endblock form %}
 
 
 
   {% block table %}
+  
+  {#Таблица постовщиков#}
+
   <div class="container-fluid text-center pt-4 ">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
   
-          {% if search_data is non empty %}
+          {% if search_data.0 %}
           <tr>
             <th scope="col">Поставщик</th>
             <th scope="col">E-mail</th>
@@ -72,13 +68,13 @@
             <td>{{ information.getMailCounterparty() }}</td>
             <td>{{ information.getManagerPhone() }}</td>
             <td>{{ information.getDeliveryPhone() }}</td>
-            <form action="/edit_counterparty" name="edit_counterparty" method="GET">
+            <form action="/editCounterparty" name="edit_counterparty">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="edit_counterparty"
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
-            <form action="/delete_counterparty" name="delete_counterparty" method="GET">
+            <form action="/delete_counterparty" name="delete_counterparty">
 
               <td><button class="btn btn-outline-danger" type="submit" name="delete_counterparty"
                   value="{{ information.getId() }}">Удалить</button></td>
