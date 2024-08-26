@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\EditCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
@@ -16,6 +17,7 @@ use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\Counterp
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SearchCounterpartyType;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\CreateSearchCounterpartyQuery;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommand;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\CreateFindIdCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\CreateSearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommandHandler;
 
@@ -71,7 +73,7 @@ class CounterpartyController extends AbstractController
             if ($form_search_counterparty->isValid()) {
                 unset($search_data);
                 $search_data[] = $createSearchCounterpartyQueryHandler
-                    ->handler(new CreateSearchCounterpartyQuery($request->request->all()['search_counterparty']));
+                    ->handler(new CreateCounterpartyQuery($request->request->all()['search_counterparty']));
             }
         }
 
@@ -87,15 +89,22 @@ class CounterpartyController extends AbstractController
     #[Route('/editCounterparty', name: 'edit_counterparty')]
     public function editCounterparty(
         Request $request,
+        CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler,
         CreateSaveCounterpartyCommandHandler $createSaveCounterpartyCommandHandler
     ): Response {
-        dd($request->query->all()['edit_counterparty']);
+        //dd($request->query->all());
         /*Форма Редактирования постовщка*/
         $form_edit_counterparty = $this->createForm(EditCounterpartyType::class);
 
         /*Валидация формы */
         $form_edit_counterparty->handleRequest($request);
 
+        $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
+            ->handler(new CreateCounterpartyQuery($request->query->all()));
+        if (empty($find_id_edit_counterparty)) {
+            $this->addFlash($key, $value);
+        }
+        dd($find_id_edit_counterparty);
         $arr_saving_information = [];
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {
@@ -108,7 +117,8 @@ class CounterpartyController extends AbstractController
         return $this->render('counterparty/editCounterparty.html.twig', [
             'title_logo' => 'Изменение данных поставщика',
             'form_edit_counterparty' => $form_edit_counterparty->createView(),
-            'arr_saving_information' => $arr_saving_information
+            'arr_saving_information' => $arr_saving_information,
+            'find_id_edit_counterparty' => $find_id_edit_counterparty,
         ]);
     }
 }

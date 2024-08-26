@@ -17,9 +17,9 @@
 
 
   <div class="col-auto ms-3">
-    <div class="lb">{{ form_label(form_search_counterparty.form_search_name_counterparty) }}</div>
-    {{ form_widget(form_search_counterparty.form_search_name_counterparty) }}
-    {{ form_errors(form_search_counterparty.form_search_name_counterparty) }}
+    <div class="lb">{{ form_label(form_search_counterparty.name_counterparty) }}</div>
+    {{ form_widget(form_search_counterparty.name_counterparty) }}
+    {{ form_errors(form_search_counterparty.name_counterparty) }}
   </div>
 
 
@@ -70,13 +70,13 @@
             <td>{{ information.getDeliveryPhone() }}</td>
             <form action="/editCounterparty" name="edit_counterparty">
 
-              <td><button class="btn btn-outline-secondary" type="submit" name="edit_counterparty"
+              <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
             <form action="/delete_counterparty" name="delete_counterparty">
 
-              <td><button class="btn btn-outline-danger" type="submit" name="delete_counterparty"
+              <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ information.getId() }}">Удалить</button></td>
 
             </form>

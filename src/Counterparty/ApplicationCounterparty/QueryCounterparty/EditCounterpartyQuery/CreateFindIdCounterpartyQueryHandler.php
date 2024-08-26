@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery;
+namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery;
 
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 
-final class CreateSearchCounterpartyQueryHandler
+final class CreateFindIdCounterpartyQueryHandler
 {
     private $counterparty_repository_interface;
 
@@ -19,15 +19,15 @@ final class CreateSearchCounterpartyQueryHandler
 
     public function handler(CreateCounterpartyQuery $createCounterpartyQuery): ?Counterparty
     {
+        //dd($createCounterpartyQuery->getId());
+        $id = $createCounterpartyQuery->getId();
 
-        $name_counterparty = strtolower(preg_replace(
-            '#\s#',
-            '',
-            $createCounterpartyQuery->getNameCounterparty()
-        ));
+        if (empty($id)) {
+            return NULL;
+        }
 
-        $counterparty = $this->counterparty_repository_interface->findOneByCounterparty($name_counterparty);
+        $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
 
-        return $counterparty;
+        return $edit_counterparty;
     }
 }
