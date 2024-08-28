@@ -23,8 +23,7 @@ class SaveCounterpartyType extends AbstractType
         $builder
             ->add('name_counterparty', TextType::class, [
                 'label' => 'Поставщик',
-                'required' => false,
-                'constraints' => [
+                /*'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
@@ -36,26 +35,22 @@ class SaveCounterpartyType extends AbstractType
                         пустой'
                     ])
 
-                ]
+                ]*/
             ])
             ->add('mail_counterparty', EmailType::class, [
                 'label' => 'E-mail',
                 'required' => false,
-                'constraints' => [
+                /*'constraints' => [
                     new Email([
                         'message' => 'Форма содержит 
                         недопустимые символы'
-                    ]),
-                    new NotBlank([
-                        'message' => 'Форма не может быть 
-                        пустой'
-                    ]),
-                ]
+                    ])
+                ]*/
             ])
             ->add('manager_phone', TelType::class, [
                 'label' => 'Телефон менеджера',
                 'required' => false,
-                'constraints' => [
+                /*'constraints' => [
                     new Regex([
                         'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
@@ -64,12 +59,12 @@ class SaveCounterpartyType extends AbstractType
                         2) Нет знака +
                         3) Неверное количество цифр'
                     ]),
-                ]
+                ]*/
             ])
             ->add('delivery_phone', TelType::class, [
                 'label' => 'Телефон доставки',
                 'required' => false,
-                'constraints' => [
+                /*'constraints' => [
                     new Regex([
                         'pattern' => '/\+{1}\d{11}/',
                         //'match' => false,
@@ -78,7 +73,7 @@ class SaveCounterpartyType extends AbstractType
                         2) Нет знака +
                         3) Неверное количество цифр'
                     ])
-                ]
+                ]*/
             ])
             ->add('button_counterparty', SubmitType::class);
     }

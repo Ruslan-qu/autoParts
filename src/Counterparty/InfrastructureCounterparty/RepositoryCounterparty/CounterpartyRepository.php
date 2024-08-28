@@ -23,7 +23,6 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     public function numberDoubles(array $array): int
     {
 
-        //dd($array['name_counterparty']);
         $number_doubles = 0;
         foreach ($array as $key => $value) {
             $number_doubles = $number_doubles + $this->count([$key => $value]);

@@ -33,11 +33,6 @@ final class CreateSaveCounterpartyCommandHandler
             '',
             $createCounterpartyCommand->getNameCounterparty()
         ));
-        $mail_counterparty = preg_replace(
-            '#\s#',
-            '',
-            $createCounterpartyCommand->getMailCounterparty()
-        );
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -47,11 +42,6 @@ final class CreateSaveCounterpartyCommandHandler
                 'NotBlank' => $name_counterparty,
                 'Type' => $name_counterparty,
                 'Regex' => $name_counterparty,
-            ],
-            'mail_counterparty_error' => [
-                'NotBlank' => $mail_counterparty,
-                'Type' => $mail_counterparty,
-                'Email' => $mail_counterparty,
             ]
         ];
 
@@ -65,15 +55,6 @@ final class CreateSaveCounterpartyCommandHandler
                     pattern: '/^[\da-z]*$/i',
                     message: 'Форма Поставщик содержит недопустимые символы'
                 )
-            ]),
-            'mail_counterparty_error' => new Collection([
-                'NotBlank' => new NotBlank(
-                    message: 'Форма E-mail не может быть пустой'
-                ),
-                'Type' => new Type('string'),
-                'Email' => new Email(
-                    message: 'Форма E-mail содержит недопустимые символы'
-                )
             ])
         ]);
 
@@ -83,6 +64,39 @@ final class CreateSaveCounterpartyCommandHandler
             $data_errors_counterparty[$key] = [
                 $value_error->getPropertyPath() => $value_error->getMessage()
             ];
+        }
+
+        $mail_counterparty = preg_replace(
+            '#\s#',
+            '',
+            $createCounterpartyCommand->getMailCounterparty()
+        );
+
+        if (!empty($mail_counterparty)) {
+            $input = [
+                'mail_counterparty_error' => [
+                    'Type' => $mail_counterparty,
+                    'Email' => $mail_counterparty
+                ]
+            ];
+
+            $constraint = new Collection([
+                'mail_counterparty_error' => new Collection([
+                    'Type' => new Type('string'),
+                    'Email' => new Email(
+                        message: 'Форма E-mail содержит недопустимые символы'
+                    )
+                ])
+            ]);
+            $data_errors_counterparty_mail = [];
+            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+
+                $data_errors_counterparty_mail[$key] = [
+                    $value_error->getPropertyPath() => $value_error->getMessage()
+                ];
+            }
+
+            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_mail);
         }
 
         $manager_phone = preg_replace(
@@ -120,6 +134,7 @@ final class CreateSaveCounterpartyCommandHandler
 
             $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
         }
+
         $delivery_phone = preg_replace(
             '#\s#',
             '',
@@ -163,7 +178,7 @@ final class CreateSaveCounterpartyCommandHandler
         }
         /* Валидация дублей */
         $number_doubles = $this->counterparty_repository_interface
-            ->numberDoubles(['name_counterparty' => $name_counterparty, 'mail_counterparty' => $mail_counterparty]);
+            ->numberDoubles(['name_counterparty' => $name_counterparty]);
 
         if ($number_doubles == 0) {
 

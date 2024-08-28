@@ -102,9 +102,11 @@ class CounterpartyController extends AbstractController
         $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
             ->handler(new CreateCounterpartyQuery($request->query->all()));
         if (empty($find_id_edit_counterparty)) {
-            $this->addFlash($key, $value);
+            $this->addFlash('find_id_counterparty_null', 'Поставщик не найден');
+
+            return $this->redirectToRoute('search_counterparty');
         }
-        dd($find_id_edit_counterparty);
+        // dd($find_id_edit_counterparty);
         $arr_saving_information = [];
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {

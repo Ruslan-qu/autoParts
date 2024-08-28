@@ -36,14 +36,11 @@ class EditCounterpartyType extends AbstractType
             ])
             ->add('mail_counterparty', EmailType::class, [
                 'label' => 'E-mail',
+                'required' => false,
                 'constraints' => [
                     new Email([
                         'message' => 'Форма содержит 
                         недопустимые символы'
-                    ]),
-                    new NotBlank([
-                        'message' => 'Форма не может быть 
-                        пустой'
                     ]),
                 ]
             ])

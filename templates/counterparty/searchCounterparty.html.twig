@@ -32,13 +32,17 @@
 
 
   {{ form_end(form_search_counterparty) }}
-  
+
+  {% for message in app.flashes('find_id_counterparty_null') %}
+    <h2 class="mt-3 ms-3">{{ message }}</h2>
+  {% endfor %}
+
   {% endblock form %}
 
 
 
   {% block table %}
-  
+
   {#Таблица постовщиков#}
 
   <div class="container-fluid text-center pt-4 ">
@@ -46,7 +50,7 @@
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
-  
+
           {% if search_data.0 %}
           <tr>
             <th scope="col">Поставщик</th>
@@ -57,12 +61,12 @@
             <th scope="col">Удалить</th>
           </tr>
           {% endif %}
-        
+
         </thead>
         <tbody class="table-group-divider">
-        {% for information in search_data %}
+          {% for information in search_data %}
           {% if information %}
-          
+
           <tr>
             <td>{{ information.getNameCounterparty() }}</td>
             <td>{{ information.getMailCounterparty() }}</td>
@@ -81,7 +85,7 @@
 
             </form>
           </tr>
-          
+
           {% else %}
           <h2>Данные не найдены. Видите параметры в поиск</h2>
           {% endif %}
