@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class EditCounterpartyType extends AbstractType
@@ -72,6 +73,7 @@ class EditCounterpartyType extends AbstractType
                     ])
                 ]
             ])
+            ->add('id', HiddenType::class)
             ->add('button_counterparty', SubmitType::class);
     }
 
