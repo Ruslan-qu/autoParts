@@ -11,7 +11,7 @@
   {% block form %}
 
     {#Переменный для вывода данных в форме #}
-    {% set name_counterparty_find_id = find_id_edit_counterparty.getNameCounterparty()|default('') %}
+    {% set name_counterparty_find_id = find_id_edit_counterparty.getNameCounterparty()|default('') or find_id_edit_counterparty.name_counterparty|default('') %}
     {% set mail_counterparty_find_id = find_id_edit_counterparty.getMailCounterparty()|default('') %}
     {% set manager_phone_find_id = find_id_edit_counterparty.getManagerPhone()|default('') %}
     {% set delivery_phone_find_id = find_id_edit_counterparty.getDeliveryPhone()|default('') %}

@@ -19,6 +19,7 @@ use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpart
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommand;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\CreateFindIdCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\CreateSearchCounterpartyQueryHandler;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\CreateEditCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommandHandler;
 
 class CounterpartyController extends AbstractController
@@ -90,7 +91,7 @@ class CounterpartyController extends AbstractController
     public function editCounterparty(
         Request $request,
         CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler,
-        CreateSaveCounterpartyCommandHandler $createEditCounterpartyCommandHandler
+        CreateEditCounterpartyCommandHandler $createEditCounterpartyCommandHandler
     ): Response {
         //dd($request->query->all());
         /*Форма Редактирования постовщка*/
