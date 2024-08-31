@@ -44,6 +44,18 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     }
 
     /**
+     * @return array Возвращается массив с данными об успешном изменения контроагента 
+     */
+    public function edit(): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->flush();
+
+        return $successfully = ['edit' => 'Контрагент успешно изменен'];
+        //dd($entityManager);
+    }
+
+    /**
      * @return Counterparty[]|NULL Возвращает массив объектов-контрагентов или ноль
      */
     public function findAllCounterparty(): ?array

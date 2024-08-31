@@ -8,36 +8,38 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\CreateFindIdCounterpartyQueryHandler;
 
 final class CreateEditCounterpartyCommandHandler
 {
     private $counterparty_repository_interface;
     private $entity_counterparty;
+    private $create_find_id_counterparty_query_handler;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterparty_repository_interface,
-        Counterparty $entity_counterparty
+        CounterpartyRepositoryInterface $counterpartyRepositoryInterface,
+        Counterparty $counterparty,
+        CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler
     ) {
-        $this->counterparty_repository_interface = $counterparty_repository_interface;
-        $this->entity_counterparty = $entity_counterparty;
+        $this->counterparty_repository_interface = $counterpartyRepositoryInterface;
+        $this->entity_counterparty = $counterparty;
+        $this->create_find_id_counterparty_query_handler = $createFindIdCounterpartyQueryHandler;
     }
 
-    public function handler(CreateCounterpartyCommand $createSaveCounterpartyCommand): array
+    public function handler(CreateCounterpartyCommand $createCounterpartyCommand): array
     {
+
+
 
         $name_counterparty = strtolower(preg_replace(
             '#\s#',
             '',
-            $createSaveCounterpartyCommand->getNameCounterparty()
+            $createCounterpartyCommand->getNameCounterparty()
         ));
-        $mail_counterparty = preg_replace(
-            '#\s#',
-            '',
-            $createSaveCounterpartyCommand->getMailCounterparty()
-        );
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -47,11 +49,6 @@ final class CreateEditCounterpartyCommandHandler
                 'NotBlank' => $name_counterparty,
                 'Type' => $name_counterparty,
                 'Regex' => $name_counterparty,
-            ],
-            'mail_counterparty_error' => [
-                'NotBlank' => $mail_counterparty,
-                'Type' => $mail_counterparty,
-                'Email' => $mail_counterparty,
             ]
         ];
 
@@ -65,15 +62,6 @@ final class CreateEditCounterpartyCommandHandler
                     pattern: '/^[\da-z]*$/i',
                     message: 'Форма Поставщик содержит недопустимые символы'
                 )
-            ]),
-            'mail_counterparty_error' => new Collection([
-                'NotBlank' => new NotBlank(
-                    message: 'Форма E-mail не может быть пустой'
-                ),
-                'Type' => new Type('string'),
-                'Email' => new Email(
-                    message: 'Форма E-mail содержит недопустимые символы'
-                )
             ])
         ]);
 
@@ -85,10 +73,43 @@ final class CreateEditCounterpartyCommandHandler
             ];
         }
 
+        $mail_counterparty = preg_replace(
+            '#\s#',
+            '',
+            $createCounterpartyCommand->getMailCounterparty()
+        );
+
+        if (!empty($mail_counterparty)) {
+            $input = [
+                'mail_counterparty_error' => [
+                    'Type' => $mail_counterparty,
+                    'Email' => $mail_counterparty
+                ]
+            ];
+
+            $constraint = new Collection([
+                'mail_counterparty_error' => new Collection([
+                    'Type' => new Type('string'),
+                    'Email' => new Email(
+                        message: 'Форма E-mail содержит недопустимые символы'
+                    )
+                ])
+            ]);
+            $data_errors_counterparty_mail = [];
+            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+
+                $data_errors_counterparty_mail[$key] = [
+                    $value_error->getPropertyPath() => $value_error->getMessage()
+                ];
+            }
+
+            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_mail);
+        }
+
         $manager_phone = preg_replace(
             '#\s#',
             '',
-            $createSaveCounterpartyCommand->getManagerPhone()
+            $createCounterpartyCommand->getManagerPhone()
         );
         if (!empty($manager_phone)) {
             $input = [
@@ -123,7 +144,7 @@ final class CreateEditCounterpartyCommandHandler
         $delivery_phone = preg_replace(
             '#\s#',
             '',
-            $createSaveCounterpartyCommand->getDeliveryPhone()
+            $createCounterpartyCommand->getDeliveryPhone()
         );
         if (!empty($delivery_phone)) {
             $input = [
@@ -161,26 +182,27 @@ final class CreateEditCounterpartyCommandHandler
 
             return $data_errors_counterparty;
         }
-        /* Валидация дублей */
-        $number_doubles = $this->counterparty_repository_interface
-            ->numberDoubles(['name_counterparty' => $name_counterparty, 'mail_counterparty' => $mail_counterparty]);
 
-        if ($number_doubles == 0) {
+        $id = $createCounterpartyCommand->getId();
 
-            $this->entity_counterparty->setNameCounterparty($name_counterparty);
-            $this->entity_counterparty->setMailCounterparty($mail_counterparty);
-            $this->entity_counterparty->setManagerPhone($manager_phone);
-            $this->entity_counterparty->setDeliveryPhone($delivery_phone);
+        if (!empty($id)) {
 
-            $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
+            $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
 
-            $successfully['successfully'] = $successfully_save;
+            $edit_counterparty->setNameCounterparty($name_counterparty);
+            $edit_counterparty->setMailCounterparty($mail_counterparty);
+            $edit_counterparty->setManagerPhone($manager_phone);
+            $edit_counterparty->setDeliveryPhone($delivery_phone);
+
+            $successfully_edit = $this->counterparty_repository_interface->edit($edit_counterparty);
+
+            $successfully['successfully'] = $successfully_edit;
             return $successfully;
         } else {
-            $arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Контрагент существует'
+            $arr_errors_id['errors'] = [
+                'doubles' => 'Контрагент не существует'
             ];
-            return $arr_errors_number_doubles;
+            return $arr_errors_id;
         }
     }
 }

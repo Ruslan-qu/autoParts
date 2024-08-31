@@ -90,7 +90,7 @@ class CounterpartyController extends AbstractController
     public function editCounterparty(
         Request $request,
         CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler,
-        CreateSaveCounterpartyCommandHandler $createSaveCounterpartyCommandHandler
+        CreateSaveCounterpartyCommandHandler $createEditCounterpartyCommandHandler
     ): Response {
         //dd($request->query->all());
         /*Форма Редактирования постовщка*/
@@ -99,22 +99,28 @@ class CounterpartyController extends AbstractController
         /*Валидация формы */
         $form_edit_counterparty->handleRequest($request);
 
-        $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
-            ->handler(new CreateCounterpartyQuery($request->query->all()));
-        if (empty($find_id_edit_counterparty)) {
-            $this->addFlash('find_id_counterparty_null', 'Поставщик не найден');
+        if (!empty($request->query->all())) {
 
-            return $this->redirectToRoute('search_counterparty');
+            $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
+                ->handler(new CreateCounterpartyQuery($request->query->all()));
+            if (empty($find_id_edit_counterparty)) {
+                $this->addFlash('data_edit_counterparty', 'Поставщик не найден');
+
+                return $this->redirectToRoute('search_counterparty');
+            }
         }
         //dd($find_id_edit_counterparty);
         $arr_saving_information = [];
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {
 
-                $arr_saving_information = $createSaveCounterpartyCommandHandler
-                    ->handler(new CreateCounterpartyCommand($request->request->all()['save_counterparty']));
+                unset($find_id_edit_counterparty);
+                $find_id_edit_counterparty = $request->request->all()['edit_counterparty'];
+                $arr_saving_information = $createEditCounterpartyCommandHandler
+                    ->handler(new CreateCounterpartyCommand($request->request->all()['edit_counterparty']));
             }
         }
+
 
         return $this->render('counterparty/editCounterparty.html.twig', [
             'title_logo' => 'Изменение данных поставщика',
