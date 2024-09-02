@@ -115,12 +115,20 @@ class CounterpartyController extends AbstractController
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {
 
-                unset($find_id_edit_counterparty);
+                //unset($find_id_edit_counterparty);
                 $find_id_edit_counterparty = $request->request->all()['edit_counterparty'];
                 $arr_saving_information = $createEditCounterpartyCommandHandler
                     ->handler(new CreateCounterpartyCommand($request->request->all()['edit_counterparty']));
             }
-        }
+        } /*else {
+            $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
+                ->handler(new CreateCounterpartyQuery($request->query->all()));
+            if (empty($find_id_edit_counterparty)) {
+                $this->addFlash('data_edit_counterparty', 'Поставщик не найден');
+
+                return $this->redirectToRoute('search_counterparty');
+            }
+        }*/
 
 
         return $this->render('counterparty/editCounterparty.html.twig', [

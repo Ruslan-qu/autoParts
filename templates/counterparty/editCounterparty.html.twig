@@ -10,12 +10,12 @@
 
   {% block form %}
 
-    {#Переменный для вывода данных в форме #}
-    {% set name_counterparty_find_id = find_id_edit_counterparty.getNameCounterparty()|default('') or find_id_edit_counterparty.name_counterparty|default('') %}
-    {% set mail_counterparty_find_id = find_id_edit_counterparty.getMailCounterparty()|default('') %}
-    {% set manager_phone_find_id = find_id_edit_counterparty.getManagerPhone()|default('') %}
-    {% set delivery_phone_find_id = find_id_edit_counterparty.getDeliveryPhone()|default('') %}
-    {% set id_find_id = find_id_edit_counterparty.getId()|default('') %}
+  {#Переменный для вывода данных в форме #}
+  {% set name_counterparty_find_id = find_id_edit_counterparty.getNameCounterparty()|default(find_id_edit_counterparty.name_counterparty) %}
+  {% set mail_counterparty_find_id = find_id_edit_counterparty.getMailCounterparty()|default(find_id_edit_counterparty.mail_counterparty) %}
+  {% set manager_phone_find_id = find_id_edit_counterparty.getManagerPhone()|default(find_id_edit_counterparty.manager_phone) %}
+  {% set delivery_phone_find_id = find_id_edit_counterparty.getDeliveryPhone()|default(find_id_edit_counterparty.manager_phone) %}
+  {% set id_find_id = find_id_edit_counterparty.getId()|default(find_id_edit_counterparty.id) %}
 
   {#Форма редактирования поступления деталей#}
 
@@ -24,7 +24,8 @@
 
   <div class="col-auto ms-2">
     <div class="lb">{{ form_label(form_edit_counterparty.name_counterparty) }}</div>
-    {{ form_widget(form_edit_counterparty.name_counterparty, { value : name_counterparty_find_id, 'attr': {'class': 'ps-1'} }) }}
+    {{ form_widget(form_edit_counterparty.name_counterparty, { value : name_counterparty_find_id, 'attr': {'class':
+    'ps-1'} }) }}
     {{ form_errors(form_edit_counterparty.name_counterparty) |nl2br }}
 
   </div>
@@ -33,22 +34,23 @@
 
   <div class="col-auto ms-2">
     <div class="lb">{{ form_label(form_edit_counterparty.mail_counterparty) }}</div>
-    {{ form_widget(form_edit_counterparty.mail_counterparty, { value : mail_counterparty_find_id, 'attr': {'class': 'ps-1'} }) }}
+    {{ form_widget(form_edit_counterparty.mail_counterparty, { value : mail_counterparty_find_id, 'attr': {'class':
+    'ps-1'} }) }}
     {{ form_errors(form_edit_counterparty.mail_counterparty) |nl2br }}
   </div>
 
 
   <div class="col-auto ms-2">
     <div class="lb">{{ form_label(form_edit_counterparty.manager_phone) }}</div>
-    {{ form_widget(form_edit_counterparty.manager_phone, { value : manager_phone_find_id, 'attr': {'class': 'ps-1', 
+    {{ form_widget(form_edit_counterparty.manager_phone, { value : manager_phone_find_id, 'attr': {'class': 'ps-1',
     'placeholder': '+79999999999'} }) }}
     {{ form_errors(form_edit_counterparty.manager_phone) |nl2br }}
   </div>
 
 
   <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_edit_counterparty.delivery_phone) }}</div>
-    {{ form_widget(form_edit_counterparty.delivery_phone, { value : delivery_phone_find_id, 'attr': {'class': 'ps-1', 
+    <div class="lb">{{ form_label(form_edit_counterparty.manager_phone) }}</div>
+    {{ form_widget(form_edit_counterparty.delivery_phone, { value : delivery_phone_find_id, 'attr': {'class': 'ps-1',
     'placeholder': '+79999999999'} }) }}
     {{ form_errors(form_edit_counterparty.delivery_phone) |nl2br }}
   </div>
