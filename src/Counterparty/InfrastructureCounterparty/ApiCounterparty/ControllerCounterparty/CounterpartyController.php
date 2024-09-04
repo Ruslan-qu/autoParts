@@ -73,7 +73,7 @@ class CounterpartyController extends AbstractController
         if ($form_search_counterparty->isSubmitted()) {
             if ($form_search_counterparty->isValid()) {
                 unset($search_data);
-                $search_data[] = $createSearchCounterpartyQueryHandler
+                $search_data = $createSearchCounterpartyQueryHandler
                     ->handler(new CreateCounterpartyQuery($request->request->all()['search_counterparty']));
             }
         }
@@ -111,24 +111,17 @@ class CounterpartyController extends AbstractController
             }
         }
         //dd($find_id_edit_counterparty);
+        $data_form_edit_counterparty = [];
         $arr_saving_information = [];
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {
 
                 //unset($find_id_edit_counterparty);
-                $find_id_edit_counterparty = $request->request->all()['edit_counterparty'];
+                $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
                 $arr_saving_information = $createEditCounterpartyCommandHandler
                     ->handler(new CreateCounterpartyCommand($request->request->all()['edit_counterparty']));
             }
-        } /*else {
-            $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
-                ->handler(new CreateCounterpartyQuery($request->query->all()));
-            if (empty($find_id_edit_counterparty)) {
-                $this->addFlash('data_edit_counterparty', 'Поставщик не найден');
-
-                return $this->redirectToRoute('search_counterparty');
-            }
-        }*/
+        }
 
 
         return $this->render('counterparty/editCounterparty.html.twig', [
@@ -136,6 +129,7 @@ class CounterpartyController extends AbstractController
             'form_edit_counterparty' => $form_edit_counterparty->createView(),
             'arr_saving_information' => $arr_saving_information,
             'find_id_edit_counterparty' => $find_id_edit_counterparty,
+            'data_form_edit_counterparty' => $data_form_edit_counterparty,
         ]);
     }
 }

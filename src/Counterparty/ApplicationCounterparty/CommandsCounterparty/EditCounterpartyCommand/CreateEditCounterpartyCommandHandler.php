@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
@@ -115,7 +116,7 @@ final class CreateEditCounterpartyCommandHandler
             $input = [
                 'manager_phone_error' => [
                     'Type' => $manager_phone,
-                    'Regex' => $manager_phone,
+                    'Regex' => $manager_phone
                 ]
             ];
 
@@ -123,7 +124,7 @@ final class CreateEditCounterpartyCommandHandler
                 'manager_phone_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
-                        pattern: '/\+{1}\d{11}/',
+                        pattern: '/^\+{1}\d{11}$/',
                         message: 'Форма Телефон менеджера содержит:
                         1) Недопустимые символы
                         2) Нет знака +
@@ -150,7 +151,7 @@ final class CreateEditCounterpartyCommandHandler
             $input = [
                 'delivery_phone_error' => [
                     'Type' => $delivery_phone,
-                    'Regex' => $delivery_phone,
+                    'Regex' => $delivery_phone
                 ]
             ];
 
@@ -158,7 +159,7 @@ final class CreateEditCounterpartyCommandHandler
                 'delivery_phone_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
-                        pattern: '/\+{1}\d{11}/',
+                        pattern: '/^\+{1}\d{11}$/',
                         message: 'Форма Телефон доставки содержит: 
                         1) Недопустимые символы
                         2) Нет знака +

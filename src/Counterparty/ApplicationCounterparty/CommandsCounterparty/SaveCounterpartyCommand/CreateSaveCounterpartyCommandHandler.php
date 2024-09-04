@@ -116,7 +116,7 @@ final class CreateSaveCounterpartyCommandHandler
                 'manager_phone_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
-                        pattern: '/\+{1}\d{11}/',
+                        pattern: '/^\+{1}\d{11}$/',
                         message: 'Форма Телефон менеджера содержит:
                         1) Недопустимые символы
                         2) Нет знака +
@@ -152,7 +152,7 @@ final class CreateSaveCounterpartyCommandHandler
                 'delivery_phone_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
-                        pattern: '/\+{1}\d{11}/',
+                        pattern: '/^\+{1}\d{11}$/',
                         message: 'Форма Телефон доставки содержит: 
                         1) Недопустимые символы
                         2) Нет знака +

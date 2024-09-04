@@ -17,7 +17,7 @@ final class CreateSearchCounterpartyQueryHandler
         $this->counterparty_repository_interface = $counterparty_repository_interface;
     }
 
-    public function handler(CreateCounterpartyQuery $createCounterpartyQuery): ?Counterparty
+    public function handler(CreateCounterpartyQuery $createCounterpartyQuery): ?array
     {
 
         $name_counterparty = strtolower(preg_replace(
