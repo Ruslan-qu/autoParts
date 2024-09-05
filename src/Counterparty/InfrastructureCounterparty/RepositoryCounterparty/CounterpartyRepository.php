@@ -40,7 +40,6 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
         $entityManager->flush();
 
         return $successfully = ['save' => 'Контрагент успешно сохранен'];
-        //dd($entityManager);
     }
 
     /**
@@ -52,8 +51,21 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
         $entityManager->flush();
 
         return $successfully = ['edit' => 'Контрагент успешно изменен'];
-        //dd($entityManager);
     }
+
+    /**
+     * @return array Возвращается массив с данными об успешном сохранении контроагента 
+     */
+    public function delete($entity_counterparty): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($entity_counterparty);
+        $entityManager->flush();
+
+        return $successfully = ['delete' => 'Контрагент удален'];
+    }
+
+
 
     /**
      * @return Counterparty[]|NULL Возвращает массив объектов-контрагентов или ноль

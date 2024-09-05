@@ -33,7 +33,7 @@
 
   {{ form_end(form_search_counterparty) }}
 
-  {% for message in app.flashes('data_edit_counterparty') %}
+  {% for message in app.flashes('data_counterparty') %}
     <h2 class="mt-3 ms-3">{{ message }}</h2>
   {% endfor %}
 
@@ -78,7 +78,7 @@
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
-            <form action="/delete_counterparty" name="delete_counterparty">
+            <form action="/deleteCounterparty" name="delete_counterparty">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ information.getId() }}">Удалить</button></td>

@@ -10,6 +10,8 @@ interface  CounterpartyRepositoryInterface
 
     public function edit(): array;
 
+    public function delete(Counterparty $entity_counterparty): array;
+
     public function numberDoubles(array $array): int;
 
     public function findAllCounterparty(): ?array;

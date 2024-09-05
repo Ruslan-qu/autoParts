@@ -21,6 +21,7 @@ use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQ
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\CreateSearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\CreateEditCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommandHandler;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\CreateDeleteCounterpartyCommandHandler;
 
 class CounterpartyController extends AbstractController
 {
@@ -93,7 +94,7 @@ class CounterpartyController extends AbstractController
         CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler,
         CreateEditCounterpartyCommandHandler $createEditCounterpartyCommandHandler
     ): Response {
-        //dd($request->query->all());
+
         /*Форма Редактирования постовщка*/
         $form_edit_counterparty = $this->createForm(EditCounterpartyType::class);
 
@@ -105,18 +106,17 @@ class CounterpartyController extends AbstractController
             $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
                 ->handler(new CreateCounterpartyQuery($request->query->all()));
             if (empty($find_id_edit_counterparty)) {
-                $this->addFlash('data_edit_counterparty', 'Поставщик не найден');
+                $this->addFlash('data_counterparty', 'Поставщик не найден');
 
                 return $this->redirectToRoute('search_counterparty');
             }
         }
-        //dd($find_id_edit_counterparty);
+
         $data_form_edit_counterparty = [];
         $arr_saving_information = [];
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {
 
-                //unset($find_id_edit_counterparty);
                 $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
                 $arr_saving_information = $createEditCounterpartyCommandHandler
                     ->handler(new CreateCounterpartyCommand($request->request->all()['edit_counterparty']));
@@ -131,5 +131,26 @@ class CounterpartyController extends AbstractController
             'find_id_edit_counterparty' => $find_id_edit_counterparty,
             'data_form_edit_counterparty' => $data_form_edit_counterparty,
         ]);
+    }
+
+    /*Удаление постовщика*/
+    #[Route('/deleteCounterparty', name: 'delete_counterparty')]
+    public function deleteCounterparty(
+        Request $request,
+        CreateDeleteCounterpartyCommandHandler $createDeleteCounterpartyCommandHandler
+    ): Response {
+        // dd($request);
+
+
+        $arr_saving_information = $createDeleteCounterpartyCommandHandler
+            ->handler(new CreateCounterpartyCommand($request->query->all()));
+
+        foreach ($arr_saving_information as $arrValue) {
+            foreach ($arrValue as $value) {
+                $this->addFlash('data_counterparty', $value);
+            }
+        }
+
+        return $this->redirectToRoute('search_counterparty');
     }
 }

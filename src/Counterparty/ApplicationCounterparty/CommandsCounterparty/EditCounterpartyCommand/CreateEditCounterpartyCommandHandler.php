@@ -6,29 +6,19 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\CreateFindIdCounterpartyQueryHandler;
 
 final class CreateEditCounterpartyCommandHandler
 {
     private $counterparty_repository_interface;
-    private $entity_counterparty;
-    private $create_find_id_counterparty_query_handler;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterpartyRepositoryInterface,
-        Counterparty $counterparty,
-        CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler
+        CounterpartyRepositoryInterface $counterpartyRepositoryInterface
     ) {
         $this->counterparty_repository_interface = $counterpartyRepositoryInterface;
-        $this->entity_counterparty = $counterparty;
-        $this->create_find_id_counterparty_query_handler = $createFindIdCounterpartyQueryHandler;
     }
 
     public function handler(CreateCounterpartyCommand $createCounterpartyCommand): array
@@ -186,24 +176,25 @@ final class CreateEditCounterpartyCommandHandler
 
         $id = $createCounterpartyCommand->getId();
 
-        if (!empty($id)) {
-
-            $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
-
-            $edit_counterparty->setNameCounterparty($name_counterparty);
-            $edit_counterparty->setMailCounterparty($mail_counterparty);
-            $edit_counterparty->setManagerPhone($manager_phone);
-            $edit_counterparty->setDeliveryPhone($delivery_phone);
-
-            $successfully_edit = $this->counterparty_repository_interface->edit($edit_counterparty);
-
-            $successfully['successfully'] = $successfully_edit;
-            return $successfully;
-        } else {
+        if (empty($id)) {
             $arr_errors_id['errors'] = [
-                'doubles' => 'Контрагент не существует'
+                'doubles' => 'Поставщик не существует'
             ];
+
             return $arr_errors_id;
         }
+
+        $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
+
+        $edit_counterparty->setNameCounterparty($name_counterparty);
+        $edit_counterparty->setMailCounterparty($mail_counterparty);
+        $edit_counterparty->setManagerPhone($manager_phone);
+        $edit_counterparty->setDeliveryPhone($delivery_phone);
+
+        $successfully_edit = $this->counterparty_repository_interface->edit();
+
+        $successfully['successfully'] = $successfully_edit;
+
+        return $successfully;
     }
 }
