@@ -31,7 +31,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     }
 
     /**
-     * @return array Возвращается массив с данными об успешном сохранении контроагента 
+     * @return array Возвращается массив с данными об успешном сохранении поставщика 
      */
     public function save($entity_counterparty): array
     {
@@ -39,22 +39,22 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
         $entityManager->persist($entity_counterparty);
         $entityManager->flush();
 
-        return $successfully = ['save' => 'Контрагент успешно сохранен'];
+        return $successfully = ['save' => 'Поставщик успешно сохранен'];
     }
 
     /**
-     * @return array Возвращается массив с данными об успешном изменения контроагента 
+     * @return array Возвращается массив с данными об успешном изменения поставщика 
      */
     public function edit(): array
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
 
-        return $successfully = ['edit' => 'Контрагент успешно изменен'];
+        return $successfully = ['edit' => 'Поставщик успешно изменен'];
     }
 
     /**
-     * @return array Возвращается массив с данными об успешном сохранении контроагента 
+     * @return array Возвращается массив с данными об удаление поставщика 
      */
     public function delete($entity_counterparty): array
     {
@@ -62,13 +62,13 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
         $entityManager->remove($entity_counterparty);
         $entityManager->flush();
 
-        return $successfully = ['delete' => 'Контрагент удален'];
+        return $successfully = ['delete' => 'Поставщик удален'];
     }
 
 
 
     /**
-     * @return Counterparty[]|NULL Возвращает массив объектов-контрагентов или ноль
+     * @return Counterparty[]|NULL Возвращает массив объектов поставщиков или ноль
      */
     public function findAllCounterparty(): ?array
     {
@@ -76,7 +76,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     }
 
     /**
-     * @return Counterparty[]|NULL Возвращает массив объектов-контрагентов или ноль
+     * @return Counterparty[]|NULL Возвращает массив объектов Поставщиков или ноль
      */
     public function findOneByCounterparty($name_counterparty): ?array
     {
@@ -84,7 +84,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     }
 
     /**
-     * @return Counterparty|NULL Возвращает объект контрагента или ноль
+     * @return Counterparty|NULL Возвращает объект поставщика или ноль
      */
     public function findCounterparty($id): ?Counterparty
     {

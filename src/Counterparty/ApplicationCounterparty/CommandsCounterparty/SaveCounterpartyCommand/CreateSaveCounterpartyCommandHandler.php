@@ -8,6 +8,9 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
@@ -173,8 +176,10 @@ final class CreateSaveCounterpartyCommandHandler
         }
 
         if (!empty($data_errors_counterparty)) {
-
-            return $data_errors_counterparty;
+            //dd($data_errors_counterparty);
+            $json_data_errors_counterparty = json_encode($data_errors_counterparty);
+            dd($json_data_errors_counterparty);
+            return throw new UnprocessableEntityHttpException($json_data_errors_counterparty);
         }
         /* Валидация дублей */
         $number_doubles = $this->counterparty_repository_interface

@@ -44,6 +44,7 @@ class CounterpartyController extends AbstractController
 
                 $arr_saving_information = $createSaveCounterpartyCommandHandler
                     ->handler(new CreateCounterpartyCommand($request->request->all()['save_counterparty']));
+                dd($arr_saving_information);
             }
         }
 
