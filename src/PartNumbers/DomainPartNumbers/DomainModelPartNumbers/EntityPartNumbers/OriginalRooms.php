@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity\PartNumbersFromManufacturersEntity;
+namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
 
-use App\Repository\OriginalRoomsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\OriginalRoomsRepository;
 
 #[ORM\Entity(repositoryClass: OriginalRoomsRepository::class)]
 class OriginalRooms

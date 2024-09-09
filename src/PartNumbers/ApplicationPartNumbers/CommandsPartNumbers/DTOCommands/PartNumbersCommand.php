@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
-abstract class CounterpartyCommand
+abstract class PartNumbersCommand
 {
 
     public function __construct(array $data = [])
@@ -21,7 +21,7 @@ abstract class CounterpartyCommand
 
             if (!empty($value)) {
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity\PartNumbersFromManufacturersEntity;
+namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
 
-use App\Repository\AxlesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\AxlesRepository;
 
 #[ORM\Entity(repositoryClass: AxlesRepository::class)]
 class Axles

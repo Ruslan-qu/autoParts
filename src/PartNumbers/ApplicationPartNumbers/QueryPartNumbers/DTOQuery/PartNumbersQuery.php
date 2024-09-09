@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
-abstract class CounterpartyQuery
+abstract class PartNumbersQuery
 {
 
     public function __construct(array $data = [])
@@ -22,7 +22,7 @@ abstract class CounterpartyQuery
 
             if (!empty($value)) {
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity\PartNumbersFromManufacturersEntity;
+namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
 
-use App\Repository\SidesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\SidesRepository;
 
 #[ORM\Entity(repositoryClass: SidesRepository::class)]
 class Sides

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity\PartNumbersFromManufacturersEntity;
+namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
 
-use App\Repository\AvailabilityRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\AvailabilityRepository;
 
 #[ORM\Entity(repositoryClass: AvailabilityRepository::class)]
 class Availability

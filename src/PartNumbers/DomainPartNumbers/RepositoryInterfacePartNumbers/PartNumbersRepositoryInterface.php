@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty;
+namespace App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers;
 
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 

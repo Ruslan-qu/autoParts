@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
+  {% endblock Responsive_behaviors %}
+
+  {% block form %}
+
+  {#Переменный для вывода данных в форме #}
+  {% set name_counterparty_find_id = find_id_edit_counterparty.getNameCounterparty()|default('') %}
+  {% set mail_counterparty_find_id = find_id_edit_counterparty.getMailCounterparty()|default('') %}
+  {% set manager_phone_find_id = find_id_edit_counterparty.getManagerPhone()|default('') %}
+  {% set delivery_phone_find_id = find_id_edit_counterparty.getDeliveryPhone()|default('') %}
+  {% set id_find_id = find_id_edit_counterparty.getId()|default('') %}
+
+  {#Форма редактирования поступления деталей#}
+
+  {{ form_start(form_edit_counterparty, {'attr': {'class': 'row row-cols-12 text-center
+  mt-2'}}) }}
+
+  {% if data_form_edit_counterparty.name_counterparty is defined %}
+  {% set name_counterparty_find_id = data_form_edit_counterparty.name_counterparty %}
+{% endif %}
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_edit_counterparty.name_counterparty) }}</div>
+    {{ form_widget(form_edit_counterparty.name_counterparty, { value : name_counterparty_find_id, 'attr': {'class':
+    'ps-1'} }) }}
+    {{ form_errors(form_edit_counterparty.name_counterparty) |nl2br }}
+
+  </div>
+
+
+{% if data_form_edit_counterparty.mail_counterparty is defined %}
+  {% set mail_counterparty_find_id = data_form_edit_counterparty.mail_counterparty %}
+{% endif %}
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_edit_counterparty.mail_counterparty) }}</div>
+    {{ form_widget(form_edit_counterparty.mail_counterparty, { value : mail_counterparty_find_id, 'attr': {'class':
+    'ps-1'} }) }}
+    {{ form_errors(form_edit_counterparty.mail_counterparty) |nl2br }}
+  </div>
+
+{% if data_form_edit_counterparty.manager_phone is defined %}
+  {% set manager_phone_find_id = data_form_edit_counterparty.manager_phone %}
+{% endif %}
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_edit_counterparty.manager_phone) }}</div>
+    {{ form_widget(form_edit_counterparty.manager_phone, { value : manager_phone_find_id, 'attr': {'class': 'ps-1',
+    'placeholder': '+79999999999'} }) }}
+    {{ form_errors(form_edit_counterparty.manager_phone) |nl2br }}
+  </div>
+
+
+{% if data_form_edit_counterparty.delivery_phone is defined%}
+  {% set delivery_phone_find_id = data_form_edit_counterparty.delivery_phone %}
+{% endif %}
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_edit_counterparty.delivery_phone) }}</div>
+    {{ form_widget(form_edit_counterparty.delivery_phone, { value : delivery_phone_find_id, 'attr': {'class': 'ps-1',
+    'placeholder': '+79999999999'} }) }}
+    {{ form_errors(form_edit_counterparty.delivery_phone) |nl2br }}
+  </div>
+
+
+{% if data_form_edit_counterparty.id is defined%}
+  {% set id_find_id = data_form_edit_counterparty.id %}
+{% endif %}
+  {{ form_widget(form_edit_counterparty.id, {value : id_find_id}) }}
+
+  <div class="row mt-3">
+    <div class="col-9 d-grid gap-2 ms-2">
+      {{ form_widget(form_edit_counterparty.button_counterparty, { 'label': 'Изменить', 'attr': {'class': 'btn
+      btn-danger'}}) }}
+    </div>
+  </div>
+
+  {{ form_end(form_edit_counterparty) }}
+  <div class="col-auto m-3">
+    {% for saving_information in arr_saving_information %}
+    {% for information in saving_information %}
+    {#{{ dump(saving_information) }}#}
+    <h5>{{ information |nl2br }}</h5>
+    {% endfor %}
+    {% endfor %}
+  </div>
+  {% endblock form %}

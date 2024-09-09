@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use App\Entity\PartNumbersFromManufacturersEntity\PartNumbersFromManufacturers;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
 /**
  * @extends ServiceEntityRepository<PartNumbersFromManufacturers>

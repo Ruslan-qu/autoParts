@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Entity\PartNumbersFromManufacturersEntity;
+namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\PartNumbersFromManufacturersEntity\Axles;
-use App\Entity\PartNumbersFromManufacturersEntity\Sides;
-use App\Entity\PartNumbersFromManufacturersEntity\Bodies;
-use App\Repository\PartNumbersFromManufacturersRepository;
-use App\Entity\PartNumbersFromManufacturersEntity\PartName;
-use App\Entity\PartNumbersFromManufacturersEntity\CarBrands;
-use App\Entity\PartNumbersFromManufacturersEntity\Availability;
-use App\Entity\PartNumbersFromManufacturersEntity\OriginalRooms;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\PartNumbersFromManufacturersRepository;
 
 #[ORM\Entity(repositoryClass: PartNumbersFromManufacturersRepository::class)]
 class PartNumbersFromManufacturers
@@ -19,7 +19,7 @@ class PartNumbersFromManufacturers
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 23, nullable: true)]
     private ?string $part_number = null;
@@ -51,7 +51,7 @@ class PartNumbersFromManufacturers
     #[ORM\ManyToOne]
     private ?OriginalRooms $id_original_number = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
