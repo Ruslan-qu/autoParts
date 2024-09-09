@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand;
+namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
@@ -8,28 +8,23 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
-final class CreateSaveCounterpartyCommandHandler
+final class CreateEditCounterpartyCommandHandler
 {
     private $counterparty_repository_interface;
-    private $entity_counterparty;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterparty_repository_interface,
-        Counterparty $entity_counterparty
+        CounterpartyRepositoryInterface $counterpartyRepositoryInterface
     ) {
-        $this->counterparty_repository_interface = $counterparty_repository_interface;
-        $this->entity_counterparty = $entity_counterparty;
+        $this->counterparty_repository_interface = $counterpartyRepositoryInterface;
     }
 
     public function handler(CreateCounterpartyCommand $createCounterpartyCommand): array
     {
+
+
 
         $name_counterparty = strtolower(preg_replace(
             '#\s#',
@@ -111,7 +106,7 @@ final class CreateSaveCounterpartyCommandHandler
             $input = [
                 'manager_phone_error' => [
                     'Type' => $manager_phone,
-                    'Regex' => $manager_phone,
+                    'Regex' => $manager_phone
                 ]
             ];
 
@@ -137,7 +132,6 @@ final class CreateSaveCounterpartyCommandHandler
 
             $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
         }
-
         $delivery_phone = preg_replace(
             '#\s#',
             '',
@@ -147,7 +141,7 @@ final class CreateSaveCounterpartyCommandHandler
             $input = [
                 'delivery_phone_error' => [
                     'Type' => $delivery_phone,
-                    'Regex' => $delivery_phone,
+                    'Regex' => $delivery_phone
                 ]
             ];
 
@@ -179,26 +173,28 @@ final class CreateSaveCounterpartyCommandHandler
 
             return $data_errors_counterparty;
         }
-        /* Валидация дублей */
-        $number_doubles = $this->counterparty_repository_interface
-            ->numberDoubles(['name_counterparty' => $name_counterparty]);
 
-        if ($number_doubles == 0) {
+        $id = $createCounterpartyCommand->getId();
 
-            $this->entity_counterparty->setNameCounterparty($name_counterparty);
-            $this->entity_counterparty->setMailCounterparty($mail_counterparty);
-            $this->entity_counterparty->setManagerPhone($manager_phone);
-            $this->entity_counterparty->setDeliveryPhone($delivery_phone);
-
-            $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
-
-            $successfully['successfully'] = $successfully_save;
-            return $successfully;
-        } else {
-            $arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Поставщик существует'
+        if (empty($id)) {
+            $arr_errors_id['errors'] = [
+                'doubles' => 'Поставщик не существует'
             ];
-            return $arr_errors_number_doubles;
+
+            return $arr_errors_id;
         }
+
+        $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
+
+        $edit_counterparty->setNameCounterparty($name_counterparty);
+        $edit_counterparty->setMailCounterparty($mail_counterparty);
+        $edit_counterparty->setManagerPhone($manager_phone);
+        $edit_counterparty->setDeliveryPhone($delivery_phone);
+
+        $successfully_edit = $this->counterparty_repository_interface->edit();
+
+        $successfully['successfully'] = $successfully_edit;
+
+        return $successfully;
     }
 }
