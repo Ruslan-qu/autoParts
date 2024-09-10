@@ -7,7 +7,7 @@ use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterpar
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 
-final class CreateFindIdCounterpartyQueryHandler
+final class CreateFindIdPartNumbersQueryHandler
 {
     private $counterparty_repository_interface;
 

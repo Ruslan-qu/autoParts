@@ -12,7 +12,7 @@ use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterpar
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
-final class CreateSaveCounterpartyCommandHandler
+final class CreateSavePartNumbersCommandHandler
 {
     private $counterparty_repository_interface;
     private $entity_counterparty;

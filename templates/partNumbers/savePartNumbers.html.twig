@@ -10,50 +10,85 @@
 
   {% block form %}
 
-  {#Форма сохранения поступления деталей#}
+  {#Форма сохранения номеров деталей#}
 
-  {{ form_start(form_save_counterparty, {'attr': {'class': 'row row-cols-12 text-center
+  {{ form_start(form_save_part_numbers, {'attr': {'class': 'row row-cols-12 text-center
   mt-2'}}) }}
 
   <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.name_counterparty) }}</div>
-    {{ form_widget(form_save_counterparty.name_counterparty, { 'attr': {'class': 'ps-1'} }) }}
-    {{ form_errors(form_save_counterparty.name_counterparty) |nl2br }}
+    <div class="lb">{{ form_label(form_save_part_numbers.part_number) }}</div>
+    {{ form_widget(form_save_part_numbers.part_number, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.part_number) |nl2br }}
 
-  </div>
-
-
-
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.mail_counterparty) }}</div>
-    {{ form_widget(form_save_counterparty.mail_counterparty, { 'attr': {'class': 'ps-1'} }) }}
-    {{ form_errors(form_save_counterparty.mail_counterparty) |nl2br }}
   </div>
 
 
   <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.manager_phone) }}</div>
-    {{ form_widget(form_save_counterparty.manager_phone, { 'attr': {'class': 'ps-1', 
-    'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_save_counterparty.manager_phone) |nl2br }}
+    <div class="lb">{{ form_label(form_save_part_numbers.id_original_number) }}</div>
+    {{ form_widget(form_save_part_numbers.id_original_number, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.id_original_number) |nl2br }}
   </div>
 
 
   <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.delivery_phone) }}</div>
-    {{ form_widget(form_save_counterparty.delivery_phone, { 'attr': {'class': 'ps-1', 
-    'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_save_counterparty.delivery_phone) |nl2br }}
+   <div class="lb">{{ form_label(form_save_part_numbers.manufacturer) }}</div>
+    {{ form_widget(form_save_part_numbers.manufacturer, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.manufacturer) |nl2br }}
   </div>
+
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_part_numbers.additional_descriptions) }}</div>
+    {{ form_widget(form_save_part_numbers.additional_descriptions, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.additional_descriptions) |nl2br }}
+  </div>
+  
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_part_numbers.id_part_name) }}</div>
+    {{ form_widget(form_save_part_numbers.id_part_name, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.id_part_name) |nl2br }}
+  </div>
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_part_numbers.id_car_brand) }}</div>
+    {{ form_widget(form_save_part_numbers.id_car_brand, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.id_car_brand) |nl2br }}
+  </div>
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_part_numbers.id_side) }}</div>
+    {{ form_widget(form_save_part_numbers.id_side, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.id_side) |nl2br }}
+  </div>
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_part_numbers.id_body) }}</div>
+    {{ form_widget(form_save_part_numbers.id_body, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.id_body) |nl2br }}
+  </div>
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_part_numbers.id_axle) }}</div>
+    {{ form_widget(form_save_part_numbers.id_axle, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.id_axle) |nl2br }}
+  </div>
+
+  <div class="col-auto ms-2">
+    <div class="lb">{{ form_label(form_save_part_numbers.id_in_stock) }}</div>
+    {{ form_widget(form_save_part_numbers.id_in_stock, { 'attr': {'class': 'ps-1'} }) }}
+    {{ form_errors(form_save_part_numbers.id_in_stock) |nl2br }}
+  </div>
+
 
   <div class="row mt-3">
-    <div class="col-9 d-grid gap-2 ms-2">
-      {{ form_widget(form_save_counterparty.button_counterparty, { 'label': 'Сохранить', 'attr': {'class': 'btn
+    <div class="col-12 d-grid gap-2 ms-2">
+      {{ form_widget(form_save_part_numbers.button_part_number, { 'label': 'Сохранить', 'attr': {'class': 'btn
       btn-danger'}}) }}
     </div>
   </div>
 
-  {{ form_end(form_save_counterparty) }}
+  {{ form_end(form_save_part_numbers) }}
   <div class="col-auto m-3">
     {% for saving_information in arr_saving_information %}
     {% for information in saving_information %}

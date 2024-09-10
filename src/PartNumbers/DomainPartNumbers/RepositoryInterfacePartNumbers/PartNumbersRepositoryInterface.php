@@ -4,7 +4,7 @@ namespace App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers;
 
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 
-interface  CounterpartyRepositoryInterface
+interface  PartNumbersRepositoryInterface
 {
     public function save(Counterparty $entity_counterparty): array;
 

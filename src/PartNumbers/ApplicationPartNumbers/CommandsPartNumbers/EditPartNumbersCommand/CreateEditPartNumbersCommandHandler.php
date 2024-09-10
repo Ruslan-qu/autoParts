@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints\Collection;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
-final class CreateEditCounterpartyCommandHandler
+final class CreateEditPartNumbersCommandHandler
 {
     private $counterparty_repository_interface;
 

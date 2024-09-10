@@ -5,7 +5,7 @@ namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartN
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
-final class CreateDeleteCounterpartyCommandHandler
+final class CreateDeletePartNumbersCommandHandler
 {
     private $counterparty_repository_interface;
 

@@ -6,7 +6,7 @@ use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCo
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 
-final class CreateSearchCounterpartyQueryHandler
+final class CreateSearchPartNumbersQueryHandler
 {
     private $counterparty_repository_interface;
 
