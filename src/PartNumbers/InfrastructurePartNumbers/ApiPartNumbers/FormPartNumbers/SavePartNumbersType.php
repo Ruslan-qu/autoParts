@@ -67,7 +67,7 @@ class SavePartNumbersType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё\d\s]*$/ui',
+                        'pattern' => '/^[а-яё\w\s]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                         недопустимые символы'
