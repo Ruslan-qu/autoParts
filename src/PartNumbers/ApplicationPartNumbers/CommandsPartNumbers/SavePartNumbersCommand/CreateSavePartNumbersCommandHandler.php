@@ -9,29 +9,31 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\CreatePartNumbersCommand;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
-use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
 final class CreateSavePartNumbersCommandHandler
 {
-    private $counterparty_repository_interface;
-    private $entity_counterparty;
+    private $part_numbers_repository_interface;
+    private $entity_part_numbers_from_manufacturers;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterparty_repository_interface,
-        Counterparty $entity_counterparty
+        PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
+        PartNumbersFromManufacturers $partNumbersFromManufacturers
     ) {
-        $this->counterparty_repository_interface = $counterparty_repository_interface;
-        $this->entity_counterparty = $entity_counterparty;
+        $this->part_numbers_repository_interface = $partNumbersRepositoryInterface;
+        $this->entity_part_numbers_from_manufacturers = $partNumbersFromManufacturers;
     }
 
-    public function handler(CreateCounterpartyCommand $createCounterpartyCommand): array
+    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): array
     {
 
-        $name_counterparty = strtolower(preg_replace(
+        $part_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getNameCounterparty()
+            $createPartNumbersCommand->getPartNumber()
         ));
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -39,9 +41,9 @@ final class CreateSavePartNumbersCommandHandler
 
         $input = [
             'name_counterparty_error' => [
-                'NotBlank' => $name_counterparty,
-                'Type' => $name_counterparty,
-                'Regex' => $name_counterparty,
+                'NotBlank' => $part_number,
+                'Type' => $part_number,
+                'Regex' => $part_number,
             ]
         ];
 
@@ -66,25 +68,26 @@ final class CreateSavePartNumbersCommandHandler
             ];
         }
 
-        $mail_counterparty = preg_replace(
+        $manufacturer = preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getMailCounterparty()
+            $createPartNumbersCommand->getManufacturer()
         );
 
         if (!empty($mail_counterparty)) {
             $input = [
                 'mail_counterparty_error' => [
-                    'Type' => $mail_counterparty,
-                    'Email' => $mail_counterparty
+                    'Type' => $manufacturer,
+                    'Regex' => $manufacturer
                 ]
             ];
 
             $constraint = new Collection([
                 'mail_counterparty_error' => new Collection([
                     'Type' => new Type('string'),
-                    'Email' => new Email(
-                        message: 'Форма E-mail содержит недопустимые символы'
+                    'Regex' => new Regex(
+                        pattern: '/^[\da-z]*$/i',
+                        message: 'Форма Поставщик содержит недопустимые символы'
                     )
                 ])
             ]);
