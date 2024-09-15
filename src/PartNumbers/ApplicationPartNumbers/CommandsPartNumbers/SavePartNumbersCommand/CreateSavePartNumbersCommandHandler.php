@@ -40,7 +40,7 @@ final class CreateSavePartNumbersCommandHandler
         $validator = Validation::createValidator();
 
         $input = [
-            'name_counterparty_error' => [
+            'part_number_error' => [
                 'NotBlank' => $part_number,
                 'Type' => $part_number,
                 'Regex' => $part_number,
@@ -48,70 +48,66 @@ final class CreateSavePartNumbersCommandHandler
         ];
 
         $constraint = new Collection([
-            'name_counterparty_error' => new Collection([
+            'part_number_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Поставщик не может быть пустой'
+                    message: 'Форма Номер детали не может быть пустой'
                 ),
                 'Type' => new Type('string'),
                 'Regex' => new Regex(
                     pattern: '/^[\da-z]*$/i',
-                    message: 'Форма Поставщик содержит недопустимые символы'
+                    message: 'Форма Номер детали содержит недопустимые символы'
                 )
             ])
         ]);
 
-        $data_errors_counterparty = [];
+        $data_errors_part_number = [];
         foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-            $data_errors_counterparty[$key] = [
+            $data_errors_part_number[$key] = [
                 $value_error->getPropertyPath() => $value_error->getMessage()
             ];
         }
 
-        $manufacturer = preg_replace(
+        $manufacturer = strtolower(preg_replace(
             '#\s#',
             '',
             $createPartNumbersCommand->getManufacturer()
-        );
+        ));
 
-        if (!empty($mail_counterparty)) {
+        if (!empty($manufacturer)) {
             $input = [
-                'mail_counterparty_error' => [
+                'manufacturer_error' => [
                     'Type' => $manufacturer,
                     'Regex' => $manufacturer
                 ]
             ];
 
             $constraint = new Collection([
-                'mail_counterparty_error' => new Collection([
+                'manufacturer_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
                         pattern: '/^[\da-z]*$/i',
-                        message: 'Форма Поставщик содержит недопустимые символы'
+                        message: 'Форма Производитель содержит недопустимые символы'
                     )
                 ])
             ]);
-            $data_errors_counterparty_mail = [];
+            $data_errors_manufacturer = [];
             foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-                $data_errors_counterparty_mail[$key] = [
+                $data_errors_manufacturer[$key] = [
                     $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
 
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_mail);
+            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
         }
 
-        $manager_phone = preg_replace(
-            '#\s#',
-            '',
-            $createCounterpartyCommand->getManagerPhone()
-        );
-        if (!empty($manager_phone)) {
+        $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
+        if (!empty($additional_descriptions)) {
             $input = [
                 'manager_phone_error' => [
-                    'Type' => $manager_phone,
-                    'Regex' => $manager_phone,
+                    'Type' => $additional_descriptions,
+                    'Regex' => $additional_descriptions,
                 ]
             ];
 
@@ -119,40 +115,32 @@ final class CreateSavePartNumbersCommandHandler
                 'manager_phone_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
-                        pattern: '/^\+{1}\d{11}$/',
-                        message: 'Форма Телефон менеджера содержит:
-                        1) Недопустимые символы
-                        2) Нет знака +
-                        3) Неверное количество цифр'
+                        pattern: '/^[а-яё\w\s]*$/ui',
+                        message: 'Форма Описание детали содержит недопустимые символы'
                     )
                 ])
             ]);
-            $data_errors_counterparty_manager_phone = [];
+            $data_errors_additional_descriptions = [];
             foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-                $data_errors_counterparty_manager_phone[$key] = [
+                $data_errors_additional_descriptions[$key] = [
                     $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
 
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
+            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_additional_descriptions);
         }
 
-        $delivery_phone = preg_replace(
-            '#\s#',
-            '',
-            $createCounterpartyCommand->getDeliveryPhone()
-        );
-        if (!empty($delivery_phone)) {
+        $id_part_name = $createPartNumbersCommand->getIdPartName();
+        if (!empty($id_part_name)) {
             $input = [
-                'delivery_phone_error' => [
-                    'Type' => $delivery_phone,
-                    'Regex' => $delivery_phone,
+                'id_part_name_error' => [
+                    'Type' => $id_part_name
                 ]
             ];
 
             $constraint = new Collection([
-                'delivery_phone_error' => new Collection([
+                'id_part_name_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
                         pattern: '/^\+{1}\d{11}$/',
