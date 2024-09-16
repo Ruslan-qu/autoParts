@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
@@ -174,28 +175,29 @@ final class CreateSaveCounterpartyCommandHandler
 
         if (!empty($data_errors_counterparty)) {
 
-            return $data_errors_counterparty;
+            $json_arr_data_errors = json_encode($data_errors_counterparty, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
         /* Валидация дублей */
         $number_doubles = $this->counterparty_repository_interface
             ->numberDoubles(['name_counterparty' => $name_counterparty]);
 
-        if ($number_doubles == 0) {
+        if ($number_doubles != 0) {
 
-            $this->entity_counterparty->setNameCounterparty($name_counterparty);
-            $this->entity_counterparty->setMailCounterparty($mail_counterparty);
-            $this->entity_counterparty->setManagerPhone($manager_phone);
-            $this->entity_counterparty->setDeliveryPhone($delivery_phone);
-
-            $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
-
-            $successfully['successfully'] = $successfully_save;
-            return $successfully;
-        } else {
             $arr_errors_number_doubles['errors'] = [
                 'doubles' => 'Поставщик существует'
             ];
             return $arr_errors_number_doubles;
         }
+
+        $this->entity_counterparty->setNameCounterparty($name_counterparty);
+        $this->entity_counterparty->setMailCounterparty($mail_counterparty);
+        $this->entity_counterparty->setManagerPhone($manager_phone);
+        $this->entity_counterparty->setDeliveryPhone($delivery_phone);
+
+        $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
+
+        $successfully['successfully'] = $successfully_save;
+        return $successfully;
     }
 }

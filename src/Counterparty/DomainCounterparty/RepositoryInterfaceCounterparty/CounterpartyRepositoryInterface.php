@@ -8,7 +8,7 @@ interface  CounterpartyRepositoryInterface
 {
     public function save(Counterparty $entity_counterparty): array;
 
-    public function edit(): array;
+    public function edit(Counterparty $edit_counterparty): array;
 
     public function delete(Counterparty $entity_counterparty): array;
 

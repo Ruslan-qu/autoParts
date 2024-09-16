@@ -2,6 +2,8 @@
 
 namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand;
 
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
@@ -21,19 +23,17 @@ final class CreateDeleteCounterpartyCommandHandler
         $id = $createCounterpartyCommand->getId();
         if (empty($id)) {
 
-            $arr_errors_id['errors'] = [
-                'doubles' => 'Поставщик не существует'
-            ];
-            return $arr_errors_id;
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
         $delete_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
         if (empty($delete_counterparty)) {
 
-            $arr_errors_id['errors'] = [
-                'doubles' => 'Поставщик не найден'
-            ];
-            return $arr_errors_id;
+            $arr_data_errors = ['Error' => 'Иди не существует'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
         $successfully_delete = $this->counterparty_repository_interface->delete($delete_counterparty);

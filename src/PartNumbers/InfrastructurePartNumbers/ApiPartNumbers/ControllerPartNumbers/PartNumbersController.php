@@ -30,7 +30,7 @@ class PartNumbersController extends AbstractController
             if ($form_save_part_numbers->isValid()) {
 
                 $arr_saving_information = $createSaveCounterpartyCommandHandler
-                    ->handler(new CreatePartNumbersCommand($request->request->all()['save_counterparty']));
+                    ->handler(new CreatePartNumbersCommand($request->request->all()['save_part_numbers']));
             }
         }
 

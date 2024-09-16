@@ -2,21 +2,21 @@
 
 namespace App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers;
 
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
 interface  PartNumbersRepositoryInterface
 {
-    public function save(Counterparty $entity_counterparty): array;
+    public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
 
-    public function edit(): array;
+    public function edit(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
 
-    public function delete(Counterparty $entity_counterparty): array;
+    public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
 
     public function numberDoubles(array $array): int;
 
-    public function findAllCounterparty(): ?array;
+    public function findAllPartNumbersFromManufacturers(): ?array;
 
-    public function findOneByCounterparty($name_counterparty): ?array;
+    public function findOneByPartNumbersFromManufacturers(string $name_counterparty): ?array;
 
-    public function findCounterparty($id): ?Counterparty;
+    public function findPartNumbersFromManufacturers(int $id): ?PartNumbersFromManufacturers;
 }

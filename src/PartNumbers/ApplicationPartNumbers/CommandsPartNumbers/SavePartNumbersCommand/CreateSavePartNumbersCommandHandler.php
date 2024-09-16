@@ -29,7 +29,7 @@ final class CreateSavePartNumbersCommandHandler
 
     public function handler(CreatePartNumbersCommand $createPartNumbersCommand): array
     {
-
+        dd($createPartNumbersCommand);
         $part_number = strtolower(preg_replace(
             '#\s#',
             '',
@@ -133,34 +133,24 @@ final class CreateSavePartNumbersCommandHandler
 
         $id_part_name = $createPartNumbersCommand->getIdPartName();
         if (!empty($id_part_name)) {
-            $input = [
-                'id_part_name_error' => [
-                    'Type' => $id_part_name
-                ]
-            ];
-
-            $constraint = new Collection([
-                'id_part_name_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^\+{1}\d{11}$/',
-                        message: 'Форма Телефон доставки содержит: 
-                        1) Недопустимые символы
-                        2) Нет знака +
-                        3) Неверное количество цифр'
-                    )
-                ])
-            ]);
-
-            $data_errors_counterparty_delivery_phone = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_counterparty_delivery_phone[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_delivery_phone);
+        }
+        $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
+        if (!empty($id_car_brand)) {
+        }
+        $id_side = $createPartNumbersCommand->getIdSide();
+        if (!empty($id_side)) {
+        }
+        $id_body = $createPartNumbersCommand->getIdBody();
+        if (!empty($id_body)) {
+        }
+        $id_axle = $createPartNumbersCommand->getIdAxle();
+        if (!empty($id_axle)) {
+        }
+        $id_in_stock = $createPartNumbersCommand->getIdInStock();
+        if (!empty($id_in_stock)) {
+        }
+        $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
+        if (!empty($id_original_number)) {
         }
 
         if (!empty($data_errors_counterparty)) {
@@ -168,25 +158,34 @@ final class CreateSavePartNumbersCommandHandler
             return $data_errors_counterparty;
         }
         /* Валидация дублей */
-        $number_doubles = $this->counterparty_repository_interface
-            ->numberDoubles(['name_counterparty' => $name_counterparty]);
+        $number_doubles = $this->part_numbers_repository_interface
+            ->numberDoubles(['part_number' => $part_number]);
 
-        if ($number_doubles == 0) {
+        if ($number_doubles != 0) {
 
-            $this->entity_counterparty->setNameCounterparty($name_counterparty);
-            $this->entity_counterparty->setMailCounterparty($mail_counterparty);
-            $this->entity_counterparty->setManagerPhone($manager_phone);
-            $this->entity_counterparty->setDeliveryPhone($delivery_phone);
-
-            $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
-
-            $successfully['successfully'] = $successfully_save;
-            return $successfully;
-        } else {
             $arr_errors_number_doubles['errors'] = [
                 'doubles' => 'Поставщик существует'
             ];
+
             return $arr_errors_number_doubles;
         }
+
+
+        $this->entity_part_numbers_from_manufacturers->setPartNumber($part_number);
+        $this->entity_part_numbers_from_manufacturers->setManufacturer($manufacturer);
+        $this->entity_part_numbers_from_manufacturers->setAdditionalDescriptions($additional_descriptions);
+        $this->entity_part_numbers_from_manufacturers->setIdPartName($id_part_name);
+        $this->entity_part_numbers_from_manufacturers->setIdCarBrand($id_car_brand);
+        $this->entity_part_numbers_from_manufacturers->setIdSide($id_side);
+        $this->entity_part_numbers_from_manufacturers->setIdBody($id_body);
+        $this->entity_part_numbers_from_manufacturers->setIdAxle($id_axle);
+        $this->entity_part_numbers_from_manufacturers->setIdInStock($id_in_stock);
+        $this->entity_part_numbers_from_manufacturers->setIdOriginalNumber($id_original_number);
+
+
+        $successfully_save = $this->part_numbers_repository_interface->save($this->entity_part_numbers_from_manufacturers);
+
+        $successfully['successfully'] = $successfully_save;
+        return $successfully;
     }
 }

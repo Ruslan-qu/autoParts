@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
@@ -171,17 +172,17 @@ final class CreateEditCounterpartyCommandHandler
 
         if (!empty($data_errors_counterparty)) {
 
-            return $data_errors_counterparty;
+            $json_arr_data_errors = json_encode($data_errors_counterparty, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
         $id = $createCounterpartyCommand->getId();
 
         if (empty($id)) {
-            $arr_errors_id['errors'] = [
-                'doubles' => 'Поставщик не существует'
-            ];
 
-            return $arr_errors_id;
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
         $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
@@ -191,7 +192,7 @@ final class CreateEditCounterpartyCommandHandler
         $edit_counterparty->setManagerPhone($manager_phone);
         $edit_counterparty->setDeliveryPhone($delivery_phone);
 
-        $successfully_edit = $this->counterparty_repository_interface->edit();
+        $successfully_edit = $this->counterparty_repository_interface->edit($edit_counterparty);
 
         $successfully['successfully'] = $successfully_edit;
 
