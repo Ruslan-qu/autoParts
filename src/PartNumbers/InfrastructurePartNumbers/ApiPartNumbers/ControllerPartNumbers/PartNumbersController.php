@@ -14,7 +14,7 @@ class PartNumbersController extends AbstractController
 {
     /*Сохранения автодеталей*/
     #[Route('/savePartNumbers', name: 'save_part_numbers')]
-    public function saveCounterparty(
+    public function savePartNumbers(
         Request $request,
         CreateSavePartNumbersCommandHandler $createSaveCounterpartyCommandHandler
     ): Response {
@@ -28,9 +28,9 @@ class PartNumbersController extends AbstractController
         $arr_saving_information = [];
         if ($form_save_part_numbers->isSubmitted()) {
             if ($form_save_part_numbers->isValid()) {
-
+                // dd($form_save_part_numbers->getData());
                 $arr_saving_information = $createSaveCounterpartyCommandHandler
-                    ->handler(new CreatePartNumbersCommand($request->request->all()['save_part_numbers']));
+                    ->handler(new CreatePartNumbersCommand($form_save_part_numbers->getData()));
             }
         }
 

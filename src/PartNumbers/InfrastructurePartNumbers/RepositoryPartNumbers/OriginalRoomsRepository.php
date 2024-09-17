@@ -16,28 +16,32 @@ class OriginalRoomsRepository extends ServiceEntityRepository
         parent::__construct($registry, OriginalRooms::class);
     }
 
-    //    /**
-    //     * @return OriginalRooms[] Returns an array of OriginalRooms objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('o')
-    //            ->andWhere('o.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('o.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return int Возвращается число дублей 
+     */
+    public function numberDoubles(array $array): int
+    {
 
-    //    public function findOneBySomeField($value): ?OriginalRooms
-    //    {
-    //        return $this->createQueryBuilder('o')
-    //            ->andWhere('o.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $this->count($array);
+    }
+
+    /**
+     * @return array Возвращается массив с данными об успешном сохранении
+     */
+    public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($partNumbersFromManufacturers);
+        $entityManager->flush();
+
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($partNumbersFromManufacturers);
+
+        $exists_counterparty = $this->count($entityData);
+        if ($exists_counterparty == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+        return $successfully = ['save' => 'Поставщик успешно сохранен'];
+    }
 }

@@ -28,7 +28,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     }
 
     /**
-     * @return array Возвращается массив с данными об успешном сохранении поставщика 
+     * @return array Возвращается массив с данными об успешном сохранении
      */
     public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
     {
@@ -48,7 +48,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     }
 
     /**
-     * @return array Возвращается массив с данными об успешном изменения поставщика 
+     * @return array Возвращается массив с данными об успешном изменения  
      */
     public function edit(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
     {
@@ -67,7 +67,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     }
 
     /**
-     * @return array Возвращается массив с данными об удаление поставщика 
+     * @return array Возвращается массив с данными об удаление 
      */
     public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
     {
@@ -88,7 +88,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
 
 
     /**
-     * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов поставщиков или ноль
+     * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов или ноль
      */
     public function findAllPartNumbersFromManufacturers(): ?array
     {
@@ -96,7 +96,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     }
 
     /**
-     * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов Поставщиков или ноль
+     * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов или ноль
      */
     public function findOneByPartNumbersFromManufacturers(string $name_counterparty): ?array
     {
@@ -104,7 +104,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     }
 
     /**
-     * @return PartNumbersFromManufacturers|NULL Возвращает объект поставщика или ноль
+     * @return PartNumbersFromManufacturers|NULL Возвращает объект или ноль
      */
     public function findPartNumbersFromManufacturers(int $id): ?PartNumbersFromManufacturers
     {

@@ -25,6 +25,7 @@ class SavePartNumbersType extends AbstractType
         $builder
             ->add('part_number', TextType::class, [
                 'label' => 'Номер детали',
+                'required' => false,
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
@@ -32,10 +33,10 @@ class SavePartNumbersType extends AbstractType
                         'message' => 'Форма содержит 
                         недопустимые символы'
                     ]),
-                    new NotBlank([
+                    /* new NotBlank([
                         'message' => 'Форма не может быть 
                         пустой'
-                    ])
+                    ])*/
                 ]
             ])
             ->add('id_original_number', TextType::class, [
