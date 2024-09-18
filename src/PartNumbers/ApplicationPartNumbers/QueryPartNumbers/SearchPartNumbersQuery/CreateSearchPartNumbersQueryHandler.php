@@ -25,7 +25,7 @@ final class CreateSearchPartNumbersQueryHandler
             $createCounterpartyQuery->getNameCounterparty()
         ));
 
-        $counterparty = $this->counterparty_repository_interface->findOneByCounterparty($name_counterparty);
+        $counterparty = $this->counterparty_repository_interface->findByCounterparty($name_counterparty);
 
         return $counterparty;
     }

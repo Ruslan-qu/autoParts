@@ -4,12 +4,14 @@ namespace App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 
 /**
  * @extends ServiceEntityRepository<OriginalRooms>
  */
-class OriginalRoomsRepository extends ServiceEntityRepository
+class OriginalRoomsRepository extends ServiceEntityRepository implements OriginalRoomsRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -28,13 +30,13 @@ class OriginalRoomsRepository extends ServiceEntityRepository
     /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
-    public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
+    public function save(OriginalRooms $originalRooms): array
     {
         $entityManager = $this->getEntityManager();
-        $entityManager->persist($partNumbersFromManufacturers);
+        $entityManager->persist($originalRooms);
         $entityManager->flush();
 
-        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($partNumbersFromManufacturers);
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
 
         $exists_counterparty = $this->count($entityData);
         if ($exists_counterparty == 0) {
@@ -42,6 +44,69 @@ class OriginalRoomsRepository extends ServiceEntityRepository
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => 'Поставщик успешно сохранен'];
+        return $successfully = ['save' => 'Оригинальный номер успешно сохранен'];
+    }
+
+    /**
+     * @return array Возвращается массив с данными об успешном изменения  
+     */
+    public function edit(OriginalRooms $originalRooms): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->flush();
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
+
+        $exists_counterparty = $this->count($entityData);
+        if ($exists_counterparty == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $successfully = ['edit' => 'Оригинальный номер успешно изменен'];
+    }
+
+    /**
+     * @return array Возвращается массив с данными об удаление 
+     */
+    public function delete(OriginalRooms $originalRooms): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($originalRooms);
+        $entityManager->flush();
+
+        $entityData = $entityManager->contains($originalRooms);
+        if ($entityData != false) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $successfully = ['delete' => 'Оригинальный номер удален'];
+    }
+
+
+    /**
+     * @return OriginalRooms[]|NULL Возвращает массив объектов или ноль
+     */
+    public function findAllOriginalRooms(): ?array
+    {
+        return $this->findBy([], ['id' => 'ASC']);
+    }
+
+    /**
+     * @return OriginalRooms|NULL Возвращает массив объектов или ноль
+     */
+    public function findOneByOriginalRooms(string $original_number): ?OriginalRooms
+    {
+        return $this->findOneBy(['original_number' => $original_number]);
+    }
+
+    /**
+     * @return OriginalRooms|NULL Возвращает объект или ноль
+     */
+    public function findOriginalRooms(int $id): ?OriginalRooms
+    {
+        return $this->find($id);
     }
 }

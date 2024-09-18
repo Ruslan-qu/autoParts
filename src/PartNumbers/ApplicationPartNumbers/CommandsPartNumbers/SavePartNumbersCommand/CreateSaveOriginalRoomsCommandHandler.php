@@ -4,186 +4,86 @@ namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNum
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\CreatePartNumbersCommand;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\CreateOriginalRoomsCommand;
 
 final class CreateSaveOriginalRoomsCommandHandler
 {
-    private $part_numbers_repository_interface;
-    private $entity_part_numbers_from_manufacturers;
+    private $original_rooms_repository_interface;
+    private $original_rooms;
 
     public function __construct(
-        PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
-        PartNumbersFromManufacturers $partNumbersFromManufacturers
+        OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface,
+        OriginalRooms $originalRooms
     ) {
-        $this->part_numbers_repository_interface = $partNumbersRepositoryInterface;
-        $this->entity_part_numbers_from_manufacturers = $partNumbersFromManufacturers;
+        $this->original_rooms_repository_interface = $originalRoomsRepositoryInterface;
+        $this->original_rooms = $originalRooms;
     }
 
-    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): array
+    public function handler(CreateOriginalRoomsCommand $createOriginalRoomsCommand): array
     {
-        dd($createPartNumbersCommand);
-        $part_number = strtolower(preg_replace(
+
+        $original_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createPartNumbersCommand->getPartNumber()
+            $createOriginalRoomsCommand->getOriginalNumber()
         ));
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
         $input = [
-            'part_number_error' => [
-                'NotBlank' => $part_number,
-                'Type' => $part_number,
-                'Regex' => $part_number,
+            'original_number_error' => [
+                'Type' => $original_number,
+                'Regex' => $original_number,
             ]
         ];
 
         $constraint = new Collection([
-            'part_number_error' => new Collection([
-                'NotBlank' => new NotBlank(
-                    message: 'Форма Номер детали не может быть пустой'
-                ),
+            'original_number_error' => new Collection([
                 'Type' => new Type('string'),
                 'Regex' => new Regex(
                     pattern: '/^[\da-z]*$/i',
-                    message: 'Форма Номер детали содержит недопустимые символы'
+                    message: 'Форма Оригинальный номер содержит недопустимые символы'
                 )
             ])
         ]);
 
-        $data_errors_part_number = [];
+        $data_errors_original_rooms = [];
         foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-            $data_errors_part_number[$key] = [
+            $data_errors_original_rooms[$key] = [
                 $value_error->getPropertyPath() => $value_error->getMessage()
             ];
         }
 
-        $manufacturer = strtolower(preg_replace(
-            '#\s#',
-            '',
-            $createPartNumbersCommand->getManufacturer()
-        ));
+        if (!empty($data_errors_original_rooms)) {
 
-        if (!empty($manufacturer)) {
-            $input = [
-                'manufacturer_error' => [
-                    'Type' => $manufacturer,
-                    'Regex' => $manufacturer
-                ]
-            ];
-
-            $constraint = new Collection([
-                'manufacturer_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^[\da-z]*$/i',
-                        message: 'Форма Производитель содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_manufacturer = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_manufacturer[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
-        }
-
-        $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
-        if (!empty($additional_descriptions)) {
-            $input = [
-                'manager_phone_error' => [
-                    'Type' => $additional_descriptions,
-                    'Regex' => $additional_descriptions,
-                ]
-            ];
-
-            $constraint = new Collection([
-                'manager_phone_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^[а-яё\w\s]*$/ui',
-                        message: 'Форма Описание детали содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_additional_descriptions = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_additional_descriptions[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_additional_descriptions);
-        }
-
-        $id_part_name = $createPartNumbersCommand->getIdPartName();
-        if (!empty($id_part_name)) {
-        }
-        $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
-        if (!empty($id_car_brand)) {
-        }
-        $id_side = $createPartNumbersCommand->getIdSide();
-        if (!empty($id_side)) {
-        }
-        $id_body = $createPartNumbersCommand->getIdBody();
-        if (!empty($id_body)) {
-        }
-        $id_axle = $createPartNumbersCommand->getIdAxle();
-        if (!empty($id_axle)) {
-        }
-        $id_in_stock = $createPartNumbersCommand->getIdInStock();
-        if (!empty($id_in_stock)) {
-        }
-        $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
-        if (!empty($id_original_number)) {
-        }
-
-        if (!empty($data_errors_counterparty)) {
-
-            return $data_errors_counterparty;
+            $json_arr_data_errors = json_encode($data_errors_original_rooms, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
         /* Валидация дублей */
-        $number_doubles = $this->part_numbers_repository_interface
-            ->numberDoubles(['part_number' => $part_number]);
+        $number_doubles = $this->original_rooms_repository_interface
+            ->numberDoubles(['original_number' => $original_number]);
 
         if ($number_doubles != 0) {
 
             $arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Поставщик существует'
+                'doubles' => 'Оригинальный номер существует'
             ];
 
             return $arr_errors_number_doubles;
         }
 
-
-        $this->entity_part_numbers_from_manufacturers->setPartNumber($part_number);
-        $this->entity_part_numbers_from_manufacturers->setManufacturer($manufacturer);
-        $this->entity_part_numbers_from_manufacturers->setAdditionalDescriptions($additional_descriptions);
-        $this->entity_part_numbers_from_manufacturers->setIdPartName($id_part_name);
-        $this->entity_part_numbers_from_manufacturers->setIdCarBrand($id_car_brand);
-        $this->entity_part_numbers_from_manufacturers->setIdSide($id_side);
-        $this->entity_part_numbers_from_manufacturers->setIdBody($id_body);
-        $this->entity_part_numbers_from_manufacturers->setIdAxle($id_axle);
-        $this->entity_part_numbers_from_manufacturers->setIdInStock($id_in_stock);
-        $this->entity_part_numbers_from_manufacturers->setIdOriginalNumber($id_original_number);
+        $this->original_rooms->setOriginalNumber($original_number);
 
 
-        $successfully_save = $this->part_numbers_repository_interface->save($this->entity_part_numbers_from_manufacturers);
+        $successfully_save = $this->original_rooms_repository_interface->save($this->original_rooms);
 
         $successfully['successfully'] = $successfully_save;
         return $successfully;

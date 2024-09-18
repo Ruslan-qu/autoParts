@@ -1,6 +1,6 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;

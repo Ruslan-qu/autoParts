@@ -7,8 +7,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SavePartNumbersType;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\CreatePartNumbersCommand;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\CreateOriginalRoomsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchOriginalRoomsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\CreateSavePartNumbersCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\CreateSaveOriginalRoomsCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateFindOneByOriginalRoomsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\CreateOriginalRoomsCommand;
 
 class PartNumbersController extends AbstractController
 {
@@ -16,7 +21,9 @@ class PartNumbersController extends AbstractController
     #[Route('/savePartNumbers', name: 'save_part_numbers')]
     public function savePartNumbers(
         Request $request,
-        CreateSavePartNumbersCommandHandler $createSaveCounterpartyCommandHandler
+        CreateSavePartNumbersCommandHandler $createSavePartNumbersCommandHandler,
+        CreateSaveOriginalRoomsCommandHandler $createSaveOriginalRoomsCommandHandler,
+        CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
     ): Response {
 
         /* Форма сохранения */
@@ -28,9 +35,21 @@ class PartNumbersController extends AbstractController
         $arr_saving_information = [];
         if ($form_save_part_numbers->isSubmitted()) {
             if ($form_save_part_numbers->isValid()) {
-                // dd($form_save_part_numbers->getData());
-                $arr_saving_information = $createSaveCounterpartyCommandHandler
-                    ->handler(new CreatePartNumbersCommand($form_save_part_numbers->getData()));
+
+                $form_save_part_numbers = $form_save_part_numbers->getData();
+                if (!empty($form_save_part_numbers['id_original_number'])) {
+
+                    $createSaveOriginalRoomsCommandHandler
+                        ->handler(new CreateOriginalRoomsCommand($form_save_part_numbers));
+
+                    $object_original_number = $createFindOneByOriginalRoomsQueryHandler
+                        ->handler(new CreateOriginalRoomsQuery($form_save_part_numbers));
+                    // dd($object_original_number);
+                    $form_save_part_numbers = array_replace($form_save_part_numbers, $object_original_number);
+                }
+
+                $arr_saving_information = $createSavePartNumbersCommandHandler
+                    ->handler(new CreatePartNumbersCommand($form_save_part_numbers));
             }
         }
 
