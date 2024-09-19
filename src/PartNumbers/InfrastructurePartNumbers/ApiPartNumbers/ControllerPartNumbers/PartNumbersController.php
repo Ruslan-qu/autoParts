@@ -7,7 +7,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SavePartNumbersType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SearchPartNumbersType;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\CreateOriginalRoomsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\CreateSavePartNumbersCommandHandler;
@@ -36,20 +40,20 @@ class PartNumbersController extends AbstractController
         if ($form_save_part_numbers->isSubmitted()) {
             if ($form_save_part_numbers->isValid()) {
 
-                $form_save_part_numbers = $form_save_part_numbers->getData();
-                if (!empty($form_save_part_numbers['id_original_number'])) {
+                $data_form_part_numbers = $form_save_part_numbers->getData();
+                if (!empty($data_form_part_numbers['id_original_number'])) {
 
                     $createSaveOriginalRoomsCommandHandler
-                        ->handler(new CreateOriginalRoomsCommand($form_save_part_numbers));
+                        ->handler(new CreateOriginalRoomsCommand($data_form_part_numbers));
 
                     $object_original_number = $createFindOneByOriginalRoomsQueryHandler
-                        ->handler(new CreateOriginalRoomsQuery($form_save_part_numbers));
-                    // dd($object_original_number);
-                    $form_save_part_numbers = array_replace($form_save_part_numbers, $object_original_number);
+                        ->handler(new CreateOriginalRoomsQuery($data_form_part_numbers));
+
+                    $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                 }
 
                 $arr_saving_information = $createSavePartNumbersCommandHandler
-                    ->handler(new CreatePartNumbersCommand($form_save_part_numbers));
+                    ->handler(new CreatePartNumbersCommand($data_form_part_numbers));
             }
         }
 
@@ -57,6 +61,47 @@ class PartNumbersController extends AbstractController
             'title_logo' => 'Добавление новой автодетали',
             'form_save_part_numbers' => $form_save_part_numbers->createView(),
             'arr_saving_information' => $arr_saving_information
+        ]);
+    }
+
+    /*Поиск автодеталей*/
+    #[Route('/searchPartNumbers', name: 'search_part_numbers')]
+    public function searchPartNumbers(
+        Request $request,
+        PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
+        CreateSearchPartNumbersQueryHandler $createSearchPartNumbersQueryHandler,
+        CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
+    ): Response {
+
+        /*Форма поиска*/
+        $form_search_part_numbers = $this->createForm(SearchPartNumbersType::class);
+
+        /*Валидация формы */
+        $form_search_part_numbers->handleRequest($request);
+
+        $search_data = [];
+        if ($form_search_part_numbers->isSubmitted()) {
+            if ($form_search_part_numbers->isValid()) {
+
+                $data_form_part_numbers = $form_search_part_numbers->getData();
+                if (!empty($data_form_part_numbers['id_original_number'])) {
+
+                    $object_original_number = $createFindOneByOriginalRoomsQueryHandler
+                        ->handler(new CreateOriginalRoomsQuery($data_form_part_numbers));
+
+                    $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
+                }
+
+                $search_data = $createSearchPartNumbersQueryHandler
+                    ->handler(new CreatePartNumbersQuery($data_form_part_numbers));
+            }
+        }
+
+        return $this->render('partNumbers/searchPartNumbers.html.twig', [
+            'title_logo' => 'Поиск автодетали',
+            'form_search_part_numbers' => $form_search_part_numbers->createView(),
+            'search_data' => $search_data,
+
         ]);
     }
 }

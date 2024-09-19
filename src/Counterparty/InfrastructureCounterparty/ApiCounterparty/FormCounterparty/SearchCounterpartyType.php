@@ -24,37 +24,7 @@ class SearchCounterpartyType extends AbstractType
                     ])
                 ]
             ])
-            /*->add('form_search_mail_counterparty', EmailType::class, [
-            'label' => 'E-mail',
-            'constraints' => [
-                new Email([
-                    'message' => 'Форма содержит недопустимые символы'
-                ])
-            ]
-        ])
-        ->add('form_search_manager_phone', TelType::class, [
-            'label' => 'Телефон менеджера',
-            'required' => false,
-            'constraints' => [
-                new Regex([
-                    'pattern' => '/\+{1}\d{11}/',
-                    //'match' => false,
-                    'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
-                ]),
-            ]
-        ])
-        ->add('form_search_delivery_phone', TelType::class, [
-            'label' => 'Телефон доставки',
-            'required' => false,
-            'constraints' => [
-                new Regex([
-                    'pattern' => '/\+{1}\d{11}/',
-                    //'match' => false,
-                    'message' => 'Форма содержит<br>1) Недопустимые символы<br>2) Нет знака +<br>3) Неверное количество цифр'
-                ])
-            ]
-        ])*/
-            ->add('button_search_counterparty', SubmitType::class);;
+            ->add('button_search_counterparty', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

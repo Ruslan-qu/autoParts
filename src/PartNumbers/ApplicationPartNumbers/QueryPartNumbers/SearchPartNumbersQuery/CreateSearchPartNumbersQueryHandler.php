@@ -3,29 +3,51 @@
 namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery;
 
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
 
 
 final class CreateSearchPartNumbersQueryHandler
 {
-    private $counterparty_repository_interface;
+    private $part_numbers_repository_interface;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterparty_repository_interface
+        PartNumbersRepositoryInterface $partNumbersRepositoryInterface
     ) {
-        $this->counterparty_repository_interface = $counterparty_repository_interface;
+        $this->part_numbers_repository_interface = $partNumbersRepositoryInterface;
     }
 
-    public function handler(CreateCounterpartyQuery $createCounterpartyQuery): ?array
+    public function handler(CreatePartNumbersQuery $createPartNumbersQuery): ?array
     {
 
-        $name_counterparty = strtolower(preg_replace(
+        $part_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createCounterpartyQuery->getNameCounterparty()
+            $createPartNumbersQuery->getPartNumber()
         ));
 
-        $counterparty = $this->counterparty_repository_interface->findByCounterparty($name_counterparty);
+        $manufacturer = strtolower(preg_replace(
+            '#\s#',
+            '',
+            $createPartNumbersQuery->getManufacturer()
+        ));
+
+        $id_part_name = $createPartNumbersQuery->getIdPartName();
+
+        $id_car_brand = $createPartNumbersQuery->getIdCarBrand();
+
+        $id_side = $createPartNumbersQuery->getIdSide();
+
+        $id_body = $createPartNumbersQuery->getIdBody();
+
+        $id_axle = $createPartNumbersQuery->getIdAxle();
+
+        $id_in_stock = $createPartNumbersQuery->getIdInStock();
+
+        $id_original_number = $createPartNumbersQuery->getIdOriginalNumber();
+
+        $counterparty = $this->part_numbers_repository_interface->findByCounterparty($name_counterparty);
 
         return $counterparty;
     }
