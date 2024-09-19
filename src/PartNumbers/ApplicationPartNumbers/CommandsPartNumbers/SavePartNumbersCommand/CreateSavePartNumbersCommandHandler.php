@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
@@ -29,7 +30,7 @@ final class CreateSavePartNumbersCommandHandler
 
     public function handler(CreatePartNumbersCommand $createPartNumbersCommand): array
     {
-        dd($createPartNumbersCommand);
+
         $part_number = strtolower(preg_replace(
             '#\s#',
             '',
@@ -105,14 +106,14 @@ final class CreateSavePartNumbersCommandHandler
         $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
         if (!empty($additional_descriptions)) {
             $input = [
-                'manager_phone_error' => [
+                'additional_descriptions_error' => [
                     'Type' => $additional_descriptions,
                     'Regex' => $additional_descriptions,
                 ]
             ];
 
             $constraint = new Collection([
-                'manager_phone_error' => new Collection([
+                'additional_descriptions_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
                         pattern: '/^[а-яё\w\s]*$/ui',
@@ -132,30 +133,23 @@ final class CreateSavePartNumbersCommandHandler
         }
 
         $id_part_name = $createPartNumbersCommand->getIdPartName();
-        if (!empty($id_part_name)) {
-        }
+
         $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
-        if (!empty($id_car_brand)) {
-        }
+
         $id_side = $createPartNumbersCommand->getIdSide();
-        if (!empty($id_side)) {
-        }
+
         $id_body = $createPartNumbersCommand->getIdBody();
-        if (!empty($id_body)) {
-        }
+
         $id_axle = $createPartNumbersCommand->getIdAxle();
-        if (!empty($id_axle)) {
-        }
+
         $id_in_stock = $createPartNumbersCommand->getIdInStock();
-        if (!empty($id_in_stock)) {
-        }
+
         $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
-        if (!empty($id_original_number)) {
-        }
 
-        if (!empty($data_errors_counterparty)) {
+        if (!empty($data_errors_part_number)) {
 
-            return $data_errors_counterparty;
+            $json_arr_data_errors = json_encode($data_errors_part_number, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
         /* Валидация дублей */
         $number_doubles = $this->part_numbers_repository_interface
@@ -164,12 +158,11 @@ final class CreateSavePartNumbersCommandHandler
         if ($number_doubles != 0) {
 
             $arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Поставщик существует'
+                'doubles' => 'Номер детали существует'
             ];
 
             return $arr_errors_number_doubles;
         }
-
 
         $this->entity_part_numbers_from_manufacturers->setPartNumber($part_number);
         $this->entity_part_numbers_from_manufacturers->setManufacturer($manufacturer);
