@@ -20,8 +20,6 @@ final class CreatePartNumbersQuery extends PartNumbersQuery
 
     protected ?string $manufacturer = null;
 
-    protected ?string $additional_descriptions = null;
-
     protected ?PartName $id_part_name = null;
 
     protected ?CarBrands $id_car_brand = null;
@@ -49,11 +47,6 @@ final class CreatePartNumbersQuery extends PartNumbersQuery
     public function getManufacturer(): ?string
     {
         return $this->manufacturer;
-    }
-
-    public function getAdditionalDescriptions(): ?string
-    {
-        return $this->additional_descriptions;
     }
 
     public function getIdPartName(): ?PartName

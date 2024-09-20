@@ -139,6 +139,7 @@
             <th scope="col">Редактировать</th>
             <th scope="col">Удалить</th>
           </tr>
+          
           {% endif %}
 
         </thead>
@@ -148,15 +149,15 @@
 
           <tr>
             <td>{{ information.getPartNumber() }}</td>
-            <td>{{ information.getIdOriginalNumber() }}</td>
+            <td>{{ information.getIdOriginalNumber().getOriginalNumber() }}</td>
             <td>{{ information.getManufacturer() }}</td>
             <td>{{ information.getAdditionalDescriptions() }}</td>
-            <td>{{ information.getIdPartName() }}</td>
-            <td>{{ information.getIdCarBrand() }}</td>
-            <td>{{ information.getIdSide() }}</td>
-            <td>{{ information.getIdBody() }}</td>
-            <td>{{ information.getIdAxle() }}</td>
-            <td>{{ information.getIdInStock() }}</td>
+            <td>{{ information.getIdPartName().getPartName() }}</td>
+            <td>{{ information.getIdCarBrand().getCarBrand() }}</td>
+            <td>{{ information.getIdSide().getSide() }}</td>
+            <td>{{ information.getIdBody().getBody() }}</td>
+            <td>{{ information.getIdAxle().getAxle() }}</td>
+            <td>{{ information.getIdInStock().getInStock() }}</td>
             <form action="/editCounterparty" name="edit_counterparty">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"

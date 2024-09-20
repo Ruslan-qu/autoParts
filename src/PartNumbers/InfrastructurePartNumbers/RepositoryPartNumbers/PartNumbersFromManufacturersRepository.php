@@ -44,7 +44,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => 'Поставщик успешно сохранен'];
+        return $successfully = ['save' => 'Данные деталей успешно сохранен'];
     }
 
     /**
@@ -63,7 +63,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => 'Поставщик успешно изменен'];
+        return $successfully = ['edit' => 'Данные деталей успешно изменены'];
     }
 
     /**
@@ -83,7 +83,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
         }
 
 
-        return $successfully = ['delete' => 'Поставщик удален'];
+        return $successfully = ['delete' => 'Данные деталей удален'];
     }
 
 
@@ -98,9 +98,46 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     /**
      * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов или ноль
      */
-    public function findOneByPartNumbersFromManufacturers(string $name_counterparty): ?array
+    public function findByPartNumbers(array $parameters, string $where): ?array
     {
-        return $this->findBy(['name_counterparty' => $name_counterparty], ['id' => 'ASC']);
+        $entityManager = $this->getEntityManager();
+
+        /*$query = $entityManager->createQuery(
+            'SELECT p, pn, c, s, b, a, i, o
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers p
+            INNER JOIN p.id_part_name pn
+            INNER JOIN p.id_car_brand c
+            INNER JOIN p.id_side s
+            INNER JOIN p.id_body b
+            INNER JOIN p.id_axle a
+            INNER JOIN p.id_in_stock i
+            INNER JOIN p.id_original_number o
+            WHERE p.part_number = :part_number
+            AND p.manufacturer = :manufacturer
+            AND p.id_part_name = :id_part_name
+            AND p.id_car_brand = :id_car_brand
+            AND p.id_side = :id_side
+            AND p.id_body = :id_body
+            AND p.id_axle = :id_axle
+            AND p.id_in_stock = :id_in_stock
+            AND p.id_original_number = :id_original_number'
+        )->setParameters($data_query);*/
+
+
+        $query = $entityManager->createQuery(
+            'SELECT p, pn, c, s, b, a, i, o
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers p
+            INNER JOIN p.id_part_name pn
+            INNER JOIN p.id_car_brand c
+            INNER JOIN p.id_side s
+            INNER JOIN p.id_body b
+            INNER JOIN p.id_axle a
+            INNER JOIN p.id_in_stock i
+            INNER JOIN p.id_original_number o ' .
+                $where
+        )->setParameters($parameters);
+
+        return $query->getResult();
     }
 
     /**

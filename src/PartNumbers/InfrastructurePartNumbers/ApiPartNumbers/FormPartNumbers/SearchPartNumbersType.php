@@ -24,16 +24,13 @@ class SearchPartNumbersType extends AbstractType
         $builder
             ->add('part_number', TextType::class, [
                 'label' => 'Номер детали',
+                'required' => false,
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'
-                    ]),
-                    new NotBlank([
-                        'message' => 'Форма не может быть 
-                пустой'
                     ])
                 ]
             ])
