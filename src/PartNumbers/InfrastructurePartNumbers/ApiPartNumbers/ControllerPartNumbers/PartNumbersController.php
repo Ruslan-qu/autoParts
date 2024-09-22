@@ -96,7 +96,7 @@ class PartNumbersController extends AbstractController
                     ->handler(new CreatePartNumbersQuery($data_form_part_numbers));
             }
         }
-        dd($search_data);
+        //dd($search_data);
         return $this->render('partNumbers/searchPartNumbers.html.twig', [
             'title_logo' => 'Поиск автодетали',
             'form_search_part_numbers' => $form_search_part_numbers->createView(),

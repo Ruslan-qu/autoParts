@@ -44,7 +44,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => 'Данные деталей успешно сохранен'];
+        return $successfully = ['save' => 'Данные деталей успешно сохранены'];
     }
 
     /**
@@ -83,7 +83,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
         }
 
 
-        return $successfully = ['delete' => 'Данные деталей удален'];
+        return $successfully = ['delete' => 'Данные деталей удалены'];
     }
 
 
@@ -134,7 +134,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
             INNER JOIN p.id_axle a
             INNER JOIN p.id_in_stock i
             INNER JOIN p.id_original_number o ' .
-                $where
+                $where . ''
         )->setParameters($parameters);
 
         return $query->getResult();

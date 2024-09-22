@@ -5,17 +5,18 @@ namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumb
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\PartNumbersFromManufacturersRepository;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
 
 
 final class CreateSearchPartNumbersQueryHandler
 {
-    private $part_numbers_repository_interface;
+    private $part_numbers_from_manufacturers_repository;
 
     public function __construct(
-        PartNumbersRepositoryInterface $partNumbersRepositoryInterface
+        PartNumbersFromManufacturersRepository $partNumbersFromManufacturersRepository
     ) {
-        $this->part_numbers_repository_interface = $partNumbersRepositoryInterface;
+        $this->part_numbers_from_manufacturers_repository = $partNumbersFromManufacturersRepository;
     }
 
     public function handler(CreatePartNumbersQuery $createPartNumbersQuery): ?array
@@ -124,9 +125,12 @@ final class CreateSearchPartNumbersQueryHandler
                 $where .= 'AND p.id_original_number = :id_original_number ';
             }
         }
-        dd($where);
-        $counterparty = $this->part_numbers_repository_interface->findByPartNumbers($parameters, $where);
-
+        if (empty($where) || empty($parameters)) {
+            return null;
+        }
+        //dd($parameters);
+        $counterparty = $this->part_numbers_from_manufacturers_repository->findByPartNumbers($parameters, $where);
+        dd($counterparty);
         return $counterparty;
     }
 }
