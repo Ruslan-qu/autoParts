@@ -98,7 +98,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     /**
      * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов или ноль
      */
-    public function findByPartNumbers(array $parameters, string $where): ?array
+    public function findByPartNumbers(array $arr_parameters, string $part_number_where): ?array
     {
         $entityManager = $this->getEntityManager();
 
@@ -127,15 +127,16 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
         $query = $entityManager->createQuery(
             'SELECT p, pn, c, s, b, a, i, o
             FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers p
-            INNER JOIN p.id_part_name pn
-            INNER JOIN p.id_car_brand c
-            INNER JOIN p.id_side s
-            INNER JOIN p.id_body b
-            INNER JOIN p.id_axle a
-            INNER JOIN p.id_in_stock i
-            INNER JOIN p.id_original_number o ' .
-                $where . ''
-        )->setParameters($parameters);
+            LEFT JOIN p.id_part_name pn
+            LEFT JOIN p.id_car_brand c
+            LEFT JOIN p.id_side s
+            LEFT JOIN p.id_body b
+            LEFT JOIN p.id_axle a
+            LEFT JOIN p.id_in_stock i
+            LEFT JOIN p.id_original_number o '
+                .  $part_number_where .
+                'ORDER BY p.id ASC'
+        )->setParameters($arr_parameters);
 
         return $query->getResult();
     }

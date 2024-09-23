@@ -149,15 +149,15 @@
 
           <tr>
             <td>{{ information.getPartNumber() }}</td>
-            <td>{{ information.getIdOriginalNumber().getOriginalNumber() }}</td>
+            <td>{{ information.getIdOriginalNumber().getOriginalNumber()|default('') }}</td>
             <td>{{ information.getManufacturer() }}</td>
-            <td>{{ information.getAdditionalDescriptions() }}</td>
-            <td>{{ information.getIdPartName().getPartName() }}</td>
-            <td>{{ information.getIdCarBrand().getCarBrand() }}</td>
-            <td>{{ information.getIdSide().getSide() }}</td>
-            <td>{{ information.getIdBody().getBody() }}</td>
-            <td>{{ information.getIdAxle().getAxle() }}</td>
-            <td>{{ information.getIdInStock().getInStock() }}</td>
+            <td class="text-break">{{ information.getAdditionalDescriptions() }}</td>
+            <td>{{ information.getIdPartName().getPartName()|default('') }}</td>
+            <td>{{ information.getIdCarBrand().getCarBrand()|default('') }}</td>
+            <td>{{ information.getIdSide().getSide()|default('') }}</td>
+            <td>{{ information.getIdBody().getBody()|default('') }}</td>
+            <td>{{ information.getIdAxle().getAxle()|default('') }}</td>
+            <td>{{ information.getIdInStock().getInStock()|default('') }}</td>
             <form action="/editCounterparty" name="edit_counterparty">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
