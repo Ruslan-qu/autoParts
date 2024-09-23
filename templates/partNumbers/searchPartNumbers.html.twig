@@ -145,7 +145,8 @@
         </thead>
         <tbody class="table-group-divider">
           {% for information in search_data %}
-          {% if information %}
+          
+            {% if information %}
 
           <tr>
             <td>{{ information.getPartNumber() }}</td>
@@ -171,11 +172,14 @@
 
             </form>
           </tr>
-
-          {% else %}
-          <h2>Данные не найдены. Видите параметры в поиск</h2>
-          {% endif %}
+            {% endif %}
           {% endfor %}
+          {% if search_data is empty %}
+          <h2>Данные не найдены.</h2>
+          {% endif %}
+          {% if search_data is same as NULL %}
+          <h2>Видите параметры в поиск</h2>
+          {% endif %}
         </tbody>
       </table>
     </div>

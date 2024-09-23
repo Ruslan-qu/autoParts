@@ -10,79 +10,123 @@
 
   {% block form %}
 
-  {#Переменный для вывода данных в форме #}
-  {% set name_counterparty_find_id = find_id_edit_counterparty.getNameCounterparty()|default('') %}
-  {% set mail_counterparty_find_id = find_id_edit_counterparty.getMailCounterparty()|default('') %}
-  {% set manager_phone_find_id = find_id_edit_counterparty.getManagerPhone()|default('') %}
-  {% set delivery_phone_find_id = find_id_edit_counterparty.getDeliveryPhone()|default('') %}
-  {% set id_find_id = find_id_edit_counterparty.getId()|default('') %}
+   {#Переменный для вывода данных в форме #}
+  {% set part_number_find_id = find_id_edit_part_numbers.getPartNumber()|default('') %}
+  {% set original_number_find_id = find_id_edit_part_numbers.getIdOriginalNumber().getOriginalNumber()|default('') %}
+  {% set manufacturer_find_id = find_id_edit_part_numbers.getManufacturer()|default('') %}
+  {% set additional_descriptions_find_id = find_id_edit_part_numbers.getAdditionalDescriptions()|default('') %}
+  {% set part_name_find_id = find_id_edit_part_numbers.getIdPartName().getPartName()|default('') %}
+  {% set car_brand_find_id = find_id_edit_part_numbers.getIdCarBrand().getCarBrand()|default('') %}
+  {% set side_find_id = find_id_edit_part_numbers.getIdSide().getSide()|default('') %}
+  {% set body_find_id = find_id_edit_part_numbers.getIdBody().getBody()|default('') %}
+  {% set axle_find_id = find_id_edit_part_numbers.getIdAxle().getAxle()|default('') %}
+  {% set in_stock_find_id = find_id_edit_part_numbers.getIdInStock().getInStock()|default('') %}
+  {% set id_find_id = find_id_edit_part_numbers.getId()|default('') %}
 
-  {#Форма редактирования поступления деталей#}
+  {#Форма изменения номеров деталей#}
 
-  {{ form_start(form_edit_counterparty, {'attr': {'class': 'row row-cols-12 text-center
-  mt-2'}}) }}
+  {{ form_start(form_edit_part_numbers) }}
+  <div class="container-fluid text-center mt-3">
+    <div class="row">
 
-  {% if data_form_edit_counterparty.name_counterparty is defined %}
-  {% set name_counterparty_find_id = data_form_edit_counterparty.name_counterparty %}
-{% endif %}
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_edit_counterparty.name_counterparty) }}</div>
-    {{ form_widget(form_edit_counterparty.name_counterparty, { value : name_counterparty_find_id, 'attr': {'class':
-    'ps-1'} }) }}
-    {{ form_errors(form_edit_counterparty.name_counterparty) |nl2br }}
+      <div class="col-xl-7 col-xxl-12">
+        <div class="row">
 
-  </div>
-
-
-{% if data_form_edit_counterparty.mail_counterparty is defined %}
-  {% set mail_counterparty_find_id = data_form_edit_counterparty.mail_counterparty %}
-{% endif %}
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_edit_counterparty.mail_counterparty) }}</div>
-    {{ form_widget(form_edit_counterparty.mail_counterparty, { value : mail_counterparty_find_id, 'attr': {'class':
-    'ps-1'} }) }}
-    {{ form_errors(form_edit_counterparty.mail_counterparty) |nl2br }}
-  </div>
-
-{% if data_form_edit_counterparty.manager_phone is defined %}
-  {% set manager_phone_find_id = data_form_edit_counterparty.manager_phone %}
-{% endif %}
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_edit_counterparty.manager_phone) }}</div>
-    {{ form_widget(form_edit_counterparty.manager_phone, { value : manager_phone_find_id, 'attr': {'class': 'ps-1',
-    'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_edit_counterparty.manager_phone) |nl2br }}
-  </div>
+          <div class="col-sm-12 col-md-6 col-lg">
+            <div class="lb">{{ form_label(form_edit_part_numbers.part_number) }}</div>
+            {{ form_widget(form_edit_part_numbers.part_number, { value : part_number_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_part_numbers.part_number) |nl2br }}
+          </div>
 
 
-{% if data_form_edit_counterparty.delivery_phone is defined%}
-  {% set delivery_phone_find_id = data_form_edit_counterparty.delivery_phone %}
-{% endif %}
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_edit_counterparty.delivery_phone) }}</div>
-    {{ form_widget(form_edit_counterparty.delivery_phone, { value : delivery_phone_find_id, 'attr': {'class': 'ps-1',
-    'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_edit_counterparty.delivery_phone) |nl2br }}
-  </div>
+
+          <div class="col-sm-12 col-md-6 col-lg">
+            <div class="lb">{{ form_label(form_edit_part_numbers.id_original_number) }}</div>
+            {{ form_widget(form_edit_part_numbers.id_original_number, { value : original_number_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_part_numbers.id_original_number) |nl2br }}
+          </div>
 
 
-{% if data_form_edit_counterparty.id is defined%}
-  {% set id_find_id = data_form_edit_counterparty.id %}
-{% endif %}
-  {{ form_widget(form_edit_counterparty.id, {value : id_find_id}) }}
 
-  <div class="row mt-3">
-    <div class="col-9 d-grid gap-2 ms-2">
-      {{ form_widget(form_edit_counterparty.button_counterparty, { 'label': 'Изменить', 'attr': {'class': 'btn
-      btn-danger'}}) }}
+          <div class="col-sm-12 col-md-6 col-lg">
+            <div class="lb">{{ form_label(form_edit_part_numbers.manufacturer) }}</div>
+            {{ form_widget(form_edit_part_numbers.manufacturer, { value : manufacturer_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_part_numbers.manufacturer) |nl2br }}
+          </div>
+
+
+
+          <div class="col-sm-12 col-md-6 col-lg">
+            <div class="lb">{{ form_label(form_edit_part_numbers.additional_descriptions) }}</div>
+            {{ form_widget(form_edit_part_numbers.additional_descriptions, { value : additional_descriptions_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_part_numbers.additional_descriptions) |nl2br }}
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-xl-5 col-xxl-12">
+        <div class="row justify-content-evenly">
+
+          <div class="col-6">
+            <div class="lb">{{ form_label(form_edit_part_numbers.id_part_name) }}</div>
+            {{ form_widget(form_edit_part_numbers.id_part_name, { value : part_name_find_id }) }}
+            {{ form_errors(form_edit_part_numbers.id_part_name) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_edit_part_numbers.id_car_brand) }}</div>
+            {{ form_widget(form_edit_part_numbers.id_car_brand, { value : car_brand_find_id }) }}
+            {{ form_errors(form_edit_part_numbers.id_car_brand) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_edit_part_numbers.id_side) }}</div>
+            {{ form_widget(form_edit_part_numbers.id_side, { value : side_find_id }) }}
+            {{ form_errors(form_edit_part_numbers.id_side) |nl2br }}
+          </div>
+        </div>
+        <div class="row justify-content-evenly">
+
+          <div class="col-6">
+            <div class="lb">{{ form_label(form_edit_part_numbers.id_body) }}</div>
+            {{ form_widget(form_edit_part_numbers.id_body, { value : body_find_id }) }}
+            {{ form_errors(form_edit_part_numbers.id_body) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_edit_part_numbers.id_axle) }}</div>
+            {{ form_widget(form_edit_part_numbers.id_axle, { value : axle_find_id }) }}
+            {{ form_errors(form_edit_part_numbers.id_axle) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_edit_part_numbers.id_in_stock) }}</div>
+            {{ form_widget(form_edit_part_numbers.id_in_stock, { value : in_stock_find_id }) }}
+            {{ form_errors(form_edit_part_numbers.id_in_stock) |nl2br }}
+          </div>
+        </div>
+
+
+      </div>
     </div>
+{{ form_widget(form_edit_part_numbers.id, {value : id_find_id}) }}
+
+    <div class="row mt-3">
+      <div class="col-12 d-grid gap-2">
+        {{ form_widget(form_edit_part_numbers.button_part_number, { 'label': 'Изменить', 'attr': {'class': 'btn
+        btn-danger'}}) }}
+      </div>
+    </div>
+
   </div>
 
-  {{ form_end(form_edit_counterparty) }}
+  {{ form_end(form_edit_part_numbers) }}
+
   <div class="col-auto m-3">
     {% for saving_information in arr_saving_information %}
     {% for information in saving_information %}
-    {#{{ dump(saving_information) }}#}
     <h5>{{ information |nl2br }}</h5>
     {% endfor %}
     {% endfor %}

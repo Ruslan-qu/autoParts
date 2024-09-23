@@ -2,32 +2,32 @@
 
 namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery;
 
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
-use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\PartNumbersFromManufacturersRepository;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
 
 
 final class CreateFindIdPartNumbersQueryHandler
 {
-    private $counterparty_repository_interface;
+    private $part_numbers_from_manufacturers_repository;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterparty_repository_interface
+        PartNumbersFromManufacturersRepository $partNumbersFromManufacturersRepository
     ) {
-        $this->counterparty_repository_interface = $counterparty_repository_interface;
+        $this->part_numbers_from_manufacturers_repository = $partNumbersFromManufacturersRepository;
     }
 
-    public function handler(CreateCounterpartyQuery $createCounterpartyQuery): ?Counterparty
+    public function handler(CreatePartNumbersQuery $createPartNumbersQuery): ?PartNumbersFromManufacturers
     {
         //dd($createCounterpartyQuery->getId());
-        $id = $createCounterpartyQuery->getId();
+        $id = $createPartNumbersQuery->getId();
 
         if (empty($id)) {
             return NULL;
         }
 
-        $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
+        $edit_part_numbers = $this->part_numbers_from_manufacturers_repository->findPartNumbersFromManufacturers($id);
 
-        return $edit_counterparty;
+        return $edit_part_numbers;
     }
 }

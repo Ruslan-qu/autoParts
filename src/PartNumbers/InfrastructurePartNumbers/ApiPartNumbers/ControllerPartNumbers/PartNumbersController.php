@@ -6,11 +6,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\EditPartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SavePartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SearchPartNumbersType;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\CreateOriginalRoomsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\CreateFindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
@@ -68,7 +69,6 @@ class PartNumbersController extends AbstractController
     #[Route('/searchPartNumbers', name: 'search_part_numbers')]
     public function searchPartNumbers(
         Request $request,
-        PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
         CreateSearchPartNumbersQueryHandler $createSearchPartNumbersQueryHandler,
         CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
     ): Response {
@@ -96,12 +96,58 @@ class PartNumbersController extends AbstractController
                     ->handler(new CreatePartNumbersQuery($data_form_part_numbers));
             }
         }
-        //dd($search_data);
+
         return $this->render('partNumbers/searchPartNumbers.html.twig', [
             'title_logo' => 'Поиск автодетали',
             'form_search_part_numbers' => $form_search_part_numbers->createView(),
             'search_data' => $search_data,
 
+        ]);
+    }
+
+    /*Редактирования автодеталей*/
+    #[Route('/editPartNumbers', name: 'edit_part_numbers')]
+    public function editPartNumbers(
+        Request $request,
+        CreateFindIdPartNumbersQueryHandler $createFindIdPartNumbersQueryHandler,
+        CreateEditPartNumbersCommandHandler $createEditPartNumbersCommandHandler
+    ): Response {
+
+        /*Форма Редактирования постовщка*/
+        $form_edit_part_numbers = $this->createForm(EditPartNumbersType::class);
+
+        /*Валидация формы */
+        $form_edit_part_numbers->handleRequest($request);
+
+        if (!empty($form_edit_part_numbers->getData())) {
+
+            $find_id_edit_part_numbers = $createFindIdPartNumbersQueryHandler
+                ->handler(new CreatePartNumbersQuery($request->query->all()));
+            if (empty($find_id_edit_part_numbers)) {
+                $this->addFlash('data_counterparty', 'Поставщик не найден');
+
+                return $this->redirectToRoute('search_part_numbers');
+            }
+        }
+
+        $data_form_edit_part_numbers = [];
+        $arr_saving_information = [];
+        if ($form_edit_part_numbers->isSubmitted()) {
+            if ($form_edit_part_numbers->isValid()) {
+
+                $data_form_edit_part_numbers = $request->request->all()['edit_counterparty'];
+                $arr_saving_information = $createEditPartNumbersCommandHandler
+                    ->handler(new CreatePartNumbersCommand($request->request->all()['edit_counterparty']));
+            }
+        }
+
+
+        return $this->render('counterparty/editCounterparty.html.twig', [
+            'title_logo' => 'Изменение данных автодеталей',
+            'form_edit_part_numbers' => $form_edit_part_numbers->createView(),
+            'arr_saving_information' => $arr_saving_information,
+            'find_id_edit_part_numbers' => $find_id_edit_part_numbers,
+            'data_form_edit_part_numbers' => $data_form_edit_part_numbers,
         ]);
     }
 }
