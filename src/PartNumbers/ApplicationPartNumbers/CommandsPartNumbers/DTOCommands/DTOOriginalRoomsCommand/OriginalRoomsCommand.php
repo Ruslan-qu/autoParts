@@ -17,12 +17,33 @@ abstract class OriginalRoomsCommand
     private function load(array $data)
     {
 
-        $original_number = $data['id_original_number'];
+        $typeResolver = TypeResolver::create();
 
-        if (!empty($original_number)) {
+        foreach ($data as $key => $value) {
 
-            $key_original_number = 'original_number';
-            $this->$key_original_number = (string)$original_number;
+            if (!empty($value)) {
+
+                $type = $typeResolver->resolve(new \ReflectionProperty(OriginalRooms::class, $key))
+                    ->getBaseType()
+                    ->getTypeIdentifier()
+                    ->value;
+                settype($value, $type);
+                if ($type == 'object') {
+
+                    $className = $typeResolver->resolve(new \ReflectionProperty(OriginalRooms::class, $key))
+                        ->getBaseType()
+                        ->getClassName();
+                    if ($className !== get_class($value)) {
+
+                        $arr_data_errors = ['Error' => 'Значение ' . $value->scalar .
+                            ' должно быть объектом класса ' . $className . '.'];
+                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
+                    }
+                }
+
+                $this->$key = $value;
+            }
         }
     }
 }

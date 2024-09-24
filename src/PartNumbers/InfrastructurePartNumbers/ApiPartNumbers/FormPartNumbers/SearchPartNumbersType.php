@@ -34,7 +34,7 @@ class SearchPartNumbersType extends AbstractType
                     ])
                 ]
             ])
-            ->add('id_original_number', TextType::class, [
+            ->add('original_number', TextType::class, [
                 'label' => 'Номер оригинал',
                 'required' => false,
                 'constraints' => [

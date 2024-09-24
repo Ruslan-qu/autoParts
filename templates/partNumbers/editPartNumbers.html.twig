@@ -11,17 +11,18 @@
   {% block form %}
 
    {#Переменный для вывода данных в форме #}
-  {% set part_number_find_id = find_id_edit_part_numbers.getPartNumber()|default('') %}
-  {% set original_number_find_id = find_id_edit_part_numbers.getIdOriginalNumber().getOriginalNumber()|default('') %}
-  {% set manufacturer_find_id = find_id_edit_part_numbers.getManufacturer()|default('') %}
-  {% set additional_descriptions_find_id = find_id_edit_part_numbers.getAdditionalDescriptions()|default('') %}
-  {% set part_name_find_id = find_id_edit_part_numbers.getIdPartName().getPartName()|default('') %}
-  {% set car_brand_find_id = find_id_edit_part_numbers.getIdCarBrand().getCarBrand()|default('') %}
-  {% set side_find_id = find_id_edit_part_numbers.getIdSide().getSide()|default('') %}
-  {% set body_find_id = find_id_edit_part_numbers.getIdBody().getBody()|default('') %}
-  {% set axle_find_id = find_id_edit_part_numbers.getIdAxle().getAxle()|default('') %}
-  {% set in_stock_find_id = find_id_edit_part_numbers.getIdInStock().getInStock()|default('') %}
-  {% set id_find_id = find_id_edit_part_numbers.getId()|default('') %}
+  {% set part_number_find_id = data_edit_part_numbers.getPartNumber()|default('') %}
+  {% set original_number_find_id = data_edit_part_numbers.getIdOriginalNumber().getOriginalNumber()|default('') %}
+  {% set manufacturer_find_id = data_edit_part_numbers.getManufacturer()|default('') %}
+  {% set additional_descriptions_find_id = data_edit_part_numbers.getAdditionalDescriptions()|default('') %}
+  {% set part_name_find_id = data_edit_part_numbers.getIdPartName().getId()|default('') %}
+  {% set car_brand_find_id = data_edit_part_numbers.getIdCarBrand().getId()|default('') %}
+  {% set side_find_id = data_edit_part_numbers.getIdSide().getId()|default('') %}
+  {% set body_find_id = data_edit_part_numbers.getIdBody().getId()|default('') %}
+  {% set axle_find_id = data_edit_part_numbers.getIdAxle().getId()|default('') %}
+  {% set in_stock_find_id = data_edit_part_numbers.getIdInStock().getId()|default('') %}
+  {% set id_find_id = data_edit_part_numbers.getId()|default('') %}
+  {% set id_original_number_find_id = data_edit_part_numbers.getIdOriginalNumber().getId()|default('') %}
 
   {#Форма изменения номеров деталей#}
 
@@ -41,9 +42,9 @@
 
 
           <div class="col-sm-12 col-md-6 col-lg">
-            <div class="lb">{{ form_label(form_edit_part_numbers.id_original_number) }}</div>
-            {{ form_widget(form_edit_part_numbers.id_original_number, { value : original_number_find_id, 'attr': {'class': 'w-100'} }) }}
-            {{ form_errors(form_edit_part_numbers.id_original_number) |nl2br }}
+            <div class="lb">{{ form_label(form_edit_part_numbers.original_number) }}</div>
+            {{ form_widget(form_edit_part_numbers.original_number, { value : original_number_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_part_numbers.original_number) |nl2br }}
           </div>
 
 
@@ -111,7 +112,8 @@
 
       </div>
     </div>
-{{ form_widget(form_edit_part_numbers.id, {value : id_find_id}) }}
+    {{ form_widget(form_edit_part_numbers.id, {value : id_find_id}) }}
+    {{ form_widget(form_edit_part_numbers.id_original_number, {value : id_original_number_find_id}) }}
 
     <div class="row mt-3">
       <div class="col-12 d-grid gap-2">

@@ -28,9 +28,9 @@
 
 
           <div class="col-sm-12 col-md-6 col-lg">
-            <div class="lb">{{ form_label(form_search_part_numbers.id_original_number) }}</div>
-            {{ form_widget(form_search_part_numbers.id_original_number, { 'attr': {'class': 'w-100'} }) }}
-            {{ form_errors(form_search_part_numbers.id_original_number) |nl2br }}
+            <div class="lb">{{ form_label(form_search_part_numbers.original_number) }}</div>
+            {{ form_widget(form_search_part_numbers.original_number, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.original_number) |nl2br }}
           </div>
 
 
@@ -111,6 +111,10 @@
 
   {{ form_end(form_search_part_numbers) }}
 
+  {% for message in app.flashes('data_part_numbers') %}
+    <h2 class="mt-3 ms-3">{{ message }}</h2>
+  {% endfor %}
+
   {% endblock form %}
 
 
@@ -159,7 +163,7 @@
             <td>{{ information.getIdBody().getBody()|default('') }}</td>
             <td>{{ information.getIdAxle().getAxle()|default('') }}</td>
             <td>{{ information.getIdInStock().getInStock()|default('') }}</td>
-            <form action="/editCounterparty" name="edit_counterparty">
+            <form action="/editPartNumbers" name="edit_part_numbers">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ information.getId() }}">Изменить</button></td>

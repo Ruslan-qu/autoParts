@@ -8,190 +8,172 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
-use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\PartNumbersFromManufacturersRepository;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
 
 final class CreateEditPartNumbersCommandHandler
 {
-    private $counterparty_repository_interface;
+    private $part_numbers_from_manufacturers_repository;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterpartyRepositoryInterface
+        PartNumbersFromManufacturersRepository $partNumbersFromManufacturersRepository
     ) {
-        $this->counterparty_repository_interface = $counterpartyRepositoryInterface;
+        $this->part_numbers_from_manufacturers_repository = $partNumbersFromManufacturersRepository;
     }
 
-    public function handler(CreateCounterpartyCommand $createCounterpartyCommand): array
+    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): array
     {
 
 
 
-        $name_counterparty = strtolower(preg_replace(
+        $part_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getNameCounterparty()
+            $createPartNumbersCommand->getPartNumber()
         ));
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
         $input = [
-            'name_counterparty_error' => [
-                'NotBlank' => $name_counterparty,
-                'Type' => $name_counterparty,
-                'Regex' => $name_counterparty,
+            'part_number_error' => [
+                'NotBlank' => $part_number,
+                'Type' => $part_number,
+                'Regex' => $part_number,
             ]
         ];
 
         $constraint = new Collection([
-            'name_counterparty_error' => new Collection([
+            'part_number_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Поставщик не может быть пустой'
+                    message: 'Форма Номер детали не может быть пустой'
                 ),
                 'Type' => new Type('string'),
                 'Regex' => new Regex(
                     pattern: '/^[\da-z]*$/i',
-                    message: 'Форма Поставщик содержит недопустимые символы'
+                    message: 'Форма Номер детали содержит недопустимые символы'
                 )
             ])
         ]);
 
-        $data_errors_counterparty = [];
+        $data_errors_part_number = [];
         foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-            $data_errors_counterparty[$key] = [
+            $data_errors_part_number[$key] = [
                 $value_error->getPropertyPath() => $value_error->getMessage()
             ];
         }
 
-        $mail_counterparty = preg_replace(
+        $manufacturer = strtolower(preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getMailCounterparty()
-        );
+            $createPartNumbersCommand->getManufacturer()
+        ));
 
-        if (!empty($mail_counterparty)) {
+        if (!empty($manufacturer)) {
             $input = [
-                'mail_counterparty_error' => [
-                    'Type' => $mail_counterparty,
-                    'Email' => $mail_counterparty
+                'manufacturer_error' => [
+                    'Type' => $manufacturer,
+                    'Regex' => $manufacturer
                 ]
             ];
 
             $constraint = new Collection([
-                'mail_counterparty_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Email' => new Email(
-                        message: 'Форма E-mail содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_counterparty_mail = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_counterparty_mail[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_mail);
-        }
-
-        $manager_phone = preg_replace(
-            '#\s#',
-            '',
-            $createCounterpartyCommand->getManagerPhone()
-        );
-        if (!empty($manager_phone)) {
-            $input = [
-                'manager_phone_error' => [
-                    'Type' => $manager_phone,
-                    'Regex' => $manager_phone
-                ]
-            ];
-
-            $constraint = new Collection([
-                'manager_phone_error' => new Collection([
+                'manufacturer_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
-                        pattern: '/^\+{1}\d{11}$/',
-                        message: 'Форма Телефон менеджера содержит:
-                        1) Недопустимые символы
-                        2) Нет знака +
-                        3) Неверное количество цифр'
+                        pattern: '/^[\da-z]*$/i',
+                        message: 'Форма Производитель содержит недопустимые символы'
                     )
                 ])
             ]);
-            $data_errors_counterparty_manager_phone = [];
+            $data_errors_manufacturer = [];
             foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-                $data_errors_counterparty_manager_phone[$key] = [
+                $data_errors_manufacturer[$key] = [
                     $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
 
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
+            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
         }
-        $delivery_phone = preg_replace(
-            '#\s#',
-            '',
-            $createCounterpartyCommand->getDeliveryPhone()
-        );
-        if (!empty($delivery_phone)) {
+
+        $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
+        if (!empty($additional_descriptions)) {
             $input = [
-                'delivery_phone_error' => [
-                    'Type' => $delivery_phone,
-                    'Regex' => $delivery_phone
+                'additional_descriptions_error' => [
+                    'Type' => $additional_descriptions,
+                    'Regex' => $additional_descriptions,
                 ]
             ];
 
             $constraint = new Collection([
-                'delivery_phone_error' => new Collection([
+                'additional_descriptions_error' => new Collection([
                     'Type' => new Type('string'),
                     'Regex' => new Regex(
-                        pattern: '/^\+{1}\d{11}$/',
-                        message: 'Форма Телефон доставки содержит: 
-                        1) Недопустимые символы
-                        2) Нет знака +
-                        3) Неверное количество цифр'
+                        pattern: '/^[а-яё\w\s]*$/ui',
+                        message: 'Форма Описание детали содержит недопустимые символы'
                     )
                 ])
             ]);
-
-            $data_errors_counterparty_delivery_phone = [];
+            $data_errors_additional_descriptions = [];
             foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-                $data_errors_counterparty_delivery_phone[$key] = [
+                $data_errors_additional_descriptions[$key] = [
                     $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
 
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_delivery_phone);
+            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_additional_descriptions);
         }
 
-        if (!empty($data_errors_counterparty)) {
+        $id_part_name = $createPartNumbersCommand->getIdPartName();
 
-            return $data_errors_counterparty;
+        $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
+
+        $id_side = $createPartNumbersCommand->getIdSide();
+
+        $id_body = $createPartNumbersCommand->getIdBody();
+
+        $id_axle = $createPartNumbersCommand->getIdAxle();
+
+        $id_in_stock = $createPartNumbersCommand->getIdInStock();
+
+        $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
+
+        if (!empty($data_errors_part_number)) {
+
+            $json_arr_data_errors = json_encode($data_errors_part_number, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $id = $createCounterpartyCommand->getId();
+        $id = $createPartNumbersCommand->getId();
 
         if (empty($id)) {
-            $arr_errors_id['errors'] = [
-                'doubles' => 'Поставщик не существует'
-            ];
 
-            return $arr_errors_id;
+            return null;
         }
 
-        $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
+        $edit_part_number = $this->part_numbers_from_manufacturers_repository->findPartNumbersFromManufacturers($id);
 
-        $edit_counterparty->setNameCounterparty($name_counterparty);
-        $edit_counterparty->setMailCounterparty($mail_counterparty);
-        $edit_counterparty->setManagerPhone($manager_phone);
-        $edit_counterparty->setDeliveryPhone($delivery_phone);
+        if (empty($edit_part_number)) {
 
-        $successfully_edit = $this->counterparty_repository_interface->edit();
+            return null;
+        }
+
+        $edit_part_number->setPartNumber($part_number);
+        $edit_part_number->setManufacturer($manufacturer);
+        $edit_part_number->setAdditionalDescriptions($additional_descriptions);
+        $edit_part_number->setIdPartName($id_part_name);
+        $edit_part_number->setIdCarBrand($id_car_brand);
+        $edit_part_number->setIdSide($id_side);
+        $edit_part_number->setIdBody($id_body);
+        $edit_part_number->getIdAxle($id_axle);
+        $edit_part_number->setIdInStock($id_in_stock);
+        $edit_part_number->setIdOriginalNumber($id_original_number);
+
+        $successfully_edit = $this->part_numbers_from_manufacturers_repository->edit($edit_part_number);
 
         $successfully['successfully'] = $successfully_edit;
 
