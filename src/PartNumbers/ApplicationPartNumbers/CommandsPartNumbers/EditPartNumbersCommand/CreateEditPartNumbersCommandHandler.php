@@ -169,7 +169,7 @@ final class CreateEditPartNumbersCommandHandler
         $edit_part_number->setIdCarBrand($id_car_brand);
         $edit_part_number->setIdSide($id_side);
         $edit_part_number->setIdBody($id_body);
-        $edit_part_number->getIdAxle($id_axle);
+        $edit_part_number->setIdAxle($id_axle);
         $edit_part_number->setIdInStock($id_in_stock);
         $edit_part_number->setIdOriginalNumber($id_original_number);
 

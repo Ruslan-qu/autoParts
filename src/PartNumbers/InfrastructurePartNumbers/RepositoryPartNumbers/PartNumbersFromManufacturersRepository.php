@@ -54,10 +54,10 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
-        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($partNumbersFromManufacturers);
-
-        $exists_counterparty = $this->count($entityData);
-        if ($exists_counterparty == 0) {
+        $entityData = $entityManager->getUnitOfWork();
+        dd($entityData);
+        $exists_part_numbers = $this->count($entityData);
+        if ($exists_part_numbers == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);

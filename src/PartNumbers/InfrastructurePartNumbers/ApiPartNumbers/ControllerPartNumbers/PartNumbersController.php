@@ -44,9 +44,9 @@ class PartNumbersController extends AbstractController
             if ($form_save_part_numbers->isValid()) {
 
                 $data_form_part_numbers = $form_save_part_numbers->getData();
-                if (!empty($data_form_part_numbers['original_number'])) {
+                if (!empty($data_form_part_numbers['id_original_number'])) {
 
-                    $arr_original_number['original_number'] = $data_form_part_numbers['original_number'];
+                    $arr_original_number['original_number'] = $data_form_part_numbers['id_original_number'];
 
                     $createSaveOriginalRoomsCommandHandler
                         ->handler(new CreateOriginalRoomsCommand($arr_original_number));
@@ -56,7 +56,7 @@ class PartNumbersController extends AbstractController
 
                     $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                 }
-                unset($data_form_part_numbers['original_number']);
+
                 $arr_saving_information = $createSavePartNumbersCommandHandler
                     ->handler(new CreatePartNumbersCommand($data_form_part_numbers));
             }
@@ -88,16 +88,16 @@ class PartNumbersController extends AbstractController
             if ($form_search_part_numbers->isValid()) {
 
                 $data_form_part_numbers = $form_search_part_numbers->getData();
-                if (!empty($data_form_part_numbers['original_number'])) {
+                if (!empty($data_form_part_numbers['id_original_number'])) {
 
-                    $arr_original_number['original_number'] = $data_form_part_numbers['original_number'];
+                    $arr_original_number['original_number'] = $data_form_part_numbers['id_original_number'];
                     $object_original_number = $createFindOneByOriginalRoomsQueryHandler
                         ->handler(new CreateOriginalRoomsQuery($arr_original_number));
 
                     $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                 }
-                unset($data_form_part_numbers['original_number']);
-                $search_data = $createSearchPartNumbersQueryHandler
+
+                $search_data[] = $createSearchPartNumbersQueryHandler
                     ->handler(new CreatePartNumbersQuery($data_form_part_numbers));
             }
         }
@@ -126,6 +126,7 @@ class PartNumbersController extends AbstractController
 
         /*Валидация формы */
         $form_edit_part_numbers->handleRequest($request);
+        //dd($form_edit_part_numbers->getData());
 
         if (empty($form_edit_part_numbers->getData())) {
 
@@ -136,17 +137,20 @@ class PartNumbersController extends AbstractController
 
                 return $this->redirectToRoute('search_part_numbers');
             }
-        } else {
+        }
+
+        if (!empty($request->request->all())) {
             $data_edit_part_numbers = $request->request->all()['edit_part_numbers'];
         }
-        //dd($request->request);
+
+
         // $data_form_edit_part_numbers = [];
         $arr_saving_information = [];
         if ($form_edit_part_numbers->isSubmitted()) {
             if ($form_edit_part_numbers->isValid()) {
 
                 $data_edit_part_numbers = $form_edit_part_numbers->getData();
-                dd($data_edit_part_numbers);
+
                 if (!empty($data_edit_part_numbers['original_number'])) {
 
                     $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
@@ -173,13 +177,12 @@ class PartNumbersController extends AbstractController
             }
         }
 
-
+        // dd($data_edit_part_numbers);
         return $this->render('partNumbers/editPartNumbers.html.twig', [
             'title_logo' => 'Изменение данных автодеталей',
             'form_edit_part_numbers' => $form_edit_part_numbers->createView(),
             'arr_saving_information' => $arr_saving_information,
-            'data_edit_part_numbers' => $data_edit_part_numbers,
-            // 'data_form_edit_part_numbers' => $data_form_edit_part_numbers,
+            'data_edit_part_numbers' => $data_edit_part_numbers
         ]);
     }
 }

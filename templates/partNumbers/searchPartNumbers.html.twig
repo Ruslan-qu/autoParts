@@ -28,9 +28,9 @@
 
 
           <div class="col-sm-12 col-md-6 col-lg">
-            <div class="lb">{{ form_label(form_search_part_numbers.original_number) }}</div>
-            {{ form_widget(form_search_part_numbers.original_number, { 'attr': {'class': 'w-100'} }) }}
-            {{ form_errors(form_search_part_numbers.original_number) |nl2br }}
+            <div class="lb">{{ form_label(form_search_part_numbers.id_original_number) }}</div>
+            {{ form_widget(form_search_part_numbers.id_original_number, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_original_number) |nl2br }}
           </div>
 
 
@@ -128,7 +128,8 @@
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
-          {% if search_data %}
+          {% for arr_search_data in search_data %}
+          {% if arr_search_data %}
           <tr>
             <th scope="col">№ детали</th>
             <th scope="col">№ оригинал</th>
@@ -143,20 +144,20 @@
             <th scope="col">Редактировать</th>
             <th scope="col">Удалить</th>
           </tr>
-          
-          {% endif %}
+           {% endif %}
+           {% endfor %}
 
         </thead>
         <tbody class="table-group-divider">
-          {% for information in search_data %}
-          
+          {% for arr_search_data in search_data %}
+          {% for information in arr_search_data %}
             {% if information %}
 
           <tr>
             <td>{{ information.getPartNumber() }}</td>
             <td>{{ information.getIdOriginalNumber().getOriginalNumber()|default('') }}</td>
             <td>{{ information.getManufacturer() }}</td>
-            <td class="text-break">{{ information.getAdditionalDescriptions() }}</td>
+            <td>{{ information.getAdditionalDescriptions() }}</td>
             <td>{{ information.getIdPartName().getPartName()|default('') }}</td>
             <td>{{ information.getIdCarBrand().getCarBrand()|default('') }}</td>
             <td>{{ information.getIdSide().getSide()|default('') }}</td>
@@ -176,14 +177,22 @@
 
             </form>
           </tr>
-            {% endif %}
+          {% endif %}
           {% endfor %}
-          {% if search_data is empty %}
+          {% endfor %}
+
+          {% for arr_search_data in search_data %}
+          {% if arr_search_data is empty != arr_search_data is same as NULL%}
           <h2>Данные не найдены.</h2>
           {% endif %}
-          {% if search_data is same as NULL %}
+          {% endfor %}
+
+          {% if search_data[0] is defined  %}
+          {% if search_data[0] is same as NULL  %}
           <h2>Видите параметры в поиск</h2>
           {% endif %}
+          {% endif %}
+
         </tbody>
       </table>
     </div>
