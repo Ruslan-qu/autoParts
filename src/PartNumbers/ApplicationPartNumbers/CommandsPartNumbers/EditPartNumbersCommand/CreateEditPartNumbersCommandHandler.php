@@ -70,8 +70,11 @@ final class CreateEditPartNumbersCommandHandler
             '',
             $createPartNumbersCommand->getManufacturer()
         ));
+        $arr_edit_part_number['part_number'] = $part_number;
 
         if (!empty($manufacturer)) {
+            $arr_edit_part_number['manufacturer'] = $manufacturer;
+
             $input = [
                 'manufacturer_error' => [
                     'Type' => $manufacturer,
@@ -101,6 +104,8 @@ final class CreateEditPartNumbersCommandHandler
 
         $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
         if (!empty($additional_descriptions)) {
+            $arr_edit_part_number['additional_descriptions'] = $additional_descriptions;
+
             $input = [
                 'additional_descriptions_error' => [
                     'Type' => $additional_descriptions,
@@ -129,18 +134,39 @@ final class CreateEditPartNumbersCommandHandler
         }
 
         $id_part_name = $createPartNumbersCommand->getIdPartName();
+        if (!empty($id_part_name)) {
+            $arr_edit_part_number['id_part_name'] = $id_part_name;
+        }
 
         $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
+        if (!empty($id_car_brand)) {
+            $arr_edit_part_number['id_car_brand'] = $id_car_brand;
+        }
 
         $id_side = $createPartNumbersCommand->getIdSide();
+        if (!empty($id_side)) {
+            $arr_edit_part_number['id_side'] = $id_side;
+        }
 
         $id_body = $createPartNumbersCommand->getIdBody();
+        if (!empty($id_body)) {
+            $arr_edit_part_number['id_body'] = $id_body;
+        }
 
         $id_axle = $createPartNumbersCommand->getIdAxle();
+        if (!empty($id_axle)) {
+            $arr_edit_part_number['id_axle'] = $id_axle;
+        }
 
         $id_in_stock = $createPartNumbersCommand->getIdInStock();
+        if (!empty($id_in_stock)) {
+            $arr_edit_part_number['id_in_stock'] = $id_in_stock;
+        }
 
         $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
+        if (!empty($id_part_name)) {
+            $arr_edit_part_number['id_original_number'] = $id_original_number;
+        }
 
         if (!empty($data_errors_part_number)) {
 
@@ -162,6 +188,9 @@ final class CreateEditPartNumbersCommandHandler
             return null;
         }
 
+
+        //dd($arr_edit_part_number);
+
         $edit_part_number->setPartNumber($part_number);
         $edit_part_number->setManufacturer($manufacturer);
         $edit_part_number->setAdditionalDescriptions($additional_descriptions);
@@ -173,7 +202,7 @@ final class CreateEditPartNumbersCommandHandler
         $edit_part_number->setIdInStock($id_in_stock);
         $edit_part_number->setIdOriginalNumber($id_original_number);
 
-        $successfully_edit = $this->part_numbers_from_manufacturers_repository->edit($edit_part_number);
+        $successfully_edit = $this->part_numbers_from_manufacturers_repository->edit($arr_edit_part_number);
 
         $successfully['successfully'] = $successfully_edit;
 

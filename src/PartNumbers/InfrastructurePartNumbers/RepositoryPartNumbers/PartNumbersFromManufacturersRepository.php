@@ -38,8 +38,8 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($partNumbersFromManufacturers);
 
-        $exists_counterparty = $this->count($entityData);
-        if ($exists_counterparty == 0) {
+        $exists_part_numbers = $this->count($entityData);
+        if ($exists_part_numbers == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
@@ -50,13 +50,12 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     /**
      * @return array Возвращается массив с данными об успешном изменения  
      */
-    public function edit(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
+    public function edit(array $arr_edit_part_number): array
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
-        $entityData = $entityManager->getUnitOfWork();
-        dd($entityData);
-        $exists_part_numbers = $this->count($entityData);
+
+        $exists_part_numbers = $this->count($arr_edit_part_number);
         if ($exists_part_numbers == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);

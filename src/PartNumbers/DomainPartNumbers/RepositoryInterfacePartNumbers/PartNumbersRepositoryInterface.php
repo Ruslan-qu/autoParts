@@ -8,7 +8,7 @@ interface  PartNumbersRepositoryInterface
 {
     public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
 
-    public function edit(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
+    public function edit(array $arr_edit_part_number): array;
 
     public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
 
