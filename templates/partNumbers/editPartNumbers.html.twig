@@ -6,39 +6,39 @@
 
 {% block Responsive_behaviors %}
 <nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
-  {% endblock Responsive_behaviors %}
+{% endblock Responsive_behaviors %}
 
-  {% block form %}
+{% block form %}
 
    {#Переменный для вывода данных в форме #}
-  {% set part_number_find_id = data_edit_part_numbers.getPartNumber()|default('') %}
-  {% set original_number_find_id = data_edit_part_numbers.getIdOriginalNumber().getOriginalNumber()|default('') %}
-  {% set manufacturer_find_id = data_edit_part_numbers.getManufacturer()|default('') %}
-  {% set additional_descriptions_find_id = data_edit_part_numbers.getAdditionalDescriptions()|default('') %}
-  {% set part_name_find_id = data_edit_part_numbers.getIdPartName().getId()|default('') %}
-  {% set car_brand_find_id = data_edit_part_numbers.getIdCarBrand().getId()|default('') %}
-  {% set side_find_id = data_edit_part_numbers.getIdSide().getId()|default('') %}
-  {% set body_find_id = data_edit_part_numbers.getIdBody().getId()|default('') %}
-  {% set axle_find_id = data_edit_part_numbers.getIdAxle().getId()|default('') %}
-  {% set in_stock_find_id = data_edit_part_numbers.getIdInStock().getId()|default('') %}
-  {% set id_find_id = data_edit_part_numbers.getId()|default('') %}
-  {% set id_original_number_find_id = data_edit_part_numbers.getIdOriginalNumber().getId()|default('') %}
 
-  {% if data_edit_part_numbers is iterable %}
-    {% set part_number_find_id = data_edit_part_numbers.part_number|default('') %}
-    {% set original_number_find_id = data_edit_part_numbers.original_number|default('') %}
-    {% set manufacturer_find_id = data_edit_part_numbers.manufacturer|default('') %}
-    {% set additional_descriptions_find_id = data_edit_part_numbers.additional_descriptions|default('') %}
-    {% set part_name_find_id = data_edit_part_numbers.id_part_name|default('') %}
-    {% set car_brand_find_id = data_edit_part_numbers.id_car_brand|default('') %}
-    {% set side_find_id = data_edit_part_numbers.id_side|default('') %}
-    {% set body_find_id = data_edit_part_numbers.id_body|default('') %}
-    {% set axle_find_id = data_edit_part_numbers.id_axle|default('') %}
-    {% set in_stock_find_id = data_edit_part_numbers.id_in_stock|default('') %}
-    {% set id_find_id = data_edit_part_numbers.id|default('') %}
-    {% set id_original_number_find_id = data_edit_part_numbers.id_original_number|default('') %}
-
-  {% endif %}
+{% if data_form_edit_part_numbers is iterable %}
+  {% set part_number_find_id = data_form_edit_part_numbers.part_number|default('') %}
+  {% set original_number_find_id = data_form_edit_part_numbers.original_number|default('') %}
+  {% set manufacturer_find_id = data_form_edit_part_numbers.manufacturer|default('') %}
+  {% set additional_descriptions_find_id = data_form_edit_part_numbers.additional_descriptions|default('') %}
+  {% set part_name_find_id = data_form_edit_part_numbers.id_part_name|default('') %}
+  {% set car_brand_find_id = data_form_edit_part_numbers.id_car_brand|default('') %}
+  {% set side_find_id = data_form_edit_part_numbers.id_side|default('') %}
+  {% set body_find_id = data_form_edit_part_numbers.id_body|default('') %}
+  {% set axle_find_id = data_form_edit_part_numbers.id_axle|default('') %}
+  {% set in_stock_find_id = data_form_edit_part_numbers.id_in_stock|default('') %}
+  {% set id_find_id = data_form_edit_part_numbers.id|default('') %}
+  {% set id_original_number_find_id = data_form_edit_part_numbers.id_original_number|default('') %}
+{% else %}
+  {% set part_number_find_id = data_form_edit_part_numbers.getPartNumber()|default('') %}
+  {% set original_number_find_id = data_form_edit_part_numbers.getIdOriginalNumber().getOriginalNumber()|default('') %}
+  {% set manufacturer_find_id = data_form_edit_part_numbers.getManufacturer()|default('') %}
+  {% set additional_descriptions_find_id = data_form_edit_part_numbers.getAdditionalDescriptions()|default('') %}
+  {% set part_name_find_id = data_form_edit_part_numbers.getIdPartName().getId()|default('') %}
+  {% set car_brand_find_id = data_form_edit_part_numbers.getIdCarBrand().getId()|default('') %}
+  {% set side_find_id = data_form_edit_part_numbers.getIdSide().getId()|default('') %}
+  {% set body_find_id = data_form_edit_part_numbers.getIdBody().getId()|default('') %}
+  {% set axle_find_id = data_form_edit_part_numbers.getIdAxle().getId()|default('') %}
+  {% set in_stock_find_id = data_form_edit_part_numbers.getIdInStock().getId()|default('') %}
+  {% set id_find_id = data_form_edit_part_numbers.getId()|default('') %}
+  {% set id_original_number_find_id = data_form_edit_part_numbers.getIdOriginalNumber().getId()|default('') %}
+{% endif %}
 
   {#Форма изменения номеров деталей#}
 

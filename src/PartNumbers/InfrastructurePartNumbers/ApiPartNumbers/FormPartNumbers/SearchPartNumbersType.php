@@ -6,7 +6,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -58,18 +57,6 @@ class SearchPartNumbersType extends AbstractType
                     ])
                 ]
             ])
-            /*->add('additional_descriptions', TextareaType::class, [
-            'label' => 'Описание детали',
-            'required' => false,
-            'constraints' => [
-                new Regex([
-                    'pattern' => '/^[а-яё\w\s]*$/ui',
-                    //'match' => false,
-                    'message' => 'Форма содержит 
-                недопустимые символы'
-                ]),
-            ]
-        ])*/
             ->add('id_part_name', EntityType::class, [
                 'label' => 'Название детали',
                 'class' => PartName::class,

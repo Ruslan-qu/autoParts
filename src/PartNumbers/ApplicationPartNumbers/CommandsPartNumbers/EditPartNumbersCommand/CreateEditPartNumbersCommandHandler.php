@@ -4,7 +4,6 @@ namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNum
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -187,9 +186,6 @@ final class CreateEditPartNumbersCommandHandler
 
             return null;
         }
-
-
-        //dd($arr_edit_part_number);
 
         $edit_part_number->setPartNumber($part_number);
         $edit_part_number->setManufacturer($manufacturer);

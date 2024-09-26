@@ -13,7 +13,6 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumb
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\CreateOriginalRoomsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\CreateFindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchPartNumbersQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\CreateEditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\CreateSavePartNumbersCommandHandler;
@@ -126,29 +125,27 @@ class PartNumbersController extends AbstractController
 
         /*Валидация формы */
         $form_edit_part_numbers->handleRequest($request);
-        //dd($form_edit_part_numbers->getData());
 
         if (empty($form_edit_part_numbers->getData())) {
 
-            $data_edit_part_numbers = $createFindIdPartNumbersQueryHandler
+            $data_form_edit_part_numbers = $createFindIdPartNumbersQueryHandler
                 ->handler(new CreatePartNumbersQuery($request->query->all()));
-            if (empty($data_edit_part_numbers)) {
+            if (empty($data_form_edit_part_numbers)) {
                 $this->addFlash('data_part_numbers', 'Автодеталь не найден');
 
                 return $this->redirectToRoute('search_part_numbers');
             }
         }
-
+        //dd($data_form_edit_part_numbers);
         if (!empty($request->request->all())) {
-            $data_edit_part_numbers = $request->request->all()['edit_part_numbers'];
+            $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
         }
 
 
-        // $data_form_edit_part_numbers = [];
         $arr_saving_information = [];
         if ($form_edit_part_numbers->isSubmitted()) {
             if ($form_edit_part_numbers->isValid()) {
-
+                $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
                 $data_edit_part_numbers = $form_edit_part_numbers->getData();
 
                 if (!empty($data_edit_part_numbers['original_number'])) {
@@ -177,12 +174,12 @@ class PartNumbersController extends AbstractController
             }
         }
 
-        // dd($data_edit_part_numbers);
+        //dd($data_form_edit_part_numbers);
         return $this->render('partNumbers/editPartNumbers.html.twig', [
             'title_logo' => 'Изменение данных автодеталей',
             'form_edit_part_numbers' => $form_edit_part_numbers->createView(),
             'arr_saving_information' => $arr_saving_information,
-            'data_edit_part_numbers' => $data_edit_part_numbers
+            'data_form_edit_part_numbers' => $data_form_edit_part_numbers
         ]);
     }
 }

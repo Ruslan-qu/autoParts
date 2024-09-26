@@ -5,7 +5,6 @@ namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
-use PhpParser\Node\Expr\Cast\String_;
 
 abstract class PartNumbersCommand
 {

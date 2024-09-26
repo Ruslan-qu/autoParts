@@ -39,6 +39,7 @@ final class CreateSaveOriginalRoomsCommandHandler
 
         $input = [
             'original_number_error' => [
+                'NotBlank' => $original_number,
                 'Type' => $original_number,
                 'Regex' => $original_number,
             ]
@@ -46,6 +47,9 @@ final class CreateSaveOriginalRoomsCommandHandler
 
         $constraint = new Collection([
             'original_number_error' => new Collection([
+                'NotBlank' => new NotBlank(
+                    message: 'Форма Оригинальный номер не может быть пустой'
+                ),
                 'Type' => new Type('string'),
                 'Regex' => new Regex(
                     pattern: '/^[\da-z]*$/i',
