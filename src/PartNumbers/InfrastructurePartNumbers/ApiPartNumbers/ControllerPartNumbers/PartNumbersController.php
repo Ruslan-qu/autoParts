@@ -19,6 +19,7 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCo
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\CreateEditOriginalRoomsCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\CreateSaveOriginalRoomsCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateFindOneByOriginalRoomsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartNumbersCommand\CreateDeletePartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\CreateOriginalRoomsCommand;
 
 class PartNumbersController extends AbstractController
@@ -136,7 +137,7 @@ class PartNumbersController extends AbstractController
                 return $this->redirectToRoute('search_part_numbers');
             }
         }
-        //dd($data_form_edit_part_numbers);
+
         if (!empty($request->request->all())) {
             $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
         }
@@ -174,12 +175,39 @@ class PartNumbersController extends AbstractController
             }
         }
 
-        //dd($data_form_edit_part_numbers);
+
         return $this->render('partNumbers/editPartNumbers.html.twig', [
             'title_logo' => 'Изменение данных автодеталей',
             'form_edit_part_numbers' => $form_edit_part_numbers->createView(),
             'arr_saving_information' => $arr_saving_information,
             'data_form_edit_part_numbers' => $data_form_edit_part_numbers
         ]);
+    }
+
+    /*Удаление автодетали*/
+    #[Route('/deletePartNumbers', name: 'delete_part_numbers')]
+    public function deletePartNumbers(
+        Request $request,
+        CreateDeletePartNumbersCommandHandler $createDeletePartNumbersCommandHandler
+    ): Response {
+
+        $arr_saving_information = $createDeletePartNumbersCommandHandler
+            ->handler(new CreatePartNumbersCommand($request->query->all()));
+
+        if (empty($arr_saving_information)) {
+
+            $this->addFlash('data_part_numbers', 'Данные деталей не найдены');
+        } else {
+
+            foreach ($arr_saving_information as $arrValue) {
+                foreach ($arrValue as $value) {
+                    $this->addFlash('data_part_numbers', $value);
+                }
+            }
+        }
+
+
+
+        return $this->redirectToRoute('search_part_numbers');
     }
 }

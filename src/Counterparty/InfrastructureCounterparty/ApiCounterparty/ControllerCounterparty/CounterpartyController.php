@@ -96,18 +96,21 @@ class CounterpartyController extends AbstractController
         /*Валидация формы */
         $form_edit_counterparty->handleRequest($request);
 
-        if (!empty($request->query->all())) {
+        if (empty($form_edit_counterparty->getData())) {
 
-            $find_id_edit_counterparty = $createFindIdCounterpartyQueryHandler
+            $data_form_edit_counterparty = $createFindIdCounterpartyQueryHandler
                 ->handler(new CreateCounterpartyQuery($request->query->all()));
-            if (empty($find_id_edit_counterparty)) {
+            if (empty($data_form_edit_counterparty)) {
                 $this->addFlash('data_counterparty', 'Поставщик не найден');
 
                 return $this->redirectToRoute('search_counterparty');
             }
         }
 
-        $data_form_edit_counterparty = [];
+        if (!empty($request->request->all())) {
+            $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
+        }
+
         $arr_saving_information = [];
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {
@@ -123,7 +126,6 @@ class CounterpartyController extends AbstractController
             'title_logo' => 'Изменение данных поставщика',
             'form_edit_counterparty' => $form_edit_counterparty->createView(),
             'arr_saving_information' => $arr_saving_information,
-            'find_id_edit_counterparty' => $find_id_edit_counterparty,
             'data_form_edit_counterparty' => $data_form_edit_counterparty,
         ]);
     }

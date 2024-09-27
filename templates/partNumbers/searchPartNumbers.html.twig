@@ -41,13 +41,6 @@
             {{ form_errors(form_search_part_numbers.manufacturer) |nl2br }}
           </div>
 
-
-
-       {#   <div class="col-sm-12 col-md-6 col-lg">
-            <div class="lb">{{ form_label(form_search_part_numbers.additional_descriptions) }}</div>
-            {{ form_widget(form_search_part_numbers.additional_descriptions, { 'attr': {'class': 'w-100'} }) }}
-            {{ form_errors(form_search_part_numbers.additional_descriptions) |nl2br }}
-          </div>#}
         </div>
       </div>
 
@@ -170,7 +163,7 @@
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
-            <form action="/deleteCounterparty" name="delete_counterparty">
+            <form action="/deletePartNumbers" name="delete_part_numbers">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ information.getId() }}">Удалить</button></td>

@@ -10,7 +10,7 @@ interface  PartNumbersRepositoryInterface
 
     public function edit(array $arr_edit_part_number): array;
 
-    public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
+    public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): ?array;
 
     public function numberDoubles(array $array): int;
 
