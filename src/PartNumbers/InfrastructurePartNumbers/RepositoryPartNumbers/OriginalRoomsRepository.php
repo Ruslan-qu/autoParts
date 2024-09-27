@@ -67,34 +67,6 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     }
 
     /**
-     * @return array Возвращается массив с данными об удаление 
-     */
-    public function delete(OriginalRooms $originalRooms): array
-    {
-        $entityManager = $this->getEntityManager();
-        $entityManager->remove($originalRooms);
-        $entityManager->flush();
-
-        $entityData = $entityManager->contains($originalRooms);
-        if ($entityData != false) {
-            $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
-
-        return $successfully = ['delete' => 'Оригинальный номер удален'];
-    }
-
-
-    /**
-     * @return OriginalRooms[]|NULL Возвращает массив объектов или ноль
-     */
-    public function findAllOriginalRooms(): ?array
-    {
-        return $this->findBy([], ['id' => 'ASC']);
-    }
-
-    /**
      * @return OriginalRooms|NULL Возвращает массив объектов или ноль
      */
     public function findOneByOriginalRooms(string $original_number): ?OriginalRooms

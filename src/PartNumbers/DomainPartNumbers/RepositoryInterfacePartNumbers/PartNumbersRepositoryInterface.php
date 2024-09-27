@@ -14,8 +14,6 @@ interface  PartNumbersRepositoryInterface
 
     public function numberDoubles(array $array): int;
 
-    public function findAllPartNumbersFromManufacturers(): ?array;
-
     public function findByPartNumbers(array $parameters, string $where): ?array;
 
     public function findPartNumbersFromManufacturers(int $id): ?PartNumbersFromManufacturers;

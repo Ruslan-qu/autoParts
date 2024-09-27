@@ -10,11 +10,7 @@ interface  OriginalRoomsRepositoryInterface
 
     public function edit(OriginalRooms $partNumbersFromManufacturers): array;
 
-    public function delete(OriginalRooms $partNumbersFromManufacturers): array;
-
     public function numberDoubles(array $array): int;
-
-    public function findAllOriginalRooms(): ?array;
 
     public function findOneByOriginalRooms(string $original_number): ?OriginalRooms;
 

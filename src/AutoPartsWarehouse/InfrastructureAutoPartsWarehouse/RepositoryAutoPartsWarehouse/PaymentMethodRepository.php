@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repository;
+namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAutoPartsWarehouse;
 
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\AutoPartsWarehouseEntity\PaymentMethod;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 
 /**
  * @extends ServiceEntityRepository<PaymentMethod>

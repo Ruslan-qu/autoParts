@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity\AutoPartsWarehouseEntity;
+namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse;
 
-use App\Repository\PaymentMethodRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAutoPartsWarehouse\PaymentMethodRepository;
 
 #[ORM\Entity(repositoryClass: PaymentMethodRepository::class)]
 class PaymentMethod

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Form;
+namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Regex;
-use App\Entity\AutoPartsWarehouseEntity\PaymentMethod;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -15,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 
 class SaveAutoPartsManuallyType extends AbstractType
 {
@@ -45,7 +45,7 @@ class SaveAutoPartsManuallyType extends AbstractType
             ->add('id_counterparty', EntityType::class, [
                 'label' => 'Поставщик',
                 'class' => Counterparty::class,
-                'choice_label' => 'counterparty',
+                'choice_label' => 'name_counterparty',
                 'required' => false,
             ])
             ->add('quantity', IntegerType::class, [
@@ -58,7 +58,7 @@ class SaveAutoPartsManuallyType extends AbstractType
                 ],
             ])
             ->add('price', NumberType::class, [
-                'label' => 'Цена общая',
+                'label' => 'Цена',
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^[\d]+[\.,]?[\d]*$/',
@@ -71,7 +71,7 @@ class SaveAutoPartsManuallyType extends AbstractType
                 'widget' => 'single_text'
             ])
             ->add('id_payment_method', EntityType::class, [
-                'label' => 'Способ оплаты',
+                'label' => 'Сп. оплаты',
                 'class' => PaymentMethod::class,
                 'choice_label' => 'method',
                 'required' => false,
