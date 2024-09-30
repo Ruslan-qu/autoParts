@@ -22,7 +22,7 @@ class SaveAutoPartsManuallyType extends AbstractType
     {
         $builder
 
-            ->add('part_numbers', TextType::class, [
+            ->add('id_details', TextType::class, [
                 'label' => '№ Детали',
                 'constraints' => [
                     new Regex([
@@ -32,11 +32,11 @@ class SaveAutoPartsManuallyType extends AbstractType
                     ]),
                 ]
             ])
-            ->add('manufacturers', TextType::class, [
+            ->add('id_manufacturer', TextType::class, [
                 'label' => 'Производитель',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[\da-z]*[ \-&]?[\da-z]*$/i',
+                        'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит недопустимые символы'
                     ]),
@@ -66,8 +66,8 @@ class SaveAutoPartsManuallyType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('data_document', DateType::class, [
-                'label' => 'Дата нак-ой',
+            ->add('date_receipt_auto_parts_warehouse', DateType::class, [
+                'label' => 'Дата прихода',
                 'widget' => 'single_text'
             ])
             ->add('id_payment_method', EntityType::class, [
