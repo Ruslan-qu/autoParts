@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -25,20 +26,27 @@ class SaveAutoPartsManuallyType extends AbstractType
             ->add('id_details', TextType::class, [
                 'label' => '№ Детали',
                 'constraints' => [
+                    new NotBlank([
+                        'message' => 'Форма не может быть 
+                        пустой'
+                    ]),
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
                 ]
             ])
             ->add('id_manufacturer', TextType::class, [
                 'label' => 'Производитель',
+                'required' => false,
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
                 ]
             ])
@@ -51,30 +59,45 @@ class SaveAutoPartsManuallyType extends AbstractType
             ->add('quantity', IntegerType::class, [
                 'label' => 'Кол-во',
                 'constraints' => [
+                    new NotBlank([
+                        'message' => 'Форма не может быть 
+                        пустой'
+                    ]),
                     new Regex([
                         'pattern' => '/^\d+$/',
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
                 ],
             ])
             ->add('price', NumberType::class, [
                 'label' => 'Цена',
                 'constraints' => [
+                    new NotBlank([
+                        'message' => 'Форма не может быть 
+                        пустой'
+                    ]),
                     new Regex([
                         'pattern' => '/^[\d]+[\.,]?[\d]*$/',
-                        'message' => 'Форма содержит недопустимые символы'
+                        'message' => 'Форма содержит 
+                        недопустимые символы'
                     ]),
                 ],
             ])
             ->add('date_receipt_auto_parts_warehouse', DateType::class, [
                 'label' => 'Дата прихода',
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Форма не может быть 
+                        пустой'
+                    ])
+                ],
             ])
             ->add('id_payment_method', EntityType::class, [
                 'label' => 'Сп. оплаты',
                 'class' => PaymentMethod::class,
-                'choice_label' => 'method',
-                'required' => false,
+                'choice_label' => 'method'
             ])
             ->add('button_save_manually', SubmitType::class);
     }
