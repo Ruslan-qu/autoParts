@@ -17,7 +17,7 @@ abstract class AutoPartsWarehouseCommand
     private function load(array $data)
     {
         $typeResolver = TypeResolver::create();
-
+        dd(gettype($data['price']));
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
@@ -27,6 +27,7 @@ abstract class AutoPartsWarehouseCommand
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
+
                 if ($type == 'object') {
 
                     $className = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))

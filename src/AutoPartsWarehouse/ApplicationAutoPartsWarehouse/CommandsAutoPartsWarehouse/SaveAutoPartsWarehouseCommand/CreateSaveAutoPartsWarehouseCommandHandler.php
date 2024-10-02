@@ -28,39 +28,76 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
     public function handler(CreateAutoPartsWarehouseCommand $createAutoPartsWarehouseCommand): array
     {
 
-        $Quantity = $createAutoPartsWarehouseCommand->getQuantity();
+        $quantity = $createAutoPartsWarehouseCommand->getQuantity();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
         $input = [
-            'part_number_error' => [
-                'NotBlank' => $part_number,
-                'Type' => $part_number,
-                'Regex' => $part_number,
+            'quantity_error' => [
+                'NotBlank' => $quantity,
+                'Type' => $quantity,
+                'Regex' => $quantity,
             ]
         ];
 
         $constraint = new Collection([
-            'part_number_error' => new Collection([
+            'quantity_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Номер детали не может быть пустой'
+                    message: 'Форма Количество не может быть 
+                    пустой'
                 ),
-                'Type' => new Type('string'),
+                'Type' => new Type('int'),
                 'Regex' => new Regex(
-                    pattern: '/^[\da-z]*$/i',
-                    message: 'Форма Номер детали содержит недопустимые символы'
+                    pattern: '/^\d+$/',
+                    message: 'Форма Количество содержит 
+                    недопустимые символы'
                 )
             ])
         ]);
 
-        $data_errors_part_number = [];
+        $data_errors_auto_parts_warehouse = [];
         foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-            $data_errors_part_number[$key] = [
+            $data_errors_auto_parts_warehouse[$key] = [
                 $value_error->getPropertyPath() => $value_error->getMessage()
             ];
         }
+
+        $price = $createAutoPartsWarehouseCommand->getPrice();
+
+        $input = [
+            'price_error' => [
+                'NotBlank' => $price,
+                'Type' => $price,
+                'Regex' => $price,
+            ]
+        ];
+
+        $constraint = new Collection([
+            'price_error' => new Collection([
+                'NotBlank' => new NotBlank(
+                    message: 'Форма Цена не может быть 
+                    пустой'
+                ),
+                'Type' => new Type('string'),
+                'Regex' => new Regex(
+                    pattern: '/^[\d]+[\.,]?[\d]*$/',
+                    message: 'Форма Цена содержит 
+                    недопустимые символы'
+                )
+            ])
+        ]);
+        $data_errors_price = [];
+        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+
+            $data_errors_price[$key] = [
+                $value_error->getPropertyPath() => $value_error->getMessage()
+            ];
+        }
+
+        $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_price);
+
 
         $manufacturer = strtolower(preg_replace(
             '#\s#',
@@ -96,34 +133,6 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
             $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
         }
 
-        $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
-        if (!empty($additional_descriptions)) {
-            $input = [
-                'additional_descriptions_error' => [
-                    'Type' => $additional_descriptions,
-                    'Regex' => $additional_descriptions,
-                ]
-            ];
-
-            $constraint = new Collection([
-                'additional_descriptions_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^[а-яё\w\s]*$/ui',
-                        message: 'Форма Описание детали содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_additional_descriptions = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_additional_descriptions[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_additional_descriptions);
-        }
 
         $id_part_name = $createPartNumbersCommand->getIdPartName();
 
