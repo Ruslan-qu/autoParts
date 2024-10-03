@@ -26,7 +26,7 @@ abstract class AutoPartsWarehouseCommand
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
-                settype($value, $type);
+
 
                 if ($type == 'object') {
 
@@ -42,6 +42,10 @@ abstract class AutoPartsWarehouseCommand
                     }
                 }
 
+                if ($type == 'double' || $type == 'float') {
+                    # code...
+                }
+                settype($value, $type);
                 $this->$key = $value;
             }
         }
