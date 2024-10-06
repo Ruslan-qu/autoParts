@@ -14,20 +14,15 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 
 final class CreateSaveAutoPartsWarehouseCommandHandler
 {
-    private $auto_parts_warehouse_repository;
-    private $auto_parts_warehouse;
 
     public function __construct(
-        AutoPartsWarehouseRepository $autoPartsWarehouseRepository,
-        AutoPartsWarehouse $autoPartsWarehouse
-    ) {
-        $this->auto_parts_warehouse_repository = $autoPartsWarehouseRepository;
-        $this->auto_parts_warehouse = $autoPartsWarehouse;
-    }
+        private AutoPartsWarehouseRepository $autoPartsWarehouseRepository,
+        private AutoPartsWarehouse $autoPartsWarehouse
+    ) {}
 
     public function handler(CreateAutoPartsWarehouseCommand $createAutoPartsWarehouseCommand): array
     {
-
+        dd($createAutoPartsWarehouseCommand);
         $quantity = $createAutoPartsWarehouseCommand->getQuantity();
 
         /* Подключаем валидацию и прописываем условида валидации */

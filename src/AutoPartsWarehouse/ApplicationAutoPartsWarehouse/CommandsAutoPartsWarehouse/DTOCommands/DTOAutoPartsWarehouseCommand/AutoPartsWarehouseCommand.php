@@ -4,7 +4,7 @@ namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoParts
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 abstract class AutoPartsWarehouseCommand
 {
@@ -17,20 +17,25 @@ abstract class AutoPartsWarehouseCommand
     private function load(array $data)
     {
         $typeResolver = TypeResolver::create();
-        dd(gettype($data['price']));
+
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
 
+                if ($type == 'double' || $type == 'float') {
+                    $value = $value * 100;
+                }
+
+                settype($value, $type);
 
                 if ($type == 'object') {
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
+                    $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
                         ->getBaseType()
                         ->getClassName();
                     if ($className !== get_class($value)) {
@@ -42,10 +47,7 @@ abstract class AutoPartsWarehouseCommand
                     }
                 }
 
-                if ($type == 'double' || $type == 'float') {
-                    # code...
-                }
-                settype($value, $type);
+
                 $this->$key = $value;
             }
         }
