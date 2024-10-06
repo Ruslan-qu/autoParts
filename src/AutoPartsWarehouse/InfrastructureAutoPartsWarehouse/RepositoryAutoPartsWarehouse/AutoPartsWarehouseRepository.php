@@ -4,6 +4,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAuto
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 /**
@@ -16,28 +17,23 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository
         parent::__construct($registry, AutoPartsWarehouse::class);
     }
 
-    //    /**
-    //     * @return AutoPartsWarehouse[] Returns an array of AutoPartsWarehouse objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return array Возвращается массив с данными об успешном сохранении
+     */
+    public function save(AutoPartsWarehouse $autoPartsWarehouse): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($autoPartsWarehouse);
+        $entityManager->flush();
 
-    //    public function findOneBySomeField($value): ?AutoPartsWarehouse
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse);
+
+        $exists_part_numbers = $this->count($entityData);
+        if ($exists_part_numbers == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+        return $successfully = ['save' => 'Данные в базе данных успешно сохранены'];
+    }
 }

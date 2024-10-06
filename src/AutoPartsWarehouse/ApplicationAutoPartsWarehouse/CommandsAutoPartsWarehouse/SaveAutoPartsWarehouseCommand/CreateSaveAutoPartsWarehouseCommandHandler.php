@@ -22,7 +22,7 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
 
     public function handler(CreateAutoPartsWarehouseCommand $createAutoPartsWarehouseCommand): array
     {
-        dd($createAutoPartsWarehouseCommand);
+        // dd($createAutoPartsWarehouseCommand);
         $quantity = $createAutoPartsWarehouseCommand->getQuantity();
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -59,8 +59,8 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
             ];
         }
 
-        $price = $createAutoPartsWarehouseCommand->getPrice();
 
+        $price = $createAutoPartsWarehouseCommand->getPrice();
         $input = [
             'price_error' => [
                 'NotBlank' => $price,
@@ -90,90 +90,93 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
                 $value_error->getPropertyPath() => $value_error->getMessage()
             ];
         }
+        $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_price);
 
-        $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_price);
+
+        $counterparty = $createAutoPartsWarehouseCommand->getIdCounterparty();
 
 
-        $manufacturer = strtolower(preg_replace(
-            '#\s#',
-            '',
-            $createPartNumbersCommand->getManufacturer()
-        ));
+        $part_number = $createAutoPartsWarehouseCommand->getIdDetails();
+        $input = [
+            'NotBlank' => $part_number,
+        ];
 
-        if (!empty($manufacturer)) {
-            $input = [
-                'manufacturer_error' => [
-                    'Type' => $manufacturer,
-                    'Regex' => $manufacturer
-                ]
+        $constraint = new Collection([
+            'NotBlank' => new NotBlank(
+                message: 'Форма № Детали не может быть 
+                    пустой'
+            )
+        ]);
+        $data_errors_part_number = [];
+        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+
+            $data_errors_part_number[$key] = [
+                $value_error->getPropertyPath() => $value_error->getMessage()
             ];
-
-            $constraint = new Collection([
-                'manufacturer_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^[\da-z]*$/i',
-                        message: 'Форма Производитель содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_manufacturer = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_manufacturer[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
         }
+        $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_part_number);
 
 
-        $id_part_name = $createPartNumbersCommand->getIdPartName();
+        $manufacturer = $createAutoPartsWarehouseCommand->getIdManufacturer();
 
-        $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
 
-        $id_side = $createPartNumbersCommand->getIdSide();
+        $date_receipt_auto_parts_warehouse = $createAutoPartsWarehouseCommand->getDateReceiptAutoPartsWarehouse();
+        $input = [
+            'NotBlank' => $date_receipt_auto_parts_warehouse,
+        ];
 
-        $id_body = $createPartNumbersCommand->getIdBody();
+        $constraint = new Collection([
+            'NotBlank' => new NotBlank(
+                message: 'Форма Дата прихода не может быть 
+                    пустой'
+            )
+        ]);
+        $data_errors_date_receipt_auto_parts_warehouse = [];
+        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-        $id_axle = $createPartNumbersCommand->getIdAxle();
+            $data_errors_date_receipt_auto_parts_warehouse[$key] = [
+                $value_error->getPropertyPath() => $value_error->getMessage()
+            ];
+        }
+        $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_date_receipt_auto_parts_warehouse);
 
-        $id_in_stock = $createPartNumbersCommand->getIdInStock();
 
-        $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
+        $payment_method = $createAutoPartsWarehouseCommand->getIdPaymentMethod();
+        $input = [
+            'NotBlank' => $payment_method,
+        ];
 
-        if (!empty($data_errors_part_number)) {
+        $constraint = new Collection([
+            'NotBlank' => new NotBlank(
+                message: 'Форма Способ оплаты не может быть 
+                    пустой'
+            )
+        ]);
+        $data_errors_payment_method = [];
+        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+
+            $data_errors_payment_method[$key] = [
+                $value_error->getPropertyPath() => $value_error->getMessage()
+            ];
+        }
+        $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_payment_method);
+
+        if (!empty($data_errors_auto_parts_warehouse)) {
 
             $json_arr_data_errors = json_encode($data_errors_part_number, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        /* Валидация дублей */
-        $number_doubles = $this->part_numbers_repository_interface
-            ->numberDoubles(['part_number' => $part_number]);
-
-        if ($number_doubles != 0) {
-
-            $arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Номер детали существует'
-            ];
-
-            return $arr_errors_number_doubles;
-        }
-
-        $this->entity_part_numbers_from_manufacturers->setPartNumber($part_number);
-        $this->entity_part_numbers_from_manufacturers->setManufacturer($manufacturer);
-        $this->entity_part_numbers_from_manufacturers->setAdditionalDescriptions($additional_descriptions);
-        $this->entity_part_numbers_from_manufacturers->setIdPartName($id_part_name);
-        $this->entity_part_numbers_from_manufacturers->setIdCarBrand($id_car_brand);
-        $this->entity_part_numbers_from_manufacturers->setIdSide($id_side);
-        $this->entity_part_numbers_from_manufacturers->setIdBody($id_body);
-        $this->entity_part_numbers_from_manufacturers->setIdAxle($id_axle);
-        $this->entity_part_numbers_from_manufacturers->setIdInStock($id_in_stock);
-        $this->entity_part_numbers_from_manufacturers->setIdOriginalNumber($id_original_number);
 
 
-        $successfully_save = $this->part_numbers_repository_interface->save($this->entity_part_numbers_from_manufacturers);
+        $this->autoPartsWarehouse->setQuantity($quantity);
+        $this->autoPartsWarehouse->setPrice($price);
+        $this->autoPartsWarehouse->setIdCounterparty($counterparty);
+        $this->autoPartsWarehouse->setIdDetails($part_number);
+        $this->autoPartsWarehouse->setIdManufacturer($manufacturer);
+        $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
+        $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
+
+        $successfully_save = $this->autoPartsWarehouseRepository->save($this->autoPartsWarehouse);
 
         $successfully['successfully'] = $successfully_save;
         return $successfully;
