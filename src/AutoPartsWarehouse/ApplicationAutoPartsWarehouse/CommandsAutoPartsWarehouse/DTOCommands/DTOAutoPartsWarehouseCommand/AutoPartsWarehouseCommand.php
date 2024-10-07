@@ -2,54 +2,81 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
+use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\MapAutoPartsWarehouseCommand;
 
-abstract class AutoPartsWarehouseCommand
+final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
+
 {
+    private int $id;
 
-    public function __construct(array $data = [])
+    private ?int $quantity = null;
+
+    private ?int $price = null;
+
+    private ?int $quantity_sold = null;
+
+    private ?int $Sales = null;
+
+    private ?Counterparty $id_counterparty = null;
+
+    private ?PartNumbersFromManufacturers $id_details = null;
+
+    private ?PartNumbersFromManufacturers $id_manufacturer = null;
+
+    private ?PaymentMethod $id_payment_method = null;
+
+    private ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
+
+    public function getId(): int
     {
-        $this->load($data);
+        return $this->id;
     }
 
-    private function load(array $data)
+    public function getQuantity(): ?int
     {
-        $typeResolver = TypeResolver::create();
+        return $this->quantity;
+    }
 
-        foreach ($data as $key => $value) {
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
 
-            if (!empty($value)) {
+    public function getQuantitySold(): ?int
+    {
+        return $this->quantity_sold;
+    }
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
+    public function getSales(): ?int
+    {
+        return $this->Sales;
+    }
 
-                if ($type == 'double' || $type == 'float') {
-                    $value = $value * 100;
-                }
+    public function getIdCounterparty(): ?Counterparty
+    {
+        return $this->id_counterparty;
+    }
 
-                settype($value, $type);
+    public function getIdDetails(): ?PartNumbersFromManufacturers
+    {
+        return $this->id_details;
+    }
 
-                if ($type == 'object') {
+    public function getIdManufacturer(): ?PartNumbersFromManufacturers
+    {
+        return $this->id_manufacturer;
+    }
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-                    if ($className !== get_class($value)) {
+    public function getIdPaymentMethod(): ?PaymentMethod
+    {
+        return $this->id_payment_method;
+    }
 
-                        $arr_data_errors = ['Error' => 'Значение ' . $value->scalar .
-                            ' должно быть объектом класса ' . $className . '.'];
-                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                    }
-                }
-
-
-                $this->$key = $value;
-            }
-        }
+    public function getDateReceiptAutoPartsWarehouse(): ?\DateTimeImmutable
+    {
+        return $this->date_receipt_auto_parts_warehouse;
     }
 }

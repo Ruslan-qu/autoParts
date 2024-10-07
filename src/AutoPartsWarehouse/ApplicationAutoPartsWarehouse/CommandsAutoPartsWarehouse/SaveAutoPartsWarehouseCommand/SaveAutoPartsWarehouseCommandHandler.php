@@ -8,22 +8,22 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAutoPartsWarehouse\AutoPartsWarehouseRepository;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\CreateAutoPartsWarehouseCommand;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 
-final class CreateSaveAutoPartsWarehouseCommandHandler
+final class SaveAutoPartsWarehouseCommandHandler
 {
 
     public function __construct(
-        private AutoPartsWarehouseRepository $autoPartsWarehouseRepository,
+        private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface,
         private AutoPartsWarehouse $autoPartsWarehouse
     ) {}
 
-    public function handler(CreateAutoPartsWarehouseCommand $createAutoPartsWarehouseCommand): array
+    public function handler(AutoPartsWarehouseCommand $autoPartsWarehouseCommand): array
     {
         // dd($createAutoPartsWarehouseCommand);
-        $quantity = $createAutoPartsWarehouseCommand->getQuantity();
+        $quantity = $autoPartsWarehouseCommand->getQuantity();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -60,7 +60,7 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
         }
 
 
-        $price = $createAutoPartsWarehouseCommand->getPrice();
+        $price = $autoPartsWarehouseCommand->getPrice();
         $input = [
             'price_error' => [
                 'NotBlank' => $price,
@@ -93,10 +93,10 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
         $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_price);
 
 
-        $counterparty = $createAutoPartsWarehouseCommand->getIdCounterparty();
+        $counterparty = $autoPartsWarehouseCommand->getIdCounterparty();
 
 
-        $part_number = $createAutoPartsWarehouseCommand->getIdDetails();
+        $part_number = $autoPartsWarehouseCommand->getIdDetails();
         $input = [
             'NotBlank' => $part_number,
         ];
@@ -117,10 +117,10 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
         $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_part_number);
 
 
-        $manufacturer = $createAutoPartsWarehouseCommand->getIdManufacturer();
+        $manufacturer = $autoPartsWarehouseCommand->getIdManufacturer();
 
 
-        $date_receipt_auto_parts_warehouse = $createAutoPartsWarehouseCommand->getDateReceiptAutoPartsWarehouse();
+        $date_receipt_auto_parts_warehouse = $autoPartsWarehouseCommand->getDateReceiptAutoPartsWarehouse();
         $input = [
             'NotBlank' => $date_receipt_auto_parts_warehouse,
         ];
@@ -141,7 +141,7 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
         $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_date_receipt_auto_parts_warehouse);
 
 
-        $payment_method = $createAutoPartsWarehouseCommand->getIdPaymentMethod();
+        $payment_method = $autoPartsWarehouseCommand->getIdPaymentMethod();
         $input = [
             'NotBlank' => $payment_method,
         ];
@@ -176,7 +176,7 @@ final class CreateSaveAutoPartsWarehouseCommandHandler
         $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
         $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
 
-        $successfully_save = $this->autoPartsWarehouseRepository->save($this->autoPartsWarehouse);
+        $successfully_save = $this->autoPartsWarehouseRepositoryInterface->save($this->autoPartsWarehouse);
 
         $successfully['successfully'] = $successfully_save;
         return $successfully;
