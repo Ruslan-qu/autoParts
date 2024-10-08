@@ -3,6 +3,7 @@
 namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse;
 
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\CreateFindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchPartNumbersQueryHandler;
@@ -29,23 +30,23 @@ class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
         }
         $map_arr_part_numbers_manufacturer = ['part_number' => $arr_part_number_manufactur['id_details']];
 
-        $object_original_number = $this->createSearchPartNumbersQueryHandler
+        $arr_part_numbers = $this->createSearchPartNumbersQueryHandler
             ->handler(new CreatePartNumbersQuery($map_arr_part_numbers_manufacturer));
 
-        if (empty($object_original_number)) {
+        if (empty($arr_part_numbers)) {
+
             $map_arr_part_numbers_manufacturer['manufacturer'] = $arr_part_number_manufactur['id_manufacturer'];
 
             $arr_saving_information['id'] = $this->createSavePartNumbersCommandHandler
                 ->handler(new CreatePartNumbersCommand($map_arr_part_numbers_manufacturer));
 
 
-            $object_original_number = $this->createFindIdPartNumbersQueryHandler
+            $arr_part_numbers[] = $this->createFindIdPartNumbersQueryHandler
                 ->handler(new CreatePartNumbersQuery($arr_saving_information));
-            dd($object_original_number);
         }
 
 
 
-        return new CreatePartNumbersQuery($arr_saving_information);
+        return $arr_part_numbers;
     }
 }

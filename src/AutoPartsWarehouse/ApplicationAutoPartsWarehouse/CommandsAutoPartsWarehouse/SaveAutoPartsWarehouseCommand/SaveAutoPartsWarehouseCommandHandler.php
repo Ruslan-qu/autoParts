@@ -20,7 +20,7 @@ final class SaveAutoPartsWarehouseCommandHandler
         private AutoPartsWarehouse $autoPartsWarehouse
     ) {}
 
-    public function handler(AutoPartsWarehouseCommand $autoPartsWarehouseCommand): array
+    public function handler(AutoPartsWarehouseCommand $autoPartsWarehouseCommand): ?int
     {
         // dd($createAutoPartsWarehouseCommand);
         $quantity = $autoPartsWarehouseCommand->getQuantity();
@@ -178,7 +178,7 @@ final class SaveAutoPartsWarehouseCommandHandler
 
         $successfully_save = $this->autoPartsWarehouseRepositoryInterface->save($this->autoPartsWarehouse);
 
-        $successfully['successfully'] = $successfully_save;
-        return $successfully;
+        $id = $successfully_save['save'];
+        return $id;
     }
 }

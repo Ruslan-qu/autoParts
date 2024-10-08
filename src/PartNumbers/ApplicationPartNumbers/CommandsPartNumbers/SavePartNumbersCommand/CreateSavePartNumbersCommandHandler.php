@@ -154,10 +154,6 @@ final class CreateSavePartNumbersCommandHandler
 
         if ($number_doubles != 0) {
 
-            /*$arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Номер детали существует'
-            ];*/
-
             return null;
         }
 

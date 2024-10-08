@@ -35,6 +35,6 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => 'Данные в базе данных успешно сохранены'];
+        return $successfully = ['save' => $entityData['id']];
     }
 }

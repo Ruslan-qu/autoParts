@@ -33,21 +33,28 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_manually->isSubmitted()) {
             if ($form_save_auto_parts_manually->isValid()) {
 
-                // dd($form_save_auto_parts_manually->getData());
+
                 $map_arr_part_number_manufactur = [
                     'id_details' => $form_save_auto_parts_manually->getData()['id_details'],
                     'id_manufacturer' => $form_save_auto_parts_manually->getData()['id_manufacturer']
                 ];
 
-                $object_part_number = $adapterAutoPartsWarehouseInterface
+                $arr_part_number = $adapterAutoPartsWarehouseInterface
                     ->searchPartNumbersManufacturer($map_arr_part_number_manufactur);
+                $map_arr_part_number_manufactur = [
+                    'id_details' => $arr_part_number[0],
+                    'id_manufacturer' => $arr_part_number[0]
+                ];
 
-                $arr_saving_information = $saveAutoPartsWarehouseCommandHandler
-                    ->handler(new AutoPartsWarehouseCommand($form_save_auto_parts_manually->getData()));
+                $data_save_auto_parts_manually = array_replace($form_save_auto_parts_manually->getData(), $map_arr_part_number_manufactur);
+
+
+                $arr_saving_information['id'] = $saveAutoPartsWarehouseCommandHandler
+                    ->handler(new AutoPartsWarehouseCommand($data_save_auto_parts_manually));
             }
         }
 
-
+        // dd($arr_saving_information);
 
         return $this->render('autoPartsWarehouse/saveAutoPartsManually.html.twig', [
             'title_logo' => 'Cохранить автодеталь вручную',
