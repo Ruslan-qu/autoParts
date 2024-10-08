@@ -57,7 +57,7 @@ class PartNumbersController extends AbstractController
                     $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                 }
 
-                $arr_saving_information = $createSavePartNumbersCommandHandler
+                $arr_saving_information['id'] = $createSavePartNumbersCommandHandler
                     ->handler(new CreatePartNumbersCommand($data_form_part_numbers));
             }
         }

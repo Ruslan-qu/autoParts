@@ -113,10 +113,16 @@
 
   <div class="col-auto m-3">
     {% for saving_information in arr_saving_information %}
-    {% for information in saving_information %}
-    {#{{ dump(saving_information) }}#}
-    <h5>{{ information |nl2br }}</h5>
+    {% if saving_information is same as NULL %}
+    <h5>Номер детали существует</h5>
+    {% endif %}
     {% endfor %}
+
+     
+    {% for saving_information in arr_saving_information %}
+    {% if saving_information %}
+    <h5>Данные деталей удачно сохранены</h5>
+    {% endif %}
     {% endfor %}
   </div>
   {% endblock form %}

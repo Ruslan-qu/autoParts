@@ -72,6 +72,8 @@ class SaveAutoPartsManuallyType extends AbstractType
             ])
             ->add('price', NumberType::class, [
                 'label' => 'Цена',
+                'invalid_message' => 'Форма содержит 
+                        недопустимые символы',
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Форма не может быть 

@@ -25,7 +25,7 @@ final class CreateSavePartNumbersCommandHandler
         $this->entity_part_numbers_from_manufacturers = $partNumbersFromManufacturers;
     }
 
-    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): array
+    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): ?int
     {
 
         $part_number = strtolower(preg_replace(
@@ -154,11 +154,11 @@ final class CreateSavePartNumbersCommandHandler
 
         if ($number_doubles != 0) {
 
-            $arr_errors_number_doubles['errors'] = [
+            /*$arr_errors_number_doubles['errors'] = [
                 'doubles' => 'Номер детали существует'
-            ];
+            ];*/
 
-            return $arr_errors_number_doubles;
+            return null;
         }
 
         $this->entity_part_numbers_from_manufacturers->setPartNumber($part_number);
@@ -175,7 +175,7 @@ final class CreateSavePartNumbersCommandHandler
 
         $successfully_save = $this->part_numbers_repository_interface->save($this->entity_part_numbers_from_manufacturers);
 
-        $successfully['successfully'] = $successfully_save;
-        return $successfully;
+        $id = $successfully_save['save'];
+        return $id;
     }
 }

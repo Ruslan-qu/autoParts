@@ -6,11 +6,12 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 
 /**
  * @extends ServiceEntityRepository<AutoPartsWarehouse>
  */
-class AutoPartsWarehouseRepository extends ServiceEntityRepository
+class AutoPartsWarehouseRepository extends ServiceEntityRepository implements AutoPartsWarehouseRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

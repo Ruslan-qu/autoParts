@@ -175,13 +175,13 @@
           {% endfor %}
 
           {% for arr_search_data in search_data %}
-          {% if arr_search_data is empty != arr_search_data is same as NULL%}
+          {% if arr_search_data is empty != arr_search_data is same as NULL %}
           <h2>Данные не найдены.</h2>
           {% endif %}
           {% endfor %}
 
           {% if search_data[0] is defined  %}
-          {% if search_data[0] is same as NULL  %}
+          {% if search_data[0] is same as NULL %}
           <h2>Видите параметры в поиск</h2>
           {% endif %}
           {% endif %}
