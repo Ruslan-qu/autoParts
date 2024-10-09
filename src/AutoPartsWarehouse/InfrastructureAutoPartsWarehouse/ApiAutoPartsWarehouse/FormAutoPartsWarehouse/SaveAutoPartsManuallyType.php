@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -89,6 +90,7 @@ class SaveAutoPartsManuallyType extends AbstractType
             ->add('date_receipt_auto_parts_warehouse', DateType::class, [
                 'label' => 'Дата прихода',
                 'widget' => 'single_text',
+                'input'  => 'datetime_immutable',
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Форма не может быть 
@@ -99,8 +101,9 @@ class SaveAutoPartsManuallyType extends AbstractType
             ->add('id_payment_method', EntityType::class, [
                 'label' => 'Сп. оплаты',
                 'class' => PaymentMethod::class,
-                'choice_label' => 'method'
+                'choice_label' => 'method',
             ])
+            ->add('id', HiddenType::class)
             ->add('button_save_manually', SubmitType::class);
     }
 

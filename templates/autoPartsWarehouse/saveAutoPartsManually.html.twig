@@ -57,7 +57,8 @@
 
       <div class="col-sm-6 col-md-3 col-lg-2 col-xl-2">
         <div class="lb">{{ form_label(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse) }}</div>
-        {{ form_widget(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_widget(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse, { 'attr': {'class': 'w-100'} })
+        }}
         {{ form_errors(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse) }}
       </div>
 
@@ -69,7 +70,7 @@
       </div>
 
     </div>
-
+    {{ form_widget(form_save_auto_parts_manually.id, {value : arr_saving_information.id|default('')}) }}
 
     <div class="row my-3">
       <div class="col-12 d-grid">
@@ -80,4 +81,15 @@
 
   </div>
   {{ form_end(form_save_auto_parts_manually) }}
+
+  <div class="col-auto m-3">
+    {% for saving_information in arr_saving_information %}
+    {% if saving_information %}
+    <h5>Поставка сохранена</h5>
+    {% endif %}
+    {% endfor %}
+    {% for message in app.flashes('data_save_auto_parts_manually') %}
+    <h2>{{ message }}</h2>
+    {% endfor %}
+  </div>
   {% endblock form %}

@@ -75,7 +75,7 @@ final class SaveAutoPartsWarehouseCommandHandler
                     message: 'Форма Цена не может быть 
                     пустой'
                 ),
-                'Type' => new Type('string'),
+                'Type' => new Type('int'),
                 'Regex' => new Regex(
                     pattern: '/^[\d]+[\.,]?[\d]*$/',
                     message: 'Форма Цена содержит 
@@ -163,10 +163,16 @@ final class SaveAutoPartsWarehouseCommandHandler
 
         if (!empty($data_errors_auto_parts_warehouse)) {
 
-            $json_arr_data_errors = json_encode($data_errors_part_number, JSON_UNESCAPED_UNICODE);
+            $json_arr_data_errors = json_encode($data_errors_auto_parts_warehouse, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
+        $id = $autoPartsWarehouseCommand->getId();
+
+        if (!empty($id)) {
+
+            return null;
+        }
 
         $this->autoPartsWarehouse->setQuantity($quantity);
         $this->autoPartsWarehouse->setPrice($price);

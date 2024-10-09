@@ -10,25 +10,25 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
 
 {
-    private int $id;
+    protected int $id;
 
-    private ?int $quantity = null;
+    protected ?int $quantity = null;
 
-    private ?int $price = null;
+    protected ?int $price = null;
 
-    private ?int $quantity_sold = null;
+    protected ?int $quantity_sold = null;
 
-    private ?int $Sales = null;
+    protected ?int $Sales = null;
 
-    private ?Counterparty $id_counterparty = null;
+    protected ?Counterparty $id_counterparty = null;
 
-    private ?PartNumbersFromManufacturers $id_details = null;
+    protected ?PartNumbersFromManufacturers $id_details = null;
 
-    private ?PartNumbersFromManufacturers $id_manufacturer = null;
+    protected ?PartNumbersFromManufacturers $id_manufacturer = null;
 
-    private ?PaymentMethod $id_payment_method = null;
+    protected ?PaymentMethod $id_payment_method = null;
 
-    private ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
+    protected ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
 
     public function getId(): int
     {

@@ -33,7 +33,7 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_manually->isSubmitted()) {
             if ($form_save_auto_parts_manually->isValid()) {
 
-
+                // dd($form_save_auto_parts_manually->getData());
                 $map_arr_part_number_manufactur = [
                     'id_details' => $form_save_auto_parts_manually->getData()['id_details'],
                     'id_manufacturer' => $form_save_auto_parts_manually->getData()['id_manufacturer']
@@ -51,10 +51,16 @@ class AutoPartsWarehouseController extends AbstractController
 
                 $arr_saving_information['id'] = $saveAutoPartsWarehouseCommandHandler
                     ->handler(new AutoPartsWarehouseCommand($data_save_auto_parts_manually));
+
+                if (empty($arr_saving_information)) {
+                    $this->addFlash('data_save_auto_parts_manually', 'Поставка уже была сохранена');
+
+                    return $this->redirectToRoute('save_auto_parts_manually');
+                }
             }
         }
 
-        // dd($arr_saving_information);
+
 
         return $this->render('autoPartsWarehouse/saveAutoPartsManually.html.twig', [
             'title_logo' => 'Cохранить автодеталь вручную',
