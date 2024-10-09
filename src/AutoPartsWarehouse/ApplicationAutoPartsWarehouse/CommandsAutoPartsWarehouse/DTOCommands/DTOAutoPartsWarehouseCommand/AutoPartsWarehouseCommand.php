@@ -10,7 +10,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
 
 {
-    protected int $id;
+    protected ?int $id = null;
 
     protected ?int $quantity = null;
 
@@ -30,7 +30,7 @@ final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
 
     protected ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

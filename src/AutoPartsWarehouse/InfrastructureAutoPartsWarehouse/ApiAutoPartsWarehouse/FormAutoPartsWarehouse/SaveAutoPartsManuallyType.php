@@ -23,7 +23,6 @@ class SaveAutoPartsManuallyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-
             ->add('id_details', TextType::class, [
                 'label' => '№ Детали',
                 'constraints' => [

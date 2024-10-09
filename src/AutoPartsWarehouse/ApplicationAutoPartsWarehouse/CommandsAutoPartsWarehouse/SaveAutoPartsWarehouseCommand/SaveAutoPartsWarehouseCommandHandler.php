@@ -145,7 +145,6 @@ final class SaveAutoPartsWarehouseCommandHandler
         $input = [
             'NotBlank' => $payment_method,
         ];
-
         $constraint = new Collection([
             'NotBlank' => new NotBlank(
                 message: 'Форма Способ оплаты не может быть 

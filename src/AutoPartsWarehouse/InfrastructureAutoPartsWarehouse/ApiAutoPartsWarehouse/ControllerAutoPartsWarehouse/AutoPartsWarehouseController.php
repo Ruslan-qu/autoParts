@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
 
@@ -52,8 +53,9 @@ class AutoPartsWarehouseController extends AbstractController
                 $arr_saving_information['id'] = $saveAutoPartsWarehouseCommandHandler
                     ->handler(new AutoPartsWarehouseCommand($data_save_auto_parts_manually));
 
-                if (empty($arr_saving_information)) {
-                    $this->addFlash('data_save_auto_parts_manually', 'Поставка уже была сохранена');
+                if (empty($arr_saving_information['id'])) {
+
+                    $this->addFlash('data_save', 'Поставка уже была сохранена');
 
                     return $this->redirectToRoute('save_auto_parts_manually');
                 }
@@ -66,6 +68,47 @@ class AutoPartsWarehouseController extends AbstractController
             'title_logo' => 'Cохранить автодеталь вручную',
             'form_save_auto_parts_manually' => $form_save_auto_parts_manually->createView(),
             'arr_saving_information' => $arr_saving_information
+        ]);
+    }
+
+    /*Поиск автодеталей*/
+    #[Route('/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
+    public function searchAutoPartsWarehouse(
+        Request $request,
+        //CreateSearchPartNumbersQueryHandler $createSearchPartNumbersQueryHandler,
+        //CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
+    ): Response {
+
+        /*Форма поиска*/
+        $form_search_auto_parts_warehouse = $this->createForm(SearchAutoPartsWarehouseType::class);
+
+        /*Валидация формы */
+        $form_search_auto_parts_warehouse->handleRequest($request);
+
+        $search_data = [];
+        if ($form_search_auto_parts_warehouse->isSubmitted()) {
+            if ($form_search_auto_parts_warehouse->isValid()) {
+
+                $data_form_part_numbers = $form_search_part_numbers->getData();
+                if (!empty($data_form_part_numbers['id_original_number'])) {
+
+                    $arr_original_number['original_number'] = $data_form_part_numbers['id_original_number'];
+                    $object_original_number = $createFindOneByOriginalRoomsQueryHandler
+                        ->handler(new CreateOriginalRoomsQuery($arr_original_number));
+
+                    $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
+                }
+
+                $search_data[] = $createSearchPartNumbersQueryHandler
+                    ->handler(new CreatePartNumbersQuery($data_form_part_numbers));
+            }
+        }
+
+        return $this->render('autoPartsWarehouse/searchAutoPartsWarehouse.html.twig', [
+            'title_logo' => 'Поиск автодетали на сладе',
+            'form_search_auto_parts_warehouse' => $form_search_auto_parts_warehouse->createView(),
+            'search_data' => $search_data,
+
         ]);
     }
 }

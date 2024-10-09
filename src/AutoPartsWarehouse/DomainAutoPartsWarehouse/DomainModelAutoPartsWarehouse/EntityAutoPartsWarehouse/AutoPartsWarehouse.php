@@ -15,7 +15,7 @@ class AutoPartsWarehouse
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $quantity = null;
@@ -44,7 +44,7 @@ class AutoPartsWarehouse
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -1,62 +1,33 @@
 <?php
 
-namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers;
+namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
+use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 
-class SearchPartNumbersType extends AbstractType
+class SearchAutoPartsWarehouseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('part_number', TextType::class, [
-                'label' => 'Номер детали',
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-                недопустимые символы'
-                    ])
-                ]
-            ])
-            ->add('id_original_number', TextType::class, [
-                'label' => 'Номер оригинал',
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-                недопустимые символы'
-                    ])
-                ]
-            ])
-            ->add('manufacturer', TextType::class, [
-                'label' => 'Производитель',
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-                недопустимые символы'
-                    ])
-                ]
-            ])
             ->add('id_part_name', EntityType::class, [
                 'label' => 'Название детали',
                 'class' => PartName::class,
@@ -87,13 +58,8 @@ class SearchPartNumbersType extends AbstractType
                 'choice_label' => 'axle',
                 'required' => false
             ])
-            ->add('id_in_stock', EntityType::class, [
-                'label' => 'Наличие',
-                'class' => Availability::class,
-                'choice_label' => 'in_stock',
-                'required' => false
-            ])
-            ->add('button_part_number', SubmitType::class);
+            ->add('id', HiddenType::class)
+            ->add('button_search_auto_parts_warehouse', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

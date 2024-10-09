@@ -18,7 +18,7 @@ abstract class MapAutoPartsWarehouseCommand
     private function load(array $data)
     {
         $typeResolver = TypeResolver::create();
-
+        //dd($data);
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
@@ -39,7 +39,7 @@ abstract class MapAutoPartsWarehouseCommand
                     $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
                         ->getBaseType()
                         ->getClassName();
-                    // dd(get_class($value));
+
                     if ($className !== get_class($value)) {
 
                         $arr_data_errors = ['Error' => 'Значение ' . $key .
