@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\SearchAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
 
@@ -35,20 +37,15 @@ class AutoPartsWarehouseController extends AbstractController
             if ($form_save_auto_parts_manually->isValid()) {
 
                 // dd($form_save_auto_parts_manually->getData());
-                $map_arr_part_number_manufactur = [
-                    'id_details' => $form_save_auto_parts_manually->getData()['id_details'],
-                    'id_manufacturer' => $form_save_auto_parts_manually->getData()['id_manufacturer']
+                $map_arr_id_details = [
+                    'id_details' => $form_save_auto_parts_manually->getData()['id_details']
                 ];
 
                 $arr_part_number = $adapterAutoPartsWarehouseInterface
-                    ->searchPartNumbersManufacturer($map_arr_part_number_manufactur);
-                $map_arr_part_number_manufactur = [
-                    'id_details' => $arr_part_number[0],
-                    'id_manufacturer' => $arr_part_number[0]
-                ];
+                    ->searchIdDetails($map_arr_id_details);
+                $map_arr_part_number_manufactur = ['id_details' => $arr_part_number[0]];
 
                 $data_save_auto_parts_manually = array_replace($form_save_auto_parts_manually->getData(), $map_arr_part_number_manufactur);
-
 
                 $arr_saving_information['id'] = $saveAutoPartsWarehouseCommandHandler
                     ->handler(new AutoPartsWarehouseCommand($data_save_auto_parts_manually));
@@ -75,8 +72,7 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
     public function searchAutoPartsWarehouse(
         Request $request,
-        //CreateSearchPartNumbersQueryHandler $createSearchPartNumbersQueryHandler,
-        //CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
+        SearchAutoPartsWarehouseQueryHandler $searchAutoPartsWarehouseQueryHandler
     ): Response {
 
         /*Форма поиска*/
@@ -89,18 +85,8 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {
 
-                $data_form_part_numbers = $form_search_part_numbers->getData();
-                if (!empty($data_form_part_numbers['id_original_number'])) {
-
-                    $arr_original_number['original_number'] = $data_form_part_numbers['id_original_number'];
-                    $object_original_number = $createFindOneByOriginalRoomsQueryHandler
-                        ->handler(new CreateOriginalRoomsQuery($arr_original_number));
-
-                    $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
-                }
-
-                $search_data[] = $createSearchPartNumbersQueryHandler
-                    ->handler(new CreatePartNumbersQuery($data_form_part_numbers));
+                $search_data[] = $searchAutoPartsWarehouseQueryHandler
+                    ->handler(new AutoPartsWarehouseQuery($form_search_auto_parts_warehouse->getData()));
             }
         }
 

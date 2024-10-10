@@ -1,13 +1,12 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery;
 
-use DateTime;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
-abstract class MapAutoPartsWarehouseCommand
+abstract class MapAutoPartsWarehouseQuery
 {
 
     public function __construct(array $data = [])
@@ -23,13 +22,12 @@ abstract class MapAutoPartsWarehouseCommand
 
             if (!empty($value)) {
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
 
                 if (gettype($value) == 'double' || gettype($value) == 'float') {
-
                     $value = $value * 100;
                 }
 
@@ -37,7 +35,7 @@ abstract class MapAutoPartsWarehouseCommand
 
                 if ($type == 'object') {
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
+                    $className = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
                         ->getBaseType()
                         ->getClassName();
 
@@ -49,6 +47,7 @@ abstract class MapAutoPartsWarehouseCommand
                         throw new UnprocessableEntityHttpException($json_arr_data_errors);
                     }
                 }
+
 
                 $this->$key = $value;
             }

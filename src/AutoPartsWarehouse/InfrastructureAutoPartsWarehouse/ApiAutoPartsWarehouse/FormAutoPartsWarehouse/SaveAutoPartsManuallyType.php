@@ -38,18 +38,6 @@ class SaveAutoPartsManuallyType extends AbstractType
                     ]),
                 ]
             ])
-            ->add('id_manufacturer', TextType::class, [
-                'label' => 'Производитель',
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-                        недопустимые символы'
-                    ]),
-                ]
-            ])
             ->add('id_counterparty', EntityType::class, [
                 'label' => 'Поставщик',
                 'class' => Counterparty::class,

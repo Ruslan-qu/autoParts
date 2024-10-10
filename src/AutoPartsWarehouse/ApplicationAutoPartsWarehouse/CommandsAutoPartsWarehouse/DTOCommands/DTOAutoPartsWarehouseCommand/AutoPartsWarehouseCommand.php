@@ -24,8 +24,6 @@ final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
 
     protected ?PartNumbersFromManufacturers $id_details = null;
 
-    protected ?PartNumbersFromManufacturers $id_manufacturer = null;
-
     protected ?PaymentMethod $id_payment_method = null;
 
     protected ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
@@ -63,11 +61,6 @@ final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
     public function getIdDetails(): ?PartNumbersFromManufacturers
     {
         return $this->id_details;
-    }
-
-    public function getIdManufacturer(): ?PartNumbersFromManufacturers
-    {
-        return $this->id_manufacturer;
     }
 
     public function getIdPaymentMethod(): ?PaymentMethod

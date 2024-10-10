@@ -18,43 +18,43 @@
 
     <div class="row justify-content-start">
 
-      <div class="col-sm-4 col-md-4 col-lg-2 col-xl-2">
+      <div class="col-sm-4 col-lg-4 col-xl-2">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_part_name) }}</div>
-        {{ form_widget(form_search_auto_parts_warehouse.id_part_name, { 'attr': {'class': '#'} }) }}
+        {{ form_widget(form_search_auto_parts_warehouse.id_part_name, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_part_name) |nl2br }}
       </div>
 
-      <div class="col-sm-4 col-md-4 col-lg-2 col-xl-1">
+      <div class="col-sm-3 col-lg-3 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_car_brand) }}</div>
-        {{ form_widget(form_search_auto_parts_warehouse.id_car_brand, { 'attr': {'class': '#'} }) }}
+        {{ form_widget(form_search_auto_parts_warehouse.id_car_brand, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_car_brand) |nl2br }}
       </div>
 
-      <div class="col-sm-4 col-md-4 col-lg-2 col-xl-1">
+      <div class="col-sm-3 col-lg-3 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_side) }}</div>
-        {{ form_widget(form_search_auto_parts_warehouse.id_side, { 'attr': {'class': '#'} }) }}
+        {{ form_widget(form_search_auto_parts_warehouse.id_side, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_side) |nl2br }}
       </div>
 
 
-      <div class="col-sm-4 col-md-4 col-lg-2 col-xl-1">
+      <div class="col-sm-3 col-lg-3 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_body) }}</div>
-        {{ form_widget(form_search_auto_parts_warehouse.id_body, { 'attr': {'class': '#'} }) }}
+        {{ form_widget(form_search_auto_parts_warehouse.id_body, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_body) |nl2br }}
       </div>
 
-      <div class="col-sm-4 col-md-4 col-lg-2 col-xl-1">
+      <div class="col-sm-4 col-lg-4 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_axle) }}</div>
-        {{ form_widget(form_search_auto_parts_warehouse.id_axle, { 'attr': {'class': '#'} }) }}
+        {{ form_widget(form_search_auto_parts_warehouse.id_axle, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_axle) |nl2br }}
       </div>
 
     </div>
 
     <div class="row mt-3">
-      <div class="col-7 d-grid gap-2">
+      <div class="col-sm-10 col-lg-10 col-xl-6">
         {{ form_widget(form_search_auto_parts_warehouse.button_search_auto_parts_warehouse,
-        { 'label': 'Поиск', 'attr': {'class': 'btn btn-danger'}}) }}
+        { 'label': 'Поиск', 'attr': {'class': 'btn btn-primary w-100'}}) }}
       </div>
     </div>
 
@@ -82,16 +82,20 @@
           {% for arr_search_data in search_data %}
           {% if arr_search_data %}
           <tr>
-            <th scope="col">№ детали</th>
-            <th scope="col">№ оригинал</th>
+            <th scope="col">№<br>детали</th>
+            <th scope="col">№<br>оригинал</th>
             <th scope="col">Производитель</th>
-            <th scope="col">Описание детали</th>
-            <th scope="col">Название детали</th>
+            <th scope="col">Описание<br>детали</th>
+            <th scope="col">Название<br>детали</th>
             <th scope="col">Марка</th>
             <th scope="col">Сторона</th>
             <th scope="col">Кузов</th>
-            <th scope="col">Перед Зад</th>
-            <th scope="col">Наличие</th>
+            <th scope="col">Перед<br>Зад</th>
+            <th scope="col">Сп.<br>оплаты</th>
+            <th scope="col">Кол-во</th>
+            <th scope="col">Цена<br>шт</th>
+            <th scope="col">Цена<br>общая</th>
+            <th scope="col">Продать</th>
             <th scope="col">Редактировать</th>
             <th scope="col">Удалить</th>
           </tr>

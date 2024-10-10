@@ -37,4 +37,31 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
         }
         return $successfully = ['save' => $entityData['id']];
     }
+
+    /**
+     * @return AutoPartsWarehouse[]|NULL Возвращает массив объектов или ноль
+     */
+    public function findByAutoPartsWarehouse(array $arr_parameters, string $part_number_where): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a, d, pn, cb, s, b, ax, i, o, c, pm
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
+            LEFT JOIN a.id_details d
+            LEFT JOIN d.id_part_name pn
+            LEFT JOIN d.id_car_brand cb
+            LEFT JOIN d.id_side s
+            LEFT JOIN d.id_body b
+            LEFT JOIN d.id_axle ax
+            LEFT JOIN d.id_in_stock i
+            LEFT JOIN d.id_original_number o
+            LEFT JOIN a.id_counterparty c
+            LEFT JOIN a.id_payment_method pm '
+                .  $part_number_where .
+                'ORDER BY a.id ASC'
+        )->setParameters($arr_parameters);
+
+        return $query->getResult();
+    }
 }

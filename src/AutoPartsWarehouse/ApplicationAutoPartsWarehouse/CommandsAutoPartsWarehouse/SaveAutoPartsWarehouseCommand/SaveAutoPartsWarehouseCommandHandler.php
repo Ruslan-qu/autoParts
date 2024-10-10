@@ -117,9 +117,6 @@ final class SaveAutoPartsWarehouseCommandHandler
         $data_errors_auto_parts_warehouse = array_merge($data_errors_auto_parts_warehouse, $data_errors_part_number);
 
 
-        $manufacturer = $autoPartsWarehouseCommand->getIdManufacturer();
-
-
         $date_receipt_auto_parts_warehouse = $autoPartsWarehouseCommand->getDateReceiptAutoPartsWarehouse();
         $input = [
             'NotBlank' => $date_receipt_auto_parts_warehouse,
@@ -177,7 +174,6 @@ final class SaveAutoPartsWarehouseCommandHandler
         $this->autoPartsWarehouse->setPrice($price);
         $this->autoPartsWarehouse->setIdCounterparty($counterparty);
         $this->autoPartsWarehouse->setIdDetails($part_number);
-        $this->autoPartsWarehouse->setIdManufacturer($manufacturer);
         $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
         $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
 

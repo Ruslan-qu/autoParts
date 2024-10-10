@@ -36,9 +36,6 @@ class AutoPartsWarehouse
     private ?PartNumbersFromManufacturers $id_details = null;
 
     #[ORM\ManyToOne]
-    private ?PartNumbersFromManufacturers $id_manufacturer = null;
-
-    #[ORM\ManyToOne]
     private ?PaymentMethod $id_payment_method = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
@@ -117,18 +114,6 @@ class AutoPartsWarehouse
     public function setIdDetails(?PartNumbersFromManufacturers $id_details): static
     {
         $this->id_details = $id_details;
-
-        return $this;
-    }
-
-    public function getIdManufacturer(): ?PartNumbersFromManufacturers
-    {
-        return $this->id_manufacturer;
-    }
-
-    public function setIdManufacturer(?PartNumbersFromManufacturers $id_manufacturer): static
-    {
-        $this->id_manufacturer = $id_manufacturer;
 
         return $this;
     }

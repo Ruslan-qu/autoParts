@@ -22,23 +22,21 @@ class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
     ) {}
 
 
-    public function searchPartNumbersManufacturer(array $arr_part_number_manufactur): ?array
+    public function searchIdDetails(array $arr_part_number): ?array
     {
 
-        if (empty($arr_part_number_manufactur['id_details'])) {
+        if (empty($arr_part_number['id_details'])) {
             return Null;
         }
-        $map_arr_part_numbers_manufacturer = ['part_number' => $arr_part_number_manufactur['id_details']];
+        $map_arr_part_numbers = ['part_number' => $arr_part_number['id_details']];
 
         $arr_part_numbers = $this->createSearchPartNumbersQueryHandler
-            ->handler(new CreatePartNumbersQuery($map_arr_part_numbers_manufacturer));
+            ->handler(new CreatePartNumbersQuery($map_arr_part_numbers));
 
         if (empty($arr_part_numbers)) {
 
-            $map_arr_part_numbers_manufacturer['manufacturer'] = $arr_part_number_manufactur['id_manufacturer'];
-
             $arr_saving_information['id'] = $this->createSavePartNumbersCommandHandler
-                ->handler(new CreatePartNumbersCommand($map_arr_part_numbers_manufacturer));
+                ->handler(new CreatePartNumbersCommand($map_arr_part_numbers));
 
 
             $arr_part_numbers[] = $this->createFindIdPartNumbersQueryHandler

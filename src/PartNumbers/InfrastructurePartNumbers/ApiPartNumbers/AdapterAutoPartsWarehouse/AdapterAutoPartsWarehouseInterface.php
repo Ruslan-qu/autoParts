@@ -6,5 +6,5 @@ use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\P
 
 interface AdapterAutoPartsWarehouseInterface
 {
-    public function searchPartNumbersManufacturer(array $arr_part_number_manufactur): ?array;
+    public function searchIdDetails(array $arr_part_number): ?array;
 }
