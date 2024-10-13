@@ -23,9 +23,9 @@ final class SearchAutoPartsWarehouseQueryHandler
 
             $arr_parameters['id_part_name'] = $id_part_name;
             if (!str_contains($part_number_where, 'WHERE')) {
-                $part_number_where = 'WHERE p.id_part_name = :id_part_name ';
+                $part_number_where = 'WHERE d.id_part_name = :id_part_name ';
             } else {
-                $part_number_where .= 'AND p.id_part_name = :id_part_name ';
+                $part_number_where .= 'AND d.id_part_name = :id_part_name ';
             }
         }
 
@@ -34,9 +34,9 @@ final class SearchAutoPartsWarehouseQueryHandler
 
             $arr_parameters['id_car_brand'] = $id_car_brand;
             if (!str_contains($part_number_where, 'WHERE')) {
-                $part_number_where = 'WHERE p.id_car_brand = :id_car_brand ';
+                $part_number_where = 'WHERE d.id_car_brand = :id_car_brand ';
             } else {
-                $part_number_where .= 'AND p.id_car_brand = :id_car_brand ';
+                $part_number_where .= 'AND d.id_car_brand = :id_car_brand ';
             }
         }
 
@@ -45,9 +45,9 @@ final class SearchAutoPartsWarehouseQueryHandler
 
             $arr_parameters['id_side'] = $id_side;
             if (!str_contains($part_number_where, 'WHERE')) {
-                $part_number_where = 'WHERE p.id_side = :id_side ';
+                $part_number_where = 'WHERE d.id_side = :id_side ';
             } else {
-                $part_number_where .= 'AND p.id_side = :id_side ';
+                $part_number_where .= 'AND d.id_side = :id_side ';
             }
         }
 
@@ -56,9 +56,9 @@ final class SearchAutoPartsWarehouseQueryHandler
 
             $arr_parameters['id_body'] = $id_body;
             if (!str_contains($part_number_where, 'WHERE')) {
-                $part_number_where = 'WHERE p.id_body = :id_body ';
+                $part_number_where = 'WHERE d.id_body = :id_body ';
             } else {
-                $part_number_where .= 'AND p.id_body = :id_body ';
+                $part_number_where .= 'AND d.id_body = :id_body ';
             }
         }
 
@@ -67,9 +67,9 @@ final class SearchAutoPartsWarehouseQueryHandler
 
             $arr_parameters['id_axle'] = $id_axle;
             if (!str_contains($part_number_where, 'WHERE')) {
-                $part_number_where = 'WHERE p.id_axle = :id_axle ';
+                $part_number_where = 'WHERE d.id_axle = :id_axle ';
             } else {
-                $part_number_where .= 'AND p.id_axle = :id_axle ';
+                $part_number_where .= 'AND d.id_axle = :id_axle ';
             }
         }
 
@@ -77,7 +77,8 @@ final class SearchAutoPartsWarehouseQueryHandler
             return null;
         }
 
-        $find_by_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findByAutoPartsWarehouse($arr_parameters, $part_number_where);
+        $find_by_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface
+            ->findByAutoPartsWarehouse($arr_parameters, $part_number_where);
 
         return $find_by_auto_parts_warehouse;
     }
