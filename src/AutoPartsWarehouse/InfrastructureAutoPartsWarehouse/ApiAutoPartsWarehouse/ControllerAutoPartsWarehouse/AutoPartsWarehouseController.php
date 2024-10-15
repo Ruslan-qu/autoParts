@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\SearchAutoPartsWarehouseQueryHandler;
@@ -68,7 +69,7 @@ class AutoPartsWarehouseController extends AbstractController
         ]);
     }
 
-    /*Поиск автодеталей*/
+    /*Поиск автодеталей на сладе*/
     #[Route('/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
     public function searchAutoPartsWarehouse(
         Request $request,
@@ -95,6 +96,80 @@ class AutoPartsWarehouseController extends AbstractController
             'form_search_auto_parts_warehouse' => $form_search_auto_parts_warehouse->createView(),
             'search_data' => $search_data,
 
+        ]);
+    }
+
+    /*Редактирования наличия автодеталей на складе*/
+    #[Route('/editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
+    public function editAutoPartsWarehouse(
+        Request $request,
+        /* CreateFindIdPartNumbersQueryHandler $createFindIdPartNumbersQueryHandler,
+        CreateEditPartNumbersCommandHandler $createEditPartNumbersCommandHandler,
+        CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
+        CreateEditOriginalRoomsCommandHandler $createEditOriginalRoomsCommandHandler,
+        CreateSaveOriginalRoomsCommandHandler $createSaveOriginalRoomsCommandHandler,*/
+    ): Response {
+
+        /*Форма Редактирования постовщка*/
+        $form_edit_auto_parts_warehouse = $this->createForm(EditAutoPartsWarehouseType::class);
+
+        /*Валидация формы */
+        $form_edit_auto_parts_warehouse->handleRequest($request);
+
+        if (empty($form_edit_auto_parts_warehouse->getData())) {
+
+            $data_form_edit_part_numbers = $createFindIdPartNumbersQueryHandler
+                ->handler(new CreatePartNumbersQuery($request->query->all()));
+            if (empty($data_form_edit_part_numbers)) {
+                $this->addFlash('data_part_numbers', 'Автодеталь не найден');
+
+                return $this->redirectToRoute('search_part_numbers');
+            }
+        }
+
+        if (!empty($request->request->all())) {
+            $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
+        }
+
+
+        $arr_saving_information = [];
+        if ($form_edit_auto_parts_warehouse->isSubmitted()) {
+            if ($form_edit_auto_parts_warehouse->isValid()) {
+                $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
+                $data_edit_part_numbers = $form_edit_auto_parts_warehouse->getData();
+
+                if (!empty($data_edit_part_numbers['original_number'])) {
+
+                    $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
+                    $arr_original_number['original_number'] = $data_edit_part_numbers['original_number'];
+
+                    if (!empty($data_edit_part_numbers['id_original_number'])) {
+
+                        $createEditOriginalRoomsCommandHandler
+                            ->handler(new CreateOriginalRoomsCommand($arr_original_number));
+                    } else {
+                        $createSaveOriginalRoomsCommandHandler
+                            ->handler(new CreateOriginalRoomsCommand($arr_original_number));
+                    }
+
+                    $object_original_number = $createFindOneByOriginalRoomsQueryHandler
+                        ->handler(new CreateOriginalRoomsQuery($arr_original_number));
+
+                    $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
+                }
+
+                unset($data_edit_part_numbers['original_number']);
+                $arr_saving_information = $createEditPartNumbersCommandHandler
+                    ->handler(new CreatePartNumbersCommand($data_edit_part_numbers));
+            }
+        }
+
+
+        return $this->render('partNumbers/editPartNumbers.html.twig', [
+            'title_logo' => 'Изменение данных склада',
+            'form_edit_auto_parts_warehouse' => $form_edit_auto_parts_warehouse->createView(),
+            'arr_saving_information' => $arr_saving_information,
+            'data_form_edit_part_numbers' => $data_form_edit_part_numbers
         ]);
     }
 }

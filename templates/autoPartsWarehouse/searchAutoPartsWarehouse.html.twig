@@ -122,6 +122,7 @@
             <td>{{ information.getQuantity()|default('') }}</td>
             <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
             <td>{{ (information.getPrice() / 100)|default('')|number_format(2, '.', '') }}</td>
+            
             <form action="/editPartNumbers" name="edit_part_numbers">
 
               <td><button class="btn btn-outline-success" type="submit" name="id"

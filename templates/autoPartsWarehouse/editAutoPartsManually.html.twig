@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
+  {% endblock Responsive_behaviors %}
+
+  {% block form %}
+
+  {#Форма сохранения поступления деталей#}
+
+  {{ form_start(form_edit_auto_parts_warehouse) }}
+
+  <div class="container-fluid text-center mt-3">
+
+    <div class="row justify-content-evenly">
+
+      <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
+        <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.id_details) }}</div>
+        {{ form_widget(form_edit_auto_parts_warehouse.id_details, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_edit_auto_parts_warehouse.id_details) }}
+
+      </div>
+
+
+      <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
+        <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.id_counterparty) }}</div>
+        {{ form_widget(form_edit_auto_parts_warehouse.id_counterparty, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_edit_auto_parts_warehouse.id_counterparty) }}
+      </div>
+
+
+      <div class="col-sm-6 col-md-4 col-lg-1 col-xl-1">
+        <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.quantity) }}</div>
+        {{ form_widget(form_edit_auto_parts_warehouse.quantity, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_edit_auto_parts_warehouse.quantity) }}
+      </div>
+
+      <div class="col-sm-6 col-md-4 col-lg-1 col-xl-1">
+        <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.price) }}</div>
+        {{ form_widget(form_edit_auto_parts_warehouse.price, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_edit_auto_parts_warehouse.price) }}
+      </div>
+
+
+      <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
+        <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.date_receipt_auto_parts_warehouse) }}</div>
+        {{ form_widget(form_edit_auto_parts_warehouse.date_receipt_auto_parts_warehouse, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_edit_auto_parts_warehouse.date_receipt_auto_parts_warehouse) }}
+      </div>
+
+
+      <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
+        <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.id_payment_method) }}</div>
+        {{ form_widget(form_edit_auto_parts_warehouse.id_payment_method, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_edit_auto_parts_warehouse.id_payment_method) }}
+      </div>
+
+    </div>
+    {{ form_widget(form_edit_auto_parts_warehouse.id, {value : arr_saving_information.id|default(null)}) }}
+
+    <div class="row my-3">
+      <div class="col-12 d-grid">
+        {{ form_widget(form_edit_auto_parts_warehouse.button_edit_manually, { 'label': 'Сохранить', 'attr': {'class':
+        'btn btn-danger'}}) }}
+      </div>
+    </div>
+
+  </div>
+  {{ form_end(form_save_auto_parts_manually) }}
+
+  <div class="col-auto m-3">
+    {% for saving_information in arr_saving_information %}
+    {% if saving_information %}
+    <h5>Поставка сохранена</h5>
+    {% endif %}
+    {% endfor %}
+    {% for message in app.flashes('data_save') %}
+    <h5>{{ message }}</h5>
+    {% endfor %}
+  </div>
+  {% endblock form %}
