@@ -95,9 +95,9 @@
             <th scope="col">Кол-во</th>
             <th scope="col">Цена<br>шт</th>
             <th scope="col">Цена<br>общая</th>
-            <th scope="col">Продать</th>
-            <th scope="col">Редактировать</th>
-            <th scope="col">Удалить</th>
+            <th scope="col">{{ ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</th>
+            <th scope="col">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</th>
+            <th scope="col">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</th>
           </tr>
           {% endif %}
           {% endfor %}
@@ -120,24 +120,24 @@
             <td>{{ information.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
             <td>{{ information.getIdPaymentMethod.getmethod()|default('') }}</td>
             <td>{{ information.getQuantity()|default('') }}</td>
-            <td>{{ (information.getPrice() / information.getQuantity())|default('') }}</td>
-            <td>{{ (information.getPrice() / 100)|default('') }}</td>
+            <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
+            <td>{{ (information.getPrice() / 100)|default('')|number_format(2, '.', '') }}</td>
             <form action="/editPartNumbers" name="edit_part_numbers">
 
-              <td><button class="btn btn-outline-secondary" type="submit" name="id"
-                  value="{{ information.getId() }}">Продать</button></td>
+              <td><button class="btn btn-outline-success" type="submit" name="id"
+                  value="{{ information.getId() }}">{{ ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
             <form action="/editPartNumbers" name="edit_part_numbers">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
-                  value="{{ information.getId() }}">Изменить</button></td>
+                  value="{{ information.getId() }}">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
             <form action="/deletePartNumbers" name="delete_part_numbers">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
-                  value="{{ information.getId() }}">Удалить</button></td>
+                  value="{{ information.getId() }}">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
           </tr>
