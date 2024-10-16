@@ -9,19 +9,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\OriginalRoomsRepository;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\CreateOriginalRoomsCommand;
 
-final class CreateEditOriginalRoomsCommandHandler
+final class EditOriginalRoomsCommandHandler
 {
-    private $original_rooms_repository;
-
     public function __construct(
-        OriginalRoomsRepository $originalRoomsRepository
-    ) {
-        $this->original_rooms_repository = $originalRoomsRepository;
-    }
+        private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
+    ) {}
 
-    public function handler(CreateOriginalRoomsCommand $createOriginalRoomsCommand): array
+    public function handler(CreateOriginalRoomsCommand $createOriginalRoomsCommand): ?array
     {
 
 
@@ -74,20 +71,36 @@ final class CreateEditOriginalRoomsCommandHandler
 
         if (empty($id)) {
 
-            return null;
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $edit_original_number = $this->original_rooms_repository->findOriginalRooms($id);
+        $edit_original_number = $this->originalRoomsRepositoryInterface->findOriginalRooms($id);
 
         if (empty($edit_original_number)) {
 
-            return null;
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
+
+        if ($original_number != $edit_original_number->getOriginalNumber()) {
+            /* Валидация дублей */
+            $number_doubles = $this->originalRoomsRepositoryInterface
+                ->numberDoubles(['original_number' => $original_number]);
+
+            if ($number_doubles != 0) {
+
+                return null;
+            }
+        }
+
 
         $edit_original_number->setOriginalNumber($original_number);
 
 
-        $successfully_edit = $this->original_rooms_repository->edit($edit_original_number);
+        $successfully_edit = $this->originalRoomsRepositoryInterface->edit($edit_original_number);
 
         $successfully['successfully'] = $successfully_edit;
 

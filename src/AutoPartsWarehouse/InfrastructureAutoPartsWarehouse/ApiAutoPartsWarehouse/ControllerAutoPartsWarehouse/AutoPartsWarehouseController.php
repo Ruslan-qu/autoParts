@@ -11,6 +11,7 @@ use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehous
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindIdAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\SearchAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
@@ -103,8 +104,8 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
     public function editAutoPartsWarehouse(
         Request $request,
-        /* CreateFindIdPartNumbersQueryHandler $createFindIdPartNumbersQueryHandler,
-        CreateEditPartNumbersCommandHandler $createEditPartNumbersCommandHandler,
+        FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
+        /*CreateEditPartNumbersCommandHandler $createEditPartNumbersCommandHandler,
         CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
         CreateEditOriginalRoomsCommandHandler $createEditOriginalRoomsCommandHandler,
         CreateSaveOriginalRoomsCommandHandler $createSaveOriginalRoomsCommandHandler,*/
@@ -118,17 +119,17 @@ class AutoPartsWarehouseController extends AbstractController
 
         if (empty($form_edit_auto_parts_warehouse->getData())) {
 
-            $data_form_edit_part_numbers = $createFindIdPartNumbersQueryHandler
-                ->handler(new CreatePartNumbersQuery($request->query->all()));
-            if (empty($data_form_edit_part_numbers)) {
-                $this->addFlash('data_part_numbers', 'Автодеталь не найден');
+            $data_form_edit_auto_parts_warehouse = $findIdAutoPartsWarehouseQueryHandler
+                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+            if (empty($data_form_edit_auto_parts_warehouse)) {
+                $this->addFlash('not_found', 'Автодеталь на складе не найдена');
 
-                return $this->redirectToRoute('search_part_numbers');
+                return $this->redirectToRoute('search_auto_parts_warehouse');
             }
         }
-
+        // dd($data_form_edit_auto_parts_warehouse);
         if (!empty($request->request->all())) {
-            $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
+            $data_form_edit_auto_parts_warehouse = $request->request->all()['edit_auto_parts_warehouse'];
         }
 
 
@@ -165,11 +166,11 @@ class AutoPartsWarehouseController extends AbstractController
         }
 
 
-        return $this->render('partNumbers/editPartNumbers.html.twig', [
+        return $this->render('autoPartsWarehouse/editAutoPartsManually.html.twig', [
             'title_logo' => 'Изменение данных склада',
             'form_edit_auto_parts_warehouse' => $form_edit_auto_parts_warehouse->createView(),
             'arr_saving_information' => $arr_saving_information,
-            'data_form_edit_part_numbers' => $data_form_edit_part_numbers
+            'data_form_edit_auto_parts_warehouse' => $data_form_edit_auto_parts_warehouse
         ]);
     }
 }

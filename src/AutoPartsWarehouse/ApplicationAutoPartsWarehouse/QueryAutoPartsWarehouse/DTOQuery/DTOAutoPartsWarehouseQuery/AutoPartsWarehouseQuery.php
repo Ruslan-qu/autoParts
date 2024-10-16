@@ -12,6 +12,8 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 final class AutoPartsWarehouseQuery extends MapAutoPartsWarehouseQuery
 
 {
+    protected ?int $id = null;
+
     protected ?PartName $id_part_name = null;
 
     protected ?CarBrands $id_car_brand = null;
@@ -21,6 +23,11 @@ final class AutoPartsWarehouseQuery extends MapAutoPartsWarehouseQuery
     protected ?Bodies $id_body = null;
 
     protected ?Axles $id_axle = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getIdPartName(): ?PartName
     {

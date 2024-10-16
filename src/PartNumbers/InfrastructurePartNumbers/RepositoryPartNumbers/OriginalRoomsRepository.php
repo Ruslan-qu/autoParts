@@ -55,7 +55,7 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
-
+        dd($entityData);
         $exists_counterparty = $this->count($entityData);
         if ($exists_counterparty == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];

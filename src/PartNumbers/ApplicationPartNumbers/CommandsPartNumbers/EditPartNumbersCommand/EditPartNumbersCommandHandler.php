@@ -8,20 +8,16 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\PartNumbersFromManufacturersRepository;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
 
-final class CreateEditPartNumbersCommandHandler
+final class EditPartNumbersCommandHandler
 {
-    private $part_numbers_from_manufacturers_repository;
-
     public function __construct(
-        PartNumbersFromManufacturersRepository $partNumbersFromManufacturersRepository
-    ) {
-        $this->part_numbers_from_manufacturers_repository = $partNumbersFromManufacturersRepository;
-    }
+        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface
+    ) {}
 
-    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): array
+    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): ?array
     {
 
 
@@ -174,17 +170,33 @@ final class CreateEditPartNumbersCommandHandler
         }
 
         $id = $createPartNumbersCommand->getId();
+        $arr_edit_part_number['id'] = $id;
 
         if (empty($id)) {
 
-            return null;
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $edit_part_number = $this->part_numbers_from_manufacturers_repository->findPartNumbersFromManufacturers($id);
+        $edit_part_number = $this->partNumbersRepositoryInterface->findPartNumbersFromManufacturers($id);
 
         if (empty($edit_part_number)) {
 
-            return null;
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        if ($part_number != $edit_part_number->getPartNumber()) {
+            /* Валидация дублей */
+            $number_doubles = $this->partNumbersRepositoryInterface
+                ->numberDoubles(['part_number' => $part_number]);
+
+            if ($number_doubles != 0) {
+
+                return null;
+            }
         }
 
         $edit_part_number->setPartNumber($part_number);
@@ -198,7 +210,7 @@ final class CreateEditPartNumbersCommandHandler
         $edit_part_number->setIdInStock($id_in_stock);
         $edit_part_number->setIdOriginalNumber($id_original_number);
 
-        $successfully_edit = $this->part_numbers_from_manufacturers_repository->edit($arr_edit_part_number);
+        $successfully_edit = $this->partNumbersRepositoryInterface->edit($arr_edit_part_number);
 
         $successfully['successfully'] = $successfully_edit;
 

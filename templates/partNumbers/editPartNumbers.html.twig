@@ -75,7 +75,8 @@
 
           <div class="col-sm-12 col-md-6 col-lg">
             <div class="lb">{{ form_label(form_edit_part_numbers.additional_descriptions) }}</div>
-            {{ form_widget(form_edit_part_numbers.additional_descriptions, { value : additional_descriptions_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_widget(form_edit_part_numbers.additional_descriptions, 
+            { value : additional_descriptions_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.additional_descriptions) |nl2br }}
           </div>
         </div>
@@ -88,19 +89,19 @@
 
           <div class="col-6">
             <div class="lb">{{ form_label(form_edit_part_numbers.id_part_name) }}</div>
-            {{ form_widget(form_edit_part_numbers.id_part_name, { value : part_name_find_id }) }}
+            {{ form_widget(form_edit_part_numbers.id_part_name, { value : part_name_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.id_part_name) |nl2br }}
           </div>
 
           <div class="col-3">
             <div class="lb">{{ form_label(form_edit_part_numbers.id_car_brand) }}</div>
-            {{ form_widget(form_edit_part_numbers.id_car_brand, { value : car_brand_find_id }) }}
+            {{ form_widget(form_edit_part_numbers.id_car_brand, { value : car_brand_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.id_car_brand) |nl2br }}
           </div>
 
           <div class="col-3">
             <div class="lb">{{ form_label(form_edit_part_numbers.id_side) }}</div>
-            {{ form_widget(form_edit_part_numbers.id_side, { value : side_find_id }) }}
+            {{ form_widget(form_edit_part_numbers.id_side, { value : side_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.id_side) |nl2br }}
           </div>
         </div>
@@ -108,19 +109,19 @@
 
           <div class="col-6">
             <div class="lb">{{ form_label(form_edit_part_numbers.id_body) }}</div>
-            {{ form_widget(form_edit_part_numbers.id_body, { value : body_find_id }) }}
+            {{ form_widget(form_edit_part_numbers.id_body, { value : body_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.id_body) |nl2br }}
           </div>
 
           <div class="col-3">
             <div class="lb">{{ form_label(form_edit_part_numbers.id_axle) }}</div>
-            {{ form_widget(form_edit_part_numbers.id_axle, { value : axle_find_id }) }}
+            {{ form_widget(form_edit_part_numbers.id_axle, { value : axle_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.id_axle) |nl2br }}
           </div>
 
           <div class="col-3">
             <div class="lb">{{ form_label(form_edit_part_numbers.id_in_stock) }}</div>
-            {{ form_widget(form_edit_part_numbers.id_in_stock, { value : in_stock_find_id }) }}
+            {{ form_widget(form_edit_part_numbers.id_in_stock, { value : in_stock_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.id_in_stock) |nl2br }}
           </div>
         </div>
@@ -142,11 +143,17 @@
 
   {{ form_end(form_edit_part_numbers) }}
 
-  <div class="col-auto m-3">
+   <div class="col-auto m-3">
+    
+    {% if arr_saving_information is same as NULL %}
+    <h5>Изменить на существующий номер детали нельзя</h5>
+    {% endif %}
+    
+  
     {% for saving_information in arr_saving_information %}
-    {% for information in saving_information %}
-    <h5>{{ information |nl2br }}</h5>
-    {% endfor %}
+    {% if saving_information %}
+    <h5>Данные деталей изменены</h5>
+    {% endif %}
     {% endfor %}
   </div>
   {% endblock form %}

@@ -64,4 +64,23 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
 
         return $query->getResult();
     }
+
+    /**
+     * @return AutoPartsWarehouse|NULL Возвращает объект или ноль
+     */
+    public function findAutoPartsWarehouse(int $id): ?AutoPartsWarehouse
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a, d, c, pm
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
+            LEFT JOIN a.id_details d
+            LEFT JOIN a.id_counterparty c
+            LEFT JOIN a.id_payment_method pm 
+            WHERE a.id <= :id'
+        )->setParameters(['id' => $id]);
+
+        return $query->getResult()[0];
+    }
 }

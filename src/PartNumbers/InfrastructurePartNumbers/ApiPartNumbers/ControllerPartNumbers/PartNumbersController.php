@@ -10,6 +10,7 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\Edi
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SavePartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SearchPartNumbersType;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\CreateOriginalRoomsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\CreateFindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchPartNumbersQueryHandler;
@@ -115,7 +116,7 @@ class PartNumbersController extends AbstractController
     public function editPartNumbers(
         Request $request,
         CreateFindIdPartNumbersQueryHandler $createFindIdPartNumbersQueryHandler,
-        CreateEditPartNumbersCommandHandler $createEditPartNumbersCommandHandler,
+        EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
         CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
         CreateEditOriginalRoomsCommandHandler $createEditOriginalRoomsCommandHandler,
         CreateSaveOriginalRoomsCommandHandler $createSaveOriginalRoomsCommandHandler,
@@ -170,11 +171,10 @@ class PartNumbersController extends AbstractController
                 }
 
                 unset($data_edit_part_numbers['original_number']);
-                $arr_saving_information = $createEditPartNumbersCommandHandler
+                $arr_saving_information = $editPartNumbersCommandHandler
                     ->handler(new CreatePartNumbersCommand($data_edit_part_numbers));
             }
         }
-
 
         return $this->render('partNumbers/editPartNumbers.html.twig', [
             'title_logo' => 'Изменение данных автодеталей',

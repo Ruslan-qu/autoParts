@@ -63,7 +63,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => 'Данные деталей успешно изменены'];
+        return $successfully = ['edit' => $arr_edit_part_number['id']];
     }
 
     /**
