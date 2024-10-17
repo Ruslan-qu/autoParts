@@ -29,13 +29,32 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse);
 
-        $exists_part_numbers = $this->count($entityData);
-        if ($exists_part_numbers == 0) {
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
         return $successfully = ['save' => $entityData['id']];
+    }
+
+    /**
+     * @return array Возвращается массив с данными об успешном изменения  
+     */
+    public function edit(AutoPartsWarehouse $autoPartsWarehouse): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->flush();
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse);
+
+        $exists_part_numbers = $this->count($entityData);
+        if ($exists_part_numbers == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $successfully = ['edit' => $entityData['id']];
     }
 
     /**
@@ -82,5 +101,13 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
         )->setParameters(['id' => $id]);
 
         return $query->getResult()[0];
+    }
+
+    /**
+     * @return AutoPartsWarehouse|NULL Возвращает объект или ноль
+     */
+    public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse
+    {
+        return $this->find($id);
     }
 }

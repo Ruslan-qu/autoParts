@@ -16,7 +16,7 @@
   {% set part_number_find_id = data_form_edit_auto_parts_warehouse.id_details|default('') %}
   {% set id_counterparty_find_id = data_form_edit_auto_parts_warehouse.id_counterparty|default('') %}
   {% set quantity_find_id = data_form_edit_auto_parts_warehouse.quantity|default('') %}
-  {% set price_find_id = data_form_edit_auto_parts_warehouse.price|default('') %}
+  {% set price_find_id = (data_form_edit_auto_parts_warehouse.price / 100)|default('') %}
   {% set date_receipt_auto_parts_warehouse_find_id = data_form_edit_auto_parts_warehouse.date_receipt_auto_parts_warehouse|date("Y-m-d")|default('') %}
   {% set id_payment_method_find_id = data_form_edit_auto_parts_warehouse.id_payment_method|default('') %}
   {% set id_find_id = data_form_edit_auto_parts_warehouse.id|default('') %}
@@ -25,7 +25,7 @@
   {% set part_number_find_id = data_form_edit_auto_parts_warehouse.getIdDetails().getPartNumber()|default('') %}
   {% set id_counterparty_find_id = data_form_edit_auto_parts_warehouse.getIdCounterparty().getId()|default('') %}
   {% set quantity_find_id = data_form_edit_auto_parts_warehouse.getQuantity()|default('') %}
-  {% set price_find_id = data_form_edit_auto_parts_warehouse.getPrice()|default('') %}
+  {% set price_find_id = (data_form_edit_auto_parts_warehouse.getPrice() / 100)|default('') %}
   {% set date_receipt_auto_parts_warehouse_find_id = data_form_edit_auto_parts_warehouse.getDateReceiptAutoPartsWarehouse()|date("Y-m-d")|default('') %}
   {% set id_payment_method_find_id = data_form_edit_auto_parts_warehouse.getIdPaymentMethod().getId()|default('') %}
   {% set id_find_id = data_form_edit_auto_parts_warehouse.getId()|default('') %}
@@ -96,13 +96,10 @@
   {{ form_end(form_edit_auto_parts_warehouse) }}
 
   <div class="col-auto m-3">
-    {% for saving_information in arr_saving_information %}
-    {% if saving_information %}
-    <h5>Поставка сохранена</h5>
+    
+    {% if arr_saving_information %}
+    <h5>Данные поставки изменены</h5>
     {% endif %}
-    {% endfor %}
-    {% for message in app.flashes('data_save') %}
-    <h5>{{ message }}</h5>
-    {% endfor %}
+    
   </div>
   {% endblock form %}

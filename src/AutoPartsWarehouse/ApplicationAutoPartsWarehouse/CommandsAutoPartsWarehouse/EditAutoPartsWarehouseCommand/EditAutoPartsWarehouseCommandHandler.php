@@ -161,46 +161,33 @@ final class EditAutoPartsWarehouseCommandHandler
 
         $id = $autoPartsWarehouseCommand->getId();
 
-        if (!empty($id)) {
-
-            return null;
-        }
-
-        $edit_part_number = $this->autoPartsWarehouseRepositoryInterface->findPartNumbersFromManufacturers($id);
-
-        if (empty($edit_part_number)) {
+        if (empty($id)) {
 
             $arr_data_errors = ['Error' => 'Иди некорректное'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        if ($part_number != $edit_part_number->getPartNumber()) {
-            /* Валидация дублей */
-            $number_doubles = $this->partNumbersRepositoryInterface
-                ->numberDoubles(['part_number' => $part_number]);
+        $edit_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findIdAutoPartsWarehouse($id);
 
-            if ($number_doubles != 0) {
+        if (empty($edit_auto_parts_warehouse)) {
 
-                return null;
-            }
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $edit_part_number->setPartNumber($part_number);
-        $edit_part_number->setManufacturer($manufacturer);
-        $edit_part_number->setAdditionalDescriptions($additional_descriptions);
-        $edit_part_number->setIdPartName($id_part_name);
-        $edit_part_number->setIdCarBrand($id_car_brand);
-        $edit_part_number->setIdSide($id_side);
-        $edit_part_number->setIdBody($id_body);
-        $edit_part_number->setIdAxle($id_axle);
-        $edit_part_number->setIdInStock($id_in_stock);
-        $edit_part_number->setIdOriginalNumber($id_original_number);
+        $edit_auto_parts_warehouse->setQuantity($quantity);
+        $edit_auto_parts_warehouse->setPrice($price);
+        $edit_auto_parts_warehouse->setIdCounterparty($counterparty);
+        $edit_auto_parts_warehouse->setIdDetails($part_number);
+        $edit_auto_parts_warehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
+        $edit_auto_parts_warehouse->setIdPaymentMethod($payment_method);
 
-        $successfully_edit = $this->partNumbersRepositoryInterface->edit($arr_edit_part_number);
+        $successfully_edit = $this->autoPartsWarehouseRepositoryInterface->edit($edit_auto_parts_warehouse);
 
-        $successfully['successfully'] = $successfully_edit;
 
-        return $successfully;
+
+        return $successfully_edit['edit'];
     }
 }
