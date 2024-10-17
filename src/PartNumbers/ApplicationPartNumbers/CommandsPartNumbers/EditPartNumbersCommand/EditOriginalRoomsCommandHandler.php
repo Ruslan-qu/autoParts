@@ -18,7 +18,7 @@ final class EditOriginalRoomsCommandHandler
         private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
     ) {}
 
-    public function handler(CreateOriginalRoomsCommand $createOriginalRoomsCommand): ?array
+    public function handler(CreateOriginalRoomsCommand $createOriginalRoomsCommand): ?int
     {
 
 
@@ -102,8 +102,6 @@ final class EditOriginalRoomsCommandHandler
 
         $successfully_edit = $this->originalRoomsRepositoryInterface->edit($edit_original_number);
 
-        $successfully['successfully'] = $successfully_edit;
-
-        return $successfully;
+        return $successfully_edit['edit'];
     }
 }

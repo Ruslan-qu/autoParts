@@ -14,6 +14,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindIdAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\SearchAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
 
 class AutoPartsWarehouseController extends AbstractController
@@ -38,7 +39,6 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_manually->isSubmitted()) {
             if ($form_save_auto_parts_manually->isValid()) {
 
-                // dd($form_save_auto_parts_manually->getData());
                 $map_arr_id_details = [
                     'id_details' => $form_save_auto_parts_manually->getData()['id_details']
                 ];
@@ -105,9 +105,9 @@ class AutoPartsWarehouseController extends AbstractController
     public function editAutoPartsWarehouse(
         Request $request,
         FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
-        /*CreateEditPartNumbersCommandHandler $createEditPartNumbersCommandHandler,
-        CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
-        CreateEditOriginalRoomsCommandHandler $createEditOriginalRoomsCommandHandler,
+        AdapterAutoPartsWarehouseInterface $adapterAutoPartsWarehouseInterface,
+        EditAutoPartsWarehouseCommandHandler $editAutoPartsWarehouseCommandHandler,
+        /* CreateEditOriginalRoomsCommandHandler $createEditOriginalRoomsCommandHandler,
         CreateSaveOriginalRoomsCommandHandler $createSaveOriginalRoomsCommandHandler,*/
     ): Response {
 
@@ -127,7 +127,7 @@ class AutoPartsWarehouseController extends AbstractController
                 return $this->redirectToRoute('search_auto_parts_warehouse');
             }
         }
-        // dd($data_form_edit_auto_parts_warehouse);
+
         if (!empty($request->request->all())) {
             $data_form_edit_auto_parts_warehouse = $request->request->all()['edit_auto_parts_warehouse'];
         }
@@ -136,32 +136,19 @@ class AutoPartsWarehouseController extends AbstractController
         $arr_saving_information = [];
         if ($form_edit_auto_parts_warehouse->isSubmitted()) {
             if ($form_edit_auto_parts_warehouse->isValid()) {
-                $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
-                $data_edit_part_numbers = $form_edit_auto_parts_warehouse->getData();
+                $data_form_edit_auto_parts_warehouse = $request->request->all()['edit_auto_parts_warehouse'];
 
-                if (!empty($data_edit_part_numbers['original_number'])) {
+                $map_arr_id_details = [
+                    'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
+                ];
 
-                    $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
-                    $arr_original_number['original_number'] = $data_edit_part_numbers['original_number'];
+                $arr_part_number = $adapterAutoPartsWarehouseInterface->searchIdDetails($map_arr_id_details);
+                $map_arr_part_number = ['id_details' => $arr_part_number[0]];
 
-                    if (!empty($data_edit_part_numbers['id_original_number'])) {
+                $data_edit_auto_parts_manually = array_replace($form_edit_auto_parts_warehouse->getData(), $map_arr_part_number);
 
-                        $createEditOriginalRoomsCommandHandler
-                            ->handler(new CreateOriginalRoomsCommand($arr_original_number));
-                    } else {
-                        $createSaveOriginalRoomsCommandHandler
-                            ->handler(new CreateOriginalRoomsCommand($arr_original_number));
-                    }
-
-                    $object_original_number = $createFindOneByOriginalRoomsQueryHandler
-                        ->handler(new CreateOriginalRoomsQuery($arr_original_number));
-
-                    $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
-                }
-
-                unset($data_edit_part_numbers['original_number']);
-                $arr_saving_information = $createEditPartNumbersCommandHandler
-                    ->handler(new CreatePartNumbersCommand($data_edit_part_numbers));
+                $arr_saving_information = $editAutoPartsWarehouseCommandHandler
+                    ->handler(new AutoPartsWarehouseCommand($data_edit_auto_parts_manually));
             }
         }
 

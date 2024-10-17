@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
@@ -8,26 +8,22 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 
-final class SaveAutoPartsWarehouseCommandHandler
+final class EditAutoPartsWarehouseCommandHandler
 {
-
     public function __construct(
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface,
-        private AutoPartsWarehouse $autoPartsWarehouse
     ) {}
 
     public function handler(AutoPartsWarehouseCommand $autoPartsWarehouseCommand): ?int
     {
 
-        $quantity = $autoPartsWarehouseCommand->getQuantity();
-
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
+        $quantity = $autoPartsWarehouseCommand->getQuantity();
         $input = [
             'quantity_error' => [
                 'NotBlank' => $quantity,
@@ -170,16 +166,41 @@ final class SaveAutoPartsWarehouseCommandHandler
             return null;
         }
 
-        $this->autoPartsWarehouse->setQuantity($quantity);
-        $this->autoPartsWarehouse->setPrice($price);
-        $this->autoPartsWarehouse->setIdCounterparty($counterparty);
-        $this->autoPartsWarehouse->setIdDetails($part_number);
-        $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
-        $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
+        $edit_part_number = $this->autoPartsWarehouseRepositoryInterface->findPartNumbersFromManufacturers($id);
 
-        $successfully_save = $this->autoPartsWarehouseRepositoryInterface->save($this->autoPartsWarehouse);
+        if (empty($edit_part_number)) {
 
-        $id = $successfully_save['save'];
-        return $id;
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        if ($part_number != $edit_part_number->getPartNumber()) {
+            /* Валидация дублей */
+            $number_doubles = $this->partNumbersRepositoryInterface
+                ->numberDoubles(['part_number' => $part_number]);
+
+            if ($number_doubles != 0) {
+
+                return null;
+            }
+        }
+
+        $edit_part_number->setPartNumber($part_number);
+        $edit_part_number->setManufacturer($manufacturer);
+        $edit_part_number->setAdditionalDescriptions($additional_descriptions);
+        $edit_part_number->setIdPartName($id_part_name);
+        $edit_part_number->setIdCarBrand($id_car_brand);
+        $edit_part_number->setIdSide($id_side);
+        $edit_part_number->setIdBody($id_body);
+        $edit_part_number->setIdAxle($id_axle);
+        $edit_part_number->setIdInStock($id_in_stock);
+        $edit_part_number->setIdOriginalNumber($id_original_number);
+
+        $successfully_edit = $this->partNumbersRepositoryInterface->edit($arr_edit_part_number);
+
+        $successfully['successfully'] = $successfully_edit;
+
+        return $successfully;
     }
 }

@@ -16,10 +16,10 @@
   <div class="container-fluid text-center mt-3">
     <div class="row">
 
-      <div class="col-xl-7 col-xxl-12">
+      <div class="col-lg-12 col-xl-7 col-xxl-7">
         <div class="row">
 
-          <div class="col-sm-12 col-md-6 col-lg">
+          <div class="col-sm-12 col-md-6 col-lg-4">
             <div class="lb">{{ form_label(form_search_part_numbers.part_number) }}</div>
             {{ form_widget(form_search_part_numbers.part_number, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_search_part_numbers.part_number) |nl2br }}
@@ -27,7 +27,7 @@
 
 
 
-          <div class="col-sm-12 col-md-6 col-lg">
+          <div class="col-sm-12 col-md-6 col-lg-4">
             <div class="lb">{{ form_label(form_search_part_numbers.id_original_number) }}</div>
             {{ form_widget(form_search_part_numbers.id_original_number, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_search_part_numbers.id_original_number) |nl2br }}
@@ -35,7 +35,7 @@
 
 
 
-          <div class="col-sm-12 col-md-12 col-lg">
+          <div class="col-sm-12 col-md-12 col-lg-4">
             <div class="lb">{{ form_label(form_search_part_numbers.manufacturer) }}</div>
             {{ form_widget(form_search_part_numbers.manufacturer, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_search_part_numbers.manufacturer) |nl2br }}
@@ -46,7 +46,7 @@
 
 
 
-      <div class="col-xl-5 col-xxl-12">
+      <div class="col-lg-12 col-xl-5 col-xxl-5">
         <div class="row justify-content-evenly">
 
           <div class="col-6">

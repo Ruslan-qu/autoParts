@@ -38,8 +38,8 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
 
-        $exists_counterparty = $this->count($entityData);
-        if ($exists_counterparty == 0) {
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
@@ -55,15 +55,15 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
-        dd($entityData);
-        $exists_counterparty = $this->count($entityData);
-        if ($exists_counterparty == 0) {
+
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => 'Оригинальный номер успешно изменен'];
+        return $successfully = ['edit' => $entityData['id']];
     }
 
     /**

@@ -13,6 +13,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumb
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\CreateOriginalRoomsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\CreateFindIdPartNumbersQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditOriginalRoomsCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\CreateEditPartNumbersCommandHandler;
@@ -118,7 +119,7 @@ class PartNumbersController extends AbstractController
         CreateFindIdPartNumbersQueryHandler $createFindIdPartNumbersQueryHandler,
         EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
         CreateFindOneByOriginalRoomsQueryHandler $createFindOneByOriginalRoomsQueryHandler,
-        CreateEditOriginalRoomsCommandHandler $createEditOriginalRoomsCommandHandler,
+        EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
         CreateSaveOriginalRoomsCommandHandler $createSaveOriginalRoomsCommandHandler,
     ): Response {
 
@@ -157,7 +158,7 @@ class PartNumbersController extends AbstractController
 
                     if (!empty($data_edit_part_numbers['id_original_number'])) {
 
-                        $createEditOriginalRoomsCommandHandler
+                        $editOriginalRoomsCommandHandler
                             ->handler(new CreateOriginalRoomsCommand($arr_original_number));
                     } else {
                         $createSaveOriginalRoomsCommandHandler
@@ -171,6 +172,7 @@ class PartNumbersController extends AbstractController
                 }
 
                 unset($data_edit_part_numbers['original_number']);
+
                 $arr_saving_information = $editPartNumbersCommandHandler
                     ->handler(new CreatePartNumbersCommand($data_edit_part_numbers));
             }

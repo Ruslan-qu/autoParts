@@ -13,7 +13,7 @@
    {#Переменный для вывода данных в форме #}
 
 {% if data_form_edit_auto_parts_warehouse is iterable %}
-  {% set id_details_find_id = data_form_edit_auto_parts_warehouse.id_details|default('') %}
+  {% set part_number_find_id = data_form_edit_auto_parts_warehouse.id_details|default('') %}
   {% set id_counterparty_find_id = data_form_edit_auto_parts_warehouse.id_counterparty|default('') %}
   {% set quantity_find_id = data_form_edit_auto_parts_warehouse.quantity|default('') %}
   {% set price_find_id = data_form_edit_auto_parts_warehouse.price|default('') %}
@@ -22,7 +22,7 @@
   {% set id_find_id = data_form_edit_auto_parts_warehouse.id|default('') %}
   
 {% else %}
-  {% set id_details_find_id = data_form_edit_auto_parts_warehouse.getIdDetails().getPartNumber()|default('') %}
+  {% set part_number_find_id = data_form_edit_auto_parts_warehouse.getIdDetails().getPartNumber()|default('') %}
   {% set id_counterparty_find_id = data_form_edit_auto_parts_warehouse.getIdCounterparty().getId()|default('') %}
   {% set quantity_find_id = data_form_edit_auto_parts_warehouse.getQuantity()|default('') %}
   {% set price_find_id = data_form_edit_auto_parts_warehouse.getPrice()|default('') %}
@@ -42,7 +42,7 @@
 
       <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
         <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.id_details) }}</div>
-        {{ form_widget(form_edit_auto_parts_warehouse.id_details, { value : id_details_find_id, 'attr': {'class': 'w-100'} }) }}
+        {{ form_widget(form_edit_auto_parts_warehouse.id_details, { value : part_number_find_id, 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_edit_auto_parts_warehouse.id_details) }}
 
       </div>
@@ -83,11 +83,12 @@
 
     </div>
     {{ form_widget(form_edit_auto_parts_warehouse.id, { value : id_find_id }) }}
+    
 
     <div class="row my-3">
       <div class="col-12 d-grid">
-        {{ form_widget(form_edit_auto_parts_warehouse.button_edit_manually, { 'label': 'Сохранить', 'attr': {'class':
-        'btn btn-danger'}}) }}
+        {{ form_widget(form_edit_auto_parts_warehouse.button_edit_manually, { 'label': 'Изменить', 'attr': {'class':
+        'btn btn-secondary'}}) }}
       </div>
     </div>
 
