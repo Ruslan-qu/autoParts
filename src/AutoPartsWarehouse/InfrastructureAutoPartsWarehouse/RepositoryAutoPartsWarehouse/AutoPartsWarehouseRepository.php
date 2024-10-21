@@ -58,6 +58,25 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     }
 
     /**
+     * @return array Возвращается массив с данными об удаление 
+     */
+    public function delete(AutoPartsWarehouse $autoPartsWarehouse): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($autoPartsWarehouse);
+        $entityManager->flush();
+
+        $entityData = $entityManager->contains($autoPartsWarehouse);
+        if ($entityData != false) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $successfully = ['delete' => $autoPartsWarehouse->getId()];
+    }
+
+    /**
      * @return AutoPartsWarehouse[]|NULL Возвращает массив объектов или ноль
      */
     public function findByAutoPartsWarehouse(array $arr_parameters, string $part_number_where): ?array
@@ -85,9 +104,9 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     }
 
     /**
-     * @return AutoPartsWarehouse|NULL Возвращает объект или ноль
+     * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findAutoPartsWarehouse(int $id): ?AutoPartsWarehouse
+    public function findAutoPartsWarehouse(int $id): ?array
     {
         $entityManager = $this->getEntityManager();
 
@@ -97,10 +116,10 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN a.id_details d
             LEFT JOIN a.id_counterparty c
             LEFT JOIN a.id_payment_method pm 
-            WHERE a.id <= :id'
-        )->setParameters(['id' => $id]);
+            WHERE a.id = :id'
+        )->setParameter('id', $id);
 
-        return $query->getResult()[0];
+        return $query->getResult();
     }
 
     /**

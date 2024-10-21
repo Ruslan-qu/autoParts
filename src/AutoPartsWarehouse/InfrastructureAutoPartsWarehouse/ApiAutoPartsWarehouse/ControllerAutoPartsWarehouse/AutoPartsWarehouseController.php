@@ -11,11 +11,12 @@ use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehous
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindIdAutoPartsWarehouseQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\SearchAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
 
 class AutoPartsWarehouseController extends AbstractController
 {
@@ -61,8 +62,6 @@ class AutoPartsWarehouseController extends AbstractController
             }
         }
 
-
-
         return $this->render('autoPartsWarehouse/saveAutoPartsManually.html.twig', [
             'title_logo' => 'Cохранить автодеталь вручную',
             'form_save_auto_parts_manually' => $form_save_auto_parts_manually->createView(),
@@ -104,11 +103,9 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
     public function editAutoPartsWarehouse(
         Request $request,
-        FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
+        FindAutoPartsWarehouseQueryHandler $findAutoPartsWarehouseQueryHandler,
         AdapterAutoPartsWarehouseInterface $adapterAutoPartsWarehouseInterface,
         EditAutoPartsWarehouseCommandHandler $editAutoPartsWarehouseCommandHandler,
-        /* CreateEditOriginalRoomsCommandHandler $createEditOriginalRoomsCommandHandler,
-        CreateSaveOriginalRoomsCommandHandler $createSaveOriginalRoomsCommandHandler,*/
     ): Response {
 
         /*Форма Редактирования постовщка*/
@@ -117,26 +114,13 @@ class AutoPartsWarehouseController extends AbstractController
         /*Валидация формы */
         $form_edit_auto_parts_warehouse->handleRequest($request);
 
-        if (empty($form_edit_auto_parts_warehouse->getData())) {
-
-            $data_form_edit_auto_parts_warehouse = $findIdAutoPartsWarehouseQueryHandler
-                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
-            if (empty($data_form_edit_auto_parts_warehouse)) {
-                $this->addFlash('not_found', 'Автодеталь на складе не найдена');
-
-                return $this->redirectToRoute('search_auto_parts_warehouse');
-            }
-        }
-
         if (!empty($request->request->all())) {
-            $data_form_edit_auto_parts_warehouse = $request->request->all()['edit_auto_parts_warehouse'];
+            $data_form_edit_auto_parts_warehouse = $form_edit_auto_parts_warehouse->getData();
         }
-
 
         $arr_saving_information = [];
         if ($form_edit_auto_parts_warehouse->isSubmitted()) {
             if ($form_edit_auto_parts_warehouse->isValid()) {
-                $data_form_edit_auto_parts_warehouse = $request->request->all()['edit_auto_parts_warehouse'];
 
                 $map_arr_id_details = [
                     'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
@@ -152,6 +136,11 @@ class AutoPartsWarehouseController extends AbstractController
             }
         }
 
+        if (empty($form_edit_auto_parts_warehouse->getData()) || !empty($arr_saving_information)) {
+
+            $data_form_edit_auto_parts_warehouse = $findAutoPartsWarehouseQueryHandler
+                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+        }
 
         return $this->render('autoPartsWarehouse/editAutoPartsManually.html.twig', [
             'title_logo' => 'Изменение данных склада',
@@ -159,5 +148,20 @@ class AutoPartsWarehouseController extends AbstractController
             'arr_saving_information' => $arr_saving_information,
             'data_form_edit_auto_parts_warehouse' => $data_form_edit_auto_parts_warehouse
         ]);
+    }
+
+    /*Удаление автодетали*/
+    #[Route('/deleteAutoPartsWarehouse', name: 'delete_auto_parts_warehouse')]
+    public function deleteAutoPartsWarehouse(
+        Request $request,
+        DeleteAutoPartsWarehouseCommandHandler $deleteAutoPartsWarehouseCommandHandler
+    ): Response {
+
+        $saving_information = $deleteAutoPartsWarehouseCommandHandler
+            ->handler(new AutoPartsWarehouseCommand($request->query->all()));
+
+        $this->addFlash('delete', 'Поставка удалена');
+
+        return $this->redirectToRoute('search_auto_parts_warehouse');
     }
 }

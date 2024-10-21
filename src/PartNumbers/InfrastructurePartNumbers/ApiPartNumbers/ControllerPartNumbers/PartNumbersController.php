@@ -208,8 +208,6 @@ class PartNumbersController extends AbstractController
             }
         }
 
-
-
         return $this->redirectToRoute('search_part_numbers');
     }
 }

@@ -14,11 +14,11 @@
 
 {% if data_form_edit_auto_parts_warehouse is iterable %}
   {% set part_number_find_id = data_form_edit_auto_parts_warehouse.id_details|default('') %}
-  {% set id_counterparty_find_id = data_form_edit_auto_parts_warehouse.id_counterparty|default('') %}
+  {% set id_counterparty_find_id = data_form_edit_auto_parts_warehouse.id_counterparty.getId()|default('') %}
   {% set quantity_find_id = data_form_edit_auto_parts_warehouse.quantity|default('') %}
-  {% set price_find_id = (data_form_edit_auto_parts_warehouse.price / 100)|default('') %}
+  {% set price_find_id = data_form_edit_auto_parts_warehouse.price|default('') %}
   {% set date_receipt_auto_parts_warehouse_find_id = data_form_edit_auto_parts_warehouse.date_receipt_auto_parts_warehouse|date("Y-m-d")|default('') %}
-  {% set id_payment_method_find_id = data_form_edit_auto_parts_warehouse.id_payment_method|default('') %}
+  {% set id_payment_method_find_id = data_form_edit_auto_parts_warehouse.id_payment_method.getId()|default('') %}
   {% set id_find_id = data_form_edit_auto_parts_warehouse.id|default('') %}
   
 {% else %}

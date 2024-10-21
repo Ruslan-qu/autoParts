@@ -62,7 +62,7 @@
 
   {{ form_end(form_search_auto_parts_warehouse) }}
 
-  {% for message in app.flashes('not_found') %}
+  {% for message in app.flashes('delete') %}
   <h2 class="mt-3 ms-3">{{ message }}</h2>
   {% endfor %}
 
@@ -121,7 +121,7 @@
             <td>{{ information.getIdPaymentMethod.getmethod()|default('') }}</td>
             <td>{{ information.getQuantity()|default('') }}</td>
             <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
-            <td>{{ (information.getPrice() / 100)|default('')|number_format(2, '.', '') }}</td>
+            <td>{{ (information.getPrice() / 100)|default('') }}</td>
             
             <form action="#" name="edit_part_numbers">
 
@@ -135,7 +135,7 @@
                   value="{{ information.getId() }}">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
-            <form action="/deletePartNumbers" name="delete_part_numbers">
+            <form action="/deleteAutoPartsWarehouse" name="delete_auto_parts_warehouse">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ information.getId() }}">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>

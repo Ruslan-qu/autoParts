@@ -10,13 +10,13 @@ interface AutoPartsWarehouseRepositoryInterface
 
     public function edit(AutoPartsWarehouse $autoPartsWarehouse): array;
 
-    /*public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): ?array;
+    public function delete(AutoPartsWarehouse $autoPartsWarehouse): array;
 
-    public function numberDoubles(array $array): int;*/
+    /*public function numberDoubles(array $array): int;*/
 
     public function findByAutoPartsWarehouse(array $parameters, string $where): ?array;
 
-    public function findAutoPartsWarehouse(int $id): ?AutoPartsWarehouse;
+    public function findAutoPartsWarehouse(int $id): ?array;
 
     public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse;
 }
