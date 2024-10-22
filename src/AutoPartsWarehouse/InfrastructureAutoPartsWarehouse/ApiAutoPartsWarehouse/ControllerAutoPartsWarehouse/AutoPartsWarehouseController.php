@@ -164,4 +164,19 @@ class AutoPartsWarehouseController extends AbstractController
 
         return $this->redirectToRoute('search_auto_parts_warehouse');
     }
+
+    /*Корзина для продажи автодетали*/
+    #[Route('/cartProductSold', name: 'cart_product_sold')]
+    public function cartProductSold(
+        Request $request,
+        DeleteAutoPartsWarehouseCommandHandler $deleteAutoPartsWarehouseCommandHandler
+    ): Response {
+
+        $saving_information = $deleteAutoPartsWarehouseCommandHandler
+            ->handler(new AutoPartsWarehouseCommand($request->query->all()));
+
+        $this->addFlash('delete', 'Поставка удалена');
+
+        return $this->redirectToRoute('search_auto_parts_warehouse');
+    }
 }

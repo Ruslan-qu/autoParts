@@ -123,7 +123,7 @@
             <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
             <td>{{ (information.getPrice() / 100)|default('') }}</td>
             
-            <form action="#" name="edit_part_numbers">
+            <form action="cartProductSold" name="cart_product_sold">
 
               <td><button class="btn btn-outline-success" type="submit" name="id"
                   value="{{ information.getId() }}">{{ ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
