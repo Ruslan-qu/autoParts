@@ -5,11 +5,12 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAuto
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsSold;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsSoldRepositoryInterface;
 
 /**
  * @extends ServiceEntityRepository<AutoPartsSold>
  */
-class AutoPartsSoldRepository extends ServiceEntityRepository
+class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPartsSoldRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

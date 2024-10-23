@@ -184,13 +184,33 @@ class AutoPartsWarehouseController extends AbstractController
 
         $search_data = $findCartAutoPartsWarehouseQueryHandler
             ->handler(new AutoPartsWarehouseQuery($request->query->all()));
-        dd($search_data);
+
+        if ($form_cart_auto_parts_warehouse_sold->isSubmitted()) {
+            if ($form_cart_auto_parts_warehouse_sold->isValid()) {
+                if ($form_cart_auto_parts_warehouse_sold->get('button_add_cart')->isClicked()) {
+                }
+                //dd($form_cart_auto_parts_warehouse_sold->get('button_put_aside')->isClicked());
+                $map_arr_id_details = [
+                    'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
+                ];
+
+                $arr_part_number = $adapterAutoPartsWarehouseInterface->searchIdDetails($map_arr_id_details);
+                $map_arr_part_number = ['id_details' => $arr_part_number[0]];
+
+                $data_edit_auto_parts_manually = array_replace($form_edit_auto_parts_warehouse->getData(), $map_arr_part_number);
+
+                $arr_saving_information = $editAutoPartsWarehouseCommandHandler
+                    ->handler(new AutoPartsWarehouseCommand($data_edit_auto_parts_manually));
+            }
+        }
+
+        // dd($search_data);
 
 
         //$saving_information = $deleteAutoPartsWarehouseCommandHandler
         //  ->handler(new AutoPartsWarehouseCommand($request->query->all()));
 
-        return $this->render('autoPartsWarehouse/editAutoPartsManually.html.twig', [
+        return $this->render('autoPartsWarehouse/cartAutoPartsWarehouseSold.html.twig', [
             'title_logo' => 'Корзина',
             'form_cart_auto_parts_warehouse_sold' => $form_cart_auto_parts_warehouse_sold->createView(),
             // 'arr_saving_information' => $arr_saving_information,

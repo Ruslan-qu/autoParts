@@ -12,10 +12,10 @@
 
   {#Таблица автодеталей#}
 
-  <div class="container-fluid text-center pt-4 ">
+  <div class="container-fluid text-center pt-3">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
-        border-info shadow p-3 mb-5 bg-body-tertiary rounded">
+        border-info shadow mb-4 bg-body-tertiary rounded">
         <thead class="table-secondary">
           {% for arr_search_data in search_data %}
           {% if arr_search_data %}
@@ -36,8 +36,7 @@
         </thead>
 
         <tbody class="table-group-divider">
-          {% for arr_search_data in search_data %}
-          {% for information in arr_search_data %}
+          {% for information in search_data %}
           {% if information %}
           <tr>
             <td>{{ information.getIdDetails.getPartNumber() }}</td>
@@ -53,82 +52,87 @@
           </tr>
           {% endif %}
           {% endfor %}
-          {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
 
-  {#Таблица автодеталей#}
+  <div class="container-fluid text-center pt-3">
 
-  <div class="container-fluid text-center pt-4 ">
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
-        border-info shadow p-3 mb-5 bg-body-tertiary rounded">
-        <thead class="table-secondary">
+    <div class="row">
+      <div class="col-sm-12 col-lg-6 col-xl-6">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
+        border-info shadow mb-4 bg-body-tertiary rounded">
+            <thead class="table-secondary">
 
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data %}
-          <tr>
-            <th scope="col">Кол-во</th>
-            <th scope="col">Цена<br>шт</th>
-            <th scope="col">Цена<br>общая</th>
-          </tr>
-          {% endif %}
-          {% endfor %}
+              {% for information in search_data %}
+              {% if information %}
+              <tr>
+                <th scope="col">Кол-во</th>
+                <th scope="col">Цена шт</th>
+                <th scope="col">Цена общая</th>
+              </tr>
+              {% endif %}
+              {% endfor %}
 
-        </thead>
-        <tbody class="table-group-divider">
-          {% for arr_search_data in search_data %}
-          {% for information in arr_search_data %}
-          {% if information %}
+            </thead>
+            <tbody class="table-group-divider">
+              {% for information in search_data %}
+              {% if information %}
 
-          <tr>
-            <td>{{ information.getQuantity()|default('') }}</td>
-            <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
-            <td>{{ (information.getPrice() / 100)|default('') }}</td>
-          </tr>
-          {% endif %}
-          {% endfor %}
-          {% endfor %}
-        </tbody>
-      </table>
+              <tr>
+                <td>{{ information.getQuantity()|default('') }}</td>
+                <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2,
+                  '.',
+                  '')
+                  }}</td>
+                <td>{{ (information.getPrice() / 100)|default('') }}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+      {#Форма сохранения номеров деталей#}
+      <div class="col-sm-12 col-lg-6 col-xl-6">
+        {{ form_start(form_cart_auto_parts_warehouse_sold) }}
+
+        <div class="row justify-content-start">
+
+          <div class="col-sm-4 col-lg-4 col-xl-4">
+            <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.quantity_sold) }}</div>
+            {{ form_widget(form_cart_auto_parts_warehouse_sold.quantity_sold, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_cart_auto_parts_warehouse_sold.quantity_sold) |nl2br }}
+          </div>
+
+          <div class="col-sm-4 col-lg-4 col-xl-4">
+            <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.price_sold) }}</div>
+            {{ form_widget(form_cart_auto_parts_warehouse_sold.price_sold, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_cart_auto_parts_warehouse_sold.price_sold) |nl2br }}
+          </div>
+
+          <div class="col-sm-4 col-lg-4 col-xl-4">
+            <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.date_sold) }}</div>
+            {{ form_widget(form_cart_auto_parts_warehouse_sold.date_sold, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_cart_auto_parts_warehouse_sold.date_sold) |nl2br }}
+          </div>
+          {{ form_widget(form_cart_auto_parts_warehouse_sold.id) }}
+        </div>
+      </div>
     </div>
-  </div>
 
-
-  {#Форма сохранения номеров деталей#}
-
-  {{ form_start(form_cart_auto_parts_warehouse_sold) }}
-
-  <div class="container-fluid text-center mt-3">
-
-    <div class="row justify-content-start">
-
-      <div class="col-sm-4 col-lg-4 col-xl-2">
-        <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.quantity_sold) }}</div>
-        {{ form_widget(form_cart_auto_parts_warehouse_sold.quantity_sold, { 'attr': {'class': 'w-100'} }) }}
-        {{ form_errors(form_cart_auto_parts_warehouse_sold.quantity_sold) |nl2br }}
-      </div>
-
-      <div class="col-sm-3 col-lg-3 col-xl-1">
-        <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.price_sold) }}</div>
-        {{ form_widget(form_cart_auto_parts_warehouse_sold.price_sold, { 'attr': {'class': 'w-100'} }) }}
-        {{ form_errors(form_cart_auto_parts_warehouse_sold.price_sold) |nl2br }}
-      </div>
-
-      <div class="col-sm-3 col-lg-3 col-xl-1">
-        <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.date_sold) }}</div>
-        {{ form_widget(form_cart_auto_parts_warehouse_sold.date_sold, { 'attr': {'class': 'w-100'} }) }}
-        {{ form_errors(form_cart_auto_parts_warehouse_sold.date_sold) |nl2br }}
-      </div>
-      {{ form_widget(form_cart_auto_parts_warehouse_sold.id) }}
-    </div>
-
-    <div class="row mt-3">
-      <div class="col-sm-10 col-lg-10 col-xl-6">
-        {{ form_widget(form_cart_auto_parts_warehouse_sold.button_sold_manually,
-        { 'label': 'Поиск', 'attr': {'class': 'btn btn-primary w-100'}}) }}
+    <div class="row my-2 pt-2">
+      <div class="col-sm-12 col-lg-12 col-xl-12">
+        <div class="btn-group w-100" role="group" aria-label="Basic example">
+          {{ form_widget(form_cart_auto_parts_warehouse_sold.button_add_cart,
+          { 'label': 'Добавить в корзину', 'attr': {'class': 'btn btn-success'}}) }}
+          {{ form_widget(form_cart_auto_parts_warehouse_sold.button_sold,
+          { 'label': 'Продать', 'attr': {'class': 'btn btn-danger'}}) }}
+        </div>
       </div>
     </div>
 
@@ -146,7 +150,7 @@
   {% block table %}
 
   {#Таблица автодеталей на складе#}
-{#
+  {#
   <div class="container-fluid text-center pt-4 ">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
@@ -194,25 +198,26 @@
             <td>{{ information.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
             <td>{{ information.getIdPaymentMethod.getmethod()|default('') }}</td>
             <td>{{ information.getQuantity()|default('') }}</td>
-            <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
+            <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}
+            </td>
             <td>{{ (information.getPrice() / 100)|default('') }}</td>
-            
+
             <form action="cartAutoPartsWarehouseSold" name="cart_auto_parts_warehouse_sold">
 
-              <td><button class="btn btn-outline-success" type="submit" name="id"
-                  value="{{ information.getId() }}">{{ ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
+              <td><button class="btn btn-outline-success" type="submit" name="id" value="{{ information.getId() }}">{{
+                  ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
             <form action="/editAutoPartsWarehouse" name="edit_auto_parts_warehouse">
 
-              <td><button class="btn btn-outline-secondary" type="submit" name="id"
-                  value="{{ information.getId() }}">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
+              <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
+                  ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
             <form action="/deleteAutoPartsWarehouse" name="delete_auto_parts_warehouse">
 
-              <td><button class="btn btn-outline-danger" type="submit" name="id"
-                  value="{{ information.getId() }}">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>
+              <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ information.getId() }}">{{
+                  ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
           </tr>

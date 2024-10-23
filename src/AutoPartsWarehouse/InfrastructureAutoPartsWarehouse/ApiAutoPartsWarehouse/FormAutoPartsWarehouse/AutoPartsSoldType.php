@@ -49,7 +49,7 @@ class AutoPartsSoldType extends AbstractType
                 ],
             ])
             ->add('date_sold', DateType::class, [
-                'label' => 'Дата прихода',
+                'label' => 'Дата продажи',
                 'widget' => 'single_text',
                 'input'  => 'datetime_immutable',
                 'constraints' => [
@@ -60,7 +60,8 @@ class AutoPartsSoldType extends AbstractType
                 ],
             ])
             ->add('id', HiddenType::class)
-            ->add('button_sold_manually', SubmitType::class);
+            ->add('button_add_cart', SubmitType::class)
+            ->add('button_sold', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
