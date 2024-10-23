@@ -7,15 +7,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\AutoPartsSoldType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindByAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\SearchAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\CartAutoPartsWarehouseSoldQuery\FindCartAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
 
 class AutoPartsWarehouseController extends AbstractController
@@ -29,10 +32,10 @@ class AutoPartsWarehouseController extends AbstractController
     ): Response {
 
 
-        /*Подключаем формы */
+        /*Подключаем формы*/
         $form_save_auto_parts_manually = $this->createForm(SaveAutoPartsManuallyType::class);
 
-        /*Валидация формы */
+        /*Валидация формы*/
         $form_save_auto_parts_manually->handleRequest($request);
 
 
@@ -73,10 +76,10 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
     public function searchAutoPartsWarehouse(
         Request $request,
-        SearchAutoPartsWarehouseQueryHandler $searchAutoPartsWarehouseQueryHandler
+        FindByAutoPartsWarehouseQueryHandler $findByAutoPartsWarehouseQueryHandler
     ): Response {
 
-        /*Форма поиска*/
+        /*Подключаем формы*/
         $form_search_auto_parts_warehouse = $this->createForm(SearchAutoPartsWarehouseType::class);
 
         /*Валидация формы */
@@ -86,7 +89,7 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {
 
-                $search_data[] = $searchAutoPartsWarehouseQueryHandler
+                $search_data[] = $findByAutoPartsWarehouseQueryHandler
                     ->handler(new AutoPartsWarehouseQuery($form_search_auto_parts_warehouse->getData()));
             }
         }
@@ -108,7 +111,7 @@ class AutoPartsWarehouseController extends AbstractController
         EditAutoPartsWarehouseCommandHandler $editAutoPartsWarehouseCommandHandler,
     ): Response {
 
-        /*Форма Редактирования постовщка*/
+        /*Подключаем формы*/
         $form_edit_auto_parts_warehouse = $this->createForm(EditAutoPartsWarehouseType::class);
 
         /*Валидация формы */
@@ -157,7 +160,7 @@ class AutoPartsWarehouseController extends AbstractController
         DeleteAutoPartsWarehouseCommandHandler $deleteAutoPartsWarehouseCommandHandler
     ): Response {
 
-        $saving_information = $deleteAutoPartsWarehouseCommandHandler
+        $deleteAutoPartsWarehouseCommandHandler
             ->handler(new AutoPartsWarehouseCommand($request->query->all()));
 
         $this->addFlash('delete', 'Поставка удалена');
@@ -165,18 +168,33 @@ class AutoPartsWarehouseController extends AbstractController
         return $this->redirectToRoute('search_auto_parts_warehouse');
     }
 
+
     /*Корзина для продажи автодетали*/
-    #[Route('/cartProductSold', name: 'cart_product_sold')]
-    public function cartProductSold(
+    #[Route('/cartAutoPartsWarehouseSold', name: 'cart_auto_parts_warehouse_sold')]
+    public function cartAutoPartsWarehouseSold(
         Request $request,
-        DeleteAutoPartsWarehouseCommandHandler $deleteAutoPartsWarehouseCommandHandler
+        FindCartAutoPartsWarehouseQueryHandler $findCartAutoPartsWarehouseQueryHandler
     ): Response {
 
-        $saving_information = $deleteAutoPartsWarehouseCommandHandler
-            ->handler(new AutoPartsWarehouseCommand($request->query->all()));
+        /*Подключаем формы*/
+        $form_cart_auto_parts_warehouse_sold = $this->createForm(AutoPartsSoldType::class);
 
-        $this->addFlash('delete', 'Поставка удалена');
+        /*Валидация формы */
+        $form_cart_auto_parts_warehouse_sold->handleRequest($request);
 
-        return $this->redirectToRoute('search_auto_parts_warehouse');
+        $search_data = $findCartAutoPartsWarehouseQueryHandler
+            ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+        dd($search_data);
+
+
+        //$saving_information = $deleteAutoPartsWarehouseCommandHandler
+        //  ->handler(new AutoPartsWarehouseCommand($request->query->all()));
+
+        return $this->render('autoPartsWarehouse/editAutoPartsManually.html.twig', [
+            'title_logo' => 'Корзина',
+            'form_cart_auto_parts_warehouse_sold' => $form_cart_auto_parts_warehouse_sold->createView(),
+            // 'arr_saving_information' => $arr_saving_information,
+            'search_data' => $search_data
+        ]);
     }
 }

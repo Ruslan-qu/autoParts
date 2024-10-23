@@ -6,7 +6,7 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoParts
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 
 
-final class SearchAutoPartsWarehouseQueryHandler
+final class FindByAutoPartsWarehouseQueryHandler
 {
 
     public function __construct(

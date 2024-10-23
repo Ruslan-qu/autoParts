@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,7 +18,7 @@ class AutoPartsSoldType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('quantity', IntegerType::class, [
+            ->add('quantity_sold', IntegerType::class, [
                 'label' => 'Кол-во',
                 'constraints' => [
                     new NotBlank([
@@ -32,7 +32,7 @@ class AutoPartsSoldType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('price', NumberType::class, [
+            ->add('price_sold', NumberType::class, [
                 'label' => 'Цена',
                 'invalid_message' => 'Форма содержит 
                     недопустимые символы',
@@ -48,7 +48,7 @@ class AutoPartsSoldType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('date_receipt_auto_parts_warehouse', DateType::class, [
+            ->add('date_sold', DateType::class, [
                 'label' => 'Дата прихода',
                 'widget' => 'single_text',
                 'input'  => 'datetime_immutable',

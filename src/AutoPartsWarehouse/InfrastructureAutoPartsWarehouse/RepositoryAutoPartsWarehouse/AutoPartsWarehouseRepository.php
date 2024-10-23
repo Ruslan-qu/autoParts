@@ -84,7 +84,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT a, d, pn, cb, s, b, ax, i, o, c, pm
+            'SELECT a, d, pn, cb, s, b, ax, o, c, pm
             FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
             LEFT JOIN a.id_details d
             LEFT JOIN d.id_part_name pn
@@ -92,7 +92,6 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN d.id_side s
             LEFT JOIN d.id_body b
             LEFT JOIN d.id_axle ax
-            LEFT JOIN d.id_in_stock i
             LEFT JOIN d.id_original_number o
             LEFT JOIN a.id_counterparty c
             LEFT JOIN a.id_payment_method pm '
@@ -128,5 +127,30 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse
     {
         return $this->find($id);
+    }
+
+    /**
+     * @return array|NULL Возвращает массив объектов или ноль
+     */
+    public function findCartAutoPartsWarehouse(int $id): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a, d, pn, cb, s, b, ax, o, c, pm
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
+            LEFT JOIN a.id_details d
+            LEFT JOIN d.id_part_name pn
+            LEFT JOIN d.id_car_brand cb
+            LEFT JOIN d.id_side s
+            LEFT JOIN d.id_body b
+            LEFT JOIN d.id_axle ax
+            LEFT JOIN d.id_original_number o
+            LEFT JOIN a.id_counterparty c
+            LEFT JOIN a.id_payment_method pm 
+            WHERE a.id = :id'
+        )->setParameter('id', $id);
+
+        return $query->getResult();
     }
 }
