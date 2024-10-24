@@ -80,13 +80,10 @@
             <tbody class="table-group-divider">
               {% for information in search_data %}
               {% if information %}
-
               <tr>
                 <td>{{ information.getQuantity()|default('') }}</td>
-                <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2,
-                  '.',
-                  '')
-                  }}</td>
+                <td>{{ ((information.getPrice() / 100)
+                  / information.getQuantity())|default('')|number_format(2,'.','')}}</td>
                 <td>{{ (information.getPrice() / 100)|default('') }}</td>
               </tr>
               {% endif %}
@@ -120,19 +117,20 @@
             {{ form_widget(form_cart_auto_parts_warehouse_sold.date_sold, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_cart_auto_parts_warehouse_sold.date_sold) |nl2br }}
           </div>
-          {{ form_widget(form_cart_auto_parts_warehouse_sold.id) }}
+          {% for information in search_data %}
+          {% if information %}
+          {{ form_widget(form_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, { value : information.getId() })
+          }}
+          {% endif %}
+          {% endfor %}
         </div>
       </div>
     </div>
 
     <div class="row my-2 pt-2">
       <div class="col-sm-12 col-lg-12 col-xl-12">
-        <div class="btn-group w-100" role="group" aria-label="Basic example">
-          {{ form_widget(form_cart_auto_parts_warehouse_sold.button_add_cart,
-          { 'label': 'Добавить в корзину', 'attr': {'class': 'btn btn-success'}}) }}
-          {{ form_widget(form_cart_auto_parts_warehouse_sold.button_sold,
-          { 'label': 'Продать', 'attr': {'class': 'btn btn-danger'}}) }}
-        </div>
+        {{ form_widget(form_cart_auto_parts_warehouse_sold.button_add_cart,
+        { 'label': 'Добавить в корзину', 'attr': {'class': 'btn btn-success w-100'}}) }}
       </div>
     </div>
 
