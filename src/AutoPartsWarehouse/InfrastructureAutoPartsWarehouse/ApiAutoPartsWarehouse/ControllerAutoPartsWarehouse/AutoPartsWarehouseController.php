@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
@@ -192,18 +193,28 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_cart_auto_parts_warehouse_sold->isSubmitted()) {
             if ($form_cart_auto_parts_warehouse_sold->isValid()) {
 
-                $arr_saving_information = $addCartAutoPartsCommandHandler
-                    ->handler(new AutoPartsSoldCommand($form_cart_auto_parts_warehouse_sold->getData()));
-
                 try {
-                    $arr_saving_information;
-                } catch (UnprocessableEntityHttpException $e) {
-                    dd($e);
+                    $arr_saving_information = $addCartAutoPartsCommandHandler
+                        ->handler(new AutoPartsSoldCommand($form_cart_auto_parts_warehouse_sold->getData()));
+                } catch (HttpException $e) {
+
+
+                    $arr_validator_errors = json_decode($e->getMessage(), true);
+                    /* Выводим сообщения ошибки в форму поиска, через сессии  */
+
+                    foreach ($arr_validator_errors as $key => $value_arr_validator_errors) {
+                        foreach ($value_arr_validator_errors as $key => $value) {
+                            $message = $value;
+                            $propertyPath = $key;
+                            $this->addFlash($propertyPath, $message);
+                        }
+                    }
                 }
+                //dd($arr_validator_errors);
             }
         }
 
-        // dd($search_data);
+
 
 
         //$saving_information = $deleteAutoPartsWarehouseCommandHandler

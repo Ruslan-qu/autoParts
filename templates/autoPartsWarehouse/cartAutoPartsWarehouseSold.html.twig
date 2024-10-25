@@ -104,19 +104,33 @@
             <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.quantity_sold) }}</div>
             {{ form_widget(form_cart_auto_parts_warehouse_sold.quantity_sold, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_cart_auto_parts_warehouse_sold.quantity_sold) |nl2br }}
+            {% for message in app.flashes('[quantity_sold_error][Range]') %}
+            {{ message }}
+            {% else %}
+            {% for message in app.flashes('[quantity_sold_auto_parts_warehouse_error]') %}
+            {{ message }}
+            {% endfor %}
+            {% endfor %}
           </div>
 
           <div class="col-sm-4 col-lg-4 col-xl-4">
             <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.price_sold) }}</div>
             {{ form_widget(form_cart_auto_parts_warehouse_sold.price_sold, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_cart_auto_parts_warehouse_sold.price_sold) |nl2br }}
+            {% for message in app.flashes('[price_sold_error][NotBlank]') %}
+            {{ message }}
+            {% endfor %}
           </div>
 
           <div class="col-sm-4 col-lg-4 col-xl-4">
             <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.date_sold) }}</div>
             {{ form_widget(form_cart_auto_parts_warehouse_sold.date_sold, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_cart_auto_parts_warehouse_sold.date_sold) |nl2br }}
+            {% for message in app.flashes('[date_sold]') %}
+            {{ message }}
+            {% endfor %}
           </div>
+
           {% for information in search_data %}
           {% if information %}
           {{ form_widget(form_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, { value : information.getId() })
