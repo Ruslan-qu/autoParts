@@ -17,28 +17,23 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
         parent::__construct($registry, AutoPartsSold::class);
     }
 
-    //    /**
-    //     * @return AutoPartsSold[] Returns an array of AutoPartsSold objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return array Возвращается массив с данными об успешном сохранении
+     */
+    public function save(AutoPartsSoldCommand $autoPartsSoldCommand): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($autoPartsSoldCommand);
+        $entityManager->flush();
 
-    //    public function findOneBySomeField($value): ?AutoPartsSold
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsSoldCommand);
+
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+        return $successfully = ['save' => $entityData['id']];
+    }
 }

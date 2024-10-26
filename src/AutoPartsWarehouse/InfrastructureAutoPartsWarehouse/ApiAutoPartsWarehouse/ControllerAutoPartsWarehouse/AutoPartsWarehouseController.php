@@ -194,13 +194,13 @@ class AutoPartsWarehouseController extends AbstractController
             if ($form_cart_auto_parts_warehouse_sold->isValid()) {
 
                 try {
+
                     $arr_saving_information = $addCartAutoPartsCommandHandler
                         ->handler(new AutoPartsSoldCommand($form_cart_auto_parts_warehouse_sold->getData()));
                 } catch (HttpException $e) {
 
-
                     $arr_validator_errors = json_decode($e->getMessage(), true);
-                    /* Выводим сообщения ошибки в форму поиска, через сессии  */
+                    /* Выводим сообщения ошибки в форму через сессии  */
 
                     foreach ($arr_validator_errors as $key => $value_arr_validator_errors) {
                         foreach ($value_arr_validator_errors as $key => $value) {

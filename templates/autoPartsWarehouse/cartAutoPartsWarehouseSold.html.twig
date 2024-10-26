@@ -104,13 +104,16 @@
             <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.quantity_sold) }}</div>
             {{ form_widget(form_cart_auto_parts_warehouse_sold.quantity_sold, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_cart_auto_parts_warehouse_sold.quantity_sold) |nl2br }}
-            {% for message in app.flashes('[quantity_sold_error][Range]') %}
+            {% for messages in app.flashes(['[quantity_sold_error][Range]', '[quantity_sold_error][NotBlank]']) %}
+            {% for message in messages %}
             {{ message }}
+            {% endfor %}
             {% else %}
             {% for message in app.flashes('[quantity_sold_auto_parts_warehouse_error]') %}
             {{ message }}
             {% endfor %}
             {% endfor %}
+
           </div>
 
           <div class="col-sm-4 col-lg-4 col-xl-4">
