@@ -19,6 +19,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindByAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\SearchAutoPartsWarehouseQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\CartAutoPartsWarehouseSoldQuery\FindByCartAutoPartsSoldQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
@@ -178,7 +179,8 @@ class AutoPartsWarehouseController extends AbstractController
     public function cartAutoPartsWarehouseSold(
         Request $request,
         FindCartAutoPartsWarehouseQueryHandler $findCartAutoPartsWarehouseQueryHandler,
-        AddCartAutoPartsCommandHandler $addCartAutoPartsCommandHandler
+        AddCartAutoPartsCommandHandler $addCartAutoPartsCommandHandler,
+        FindByCartAutoPartsSoldQueryHandler $findByCartAutoPartsSoldQueryHandler
     ): Response {
 
         /*Подключаем формы*/
@@ -187,15 +189,29 @@ class AutoPartsWarehouseController extends AbstractController
         /*Валидация формы */
         $form_cart_auto_parts_warehouse_sold->handleRequest($request);
 
-        $search_data = $findCartAutoPartsWarehouseQueryHandler
-            ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+        try {
+
+            $car_parts_for_sale = $findCartAutoPartsWarehouseQueryHandler
+                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+        } catch (HttpException $e) {
+            // dd($e->getMessage());
+            $arr_errors = json_decode($e->getMessage(), true);
+            /*Выводим сообщения ошибки*/
+
+            foreach ($arr_errors as $key => $value_error) {
+                $message = $value_error;
+                $propertyPath = $key;
+                $this->addFlash($propertyPath, $message);
+            }
+            return $this->redirectToRoute('search_auto_parts_warehouse');
+        }
 
         if ($form_cart_auto_parts_warehouse_sold->isSubmitted()) {
             if ($form_cart_auto_parts_warehouse_sold->isValid()) {
 
                 try {
 
-                    $arr_saving_information = $addCartAutoPartsCommandHandler
+                    $addCartAutoPartsCommandHandler
                         ->handler(new AutoPartsSoldCommand($form_cart_auto_parts_warehouse_sold->getData()));
                 } catch (HttpException $e) {
 
@@ -210,11 +226,12 @@ class AutoPartsWarehouseController extends AbstractController
                         }
                     }
                 }
-                //dd($arr_validator_errors);
             }
         }
 
 
+        $cartAutoParts = $findByCartAutoPartsSoldQueryHandler
+            ->handler(new AutoPartsWarehouseQuery());
 
 
         //$saving_information = $deleteAutoPartsWarehouseCommandHandler
@@ -223,8 +240,8 @@ class AutoPartsWarehouseController extends AbstractController
         return $this->render('autoPartsWarehouse/cartAutoPartsWarehouseSold.html.twig', [
             'title_logo' => 'Корзина',
             'form_cart_auto_parts_warehouse_sold' => $form_cart_auto_parts_warehouse_sold->createView(),
-            // 'arr_saving_information' => $arr_saving_information,
-            'search_data' => $search_data
+            'cartAutoParts' => $cartAutoParts,
+            'car_parts_for_sale' => $car_parts_for_sale
         ]);
     }
 }

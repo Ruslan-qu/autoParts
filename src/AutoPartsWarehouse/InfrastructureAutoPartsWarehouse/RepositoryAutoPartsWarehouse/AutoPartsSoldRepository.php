@@ -4,6 +4,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAuto
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsSold;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsSoldRepositoryInterface;
 
@@ -20,13 +21,13 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
-    public function save(AutoPartsSoldCommand $autoPartsSoldCommand): array
+    public function save(AutoPartsSold $autoPartsSold): array
     {
         $entityManager = $this->getEntityManager();
-        $entityManager->persist($autoPartsSoldCommand);
+        $entityManager->persist($autoPartsSold);
         $entityManager->flush();
 
-        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsSoldCommand);
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsSold);
 
         $exists = $this->count($entityData);
         if ($exists == 0) {
@@ -35,5 +36,33 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
         return $successfully = ['save' => $entityData['id']];
+    }
+
+
+
+    /**
+     * @return array|NULL Возвращает массив объектов или ноль
+     */
+    public function findByCartAutoPartsSold(): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT s, a, d, pn, cb, sd, b, ax, o, c, pm
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsSold s
+            LEFT JOIN s.id_auto_parts_warehouse a
+            LEFT JOIN a.id_details d
+            LEFT JOIN d.id_part_name pn
+            LEFT JOIN d.id_car_brand cb
+            LEFT JOIN d.id_side sd
+            LEFT JOIN d.id_body b
+            LEFT JOIN d.id_axle ax
+            LEFT JOIN d.id_original_number o
+            LEFT JOIN a.id_counterparty c
+            LEFT JOIN a.id_payment_method pm 
+            WHERE s.sold_status = :sold_status'
+        )->setParameter('sold_status', false);
+
+        return $query->getResult();
     }
 }

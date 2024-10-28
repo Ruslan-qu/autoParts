@@ -18,7 +18,7 @@ final class AddCartAutoPartsCommandHandler
 
     public function __construct(
         private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface,
-        private AutoPartsSold $autoPartsSoldCommand
+        private AutoPartsSold $autoPartsSold
     ) {}
 
     public function handler(AutoPartsSoldCommand $autoPartsSoldCommand): ?int
@@ -72,14 +72,14 @@ final class AddCartAutoPartsCommandHandler
                     min: 1,
                     max: $subtraction_quantity_auto_parts_warehouse,
                     notInRangeMessage: 'Форма Количество не может быть 
-                    меньше {{ min }} и не больше {{ max }} количества автодеталей на складе',
+                    меньше и не больше количества автодеталей на складе',
                 )
             ]),
             'quantity_sold_auto_parts_warehouse_error' => new Range(
                 min: 1,
                 max: $quantity_auto_parts_warehouse,
                 notInRangeMessage: 'Форма Количество не может быть 
-                    меньше {{ min }} и не больше {{ max }} количества автодеталей на складе',
+                    меньше и не больше количества автодеталей на складе',
             ),
             'price_sold_error' => new Collection([
                 'NotBlank' => new NotBlank(
@@ -116,13 +116,13 @@ final class AddCartAutoPartsCommandHandler
 
 
         $auto_parts_warehouse->setQuantitySold($sum_quantity_sold_auto_parts_warehouse);
-        $this->autoPartsSoldCommand->setIdAutoPartsWarehouse($auto_parts_warehouse);
-        $this->autoPartsSoldCommand->setQuantitySold($quantity_sold);
-        $this->autoPartsSoldCommand->setPriceSold($price_sold);
-        $this->autoPartsSoldCommand->setDateSold($date_sold);
+        $this->autoPartsSold->setIdAutoPartsWarehouse($auto_parts_warehouse);
+        $this->autoPartsSold->setQuantitySold($quantity_sold);
+        $this->autoPartsSold->setPriceSold($price_sold);
+        $this->autoPartsSold->setDateSold($date_sold);
+        $this->autoPartsSold->setSoldStatus(false);
 
-
-        $successfully_save = $this->autoPartsSoldRepositoryInterface->save($this->autoPartsSoldCommand);
+        $successfully_save = $this->autoPartsSoldRepositoryInterface->save($this->autoPartsSold);
 
         $id = $successfully_save['save'];
         return $id;

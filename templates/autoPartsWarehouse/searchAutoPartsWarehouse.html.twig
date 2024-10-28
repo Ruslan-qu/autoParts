@@ -62,10 +62,11 @@
 
   {{ form_end(form_search_auto_parts_warehouse) }}
 
-  {% for message in app.flashes('delete') %}
+  {% for messages in app.flashes(['delete','Error']) %}
+  {% for message in messages %}
   <h2 class="mt-3 ms-3">{{ message }}</h2>
   {% endfor %}
-
+{% endfor %}
   {% endblock form %}
 
 
@@ -119,9 +120,10 @@
             <td>{{ information.getIdDetails.getIdBody().getBody()|default('') }}</td>
             <td>{{ information.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
             <td>{{ information.getIdPaymentMethod.getmethod()|default('') }}</td>
-            <td>{{ information.getQuantity()|default('') }}</td>
+            <td>{{ (information.getQuantity() - information.getQuantitySold())|default('') }}</td>
             <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
-            <td>{{ (information.getPrice() / 100)|default('') }}</td>
+            <td>{{ (((information.getPrice() / 100) / information.getQuantity())
+            * (information.getQuantity()- information.getQuantitySold()))|default('') }}</td>
             
             <form action="cartAutoPartsWarehouseSold" name="cart_auto_parts_warehouse_sold">
 

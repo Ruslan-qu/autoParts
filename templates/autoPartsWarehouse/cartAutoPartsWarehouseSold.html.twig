@@ -17,8 +17,8 @@
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
         border-info shadow mb-4 bg-body-tertiary rounded">
         <thead class="table-secondary">
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data %}
+          {% for information in car_parts_for_sale %}
+          {% if information %}
           <tr>
             <th scope="col">№<br>детали</th>
             <th scope="col">№<br>оригинал</th>
@@ -36,7 +36,7 @@
         </thead>
 
         <tbody class="table-group-divider">
-          {% for information in search_data %}
+          {% for information in car_parts_for_sale %}
           {% if information %}
           <tr>
             <td>{{ information.getIdDetails.getPartNumber() }}</td>
@@ -66,7 +66,7 @@
         border-info shadow mb-4 bg-body-tertiary rounded">
             <thead class="table-secondary">
 
-              {% for information in search_data %}
+              {% for information in car_parts_for_sale %}
               {% if information %}
               <tr>
                 <th scope="col">Кол-во</th>
@@ -78,13 +78,14 @@
 
             </thead>
             <tbody class="table-group-divider">
-              {% for information in search_data %}
+              {% for information in car_parts_for_sale %}
               {% if information %}
               <tr>
-                <td>{{ information.getQuantity()|default('') }}</td>
+                <td>{{ (information.getQuantity() - information.getQuantitySold())|default('') }}</td>
                 <td>{{ ((information.getPrice() / 100)
                   / information.getQuantity())|default('')|number_format(2,'.','')}}</td>
-                <td>{{ (information.getPrice() / 100)|default('') }}</td>
+                <td>{{ (((information.getPrice() / 100) / information.getQuantity())
+                  * (information.getQuantity()- information.getQuantitySold()))|default('') }}</td>
               </tr>
               {% endif %}
               {% endfor %}
@@ -134,7 +135,7 @@
             {% endfor %}
           </div>
 
-          {% for information in search_data %}
+          {% for information in car_parts_for_sale %}
           {% if information %}
           {{ form_widget(form_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, { value : information.getId() })
           }}
@@ -155,7 +156,7 @@
 
   {{ form_end(form_cart_auto_parts_warehouse_sold) }}
 
-  {% for message in app.flashes('delete') %}
+  {% for message in app.flashes('Error') %}
   <h2 class="mt-3 ms-3">{{ message }}</h2>
   {% endfor %}
 
@@ -165,15 +166,15 @@
   {% block table %}
 
   {#Таблица автодеталей на складе#}
-  {#
+
   <div class="container-fluid text-center pt-4 ">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data %}
+          {% if cartAutoParts %}
+
           <tr>
             <th scope="col">№<br>детали</th>
             <th scope="col">№<br>оригинал</th>
@@ -186,43 +187,35 @@
             <th scope="col">Перед<br>Зад</th>
             <th scope="col">Сп.<br>оплаты</th>
             <th scope="col">Кол-во</th>
-            <th scope="col">Цена<br>шт</th>
-            <th scope="col">Цена<br>общая</th>
-            <th scope="col">{{ ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</th>
+            <th scope="col">Цена</th>
             <th scope="col">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</th>
             <th scope="col">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</th>
           </tr>
           {% endif %}
-          {% endfor %}
+
 
         </thead>
         <tbody class="table-group-divider">
-          {% for arr_search_data in search_data %}
-          {% for information in arr_search_data %}
+          {% for information in cartAutoParts %}
           {% if information %}
 
           <tr>
-            <td>{{ information.getIdDetails.getPartNumber() }}</td>
-            <td>{{ information.getIdDetails.getIdOriginalNumber().getOriginalNumber()|default('') }}</td>
-            <td>{{ information.getIdDetails.getManufacturer() }}</td>
-            <td>{{ information.getIdDetails.getAdditionalDescriptions() }}</td>
-            <td>{{ information.getIdDetails.getIdPartName().getPartName()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdCarBrand().getCarBrand()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdSide().getSide()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdBody().getBody()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
-            <td>{{ information.getIdPaymentMethod.getmethod()|default('') }}</td>
-            <td>{{ information.getQuantity()|default('') }}</td>
-            <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getPartNumber() }}</td>
+            <td>{{
+              information.getIdAutoPartsWarehouse.getIdDetails.getIdOriginalNumber().getOriginalNumber()|default('') }}
             </td>
-            <td>{{ (information.getPrice() / 100)|default('') }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getManufacturer() }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getAdditionalDescriptions() }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdPartName().getPartName()|default('') }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdCarBrand().getCarBrand()|default('') }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdSide().getSide()|default('') }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdBody().getBody()|default('') }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse.getIdPaymentMethod.getmethod()|default('') }}</td>
+            <td>{{ information.getQuantitySold()|default('') }}</td>
+            <td>{{ (information.getPriceSold() / 100)|default('')|number_format(2, '.', '') }}
+            </td>
 
-            <form action="cartAutoPartsWarehouseSold" name="cart_auto_parts_warehouse_sold">
-
-              <td><button class="btn btn-outline-success" type="submit" name="id" value="{{ information.getId() }}">{{
-                  ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
-
-            </form>
             <form action="/editAutoPartsWarehouse" name="edit_auto_parts_warehouse">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
@@ -238,22 +231,11 @@
           </tr>
           {% endif %}
           {% endfor %}
-          {% endfor %}
 
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data is empty != arr_search_data is same as NULL %}
-          <h2>Данные не найдены.</h2>
-          {% endif %}
-          {% endfor %}
 
-          {% if search_data[0] is defined %}
-          {% if search_data[0] is same as NULL %}
-          <h2>Видите параметры в поиск</h2>
-          {% endif %}
-          {% endif %}
 
         </tbody>
       </table>
     </div>
-  </div>#}
+  </div>
   {% endblock table %}

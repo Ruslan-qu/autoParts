@@ -2,13 +2,11 @@
 
 namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse;
 
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsSold;
 
 interface AutoPartsSoldRepositoryInterface
 {
-    public function save(AutoPartsSoldCommand $autoPartsSoldCommand): array;
+    public function save(AutoPartsSold $autoPartsSold): array;
 
     /*public function edit(AutoPartsWarehouse $autoPartsWarehouse): array;
 
@@ -16,11 +14,11 @@ interface AutoPartsSoldRepositoryInterface
 
    public function numberDoubles(array $array): int;
 
-    public function findByAutoPartsWarehouse(array $parameters, string $where): ?array;
+    public function findByAutoPartsWarehouse(array $parameters, string $where): ?array;*/
 
-    public function findAutoPartsWarehouse(int $id): ?array;
+    /*public function findAutoPartsWarehouse(int $id): ?array;
 
-    public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse;
+    public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse;*/
 
-    public function findCartAutoPartsWarehouse(int $id): ?array;*/
+    public function findByCartAutoPartsSold(): ?array;
 }
