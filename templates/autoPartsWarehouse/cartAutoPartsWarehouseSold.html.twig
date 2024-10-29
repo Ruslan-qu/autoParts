@@ -95,11 +95,20 @@
       </div>
 
 
-      {#Форма сохранения номеров деталей#}
+      {#Форма добавление в корзину деталей#}
       <div class="col-sm-12 col-lg-6 col-xl-6">
         {{ form_start(form_cart_auto_parts_warehouse_sold) }}
 
         <div class="row justify-content-start">
+
+          <div class="col-sm-4 col-lg-4 col-xl-4">
+            <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.date_sold) }}</div>
+            {{ form_widget(form_cart_auto_parts_warehouse_sold.date_sold, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_cart_auto_parts_warehouse_sold.date_sold) |nl2br }}
+            {% for message in app.flashes('[date_sold]') %}
+            {{ message }}
+            {% endfor %}
+          </div>
 
           <div class="col-sm-4 col-lg-4 col-xl-4">
             <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.quantity_sold) }}</div>
@@ -114,7 +123,6 @@
             {{ message }}
             {% endfor %}
             {% endfor %}
-
           </div>
 
           <div class="col-sm-4 col-lg-4 col-xl-4">
@@ -126,14 +134,7 @@
             {% endfor %}
           </div>
 
-          <div class="col-sm-4 col-lg-4 col-xl-4">
-            <div class="lb">{{ form_label(form_cart_auto_parts_warehouse_sold.date_sold) }}</div>
-            {{ form_widget(form_cart_auto_parts_warehouse_sold.date_sold, { 'attr': {'class': 'w-100'} }) }}
-            {{ form_errors(form_cart_auto_parts_warehouse_sold.date_sold) |nl2br }}
-            {% for message in app.flashes('[date_sold]') %}
-            {{ message }}
-            {% endfor %}
-          </div>
+
 
           {% for information in car_parts_for_sale %}
           {% if information %}
@@ -156,10 +157,6 @@
 
   {{ form_end(form_cart_auto_parts_warehouse_sold) }}
 
-  {% for message in app.flashes('Error') %}
-  <h2 class="mt-3 ms-3">{{ message }}</h2>
-  {% endfor %}
-
   {% endblock form %}
 
 
@@ -167,10 +164,10 @@
 
   {#Таблица автодеталей на складе#}
 
-  <div class="container-fluid text-center pt-4 ">
+  <div class="container-fluid text-center pt-3">
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
-        border-info shadow p-3 mb-5 bg-body-tertiary rounded">
+        border-info shadow p-3 mb-3 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
           {% if cartAutoParts %}
@@ -209,7 +206,7 @@
             <td>{{ information.getQuantitySold()|default('') }}</td>
             <td>{{ (information.getPriceSold() / 100)|default('') }}</td>
 
-            <form action="/editAutoPartsWarehouse" name="edit_auto_parts_warehouse">
+            <form action="/editСartAutoPartsWarehouseSold" name="edit_cart_auto_parts_warehouse_sold">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
@@ -244,5 +241,19 @@
         </tfoot>
       </table>
     </div>
+  </div>
+
+  {#Форма продажи деталей в корзине#}
+  <div class="container-fluid text-center my-2 pt-2">
+    {{ form_start(form_completion_sale) }}
+
+    <div class="row">
+      <div class="col-sm-12 col-lg-12 col-xl-12">
+        {{ form_widget(form_completion_sale.button_completion_sale,
+        { 'label': 'Продать', 'attr': {'class': 'btn btn-danger w-100'}}) }}
+      </div>
+    </div>
+
+    {{ form_end(form_completion_sale) }}
   </div>
   {% endblock table %}
