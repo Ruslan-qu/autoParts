@@ -230,9 +230,13 @@ class AutoPartsWarehouseController extends AbstractController
         }
 
 
-        $cartAutoParts = $findByCartAutoPartsSoldQueryHandler
-            ->handler(new AutoPartsWarehouseQuery());
+        $cartAutoParts = $findByCartAutoPartsSoldQueryHandler->handler();
 
+        $sum = 0;
+        foreach ($cartAutoParts as $key => $value) {
+
+            $sum += ($value->getPriceSold());
+        }
 
         //$saving_information = $deleteAutoPartsWarehouseCommandHandler
         //  ->handler(new AutoPartsWarehouseCommand($request->query->all()));
@@ -241,7 +245,8 @@ class AutoPartsWarehouseController extends AbstractController
             'title_logo' => 'Корзина',
             'form_cart_auto_parts_warehouse_sold' => $form_cart_auto_parts_warehouse_sold->createView(),
             'cartAutoParts' => $cartAutoParts,
-            'car_parts_for_sale' => $car_parts_for_sale
+            'car_parts_for_sale' => $car_parts_for_sale,
+            'sum_price_sold_cart_auto_parts' => $sum
         ]);
     }
 }

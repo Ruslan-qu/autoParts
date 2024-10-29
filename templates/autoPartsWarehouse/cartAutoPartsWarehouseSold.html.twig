@@ -177,15 +177,13 @@
 
           <tr>
             <th scope="col">№<br>детали</th>
-            <th scope="col">№<br>оригинал</th>
             <th scope="col">Производитель</th>
-            <th scope="col">Описание<br>детали</th>
             <th scope="col">Название<br>детали</th>
             <th scope="col">Марка</th>
             <th scope="col">Сторона</th>
             <th scope="col">Кузов</th>
             <th scope="col">Перед<br>Зад</th>
-            <th scope="col">Сп.<br>оплаты</th>
+            <th scope="col">Дата</th>
             <th scope="col">Кол-во</th>
             <th scope="col">Цена</th>
             <th scope="col">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</th>
@@ -201,20 +199,15 @@
 
           <tr>
             <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getPartNumber() }}</td>
-            <td>{{
-              information.getIdAutoPartsWarehouse.getIdDetails.getIdOriginalNumber().getOriginalNumber()|default('') }}
-            </td>
             <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getManufacturer() }}</td>
-            <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getAdditionalDescriptions() }}</td>
             <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdPartName().getPartName()|default('') }}</td>
             <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdCarBrand().getCarBrand()|default('') }}</td>
             <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdSide().getSide()|default('') }}</td>
             <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdBody().getBody()|default('') }}</td>
             <td>{{ information.getIdAutoPartsWarehouse.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
-            <td>{{ information.getIdAutoPartsWarehouse.getIdPaymentMethod.getmethod()|default('') }}</td>
+            <td>{{ information.getDateSold()|date("d-m-Y")|default('') }}</td>
             <td>{{ information.getQuantitySold()|default('') }}</td>
-            <td>{{ (information.getPriceSold() / 100)|default('')|number_format(2, '.', '') }}
-            </td>
+            <td>{{ (information.getPriceSold() / 100)|default('') }}</td>
 
             <form action="/editAutoPartsWarehouse" name="edit_auto_parts_warehouse">
 
@@ -232,9 +225,23 @@
           {% endif %}
           {% endfor %}
 
-
-
         </tbody>
+        <tfoot>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Общая<br>сумма</td>
+            <td>{{ (sum_price_sold_cart_auto_parts / 100)|default('') }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>

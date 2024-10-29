@@ -13,8 +13,10 @@ final class FindByCartAutoPartsSoldQueryHandler
     public function handler(): ?array
     {
 
-        $find_cart_auto_parts_warehouse = $this->autoPartsSoldRepositoryInterface->findByCartAutoPartsSold();
+        $find_cart_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findByCartAutoPartsSold();
 
-        return $find_cart_auto_parts_warehouse;
+
+        //dd($find_cart_auto_parts_sold);
+        return $find_cart_auto_parts_sold;
     }
 }

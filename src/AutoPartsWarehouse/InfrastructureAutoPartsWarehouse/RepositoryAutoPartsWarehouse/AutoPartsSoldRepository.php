@@ -48,7 +48,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT s, a, d, pn, cb, sd, b, ax, o, c, pm
+            'SELECT s, a, d, pn, cb, sd, b, ax, c
             FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsSold s
             LEFT JOIN s.id_auto_parts_warehouse a
             LEFT JOIN a.id_details d
@@ -57,9 +57,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN d.id_side sd
             LEFT JOIN d.id_body b
             LEFT JOIN d.id_axle ax
-            LEFT JOIN d.id_original_number o
             LEFT JOIN a.id_counterparty c
-            LEFT JOIN a.id_payment_method pm 
             WHERE s.sold_status = :sold_status'
         )->setParameter('sold_status', false);
 
