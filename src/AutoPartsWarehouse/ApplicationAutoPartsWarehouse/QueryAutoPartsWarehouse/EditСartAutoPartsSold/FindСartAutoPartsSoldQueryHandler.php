@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditСartAutoPartsWarehouseSold;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditСartAutoPartsSold;
 
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsSold;
@@ -11,7 +11,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 
 
-final class FindСartAutoPartsWarehouseSoldQueryHandler
+final class FindСartAutoPartsSoldQueryHandler
 {
     public function __construct(
         private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface

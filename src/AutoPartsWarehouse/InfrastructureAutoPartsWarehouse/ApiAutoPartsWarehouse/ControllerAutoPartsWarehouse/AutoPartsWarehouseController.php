@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\AutoPartsSoldType;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditCartPartsType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\CompletionSaleType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
@@ -29,6 +30,8 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\CartAutoPartsWarehouseSoldQuery\FindCartAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditСartAutoPartsSold\FindСartAutoPartsSoldQueryHandler;
+
 
 class AutoPartsWarehouseController extends AbstractController
 {
@@ -283,11 +286,11 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/editСartAutoPartsWarehouseSold', name: 'edit_cart_auto_parts_warehouse_sold')]
     public function editСartAutoPartsWarehouseSold(
         Request $request,
-        FindСartAutoPartsWarehouseSoldQueryHandler $findСartAutoPartsWarehouseSoldQueryHandler,
+        FindСartAutoPartsSoldQueryHandler $findСartAutoPartsSoldQueryHandler,
     ): Response {
 
         /*Подключаем формы*/
-        $form_edit_cart_auto_parts_warehouse_sold = $this->createForm(EditСartAutoPartsWarehouseSoldType::class);
+        $form_edit_cart_auto_parts_warehouse_sold = $this->createForm(EditCartPartsType::class);
 
         /*Валидация формы */
         $form_edit_cart_auto_parts_warehouse_sold->handleRequest($request);
@@ -295,31 +298,35 @@ class AutoPartsWarehouseController extends AbstractController
         if (!empty($request->request->all())) {
             $data_form_edit_cart_auto_parts_warehouse = $form_edit_cart_auto_parts_warehouse_sold->getData();
         }
-        //dd($$request->query->all());
-        /*$arr_saving_information = [];
+
         if ($form_edit_cart_auto_parts_warehouse_sold->isSubmitted()) {
             if ($form_edit_cart_auto_parts_warehouse_sold->isValid()) {
 
-                $map_arr_id_details = [
-                    'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
-                ];
-
-                $arr_part_number = $adapterAutoPartsWarehouseInterface->searchIdDetails($map_arr_id_details);
-                $map_arr_part_number = ['id_details' => $arr_part_number[0]];
-
-                $data_edit_auto_parts_manually = array_replace($form_edit_auto_parts_warehouse->getData(), $map_arr_part_number);
-
                 $arr_saving_information = $editAutoPartsWarehouseCommandHandler
-                    ->handler(new AutoPartsWarehouseCommand($data_edit_auto_parts_manually));
+                    ->handler(new AutoPartsWarehouseCommand($form_edit_cart_auto_parts_warehouse_sold->getData()));
             }
-        }*/
-
-        if (empty($form_edit_cart_auto_parts_warehouse_sold->getData()) || !empty($arr_saving_information)) {
-
-            $data_form_edit_cart_auto_parts_warehouse = $findСartAutoPartsWarehouseSoldQueryHandler
-                ->handler(new AutoPartsSoldQuery($request->query->all()));
         }
 
+        if (empty($form_edit_cart_auto_parts_warehouse_sold->getData()) || !empty($arr_saving_information)) {
+            try {
+
+                $data_form_edit_cart_auto_parts_warehouse = $findСartAutoPartsSoldQueryHandler
+                    ->handler(new AutoPartsSoldQuery($request->query->all()));
+            } catch (HttpException $e) {
+
+                $arr_errors = json_decode($e->getMessage(), true);
+                /* Выводим сообщения ошибки в форму через сессии  */
+
+                foreach ($arr_errors as $key => $value_error) {
+
+                    $message = $value_error;
+                    $propertyPath = $key;
+                    $this->addFlash($propertyPath, $message);
+                }
+                return $this->redirectToRoute('cart_auto_parts_warehouse_sold');
+            }
+        }
+        //dd($data_form_edit_cart_auto_parts_warehouse);
         return $this->render('autoPartsWarehouse/editСartAutoPartsWarehouseSold.html.twig', [
             'title_logo' => 'Изменение данных склада',
             'form_edit_cart_auto_parts_warehouse_sold' => $form_edit_cart_auto_parts_warehouse_sold->createView(),

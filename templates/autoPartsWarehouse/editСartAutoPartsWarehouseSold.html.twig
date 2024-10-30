@@ -33,8 +33,7 @@
       <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
         border-info shadow mb-4 bg-body-tertiary rounded">
         <thead class="table-secondary">
-          {% for information in data_form_edit_cart_auto_parts_warehouse %}
-          {% if information %}
+          {% if data_form_edit_cart_auto_parts_warehouse %}
           <tr>
             <th scope="col">№ детали</th>
             <th scope="col">Производитель</th>
@@ -45,23 +44,20 @@
             <th scope="col">Перед Зад</th>
           </tr>
           {% endif %}
-          {% endfor %}
         </thead>
 
         <tbody class="table-group-divider">
-          {% for information in data_form_edit_cart_auto_parts_warehouse %}
-          {% if information %}
+          {% if data_form_edit_cart_auto_parts_warehouse %}
           <tr>
-            <td>{{ information.getIdDetails.getPartNumber() }}</td>
-            <td>{{ information.getIdDetails.getManufacturer() }}</td>
-            <td>{{ information.getIdDetails.getIdPartName().getPartName()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdCarBrand().getCarBrand()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdSide().getSide()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdBody().getBody()|default('') }}</td>
-            <td>{{ information.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
+            <td>{{ data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse.getIdDetails.getPartNumber() }}</td>
+            <td>{{ data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse.getIdDetails.getManufacturer() }}</td>
+            <td>{{ data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse.getIdDetails.getIdPartName().getPartName()|default('') }}</td>
+            <td>{{ data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse.getIdDetails.getIdCarBrand().getCarBrand()|default('') }}</td>
+            <td>{{ data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse.getIdDetails.getIdSide().getSide()|default('') }}</td>
+            <td>{{ data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse.getIdDetails.getIdBody().getBody()|default('') }}</td>
+            <td>{{ data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
           </tr>
           {% endif %}
-          {% endfor %}
         </tbody>
       </table>
     </div>
@@ -75,30 +71,41 @@
           <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
         border-info shadow mb-4 bg-body-tertiary rounded">
             <thead class="table-secondary">
-
-              {% for information in data_form_edit_cart_auto_parts_warehouse %}
-              {% if information %}
+              
+              {% if data_form_edit_cart_auto_parts_warehouse %}
               <tr>
                 <th scope="col">Кол-во</th>
                 <th scope="col">Цена шт</th>
                 <th scope="col">Цена общая</th>
               </tr>
               {% endif %}
-              {% endfor %}
 
             </thead>
             <tbody class="table-group-divider">
-              {% for information in data_form_edit_cart_auto_parts_warehouse %}
-              {% if information %}
+          
+              {% if data_form_edit_cart_auto_parts_warehouse %}
               <tr>
-                <td>{{ (information.getQuantity() - information.getQuantitySold())|default('') }}</td>
-                <td>{{ ((information.getPrice() / 100)
-                  / information.getQuantity())|default('')|number_format(2,'.','')}}</td>
-                <td>{{ (((information.getPrice() / 100) / information.getQuantity())
-                  * (information.getQuantity()- information.getQuantitySold()))|default('') }}</td>
+
+                <td>{{ (data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity() 
+                - data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantitySold())|default('') }}</td>
+
+                <td>{% if  (data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity() 
+                - data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantitySold()) != 0 %}
+                {{ ((data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getPrice() / 100)
+                  / data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity()) 
+                  |default('')|number_format(2,'.','')}}
+                  {% else %}
+                  {{0}}
+                  {% endif %}</td>
+
+                <td>{{ (((data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getPrice() / 100) 
+                / data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity()) 
+                * (data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity() 
+                - data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantitySold()))|default('') }}</td>
+
               </tr>
               {% endif %}
-              {% endfor %}
+              
             </tbody>
           </table>
         </div>
