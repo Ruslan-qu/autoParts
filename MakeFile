@@ -66,3 +66,4 @@ php bin/console make:controller
 ##################
 
 php bin/console make:form
+php bin/console make:registration-form

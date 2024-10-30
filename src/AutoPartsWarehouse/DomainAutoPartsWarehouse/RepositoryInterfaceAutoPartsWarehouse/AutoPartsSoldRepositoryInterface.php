@@ -16,9 +16,9 @@ interface AutoPartsSoldRepositoryInterface
 
     public function findByAutoPartsWarehouse(array $parameters, string $where): ?array;*/
 
-    /*public function findAutoPartsWarehouse(int $id): ?array;
+    /*public function findAutoPartsWarehouse(int $id): ?array;*/
 
-    public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse;*/
+    public function findСartAutoPartsWarehouseSold(int $id): ?array;
 
     public function findByCartAutoPartsSold(): ?array;
 }
