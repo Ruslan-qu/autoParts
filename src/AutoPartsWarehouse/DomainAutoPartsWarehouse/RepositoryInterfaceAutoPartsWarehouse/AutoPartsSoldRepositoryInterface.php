@@ -12,6 +12,8 @@ interface AutoPartsSoldRepositoryInterface
 
     public function delete(AutoPartsSold $autoPartsSold): array;
 
+    public function sold(): void;
+
     public function findIdAutoPartsSold(int $id): ?AutoPartsSold;
 
     public function findAutoPartsSold(int $id): ?AutoPartsSold;
@@ -19,4 +21,6 @@ interface AutoPartsSoldRepositoryInterface
     public function findСartAutoPartsWarehouseSold(int $id): ?array;
 
     public function findByCartAutoPartsSold(): ?array;
+
+    public function findByCompletionSale(): ?array;
 }

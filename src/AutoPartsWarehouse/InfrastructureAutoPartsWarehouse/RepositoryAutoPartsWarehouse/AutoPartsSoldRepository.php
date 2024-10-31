@@ -45,7 +45,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
-        // dd($arr_auto_parts_sold);
+
         $exists = $this->count($arr_auto_parts_sold);
         if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
@@ -73,6 +73,22 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
         }
 
         return $successfully = ['delete' => $autoPartsSold->getId()];
+    }
+
+    /**
+     * @return array Возвращается массив с данными об успешном изменения  
+     */
+    public function sold(): void
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->flush();
+        dd($entityManager->getUnitOfWork());
+        $exists = $this->count($arr_auto_parts_sold);
+        if ($exists == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
     }
 
     /**
@@ -154,23 +170,15 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findByCartAutoPartsSold(): ?array
+    public function findByCompletionSale(): ?array
     {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT s, a, d, pn, cb, sd, b, ax, c
+            'SELECT s, a
             FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsSold s
             LEFT JOIN s.id_auto_parts_warehouse a
-            LEFT JOIN a.id_details d
-            LEFT JOIN d.id_part_name pn
-            LEFT JOIN d.id_car_brand cb
-            LEFT JOIN d.id_side sd
-            LEFT JOIN d.id_body b
-            LEFT JOIN d.id_axle ax
-            LEFT JOIN a.id_counterparty c
-            WHERE s.sold_status = :sold_status
-           ORDER BY s.id ASC'
+            WHERE s.sold_status = :sold_status'
         )->setParameter('sold_status', false);
 
         return $query->getResult();

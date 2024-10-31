@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\CompletionSaleAutoPartsCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
@@ -16,25 +16,25 @@ final class CompletionSaleAutoPartsCommandHandler
 {
 
     public function __construct(
-        private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface,
-        private AutoPartsWarehouse $autoPartsWarehouse
+        private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface
     ) {}
 
-    public function handler(): ?int
+    public function handler(): void
     {
 
-        $find_cart_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findByCartAutoPartsSold();
+        $arr_completion_sale = $this->autoPartsSoldRepositoryInterface->findByCompletionSale();
 
-        $this->autoPartsWarehouse->setQuantity($quantity);
-        $this->autoPartsWarehouse->setPrice($price);
-        $this->autoPartsWarehouse->setIdCounterparty($counterparty);
-        $this->autoPartsWarehouse->setIdDetails($part_number);
-        $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
-        $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
+        $seed = (int)floor(time() / 2);
 
-        $successfully_save = $this->autoPartsWarehouseRepositoryInterface->save($this->autoPartsWarehouse);
+        foreach ($arr_completion_sale as $key => $value) {
+            if ($value->getIdAutoPartsWarehouse()->getQuantity() == $value->getIdAutoPartsWarehouse()->getQuantitySold()) {
+                $value->getIdAutoPartsWarehouse()->setSales(1);
+            }
 
-        $id = $successfully_save['save'];
-        return $id;
+            $value->setIdSold($seed);
+            $value->setSoldStatus(true);
+        }
+
+        $this->autoPartsSoldRepositoryInterface->sold();
     }
 }
