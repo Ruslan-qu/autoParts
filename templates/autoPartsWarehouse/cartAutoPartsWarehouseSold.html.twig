@@ -82,8 +82,12 @@
               {% if information %}
               <tr>
                 <td>{{ (information.getQuantity() - information.getQuantitySold())|default('') }}</td>
-                <td>{{ ((information.getPrice() / 100)
-                  / information.getQuantity())|default('')|number_format(2,'.','')}}</td>
+                <td>{% if (information.getQuantity() - information.getQuantitySold()) != 0 %}
+                  {{ ((information.getPrice() / 100)
+                  / information.getQuantity())|default('')|number_format(2,'.','')}}
+                  {% else %}
+                  {{0}}
+                  {% endif %}</td>
                 <td>{{ (((information.getPrice() / 100) / information.getQuantity())
                   * (information.getQuantity()- information.getQuantitySold()))|default('') }}</td>
               </tr>
@@ -157,13 +161,6 @@
 
   {{ form_end(form_cart_auto_parts_warehouse_sold) }}
 
-  {% for messages in app.flashes(['delete','Error']) %}
-  {% for message in messages %}
-  {{ dump(message) }}
-  <h2 class="mt-3 ms-3">{{ message }}</h2>
-  {% endfor %}
-{% endfor %}
-
   {% endblock form %}
 
 
@@ -204,8 +201,10 @@
           <tr>
             <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getPartNumber() }}</td>
             <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getManufacturer() }}</td>
-            <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getIdPartName().getPartName()|default('') }}</td>
-            <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getIdCarBrand().getCarBrand()|default('') }}</td>
+            <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getIdPartName().getPartName()|default('') }}
+            </td>
+            <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getIdCarBrand().getCarBrand()|default('') }}
+            </td>
             <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getIdSide().getSide()|default('') }}</td>
             <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getIdBody().getBody()|default('') }}</td>
             <td>{{ information.getIdAutoPartsWarehouse().getIdDetails().getIdAxle().getAxle()|default('') }}</td>
@@ -219,7 +218,7 @@
                   ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
-            <form action="/deleteAutoPartsWarehouse" name="delete_auto_parts_warehouse">
+            <form action="/deleteСartAutoPartsWarehouseSold" name="delete_cart_auto_parts_warehouse_sold">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>
@@ -231,6 +230,7 @@
 
         </tbody>
         <tfoot>
+          {% if cartAutoParts %}
           <tr>
             <td></td>
             <td></td>
@@ -245,14 +245,15 @@
             <td></td>
             <td></td>
           </tr>
+          {% endif %}
         </tfoot>
       </table>
     </div>
   </div>
-
+  {% if cartAutoParts %}
   {#Форма продажи деталей в корзине#}
   <div class="container-fluid text-center my-2 pt-2">
-    {{ form_start(form_completion_sale) }}
+    {{ form_start(form_completion_sale, {'action': path('completion_sale')}) }}
 
     <div class="row">
       <div class="col-sm-12 col-lg-12 col-xl-12">
@@ -263,4 +264,5 @@
 
     {{ form_end(form_completion_sale) }}
   </div>
+  {% endif %}
   {% endblock table %}

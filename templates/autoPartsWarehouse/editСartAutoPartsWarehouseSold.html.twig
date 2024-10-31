@@ -11,20 +11,18 @@
   {% block form %}
 
    {#Переменный для вывода данных в форме #}
-
-{% if data_form_edit_cart_auto_parts_warehouse is iterable %}
-  {% set date_sold_find_id = data_form_edit_cart_auto_parts_warehouse.date_sold|date("Y-m-d")|default('') %}
-  {% set quantity_sold_find_id = data_form_edit_cart_auto_parts_warehouse.quantity_sold|default('') %}
-  {% set price_sold_find_id = data_form_edit_cart_auto_parts_warehouse.price_sold|default('') %}
-  {% set id_find_id = data_form_edit_cart_auto_parts_warehouse.id|default('') %}
   
-{% else %}
   {% set date_sold_find_id = data_form_edit_cart_auto_parts_warehouse.getDateSold()|date("Y-m-d")|default('') %}
   {% set quantity_sold_find_id = data_form_edit_cart_auto_parts_warehouse.getQuantitySold()|default('') %}
   {% set price_sold_find_id = (data_form_edit_cart_auto_parts_warehouse.getPriceSold() / 100)|default('') %}
+  {% set id_find_id_auto_parts_warehouse = data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getId()|default('') %}
   {% set id_find_id = data_form_edit_cart_auto_parts_warehouse.getId()|default('') %}
-  
-{% endif %}
+  {% if valid_form_edit_cart %}
+  {% set date_sold_find_id = valid_form_edit_cart.date_sold|default('') %}
+  {% set quantity_sold_find_id = valid_form_edit_cart.quantity_sold|default('') %}
+  {% set price_sold_find_id = valid_form_edit_cart.price_sold|default('') %}
+  {% set id_find_id = valid_form_edit_cart.id|default('') %}
+  {% endif %}
 
   {#Таблица автодеталей#}
 
@@ -82,7 +80,7 @@
 
             </thead>
             <tbody class="table-group-divider">
-          
+          {#} {{ dump(app.flashes('[quantity_sold_error][NotBlank]')) }}#}
               {% if data_form_edit_cart_auto_parts_warehouse %}
               <tr>
 
@@ -154,6 +152,7 @@
           </div>
 
           
+          {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, { value : id_find_id_auto_parts_warehouse }) }}
           {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id, { value : id_find_id }) }}
           
         </div>

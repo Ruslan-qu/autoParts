@@ -23,8 +23,7 @@ class AutoPartsSoldType extends AbstractType
         $builder
             ->add('quantity_sold', IntegerType::class, [
                 'label' => 'Кол-во',
-                'required' => false,
-                /* 'constraints' => [
+                'constraints' => [
                     new NotBlank([
                         'message' => 'Форма не может быть 
                     пустой'
@@ -34,14 +33,13 @@ class AutoPartsSoldType extends AbstractType
                         'message' => 'Форма содержит 
                     недопустимые символы'
                     ]),
-                ],*/
+                ],
             ])
             ->add('price_sold', NumberType::class, [
                 'label' => 'Цена',
                 'invalid_message' => 'Форма содержит 
                     недопустимые символы',
-                'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new NotBlank([
                         'message' => 'Форма не может быть 
                     пустой'
@@ -51,19 +49,18 @@ class AutoPartsSoldType extends AbstractType
                         'message' => 'Форма содержит 
                     недопустимые символы'
                     ]),
-                ],*/
+                ],
             ])
             ->add('date_sold', DateType::class, [
                 'label' => 'Дата продажи',
                 'widget' => 'single_text',
                 'input'  => 'datetime_immutable',
-                'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new NotBlank([
                         'message' => 'Форма не может быть 
                     пустой'
                     ])
-                ],*/
+                ],
             ])
             ->add('id_auto_parts_warehouse', EntityHiddenType::class, [
                 'class' => AutoPartsWarehouse::class,

@@ -8,15 +8,13 @@ interface AutoPartsSoldRepositoryInterface
 {
     public function save(AutoPartsSold $autoPartsSold): array;
 
-    /*public function edit(AutoPartsWarehouse $autoPartsWarehouse): array;
+    public function edit(array $arr_auto_parts_sold): array;
 
-    public function delete(AutoPartsWarehouse $autoPartsWarehouse): array;
+    public function delete(AutoPartsSold $autoPartsSold): array;
 
-   public function numberDoubles(array $array): int;
+    public function findIdAutoPartsSold(int $id): ?AutoPartsSold;
 
-    public function findByAutoPartsWarehouse(array $parameters, string $where): ?array;*/
-
-    /*public function findAutoPartsWarehouse(int $id): ?array;*/
+    public function findAutoPartsSold(int $id): ?AutoPartsSold;
 
     public function findСartAutoPartsWarehouseSold(int $id): ?array;
 
