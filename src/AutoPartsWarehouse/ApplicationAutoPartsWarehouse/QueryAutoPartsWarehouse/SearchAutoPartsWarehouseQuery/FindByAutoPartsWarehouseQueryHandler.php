@@ -77,6 +77,9 @@ final class FindByAutoPartsWarehouseQueryHandler
             return null;
         }
 
+        $part_number_where .= 'AND a.sales = :sales ';
+        $arr_parameters['sales'] = 0;
+
         $find_by_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface
             ->findByAutoPartsWarehouse($arr_parameters, $part_number_where);
 

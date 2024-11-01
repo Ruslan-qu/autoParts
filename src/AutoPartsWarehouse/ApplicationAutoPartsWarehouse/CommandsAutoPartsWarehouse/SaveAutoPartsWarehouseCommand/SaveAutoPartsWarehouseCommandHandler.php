@@ -172,6 +172,7 @@ final class SaveAutoPartsWarehouseCommandHandler
 
         $this->autoPartsWarehouse->setQuantity($quantity);
         $this->autoPartsWarehouse->setPrice($price);
+        $this->autoPartsWarehouse->setSales(0);
         $this->autoPartsWarehouse->setIdCounterparty($counterparty);
         $this->autoPartsWarehouse->setIdDetails($part_number);
         $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);

@@ -2,7 +2,6 @@
 
 namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse;
 
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
 interface AdapterAutoPartsWarehouseInterface
 {

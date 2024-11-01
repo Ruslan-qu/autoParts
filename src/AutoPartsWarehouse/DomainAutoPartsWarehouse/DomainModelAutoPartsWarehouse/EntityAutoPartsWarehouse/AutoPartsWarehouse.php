@@ -27,7 +27,7 @@ class AutoPartsWarehouse
     private ?int $quantity_sold = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $Sales = null;
+    private ?int $sales = null;
 
     #[ORM\ManyToOne]
     private ?Counterparty $id_counterparty = null;
@@ -84,12 +84,12 @@ class AutoPartsWarehouse
 
     public function getSales(): ?int
     {
-        return $this->Sales;
+        return $this->sales;
     }
 
-    public function setSales(?int $Sales): static
+    public function setSales(?int $sales): static
     {
-        $this->Sales = $Sales;
+        $this->sales = $sales;
 
         return $this;
     }
