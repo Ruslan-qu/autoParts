@@ -4,8 +4,8 @@ namespace App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold;
 
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Sales\ApplicationSales\QuerySales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
+use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 
 
 final class FindСartAutoPartsSoldQueryHandler

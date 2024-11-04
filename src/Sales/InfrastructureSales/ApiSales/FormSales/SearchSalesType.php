@@ -34,20 +34,8 @@ class SearchSalesType extends AbstractType
                     ])
                 ]
             ])
-            ->add('id_original_number', TextType::class, [
+            ->add('original_number', TextType::class, [
                 'label' => 'Номер оригинал',
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-            недопустимые символы'
-                    ])
-                ]
-            ])
-            ->add('manufacturer', TextType::class, [
-                'label' => 'Производитель',
                 'required' => false,
                 'constraints' => [
                     new Regex([

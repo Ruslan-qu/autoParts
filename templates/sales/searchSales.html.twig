@@ -19,29 +19,20 @@
       <div class="col-lg-12 col-xl-7 col-xxl-7">
         <div class="row">
 
-          <div class="col-sm-4 col-md-4 col-lg-4">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="lb">{{ form_label(form_search_sales.part_number) }}</div>
             {{ form_widget(form_search_sales.part_number, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_search_sales.part_number) |nl2br }}
           </div>
 
-
-
-          <div class="col-sm-4 col-md-4 col-lg-4">
-            <div class="lb">{{ form_label(form_search_sales.id_original_number) }}</div>
-            {{ form_widget(form_search_sales.id_original_number, { 'attr': {'class': 'w-100'} }) }}
-            {{ form_errors(form_search_sales.id_original_number) |nl2br }}
+          <div class="col-sm-6 col-md-3 col-lg-3">
+            <div class="lb">{{ form_label(form_search_sales.original_number) }}</div>
+            {{ form_widget(form_search_sales.original_number, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_sales.original_number) |nl2br }}
           </div>
 
 
-
-          <div class="col-sm-4 col-md-4 col-lg-4">
-            <div class="lb">{{ form_label(form_search_sales.manufacturer) }}</div>
-            {{ form_widget(form_search_sales.manufacturer, { 'attr': {'class': 'w-100'} }) }}
-            {{ form_errors(form_search_sales.manufacturer) |nl2br }}
-          </div>
-
-          <div class="col-sm-6 col-md-6 col-lg-6">
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="lb">{{ form_label(form_search_sales.from_date_sold) }}</div>
             {{ form_widget(form_search_sales.from_date_sold, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_search_sales.from_date_sold) |nl2br }}
@@ -50,7 +41,8 @@
             {% endfor %}
           </div>
 
-          <div class="col-sm-6 col-md-6 col-lg-6">
+
+          <div class="col-sm-6 col-md-3 col-lg-3">
             <div class="lb">{{ form_label(form_search_sales.to_date_sold) }}</div>
             {{ form_widget(form_search_sales.to_date_sold, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_search_sales.to_date_sold) |nl2br }}

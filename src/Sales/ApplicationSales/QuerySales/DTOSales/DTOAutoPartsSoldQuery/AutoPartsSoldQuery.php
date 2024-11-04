@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Sales\ApplicationSales\QuerySales\DTOAutoPartsSoldQuery;
+namespace App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery;
 
-use App\Sales\ApplicationSales\QuerySales\DTOAutoPartsSoldQuery\MapAutoPartsSoldQuery;
+use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\MapAutoPartsSoldQuery;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 final class AutoPartsSoldQuery extends MapAutoPartsSoldQuery

@@ -11,8 +11,8 @@ use App\Sales\InfrastructureSales\ApiSales\FormSales\SearchSalesType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\AutoPartsSoldType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\EditCartPartsType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\CompletionSaleType;
-use App\Sales\ApplicationSales\QuerySales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
+use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\QuerySales\ListCartAutoParts\FindByCartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold\FindСartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\AddCartAutoPartsCommand\AddCartAutoPartsCommandHandler;
@@ -279,6 +279,8 @@ class SalesController extends AbstractController
 
         if ($form_search_sales->isSubmitted()) {
             if ($form_search_sales->isValid()) {
+                new AutoPartsSoldQuery($form_search_sales->getData());
+                dd($form_search_sales->getData());
             }
         }
 
