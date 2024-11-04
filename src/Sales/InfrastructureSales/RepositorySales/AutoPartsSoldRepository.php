@@ -111,7 +111,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN d.id_axle ax
             LEFT JOIN a.id_counterparty c
             WHERE s.sold_status = :sold_status
-           ORDER BY s.id ASC'
+            ORDER BY s.id ASC'
         )->setParameter('sold_status', false);
 
         return $query->getResult();
@@ -181,6 +181,32 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN s.id_auto_parts_warehouse a
             WHERE s.sold_status = :sold_status'
         )->setParameter('sold_status', false);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return array|NULL Возвращает массив объектов или ноль
+     */
+    public function findBySales($arr_parameters, $part_number_where): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT s, a, d, pn, cb, sd, b, ax, o, c
+            FROM App\Sales\DomainSales\DomainModelSales\AutoPartsSold s
+            LEFT JOIN s.id_auto_parts_warehouse a
+            LEFT JOIN a.id_details d
+            LEFT JOIN d.id_part_name pn
+            LEFT JOIN d.id_car_brand cb
+            LEFT JOIN d.id_side sd
+            LEFT JOIN d.id_body b
+            LEFT JOIN d.id_axle ax
+            LEFT JOIN d.id_original_number o
+            LEFT JOIN a.id_counterparty c '
+                .  $part_number_where .
+                'ORDER BY s.id ASC'
+        )->setParameters($arr_parameters);
 
         return $query->getResult();
     }

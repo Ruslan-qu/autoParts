@@ -23,4 +23,6 @@ interface AutoPartsSoldRepositoryInterface
     public function findByCartAutoPartsSold(): ?array;
 
     public function findByCompletionSale(): ?array;
+
+    public function findBySales($arr_parameters, $part_number_where): ?array;
 }

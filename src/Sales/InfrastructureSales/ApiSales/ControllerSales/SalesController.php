@@ -11,6 +11,8 @@ use App\Sales\InfrastructureSales\ApiSales\FormSales\SearchSalesType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\AutoPartsSoldType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\EditCartPartsType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\CompletionSaleType;
+use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOSalesQuery\SalesQuery;
+use App\Sales\ApplicationSales\QuerySales\SearchSalesQuery\FindBySalesQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\QuerySales\ListCartAutoParts\FindByCartAutoPartsSoldQueryHandler;
@@ -269,6 +271,7 @@ class SalesController extends AbstractController
     #[Route('/searchSales', name: 'search_sales')]
     public function searchSales(
         Request $request,
+        FindBySalesQueryHandler $findBySalesQueryHandler
     ): Response {
 
         /*Подключаем формы*/
@@ -276,17 +279,33 @@ class SalesController extends AbstractController
 
         /*Валидация формы*/
         $form_search_sales->handleRequest($request);
-
+        $list_sales_auto_parts = [];
         if ($form_search_sales->isSubmitted()) {
             if ($form_search_sales->isValid()) {
-                new AutoPartsSoldQuery($form_search_sales->getData());
-                dd($form_search_sales->getData());
+                try {
+
+                    $list_sales_auto_parts = $findBySalesQueryHandler
+                        ->handler(new SalesQuery($form_search_sales->getData()));
+                } catch (HttpException $e) {
+
+                    $arr_validator_errors = json_decode($e->getMessage(), true);
+                    /* Выводим сообщения ошибки в форму через сессии  */
+
+                    foreach ($arr_validator_errors as $key => $value_arr_validator_errors) {
+                        foreach ($value_arr_validator_errors as $key => $value) {
+                            $message = $value;
+                            $propertyPath = $key;
+                            $this->addFlash($propertyPath, $message);
+                        }
+                    }
+                }
             }
         }
-
+        //dd($list_sales_auto_parts);
         return $this->render('sales/searchSales.html.twig', [
             'title_logo' => 'Продажи',
             'form_search_sales' => $form_search_sales->createView(),
+            'list_sales_auto_parts' => $list_sales_auto_parts
         ]);
     }
 }
