@@ -44,7 +44,7 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => 'Оригинальный номер успешно сохранен'];
+        return $successfully = ['save' => $entityData['id']];
     }
 
     /**

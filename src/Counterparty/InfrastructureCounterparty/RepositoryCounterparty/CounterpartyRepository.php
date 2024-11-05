@@ -82,8 +82,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-
-        return $successfully = ['delete' => 'Поставщик удален'];
+        return $successfully = ['delete' => 0];
     }
 
 

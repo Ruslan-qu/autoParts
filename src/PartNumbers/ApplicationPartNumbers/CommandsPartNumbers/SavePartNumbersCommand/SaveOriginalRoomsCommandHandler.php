@@ -7,12 +7,13 @@ use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\CreateOriginalRoomsCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 
-final class CreateSaveOriginalRoomsCommandHandler
+final class SaveOriginalRoomsCommandHandler
 {
     private $original_rooms_repository_interface;
     private $original_rooms;
@@ -25,13 +26,13 @@ final class CreateSaveOriginalRoomsCommandHandler
         $this->original_rooms = $originalRooms;
     }
 
-    public function handler(CreateOriginalRoomsCommand $createOriginalRoomsCommand): array
+    public function handler(OriginalRoomsCommand $originalRoomsCommand): ?array
     {
 
         $original_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createOriginalRoomsCommand->getOriginalNumber()
+            $originalRoomsCommand->getOriginalNumber()
         ));
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -77,11 +78,7 @@ final class CreateSaveOriginalRoomsCommandHandler
 
         if ($number_doubles != 0) {
 
-            $arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Оригинальный номер существует'
-            ];
-
-            return $arr_errors_number_doubles;
+            return null;
         }
 
         $this->original_rooms->setOriginalNumber($original_number);
@@ -89,7 +86,6 @@ final class CreateSaveOriginalRoomsCommandHandler
 
         $successfully_save = $this->original_rooms_repository_interface->save($this->original_rooms);
 
-        $successfully['successfully'] = $successfully_save;
-        return $successfully;
+        return $successfully_save;
     }
 }

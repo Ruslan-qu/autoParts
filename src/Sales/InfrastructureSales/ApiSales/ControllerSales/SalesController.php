@@ -13,6 +13,7 @@ use App\Sales\InfrastructureSales\ApiSales\FormSales\EditCartPartsType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\CompletionSaleType;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOSalesQuery\SalesQuery;
 use App\Sales\ApplicationSales\QuerySales\SearchSalesQuery\FindBySalesQueryHandler;
+use App\Sales\ApplicationSales\QuerySales\SalesToDate\FindBySalesToDateQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\QuerySales\ListCartAutoParts\FindByCartAutoPartsSoldQueryHandler;
@@ -271,7 +272,8 @@ class SalesController extends AbstractController
     #[Route('/searchSales', name: 'search_sales')]
     public function searchSales(
         Request $request,
-        FindBySalesQueryHandler $findBySalesQueryHandler
+        FindBySalesQueryHandler $findBySalesQueryHandler,
+        FindBySalesToDateQueryHandler $findBySalesToDateQueryHandler
     ): Response {
 
         /*Подключаем формы*/
@@ -279,7 +281,9 @@ class SalesController extends AbstractController
 
         /*Валидация формы*/
         $form_search_sales->handleRequest($request);
-        $list_sales_auto_parts = [];
+
+        $list_sales_auto_parts = $findBySalesToDateQueryHandler->handler();
+
         if ($form_search_sales->isSubmitted()) {
             if ($form_search_sales->isValid()) {
                 try {
@@ -289,14 +293,13 @@ class SalesController extends AbstractController
                 } catch (HttpException $e) {
 
                     $arr_validator_errors = json_decode($e->getMessage(), true);
-                    /* Выводим сообщения ошибки в форму через сессии  */
 
-                    foreach ($arr_validator_errors as $key => $value_arr_validator_errors) {
-                        foreach ($value_arr_validator_errors as $key => $value) {
-                            $message = $value;
-                            $propertyPath = $key;
-                            $this->addFlash($propertyPath, $message);
-                        }
+                    /* Выводим сообщения ошибки в форму через сессии  */
+                    foreach ($arr_validator_errors as $key => $value_errors) {
+
+                        $message = $value_errors;
+                        $propertyPath = $key;
+                        $this->addFlash($propertyPath, $message);
                     }
                 }
             }

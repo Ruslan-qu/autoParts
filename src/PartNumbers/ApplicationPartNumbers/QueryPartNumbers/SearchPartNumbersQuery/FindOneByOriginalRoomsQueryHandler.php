@@ -3,9 +3,9 @@
 namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery;
 
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\CreateOriginalRoomsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 
-final class CreateFindOneByOriginalRoomsQueryHandler
+final class FindOneByOriginalRoomsQueryHandler
 {
     private $original_rooms_repository_interface;
 
@@ -15,13 +15,13 @@ final class CreateFindOneByOriginalRoomsQueryHandler
         $this->original_rooms_repository_interface = $originalRoomsRepositoryInterface;
     }
 
-    public function handler(CreateOriginalRoomsQuery $createOriginalRoomsQuery): ?array
+    public function handler(OriginalRoomsQuery $originalRoomsQuery): ?array
     {
 
         $original_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createOriginalRoomsQuery->getOriginalNumber()
+            $originalRoomsQuery->getOriginalNumber()
         ));
 
         $findOneByOriginalRooms = $this->original_rooms_repository_interface->findOneByOriginalRooms($original_number);

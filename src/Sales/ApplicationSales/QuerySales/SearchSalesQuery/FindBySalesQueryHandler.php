@@ -20,7 +20,11 @@ final class FindBySalesQueryHandler
         $part_number_where = '';
         $arr_parameters = [];
 
-        $part_number = $salesQuery->getPartNumber();
+        $part_number = strtolower(preg_replace(
+            '#\s#',
+            '',
+            $salesQuery->getPartNumber()
+        ));
         if (!empty($part_number)) {
 
             $arr_parameters['part_number'] = $part_number;
@@ -31,7 +35,11 @@ final class FindBySalesQueryHandler
             }
         }
 
-        $original_number = $salesQuery->getOriginalNumber();
+        $original_number = strtolower(preg_replace(
+            '#\s#',
+            '',
+            $salesQuery->getOriginalNumber()
+        ));
         if (!empty($original_number)) {
 
             $arr_parameters['original_number'] = $original_number;
@@ -137,11 +145,18 @@ final class FindBySalesQueryHandler
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $part_number_where .= 'AND a.sales = :sales ';
-        $arr_parameters['sales'] = 1;
-        //dd($arr_parameters);
+        $part_number_where .= 'AND s.sold_status = :sold_status ';
+        $arr_parameters['sold_status'] = true;
+
         $find_by_sales = $this->autoPartsSoldRepositoryInterface
             ->findBySales($arr_parameters, $part_number_where);
+
+        if (empty($find_by_sales)) {
+
+            $arr_data_errors = ['Error' => 'Данные отсутствуют'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
 
         return $find_by_sales;
     }

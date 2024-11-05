@@ -25,4 +25,6 @@ interface AutoPartsSoldRepositoryInterface
     public function findByCompletionSale(): ?array;
 
     public function findBySales($arr_parameters, $part_number_where): ?array;
+
+    public function findBySalesToDate(): ?array;
 }

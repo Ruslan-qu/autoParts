@@ -33,8 +33,10 @@
 
   {{ form_end(form_search_counterparty) }}
 
-  {% for message in app.flashes('data_counterparty') %}
+  {% for messages in app.flashes(['delete','Error','successfully','data_counterparty']) %}
+  {% for message in messages %}
     <h2 class="mt-3 ms-3">{{ message }}</h2>
+  {% endfor %}
   {% endfor %}
 
   {% endblock form %}

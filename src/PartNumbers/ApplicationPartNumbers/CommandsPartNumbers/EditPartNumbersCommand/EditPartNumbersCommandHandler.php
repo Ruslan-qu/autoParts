@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
 
 final class EditPartNumbersCommandHandler
@@ -17,7 +18,7 @@ final class EditPartNumbersCommandHandler
         private PartNumbersRepositoryInterface $partNumbersRepositoryInterface
     ) {}
 
-    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): ?array
+    public function handler(PartNumbersCommand $partNumbersCommand): ?array
     {
 
 
@@ -25,7 +26,7 @@ final class EditPartNumbersCommandHandler
         $part_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createPartNumbersCommand->getPartNumber()
+            $partNumbersCommand->getPartNumber()
         ));
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -63,7 +64,7 @@ final class EditPartNumbersCommandHandler
         $manufacturer = strtolower(preg_replace(
             '#\s#',
             '',
-            $createPartNumbersCommand->getManufacturer()
+            $partNumbersCommand->getManufacturer()
         ));
         $arr_edit_part_number['part_number'] = $part_number;
 
@@ -97,7 +98,7 @@ final class EditPartNumbersCommandHandler
             $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
         }
 
-        $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
+        $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
         if (!empty($additional_descriptions)) {
             $arr_edit_part_number['additional_descriptions'] = $additional_descriptions;
 
@@ -128,37 +129,37 @@ final class EditPartNumbersCommandHandler
             $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_additional_descriptions);
         }
 
-        $id_part_name = $createPartNumbersCommand->getIdPartName();
+        $id_part_name = $partNumbersCommand->getIdPartName();
         if (!empty($id_part_name)) {
             $arr_edit_part_number['id_part_name'] = $id_part_name;
         }
 
-        $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
+        $id_car_brand = $partNumbersCommand->getIdCarBrand();
         if (!empty($id_car_brand)) {
             $arr_edit_part_number['id_car_brand'] = $id_car_brand;
         }
 
-        $id_side = $createPartNumbersCommand->getIdSide();
+        $id_side = $partNumbersCommand->getIdSide();
         if (!empty($id_side)) {
             $arr_edit_part_number['id_side'] = $id_side;
         }
 
-        $id_body = $createPartNumbersCommand->getIdBody();
+        $id_body = $partNumbersCommand->getIdBody();
         if (!empty($id_body)) {
             $arr_edit_part_number['id_body'] = $id_body;
         }
 
-        $id_axle = $createPartNumbersCommand->getIdAxle();
+        $id_axle = $partNumbersCommand->getIdAxle();
         if (!empty($id_axle)) {
             $arr_edit_part_number['id_axle'] = $id_axle;
         }
 
-        $id_in_stock = $createPartNumbersCommand->getIdInStock();
+        $id_in_stock = $partNumbersCommand->getIdInStock();
         if (!empty($id_in_stock)) {
             $arr_edit_part_number['id_in_stock'] = $id_in_stock;
         }
 
-        $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
+        $id_original_number = $partNumbersCommand->getIdOriginalNumber();
         if (!empty($id_part_name)) {
             $arr_edit_part_number['id_original_number'] = $id_original_number;
         }
@@ -169,7 +170,7 @@ final class EditPartNumbersCommandHandler
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $id = $createPartNumbersCommand->getId();
+        $id = $partNumbersCommand->getId();
         $arr_edit_part_number['id'] = $id;
 
         if (empty($id)) {

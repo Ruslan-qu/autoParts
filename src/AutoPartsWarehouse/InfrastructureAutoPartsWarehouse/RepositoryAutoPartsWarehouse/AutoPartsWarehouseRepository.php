@@ -5,6 +5,8 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAuto
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 
@@ -150,6 +152,39 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN a.id_payment_method pm 
             WHERE a.id = :id'
         )->setParameter('id', $id);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return array|NULL Возвращает массив объектов или ноль
+     */
+    public function findByAutoPartsWarehouseDeletePartNumbers(PartNumbersFromManufacturers $find_part_numbers): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
+            WHERE a.id_details = :id_details'
+        )->setParameter('id_details', $find_part_numbers);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return array|NULL Возвращает массив объектов или ноль
+     */
+    public function findByAutoPartsWarehouseDeleteCounterparty(Counterparty $delete_counterparty): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a, c
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
+            LEFT JOIN a.id_counterparty c 
+            WHERE a.id_counterparty = :id_counterparty'
+        )->setParameter('id_counterparty', $delete_counterparty);
 
         return $query->getResult();
     }

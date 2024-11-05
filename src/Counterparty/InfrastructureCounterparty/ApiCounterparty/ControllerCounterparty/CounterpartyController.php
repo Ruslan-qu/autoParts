@@ -5,15 +5,20 @@ namespace App\Counterparty\InfrastructureCounterparty\ApiCounterparty\Controller
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\EditCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SearchCounterpartyType;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\EditCounterpartyCommandHandler;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\SaveCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\CreateFindIdCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\CreateSearchCounterpartyQueryHandler;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\DeleteCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\CreateEditCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\CreateDeleteCounterpartyCommandHandler;
@@ -24,7 +29,7 @@ class CounterpartyController extends AbstractController
     #[Route('/saveCounterparty', name: 'save_counterparty')]
     public function saveCounterparty(
         Request $request,
-        CreateSaveCounterpartyCommandHandler $createSaveCounterpartyCommandHandler
+        SaveCounterpartyCommandHandler $saveCounterpartyCommandHandler
     ): Response {
 
         /*Форма сохранения постовщка*/
@@ -37,8 +42,8 @@ class CounterpartyController extends AbstractController
         if ($form_save_counterparty->isSubmitted()) {
             if ($form_save_counterparty->isValid()) {
 
-                $arr_saving_information = $createSaveCounterpartyCommandHandler
-                    ->handler(new CreateCounterpartyCommand($request->request->all()['save_counterparty']));
+                $arr_saving_information = $saveCounterpartyCommandHandler
+                    ->handler(new CounterpartyCommand($request->request->all()['save_counterparty']));
             }
         }
 
@@ -87,7 +92,7 @@ class CounterpartyController extends AbstractController
     public function editCounterparty(
         Request $request,
         CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler,
-        CreateEditCounterpartyCommandHandler $createEditCounterpartyCommandHandler
+        EditCounterpartyCommandHandler $editCounterpartyCommandHandler
     ): Response {
 
         /*Форма Редактирования постовщка*/
@@ -116,8 +121,9 @@ class CounterpartyController extends AbstractController
             if ($form_edit_counterparty->isValid()) {
 
                 $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
-                $arr_saving_information = $createEditCounterpartyCommandHandler
-                    ->handler(new CreateCounterpartyCommand($request->request->all()['edit_counterparty']));
+
+                $arr_saving_information = $editCounterpartyCommandHandler
+                    ->handler(new CounterpartyCommand($data_form_edit_counterparty));
             }
         }
 
@@ -134,17 +140,30 @@ class CounterpartyController extends AbstractController
     #[Route('/deleteCounterparty', name: 'delete_counterparty')]
     public function deleteCounterparty(
         Request $request,
-        CreateDeleteCounterpartyCommandHandler $createDeleteCounterpartyCommandHandler
+        DeleteCounterpartyCommandHandler $deleteCounterpartyCommandHandler
     ): Response {
-        // dd($request);
+        try {
 
+            $deleteCounterpartyCommandHandler
+                ->handler(new CounterpartyCommand($request->query->all()));
+            $this->addFlash('delete', 'Поставщик удален');
+        } catch (HttpException $e) {
 
-        $arr_saving_information = $createDeleteCounterpartyCommandHandler
-            ->handler(new CreateCounterpartyCommand($request->query->all()));
+            $arr_validator_errors = json_decode($e->getMessage(), true);
 
-        foreach ($arr_saving_information as $arrValue) {
-            foreach ($arrValue as $value) {
-                $this->addFlash('data_counterparty', $value);
+            /* Выводим сообщения ошибки в форму через сессии  */
+            foreach ($arr_validator_errors as $key => $value_errors) {
+                if (is_array($value_errors)) {
+                    foreach ($value_errors as $key => $value) {
+                        $message = $value;
+                        $propertyPath = $key;
+                    }
+                } else {
+                    $message = $value_errors;
+                    $propertyPath = $key;
+                }
+
+                $this->addFlash($propertyPath, $message);
             }
         }
 

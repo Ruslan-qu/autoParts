@@ -8,9 +8,8 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\OriginalRoomsRepository;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\CreateOriginalRoomsCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 
 final class EditOriginalRoomsCommandHandler
 {
@@ -18,7 +17,7 @@ final class EditOriginalRoomsCommandHandler
         private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
     ) {}
 
-    public function handler(CreateOriginalRoomsCommand $createOriginalRoomsCommand): ?int
+    public function handler(OriginalRoomsCommand $originalRoomsCommand): ?int
     {
 
 
@@ -26,7 +25,7 @@ final class EditOriginalRoomsCommandHandler
         $original_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createOriginalRoomsCommand->getOriginalNumber()
+            $originalRoomsCommand->getOriginalNumber()
         ));
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -67,7 +66,7 @@ final class EditOriginalRoomsCommandHandler
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $id = $createOriginalRoomsCommand->getId();
+        $id = $originalRoomsCommand->getId();
 
         if (empty($id)) {
 

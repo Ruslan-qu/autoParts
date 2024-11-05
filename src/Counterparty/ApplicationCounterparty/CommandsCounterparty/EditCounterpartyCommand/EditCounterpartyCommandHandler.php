@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand;
+namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Type;
@@ -9,30 +9,29 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
-final class CreateSaveCounterpartyCommandHandler
+final class EditCounterpartyCommandHandler
 {
     private $counterparty_repository_interface;
-    private $entity_counterparty;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterparty_repository_interface,
-        Counterparty $entity_counterparty
+        CounterpartyRepositoryInterface $counterpartyRepositoryInterface
     ) {
-        $this->counterparty_repository_interface = $counterparty_repository_interface;
-        $this->entity_counterparty = $entity_counterparty;
+        $this->counterparty_repository_interface = $counterpartyRepositoryInterface;
     }
 
-    public function handler(CreateCounterpartyCommand $createCounterpartyCommand): array
+    public function handler(CounterpartyCommand $counterpartyCommand): array
     {
+
+
 
         $name_counterparty = strtolower(preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getNameCounterparty()
+            $counterpartyCommand->getNameCounterparty()
         ));
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -70,7 +69,7 @@ final class CreateSaveCounterpartyCommandHandler
         $mail_counterparty = preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getMailCounterparty()
+            $counterpartyCommand->getMailCounterparty()
         );
 
         if (!empty($mail_counterparty)) {
@@ -103,13 +102,13 @@ final class CreateSaveCounterpartyCommandHandler
         $manager_phone = preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getManagerPhone()
+            $counterpartyCommand->getManagerPhone()
         );
         if (!empty($manager_phone)) {
             $input = [
                 'manager_phone_error' => [
                     'Type' => $manager_phone,
-                    'Regex' => $manager_phone,
+                    'Regex' => $manager_phone
                 ]
             ];
 
@@ -135,17 +134,16 @@ final class CreateSaveCounterpartyCommandHandler
 
             $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
         }
-
         $delivery_phone = preg_replace(
             '#\s#',
             '',
-            $createCounterpartyCommand->getDeliveryPhone()
+            $counterpartyCommand->getDeliveryPhone()
         );
         if (!empty($delivery_phone)) {
             $input = [
                 'delivery_phone_error' => [
                     'Type' => $delivery_phone,
-                    'Regex' => $delivery_phone,
+                    'Regex' => $delivery_phone
                 ]
             ];
 
@@ -178,26 +176,27 @@ final class CreateSaveCounterpartyCommandHandler
             $json_arr_data_errors = json_encode($data_errors_counterparty, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        /* Валидация дублей */
-        $number_doubles = $this->counterparty_repository_interface
-            ->numberDoubles(['name_counterparty' => $name_counterparty]);
 
-        if ($number_doubles != 0) {
+        $id = $counterpartyCommand->getId();
 
-            $arr_errors_number_doubles['errors'] = [
-                'doubles' => 'Поставщик существует'
-            ];
-            return $arr_errors_number_doubles;
+        if (empty($id)) {
+
+            $arr_data_errors = ['Error' => 'Иди некорректное'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $this->entity_counterparty->setNameCounterparty($name_counterparty);
-        $this->entity_counterparty->setMailCounterparty($mail_counterparty);
-        $this->entity_counterparty->setManagerPhone($manager_phone);
-        $this->entity_counterparty->setDeliveryPhone($delivery_phone);
+        $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
 
-        $successfully_save = $this->counterparty_repository_interface->save($this->entity_counterparty);
+        $edit_counterparty->setNameCounterparty($name_counterparty);
+        $edit_counterparty->setMailCounterparty($mail_counterparty);
+        $edit_counterparty->setManagerPhone($manager_phone);
+        $edit_counterparty->setDeliveryPhone($delivery_phone);
 
-        $successfully['successfully'] = $successfully_save;
+        $successfully_edit = $this->counterparty_repository_interface->edit($edit_counterparty);
+
+        $successfully['successfully'] = $successfully_edit;
+
         return $successfully;
     }
 }

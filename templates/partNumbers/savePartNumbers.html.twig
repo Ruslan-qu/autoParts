@@ -23,6 +23,9 @@
             <div class="lb">{{ form_label(form_save_part_numbers.part_number) }}</div>
             {{ form_widget(form_save_part_numbers.part_number, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_save_part_numbers.part_number) |nl2br }}
+            {% for message in app.flashes('[part_number_error][Regex]') %}
+            {{ message }}
+            {% endfor %}
           </div>
 
 
@@ -31,6 +34,9 @@
             <div class="lb">{{ form_label(form_save_part_numbers.id_original_number) }}</div>
             {{ form_widget(form_save_part_numbers.id_original_number, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_save_part_numbers.id_original_number) |nl2br }}
+            {% for message in app.flashes('[original_number_error][Regex]') %}
+            {{ message }}
+            {% endfor %}
           </div>
 
 
@@ -39,6 +45,9 @@
             <div class="lb">{{ form_label(form_save_part_numbers.manufacturer) }}</div>
             {{ form_widget(form_save_part_numbers.manufacturer, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_save_part_numbers.manufacturer) |nl2br }}
+            {% for message in app.flashes('[manufacturer_error][Regex]') %}
+            {{ message }}
+            {% endfor %}
           </div>
 
 
@@ -47,6 +56,9 @@
             <div class="lb">{{ form_label(form_save_part_numbers.additional_descriptions) }}</div>
             {{ form_widget(form_save_part_numbers.additional_descriptions, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_save_part_numbers.additional_descriptions) |nl2br }}
+            {% for message in app.flashes('[additional_descriptions_error][Regex]') %}
+            {{ message }}
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -112,17 +124,15 @@
   {{ form_end(form_save_part_numbers) }}
 
   <div class="col-auto m-3">
-    {% for saving_information in arr_saving_information %}
-    {% if saving_information is same as NULL %}
-    <h5>Номер детали существует</h5>
-    {% endif %}
+    {% for messages in app.flashes(['delete','Error','successfully']) %}
+    {% for message in messages %}
+    <h2 class="mt-3 ms-3">{{ message }}</h2>
+    {% endfor %}
     {% endfor %}
 
-     
-    {% for saving_information in arr_saving_information %}
-    {% if saving_information %}
+    {% if arr_saving_information %}
     <h5>Данные деталей удачно сохранены</h5>
     {% endif %}
-    {% endfor %}
+
   </div>
   {% endblock form %}

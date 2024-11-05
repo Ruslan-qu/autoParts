@@ -7,12 +7,13 @@ use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 
-final class CreateSavePartNumbersCommandHandler
+final class SavePartNumbersCommandHandler
 {
     private $part_numbers_repository_interface;
     private $entity_part_numbers_from_manufacturers;
@@ -25,17 +26,17 @@ final class CreateSavePartNumbersCommandHandler
         $this->entity_part_numbers_from_manufacturers = $partNumbersFromManufacturers;
     }
 
-    public function handler(CreatePartNumbersCommand $createPartNumbersCommand): ?int
+    public function handler(PartNumbersCommand $partNumbersCommand): ?int
     {
+
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
 
         $part_number = strtolower(preg_replace(
             '#\s#',
             '',
-            $createPartNumbersCommand->getPartNumber()
+            $partNumbersCommand->getPartNumber()
         ));
-
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
 
         $input = [
             'part_number_error' => [
@@ -69,7 +70,7 @@ final class CreateSavePartNumbersCommandHandler
         $manufacturer = strtolower(preg_replace(
             '#\s#',
             '',
-            $createPartNumbersCommand->getManufacturer()
+            $partNumbersCommand->getManufacturer()
         ));
 
         if (!empty($manufacturer)) {
@@ -100,7 +101,7 @@ final class CreateSavePartNumbersCommandHandler
             $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
         }
 
-        $additional_descriptions = $createPartNumbersCommand->getAdditionalDescriptions();
+        $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
         if (!empty($additional_descriptions)) {
             $input = [
                 'additional_descriptions_error' => [
@@ -129,19 +130,19 @@ final class CreateSavePartNumbersCommandHandler
             $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_additional_descriptions);
         }
 
-        $id_part_name = $createPartNumbersCommand->getIdPartName();
+        $id_part_name = $partNumbersCommand->getIdPartName();
 
-        $id_car_brand = $createPartNumbersCommand->getIdCarBrand();
+        $id_car_brand = $partNumbersCommand->getIdCarBrand();
 
-        $id_side = $createPartNumbersCommand->getIdSide();
+        $id_side = $partNumbersCommand->getIdSide();
 
-        $id_body = $createPartNumbersCommand->getIdBody();
+        $id_body = $partNumbersCommand->getIdBody();
 
-        $id_axle = $createPartNumbersCommand->getIdAxle();
+        $id_axle = $partNumbersCommand->getIdAxle();
 
-        $id_in_stock = $createPartNumbersCommand->getIdInStock();
+        $id_in_stock = $partNumbersCommand->getIdInStock();
 
-        $id_original_number = $createPartNumbersCommand->getIdOriginalNumber();
+        $id_original_number = $partNumbersCommand->getIdOriginalNumber();
 
         if (!empty($data_errors_part_number)) {
 
@@ -154,7 +155,9 @@ final class CreateSavePartNumbersCommandHandler
 
         if ($number_doubles != 0) {
 
-            return null;
+            $arr_data_errors = ['Error' => 'Деталь уже существует'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new ConflictHttpException($json_arr_data_errors);
         }
 
         $this->entity_part_numbers_from_manufacturers->setPartNumber($part_number);

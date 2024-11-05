@@ -82,7 +82,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['delete' => 'Данные деталей удалены'];
+        return $successfully = ['delete' => 0];
     }
 
     /**
