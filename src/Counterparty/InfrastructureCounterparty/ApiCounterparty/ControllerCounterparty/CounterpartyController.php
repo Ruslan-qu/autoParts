@@ -104,7 +104,7 @@ class CounterpartyController extends AbstractController
         if (empty($form_edit_counterparty->getData())) {
 
             $data_form_edit_counterparty = $findIdCounterpartyQueryHandler
-                ->handler(new CounterpartyQuery($request->query->all()));
+                ->handler(new CounterpartyQuery($form_edit_counterparty->getData()));
             if (empty($data_form_edit_counterparty)) {
                 $this->addFlash('data_counterparty', 'Поставщик не найден');
 
@@ -123,7 +123,7 @@ class CounterpartyController extends AbstractController
                 $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
 
                 $arr_saving_information = $editCounterpartyCommandHandler
-                    ->handler(new CounterpartyCommand($data_form_edit_counterparty));
+                    ->handler(new CounterpartyCommand($form_edit_counterparty->getData()));
             }
         }
 
@@ -149,7 +149,7 @@ class CounterpartyController extends AbstractController
 
             $arr_counterparty['id_counterparty'] = $findIdCounterpartyQueryHandler
                 ->handler(new CounterpartyQuery($request->query->all()));
-            dd($arr_counterparty);
+
             $adapterCounterpartyInterface->autoPartsWarehouseDeleteCounterparty($arr_counterparty);
         } catch (HttpException $e) {
 
