@@ -40,6 +40,7 @@ final class AddCartAutoPartsCommandHandler
         $price_sold = $autoPartsSoldCommand->getPriceSold();
 
         $date_sold = $autoPartsSoldCommand->getDateSold();
+
         $input = [
             'quantity_sold_error' => [
                 'NotBlank' => $quantity_sold,

@@ -12,54 +12,67 @@
 
   {#Форма сохранения постовщиков#}
 
-  {{ form_start(form_save_counterparty, {'attr': {'class': 'row row-cols-12 text-center
-  mt-2'}}) }}
+  {{ form_start(form_save_counterparty) }}
+  <div class="container-fluid text-center mt-3">
+    <div class="row">
 
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.name_counterparty) }}</div>
-    {{ form_widget(form_save_counterparty.name_counterparty, { 'attr': {'class': 'ps-1'} }) }}
-    {{ form_errors(form_save_counterparty.name_counterparty) |nl2br }}
+      <div class="col-sm-3 col-md-3 col-lg-2">
+        <div class="lb">{{ form_label(form_save_counterparty.name_counterparty) }}</div>
+        {{ form_widget(form_save_counterparty.name_counterparty, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_save_counterparty.name_counterparty) |nl2br }}
+        {% for message in app.flashes('[name_counterparty_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
 
-  </div>
+      </div>
 
-
-
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.mail_counterparty) }}</div>
-    {{ form_widget(form_save_counterparty.mail_counterparty, { 'attr': {'class': 'ps-1'} }) }}
-    {{ form_errors(form_save_counterparty.mail_counterparty) |nl2br }}
-  </div>
-
-
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.manager_phone) }}</div>
-    {{ form_widget(form_save_counterparty.manager_phone, { 'attr': {'class': 'ps-1', 
-    'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_save_counterparty.manager_phone) |nl2br }}
-  </div>
+      <div class="col-sm-3 col-md-3 col-lg-2">
+        <div class="lb">{{ form_label(form_save_counterparty.mail_counterparty) }}</div>
+        {{ form_widget(form_save_counterparty.mail_counterparty, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_save_counterparty.mail_counterparty) |nl2br }}
+        {% for message in app.flashes('[mail_counterparty_error][Email]') %}
+        {{ message }}
+        {% endfor %}
+      </div>
 
 
-  <div class="col-auto ms-2">
-    <div class="lb">{{ form_label(form_save_counterparty.delivery_phone) }}</div>
-    {{ form_widget(form_save_counterparty.delivery_phone, { 'attr': {'class': 'ps-1', 
-    'placeholder': '+79999999999'} }) }}
-    {{ form_errors(form_save_counterparty.delivery_phone) |nl2br }}
-  </div>
+      <div class="col-sm-3 col-md-3 col-lg-2">
+        <div class="lb">{{ form_label(form_save_counterparty.manager_phone) }}</div>
+        {{ form_widget(form_save_counterparty.manager_phone, { 'attr': {'class': 'w-100',
+        'placeholder': '+79999999999'} }) }}
+        {{ form_errors(form_save_counterparty.manager_phone) |nl2br }}
+        {% for message in app.flashes('[manager_phone_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+      </div>
 
-  <div class="row mt-3">
-    <div class="col-9 d-grid gap-2 ms-2">
-      {{ form_widget(form_save_counterparty.button_counterparty, { 'label': 'Сохранить', 'attr': {'class': 'btn
-      btn-danger'}}) }}
+
+      <div class="col-sm-3 col-md-3 col-lg-2">
+        <div class="lb">{{ form_label(form_save_counterparty.delivery_phone) }}</div>
+        {{ form_widget(form_save_counterparty.delivery_phone, { 'attr': {'class': 'w-100',
+        'placeholder': '+79999999999'} }) }}
+        {{ form_errors(form_save_counterparty.delivery_phone) |nl2br }}
+        {% for message in app.flashes('[delivery_phone_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+      </div>
+    </div>
+
+
+
+    <div class="row my-2 pt-2">
+      <div class="col-sm-12 col-lg-8">
+        {{ form_widget(form_save_counterparty.button_counterparty, { 'label': 'Сохранить', 'attr': {'class': 'btn
+        btn-danger w-100'}}) }}
+      </div>
     </div>
   </div>
 
+
   {{ form_end(form_save_counterparty) }}
-  <div class="col-auto m-3">
-    {% for saving_information in arr_saving_information %}
-    {% for information in saving_information %}
-    {#{{ dump(saving_information) }}#}
-    <h5>{{ information |nl2br }}</h5>
-    {% endfor %}
-    {% endfor %}
+  <div class="m-3">
+    {% if arr_saving_information %}
+    <h5>Поставщик сохранен</h5>
+    {% endif %}
   </div>
   {% endblock form %}

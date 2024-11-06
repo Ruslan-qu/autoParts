@@ -3,14 +3,12 @@
 namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand;
 
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 final class EditCounterpartyCommandHandler
@@ -34,14 +32,39 @@ final class EditCounterpartyCommandHandler
             $counterpartyCommand->getNameCounterparty()
         ));
 
+        $mail_counterparty = preg_replace(
+            '#\s#',
+            '',
+            $counterpartyCommand->getMailCounterparty()
+        );
+
+        $manager_phone = preg_replace(
+            '#\s#',
+            '',
+            $counterpartyCommand->getManagerPhone()
+        );
+
+        $delivery_phone = preg_replace(
+            '#\s#',
+            '',
+            $counterpartyCommand->getDeliveryPhone()
+        );
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
         $input = [
             'name_counterparty_error' => [
                 'NotBlank' => $name_counterparty,
-                'Type' => $name_counterparty,
                 'Regex' => $name_counterparty,
+            ],
+            'mail_counterparty_error' => [
+                'Email' => $mail_counterparty
+            ],
+            'manager_phone_error' => [
+                'Regex' => $manager_phone,
+            ],
+            'delivery_phone_error' => [
+                'Regex' => $delivery_phone,
             ]
         ];
 
@@ -50,131 +73,48 @@ final class EditCounterpartyCommandHandler
                 'NotBlank' => new NotBlank(
                     message: 'Форма Поставщик не может быть пустой'
                 ),
-                'Type' => new Type('string'),
                 'Regex' => new Regex(
                     pattern: '/^[\da-z]*$/i',
                     message: 'Форма Поставщик содержит недопустимые символы'
                 )
+            ]),
+            'mail_counterparty_error' => new Collection([
+                'Email' => new Email(
+                    message: 'Форма E-mail содержит недопустимые символы'
+                )
+            ]),
+            'manager_phone_error' => new Collection([
+                'Regex' => new Regex(
+                    pattern: '/^\+{1}\d{11}$/',
+                    message: 'Форма Телефон менеджера содержит:
+                        Недопустимые символы
+                        или Нет знака +
+                        или Неверное количество цифр'
+                )
+            ]),
+            'delivery_phone_error' => new Collection([
+                'Regex' => new Regex(
+                    pattern: '/^\+{1}\d{11}$/',
+                    message: 'Форма Телефон доставки содержит: 
+                        Недопустимые символы
+                        или Нет знака +
+                        или Неверное количество цифр'
+                )
             ])
         ]);
 
-        $data_errors_counterparty = [];
-        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+        $errors = $validator->validate($input, $constraint);
 
-            $data_errors_counterparty[$key] = [
-                $value_error->getPropertyPath() => $value_error->getMessage()
-            ];
-        }
-
-        $mail_counterparty = preg_replace(
-            '#\s#',
-            '',
-            $counterpartyCommand->getMailCounterparty()
-        );
-
-        if (!empty($mail_counterparty)) {
-            $input = [
-                'mail_counterparty_error' => [
-                    'Type' => $mail_counterparty,
-                    'Email' => $mail_counterparty
-                ]
-            ];
-
-            $constraint = new Collection([
-                'mail_counterparty_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Email' => new Email(
-                        message: 'Форма E-mail содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_counterparty_mail = [];
+        if ($errors->count()) {
+            $validator_errors = [];
             foreach ($validator->validate($input, $constraint) as $key => $value_error) {
 
-                $data_errors_counterparty_mail[$key] = [
+                $validator_errors[$key] = [
                     $value_error->getPropertyPath() => $value_error->getMessage()
                 ];
             }
-
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_mail);
-        }
-
-        $manager_phone = preg_replace(
-            '#\s#',
-            '',
-            $counterpartyCommand->getManagerPhone()
-        );
-        if (!empty($manager_phone)) {
-            $input = [
-                'manager_phone_error' => [
-                    'Type' => $manager_phone,
-                    'Regex' => $manager_phone
-                ]
-            ];
-
-            $constraint = new Collection([
-                'manager_phone_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^\+{1}\d{11}$/',
-                        message: 'Форма Телефон менеджера содержит:
-                        1) Недопустимые символы
-                        2) Нет знака +
-                        3) Неверное количество цифр'
-                    )
-                ])
-            ]);
-            $data_errors_counterparty_manager_phone = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_counterparty_manager_phone[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_manager_phone);
-        }
-        $delivery_phone = preg_replace(
-            '#\s#',
-            '',
-            $counterpartyCommand->getDeliveryPhone()
-        );
-        if (!empty($delivery_phone)) {
-            $input = [
-                'delivery_phone_error' => [
-                    'Type' => $delivery_phone,
-                    'Regex' => $delivery_phone
-                ]
-            ];
-
-            $constraint = new Collection([
-                'delivery_phone_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^\+{1}\d{11}$/',
-                        message: 'Форма Телефон доставки содержит: 
-                        1) Недопустимые символы
-                        2) Нет знака +
-                        3) Неверное количество цифр'
-                    )
-                ])
-            ]);
-
-            $data_errors_counterparty_delivery_phone = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_counterparty_delivery_phone[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_counterparty = array_merge($data_errors_counterparty, $data_errors_counterparty_delivery_phone);
-        }
-
-        if (!empty($data_errors_counterparty)) {
-
-            $json_arr_data_errors = json_encode($data_errors_counterparty, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            $json_data_errors = json_encode($validator_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_data_errors);
         }
 
         $id = $counterpartyCommand->getId();
@@ -195,8 +135,6 @@ final class EditCounterpartyCommandHandler
 
         $successfully_edit = $this->counterparty_repository_interface->edit($edit_counterparty);
 
-        $successfully['successfully'] = $successfully_edit;
-
-        return $successfully;
+        return $successfully_edit;
     }
 }

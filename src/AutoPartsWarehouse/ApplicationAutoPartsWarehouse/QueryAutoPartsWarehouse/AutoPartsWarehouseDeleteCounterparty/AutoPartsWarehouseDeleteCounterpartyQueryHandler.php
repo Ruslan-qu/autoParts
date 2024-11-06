@@ -29,7 +29,7 @@ final class AutoPartsWarehouseDeleteCounterpartyQueryHandler
 
         if (!empty($delete_part_numbers_warehouse)) {
 
-            $arr_data_errors = ['Error' => 'Данная поставщик указан складе, перед удалением, измените поставщика на складе'];
+            $arr_data_errors = ['Error' => 'Поставщик указан на складе автопчастей, перед удалением, измените поставщика на складе'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

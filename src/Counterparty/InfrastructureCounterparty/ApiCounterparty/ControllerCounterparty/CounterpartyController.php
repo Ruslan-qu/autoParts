@@ -8,18 +8,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\EditCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
-use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SearchCounterpartyType;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\FindIdCounterpartyQueryHandler;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindByCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\EditCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\SaveCounterpartyCommandHandler;
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\CreateFindIdCounterpartyQueryHandler;
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\CreateSearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\DeleteCounterpartyCommandHandler;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterCounterparty\AdapterCounterpartyInterface;
 
@@ -42,8 +39,29 @@ class CounterpartyController extends AbstractController
         if ($form_save_counterparty->isSubmitted()) {
             if ($form_save_counterparty->isValid()) {
 
-                $arr_saving_information = $saveCounterpartyCommandHandler
-                    ->handler(new CounterpartyCommand($form_save_counterparty->getData()));
+                try {
+
+                    $arr_saving_information = $saveCounterpartyCommandHandler
+                        ->handler(new CounterpartyCommand($form_save_counterparty->getData()));
+                } catch (HttpException $e) {
+
+                    $arr_validator_errors = json_decode($e->getMessage(), true);
+
+                    /* Выводим сообщения ошибки в форму через сессии  */
+                    foreach ($arr_validator_errors as $key => $value_errors) {
+                        if (is_array($value_errors)) {
+                            foreach ($value_errors as $key => $value) {
+                                $message = $value;
+                                $propertyPath = $key;
+                            }
+                        } else {
+                            $message = $value_errors;
+                            $propertyPath = $key;
+                        }
+
+                        $this->addFlash($propertyPath, $message);
+                    }
+                }
             }
         }
 
@@ -58,7 +76,7 @@ class CounterpartyController extends AbstractController
     #[Route('/searchCounterparty', name: 'search_counterparty')]
     public function searchCounterparty(
         Request $request,
-        CounterpartyRepositoryInterface $counterparty_repository_interface,
+        FindByCounterpartyQueryHandler $findByCounterpartyQueryHandler,
         SearchCounterpartyQueryHandler $searchCounterpartyQueryHandler
     ): Response {
 
@@ -69,13 +87,34 @@ class CounterpartyController extends AbstractController
         $form_search_counterparty->handleRequest($request);
 
         /*Выводим полный список поставщиков*/
-        $search_data = $counterparty_repository_interface->findAllCounterparty();
+        $search_data = $findByCounterpartyQueryHandler->handler();
 
         if ($form_search_counterparty->isSubmitted()) {
             if ($form_search_counterparty->isValid()) {
-                unset($search_data);
-                $search_data = $searchCounterpartyQueryHandler
-                    ->handler(new CounterpartyQuery($request->request->all()['search_counterparty']));
+
+                try {
+
+                    $search_data = $searchCounterpartyQueryHandler
+                        ->handler(new CounterpartyQuery($form_search_counterparty->getData()));
+                } catch (HttpException $e) {
+
+                    $arr_validator_errors = json_decode($e->getMessage(), true);
+
+                    /* Выводим сообщения ошибки в форму через сессии  */
+                    foreach ($arr_validator_errors as $key => $value_errors) {
+                        if (is_array($value_errors)) {
+                            foreach ($value_errors as $key => $value) {
+                                $message = $value;
+                                $propertyPath = $key;
+                            }
+                        } else {
+                            $message = $value_errors;
+                            $propertyPath = $key;
+                        }
+
+                        $this->addFlash($propertyPath, $message);
+                    }
+                }
             }
         }
 
@@ -103,12 +142,30 @@ class CounterpartyController extends AbstractController
 
         if (empty($form_edit_counterparty->getData())) {
 
-            $data_form_edit_counterparty = $findIdCounterpartyQueryHandler
-                ->handler(new CounterpartyQuery($form_edit_counterparty->getData()));
-            if (empty($data_form_edit_counterparty)) {
-                $this->addFlash('data_counterparty', 'Поставщик не найден');
+            try {
 
-                return $this->redirectToRoute('search_counterparty');
+                $data_form_edit_counterparty = $findIdCounterpartyQueryHandler
+                    ->handler(new CounterpartyQuery($request->query->all()));
+            } catch (HttpException $e) {
+
+                $arr_validator_errors = json_decode($e->getMessage(), true);
+
+                /* Выводим сообщения ошибки в форму через сессии  */
+                foreach ($arr_validator_errors as $key => $value_errors) {
+                    if (is_array($value_errors)) {
+                        foreach ($value_errors as $key => $value) {
+                            $message = $value;
+                            $propertyPath = $key;
+                        }
+                    } else {
+                        $message = $value_errors;
+                        $propertyPath = $key;
+                    }
+
+                    $this->addFlash($propertyPath, $message);
+
+                    return $this->redirectToRoute('search_counterparty');
+                }
             }
         }
 
@@ -121,12 +178,31 @@ class CounterpartyController extends AbstractController
             if ($form_edit_counterparty->isValid()) {
 
                 $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
+                try {
 
-                $arr_saving_information = $editCounterpartyCommandHandler
-                    ->handler(new CounterpartyCommand($form_edit_counterparty->getData()));
+                    $arr_saving_information = $editCounterpartyCommandHandler
+                        ->handler(new CounterpartyCommand($form_edit_counterparty->getData()));
+                } catch (HttpException $e) {
+
+                    $arr_validator_errors = json_decode($e->getMessage(), true);
+
+                    /* Выводим сообщения ошибки в форму через сессии  */
+                    foreach ($arr_validator_errors as $key => $value_errors) {
+                        if (is_array($value_errors)) {
+                            foreach ($value_errors as $key => $value) {
+                                $message = $value;
+                                $propertyPath = $key;
+                            }
+                        } else {
+                            $message = $value_errors;
+                            $propertyPath = $key;
+                        }
+
+                        $this->addFlash($propertyPath, $message);
+                    }
+                }
             }
         }
-
 
         return $this->render('@counterparty/editCounterparty.html.twig', [
             'title_logo' => 'Изменение данных поставщика',
@@ -172,7 +248,6 @@ class CounterpartyController extends AbstractController
 
             return $this->redirectToRoute('search_counterparty');
         }
-
 
         try {
 

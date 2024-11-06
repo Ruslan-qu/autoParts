@@ -45,7 +45,7 @@ class SaveCounterpartyType extends AbstractType
                 ]
             ])
             ->add('manager_phone', TelType::class, [
-                'label' => 'Телефон менеджера',
+                'label' => 'Тел. менеджера',
                 'required' => false,
                 'constraints' => [
                     new Regex([
@@ -59,7 +59,7 @@ class SaveCounterpartyType extends AbstractType
                 ]
             ])
             ->add('delivery_phone', TelType::class, [
-                'label' => 'Телефон доставки',
+                'label' => 'Тел. доставки',
                 'required' => false,
                 'constraints' => [
                     new Regex([

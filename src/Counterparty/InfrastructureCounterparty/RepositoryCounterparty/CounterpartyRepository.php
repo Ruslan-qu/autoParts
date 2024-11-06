@@ -44,7 +44,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => 'Поставщик успешно сохранен'];
+        return $successfully = ['save' => $entityData['id']];
     }
 
     /**
@@ -63,7 +63,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => 'Поставщик успешно изменен'];
+        return $successfully = ['edit' => $entityData['id']];
     }
 
     /**
@@ -88,7 +88,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return Counterparty[]|NULL Возвращает массив объектов поставщиков или ноль
      */
-    public function findAllCounterparty(): ?array
+    public function findByCounterparty(): ?array
     {
         return $this->findBy([], ['id' => 'ASC']);
     }
@@ -96,7 +96,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return Counterparty[]|NULL Возвращает массив объектов Поставщиков или ноль
      */
-    public function findByCounterparty($name_counterparty): ?array
+    public function findOneByCounterparty($name_counterparty): ?array
     {
         return $this->findBy(['name_counterparty' => $name_counterparty], ['id' => 'ASC']);
     }

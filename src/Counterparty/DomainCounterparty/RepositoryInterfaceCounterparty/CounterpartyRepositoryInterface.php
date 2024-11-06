@@ -14,9 +14,9 @@ interface  CounterpartyRepositoryInterface
 
     public function numberDoubles(array $array): int;
 
-    public function findAllCounterparty(): ?array;
+    public function findByCounterparty(): ?array;
 
-    public function findByCounterparty($name_counterparty): ?array;
+    public function findOneByCounterparty($name_counterparty): ?array;
 
     public function findCounterparty($id): ?Counterparty;
 }
