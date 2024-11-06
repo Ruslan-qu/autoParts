@@ -85,8 +85,6 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
         return $successfully = ['delete' => 0];
     }
 
-
-
     /**
      * @return Counterparty[]|NULL Возвращает массив объектов поставщиков или ноль
      */

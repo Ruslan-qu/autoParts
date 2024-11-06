@@ -1,12 +1,13 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseDeleteCounterpartyQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
-abstract class MapAutoPartsWarehouseQuery
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
+
+abstract class MapAutoPartsWarehouseDeleteCounterpartyQuery
 {
 
     public function __construct(array $data = [])
@@ -22,15 +23,15 @@ abstract class MapAutoPartsWarehouseQuery
 
             if (!empty($value)) {
 
-                if (!property_exists(PartNumbersFromManufacturers::class, $key)) {
+                if (!property_exists(AutoPartsWarehouse::class, $key)) {
 
                     $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                        '  не существует в PartNumbersFromManufacturers объекте.'];
+                        '  не существует в AutoPartsWarehouse объекте.'];
                     $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
                     throw new UnprocessableEntityHttpException($json_arr_data_errors);
                 }
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
@@ -43,7 +44,7 @@ abstract class MapAutoPartsWarehouseQuery
 
                 if ($type == 'object') {
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
+                    $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
                         ->getBaseType()
                         ->getClassName();
 

@@ -7,21 +7,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CreateCounterpartyQuery;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\EditCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CreateCounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SearchCounterpartyType;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\FindIdCounterpartyQueryHandler;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\EditCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\SaveCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\CreateFindIdCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\CreateSearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\DeleteCounterpartyCommandHandler;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\CreateEditCounterpartyCommandHandler;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\CreateSaveCounterpartyCommandHandler;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\CreateDeleteCounterpartyCommandHandler;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterCounterparty\AdapterCounterpartyInterface;
 
 class CounterpartyController extends AbstractController
 {
@@ -43,11 +43,11 @@ class CounterpartyController extends AbstractController
             if ($form_save_counterparty->isValid()) {
 
                 $arr_saving_information = $saveCounterpartyCommandHandler
-                    ->handler(new CounterpartyCommand($request->request->all()['save_counterparty']));
+                    ->handler(new CounterpartyCommand($form_save_counterparty->getData()));
             }
         }
 
-        return $this->render('counterparty/saveCounterparty.html.twig', [
+        return $this->render('@counterparty/saveCounterparty.html.twig', [
             'title_logo' => 'Добавление нового поставщика',
             'form_save_counterparty' => $form_save_counterparty->createView(),
             'arr_saving_information' => $arr_saving_information
@@ -59,7 +59,7 @@ class CounterpartyController extends AbstractController
     public function searchCounterparty(
         Request $request,
         CounterpartyRepositoryInterface $counterparty_repository_interface,
-        CreateSearchCounterpartyQueryHandler $createSearchCounterpartyQueryHandler
+        SearchCounterpartyQueryHandler $searchCounterpartyQueryHandler
     ): Response {
 
         /*Форма поиска постовщка*/
@@ -74,12 +74,12 @@ class CounterpartyController extends AbstractController
         if ($form_search_counterparty->isSubmitted()) {
             if ($form_search_counterparty->isValid()) {
                 unset($search_data);
-                $search_data = $createSearchCounterpartyQueryHandler
-                    ->handler(new CreateCounterpartyQuery($request->request->all()['search_counterparty']));
+                $search_data = $searchCounterpartyQueryHandler
+                    ->handler(new CounterpartyQuery($request->request->all()['search_counterparty']));
             }
         }
 
-        return $this->render('counterparty/searchCounterparty.html.twig', [
+        return $this->render('@counterparty/searchCounterparty.html.twig', [
             'title_logo' => 'Поиск поставщика',
             'form_search_counterparty' => $form_search_counterparty->createView(),
             'search_data' => $search_data,
@@ -91,7 +91,7 @@ class CounterpartyController extends AbstractController
     #[Route('/editCounterparty', name: 'edit_counterparty')]
     public function editCounterparty(
         Request $request,
-        CreateFindIdCounterpartyQueryHandler $createFindIdCounterpartyQueryHandler,
+        FindIdCounterpartyQueryHandler $findIdCounterpartyQueryHandler,
         EditCounterpartyCommandHandler $editCounterpartyCommandHandler
     ): Response {
 
@@ -103,8 +103,8 @@ class CounterpartyController extends AbstractController
 
         if (empty($form_edit_counterparty->getData())) {
 
-            $data_form_edit_counterparty = $createFindIdCounterpartyQueryHandler
-                ->handler(new CreateCounterpartyQuery($request->query->all()));
+            $data_form_edit_counterparty = $findIdCounterpartyQueryHandler
+                ->handler(new CounterpartyQuery($request->query->all()));
             if (empty($data_form_edit_counterparty)) {
                 $this->addFlash('data_counterparty', 'Поставщик не найден');
 
@@ -128,7 +128,7 @@ class CounterpartyController extends AbstractController
         }
 
 
-        return $this->render('counterparty/editCounterparty.html.twig', [
+        return $this->render('@counterparty/editCounterparty.html.twig', [
             'title_logo' => 'Изменение данных поставщика',
             'form_edit_counterparty' => $form_edit_counterparty->createView(),
             'arr_saving_information' => $arr_saving_information,
@@ -140,8 +140,40 @@ class CounterpartyController extends AbstractController
     #[Route('/deleteCounterparty', name: 'delete_counterparty')]
     public function deleteCounterparty(
         Request $request,
+        FindIdCounterpartyQueryHandler $findIdCounterpartyQueryHandler,
+        AdapterCounterpartyInterface $adapterCounterpartyInterface,
         DeleteCounterpartyCommandHandler $deleteCounterpartyCommandHandler
     ): Response {
+
+        try {
+
+            $arr_counterparty['id_counterparty'] = $findIdCounterpartyQueryHandler
+                ->handler(new CounterpartyQuery($request->query->all()));
+            dd($arr_counterparty);
+            $adapterCounterpartyInterface->autoPartsWarehouseDeleteCounterparty($arr_counterparty);
+        } catch (HttpException $e) {
+
+            $arr_validator_errors = json_decode($e->getMessage(), true);
+
+            /* Выводим сообщения ошибки в форму через сессии  */
+            foreach ($arr_validator_errors as $key => $value_errors) {
+                if (is_array($value_errors)) {
+                    foreach ($value_errors as $key => $value) {
+                        $message = $value;
+                        $propertyPath = $key;
+                    }
+                } else {
+                    $message = $value_errors;
+                    $propertyPath = $key;
+                }
+
+                $this->addFlash($propertyPath, $message);
+            }
+
+            return $this->redirectToRoute('search_counterparty');
+        }
+
+
         try {
 
             $deleteCounterpartyCommandHandler

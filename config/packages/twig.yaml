@@ -1,5 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
+    paths:
+        'src/Counterparty/InfrastructureCounterparty/ApiCounterparty/templatesCounterparty': 'counterparty'
 
 when@test:
     twig:

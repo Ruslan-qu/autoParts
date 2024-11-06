@@ -34,16 +34,6 @@ final class DeleteCounterpartyCommandHandler
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $delete_part_numbers_warehouse = $this->autoPartsWarehouseRepositoryInterface
-            ->findByAutoPartsWarehouseDeleteCounterparty($delete_counterparty);
-
-        if (!empty($delete_part_numbers_warehouse)) {
-
-            $arr_data_errors = ['Error' => 'Данная поставщик указан складе, перед удалением, измените поставщика на складе'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
-
         $successfully_delete = $this->counterpartyRepositoryInterface->delete($delete_counterparty);
 
         $successfully['successfully'] = $successfully_delete;

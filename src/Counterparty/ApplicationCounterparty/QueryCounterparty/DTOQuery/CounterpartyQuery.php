@@ -2,33 +2,44 @@
 
 namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\MapCounterpartyQuery;
 
-abstract class CounterpartyQuery
+
+final class CounterpartyQuery extends MapCounterpartyQuery
 {
+    protected ?int $id = null;
 
-    public function __construct(array $data = [])
+    protected ?string $name_counterparty = null;
+
+    protected ?string $mail_counterparty = null;
+
+    protected ?string $manager_phone = null;
+
+    protected ?string $delivery_phone = null;
+
+
+    public function getId(): ?int
     {
-        $this->load($data);
+        return $this->id;
     }
 
-    private function load(array $data)
+    public function getNameCounterparty(): ?string
     {
+        return $this->name_counterparty;
+    }
 
-        $typeResolver = TypeResolver::create();
+    public function getMailCounterparty(): ?string
+    {
+        return $this->mail_counterparty;
+    }
 
-        foreach ($data as $key => $value) {
+    public function getManagerPhone(): ?string
+    {
+        return $this->manager_phone;
+    }
 
-            if (!empty($value)) {
-
-                $type = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
-                settype($value, $type);
-                $this->$key = $value;
-            }
-        }
+    public function getDeliveryPhone(): ?string
+    {
+        return $this->delivery_phone;
     }
 }

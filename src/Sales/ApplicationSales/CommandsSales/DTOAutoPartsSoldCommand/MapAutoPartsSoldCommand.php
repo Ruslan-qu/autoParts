@@ -20,6 +20,14 @@ abstract class MapAutoPartsSoldCommand
 
         foreach ($data as $key => $value) {
 
+            if (!property_exists(AutoPartsSold::class, $key)) {
+
+                $arr_data_errors = ['Error' => 'Свойство ' . $key .
+                    '  не существует в AutoPartsSold объекте.'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
+
             if (!empty($value)) {
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
