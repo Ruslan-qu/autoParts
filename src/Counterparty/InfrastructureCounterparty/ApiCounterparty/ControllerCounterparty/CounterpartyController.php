@@ -35,13 +35,13 @@ class CounterpartyController extends AbstractController
         /*Валидация формы */
         $form_save_counterparty->handleRequest($request);
 
-        $arr_saving_information = [];
+        $id_handler = null;
         if ($form_save_counterparty->isSubmitted()) {
             if ($form_save_counterparty->isValid()) {
 
                 try {
 
-                    $arr_saving_information = $saveCounterpartyCommandHandler
+                    $id_handler = $saveCounterpartyCommandHandler
                         ->handler(new CounterpartyCommand($form_save_counterparty->getData()));
                 } catch (HttpException $e) {
 
@@ -68,7 +68,7 @@ class CounterpartyController extends AbstractController
         return $this->render('@counterparty/saveCounterparty.html.twig', [
             'title_logo' => 'Добавление нового поставщика',
             'form_save_counterparty' => $form_save_counterparty->createView(),
-            'arr_saving_information' => $arr_saving_information
+            'id_handler' => $id_handler
         ]);
     }
 
@@ -173,14 +173,14 @@ class CounterpartyController extends AbstractController
             $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
         }
 
-        $arr_saving_information = [];
+        $id_handler = null;
         if ($form_edit_counterparty->isSubmitted()) {
             if ($form_edit_counterparty->isValid()) {
 
                 $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
                 try {
 
-                    $arr_saving_information = $editCounterpartyCommandHandler
+                    $id_handler = $editCounterpartyCommandHandler
                         ->handler(new CounterpartyCommand($form_edit_counterparty->getData()));
                 } catch (HttpException $e) {
 
@@ -207,7 +207,7 @@ class CounterpartyController extends AbstractController
         return $this->render('@counterparty/editCounterparty.html.twig', [
             'title_logo' => 'Изменение данных поставщика',
             'form_edit_counterparty' => $form_edit_counterparty->createView(),
-            'arr_saving_information' => $arr_saving_information,
+            'id_handler' => $id_handler,
             'data_form_edit_counterparty' => $data_form_edit_counterparty,
         ]);
     }
@@ -227,29 +227,6 @@ class CounterpartyController extends AbstractController
                 ->handler(new CounterpartyQuery($request->query->all()));
 
             $adapterCounterpartyInterface->autoPartsWarehouseDeleteCounterparty($arr_counterparty);
-        } catch (HttpException $e) {
-
-            $arr_validator_errors = json_decode($e->getMessage(), true);
-
-            /* Выводим сообщения ошибки в форму через сессии  */
-            foreach ($arr_validator_errors as $key => $value_errors) {
-                if (is_array($value_errors)) {
-                    foreach ($value_errors as $key => $value) {
-                        $message = $value;
-                        $propertyPath = $key;
-                    }
-                } else {
-                    $message = $value_errors;
-                    $propertyPath = $key;
-                }
-
-                $this->addFlash($propertyPath, $message);
-            }
-
-            return $this->redirectToRoute('search_counterparty');
-        }
-
-        try {
 
             $deleteCounterpartyCommandHandler
                 ->handler(new CounterpartyCommand($request->query->all()));

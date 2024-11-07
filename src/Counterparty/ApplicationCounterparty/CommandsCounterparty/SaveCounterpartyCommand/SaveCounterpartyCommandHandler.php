@@ -21,7 +21,7 @@ final class SaveCounterpartyCommandHandler
         private Counterparty $counterparty
     ) {}
 
-    public function handler(CounterpartyCommand $counterpartyCommand): array
+    public function handler(CounterpartyCommand $counterpartyCommand): int
     {
 
         $name_counterparty = strtolower(preg_replace(
@@ -106,7 +106,7 @@ final class SaveCounterpartyCommandHandler
 
         if ($errors->count()) {
             $validator_errors = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+            foreach ($errors as $key => $value_error) {
 
                 $validator_errors[$key] = [
                     $value_error->getPropertyPath() => $value_error->getMessage()
@@ -134,7 +134,7 @@ final class SaveCounterpartyCommandHandler
 
         $successfully_save = $this->counterpartyRepositoryInterface->save($this->counterparty);
 
-        $successfully['successfully'] = $successfully_save;
-        return $successfully;
+        $id = $successfully_save['save'];
+        return $id;
     }
 }

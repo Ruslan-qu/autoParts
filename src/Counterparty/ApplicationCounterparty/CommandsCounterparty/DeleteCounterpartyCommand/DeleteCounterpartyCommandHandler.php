@@ -15,7 +15,7 @@ final class DeleteCounterpartyCommandHandler
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
     ) {}
 
-    public function handler(CounterpartyCommand $counterpartyCommand): array
+    public function handler(CounterpartyCommand $counterpartyCommand): void
     {
 
         $id = $counterpartyCommand->getId();
@@ -34,9 +34,6 @@ final class DeleteCounterpartyCommandHandler
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        $successfully_delete = $this->counterpartyRepositoryInterface->delete($delete_counterparty);
-
-        $successfully['successfully'] = $successfully_delete;
-        return $successfully;
+        $this->counterpartyRepositoryInterface->delete($delete_counterparty);
     }
 }

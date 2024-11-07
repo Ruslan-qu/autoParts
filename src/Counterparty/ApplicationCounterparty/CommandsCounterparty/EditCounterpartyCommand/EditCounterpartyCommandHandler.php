@@ -21,7 +21,7 @@ final class EditCounterpartyCommandHandler
         $this->counterparty_repository_interface = $counterpartyRepositoryInterface;
     }
 
-    public function handler(CounterpartyCommand $counterpartyCommand): array
+    public function handler(CounterpartyCommand $counterpartyCommand): int
     {
 
 
@@ -134,7 +134,8 @@ final class EditCounterpartyCommandHandler
         $edit_counterparty->setDeliveryPhone($delivery_phone);
 
         $successfully_edit = $this->counterparty_repository_interface->edit($edit_counterparty);
+        $id = $successfully_edit['edit'];
 
-        return $successfully_edit;
+        return $id;
     }
 }

@@ -15,16 +15,11 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOr
 
 final class SaveOriginalRoomsCommandHandler
 {
-    private $original_rooms_repository_interface;
-    private $original_rooms;
 
     public function __construct(
-        OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface,
-        OriginalRooms $originalRooms
-    ) {
-        $this->original_rooms_repository_interface = $originalRoomsRepositoryInterface;
-        $this->original_rooms = $originalRooms;
-    }
+        private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface,
+        private OriginalRooms $originalRooms
+    ) {}
 
     public function handler(OriginalRoomsCommand $originalRoomsCommand): ?array
     {
@@ -59,21 +54,22 @@ final class SaveOriginalRoomsCommandHandler
             ])
         ]);
 
-        $data_errors_original_rooms = [];
-        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+        $errors = $validator->validate($input, $constraint);
 
-            $data_errors_original_rooms[$key] = [
-                $value_error->getPropertyPath() => $value_error->getMessage()
-            ];
+        if ($errors->count()) {
+            $validator_errors = [];
+            foreach ($errors as $key => $value_error) {
+
+                $validator_errors[$key] = [
+                    $value_error->getPropertyPath() => $value_error->getMessage()
+                ];
+            }
+            $json_data_errors = json_encode($validator_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_data_errors);
         }
 
-        if (!empty($data_errors_original_rooms)) {
-
-            $json_arr_data_errors = json_encode($data_errors_original_rooms, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
         /* Валидация дублей */
-        $number_doubles = $this->original_rooms_repository_interface
+        $number_doubles = $this->originalRoomsRepositoryInterface
             ->numberDoubles(['original_number' => $original_number]);
 
         if ($number_doubles != 0) {
@@ -81,10 +77,10 @@ final class SaveOriginalRoomsCommandHandler
             return null;
         }
 
-        $this->original_rooms->setOriginalNumber($original_number);
+        $this->originalRooms->setOriginalNumber($original_number);
 
 
-        $successfully_save = $this->original_rooms_repository_interface->save($this->original_rooms);
+        $successfully_save = $this->originalRoomsRepositoryInterface->save($this->originalRooms);
 
         return $successfully_save;
     }

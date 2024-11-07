@@ -70,9 +70,11 @@
 
 
   {{ form_end(form_save_counterparty) }}
+
   <div class="m-3">
-    {% if arr_saving_information %}
+    {% if id_handler %}
     <h5>Поставщик сохранен</h5>
     {% endif %}
   </div>
+
   {% endblock form %}

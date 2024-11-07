@@ -2,6 +2,7 @@ twig:
     file_name_pattern: '*.twig'
     paths:
         'src/Counterparty/InfrastructureCounterparty/ApiCounterparty/templatesCounterparty': 'counterparty'
+        'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesPartNumbers': 'partNumbers'
 
 when@test:
     twig:

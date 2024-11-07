@@ -15,13 +15,11 @@
   {{ form_start(form_search_counterparty, {'attr': {'class': 'row row-cols-12 text-center
   mt-2'}}) }}
 
-
   <div class="col-auto ms-3">
     <div class="lb">{{ form_label(form_search_counterparty.name_counterparty) }}</div>
     {{ form_widget(form_search_counterparty.name_counterparty) }}
     {{ form_errors(form_search_counterparty.name_counterparty) }}
   </div>
-
 
   <div class="row mt-3">
     <div class="col-2 d-grid gap-2 ms-3">
@@ -30,18 +28,15 @@
     </div>
   </div>
 
-
   {{ form_end(form_search_counterparty) }}
 
-  {% for messages in app.flashes(['delete','Error','successfully',]) %}
+  {% for messages in app.flashes(['delete','Error']) %}
   {% for message in messages %}
     <h2 class="mt-3 ms-3">{{ message }}</h2>
   {% endfor %}
   {% endfor %}
 
   {% endblock form %}
-
-
 
   {% block table %}
 

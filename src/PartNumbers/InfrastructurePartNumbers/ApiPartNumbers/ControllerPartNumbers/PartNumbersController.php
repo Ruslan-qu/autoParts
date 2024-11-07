@@ -105,7 +105,7 @@ class PartNumbersController extends AbstractController
             }
         }
 
-        return $this->render('partNumbers/savePartNumbers.html.twig', [
+        return $this->render('@partNumbers/savePartNumbers.html.twig', [
             'title_logo' => 'Добавление новой автодетали',
             'form_save_part_numbers' => $form_save_part_numbers->createView(),
             'arr_saving_information' => $arr_saving_information
@@ -145,7 +145,7 @@ class PartNumbersController extends AbstractController
             }
         }
 
-        return $this->render('partNumbers/searchPartNumbers.html.twig', [
+        return $this->render('@partNumbers/searchPartNumbers.html.twig', [
             'title_logo' => 'Поиск автодетали',
             'form_search_part_numbers' => $form_search_part_numbers->createView(),
             'search_data' => $search_data,
@@ -219,7 +219,7 @@ class PartNumbersController extends AbstractController
             }
         }
 
-        return $this->render('partNumbers/editPartNumbers.html.twig', [
+        return $this->render('@partNumbers/editPartNumbers.html.twig', [
             'title_logo' => 'Изменение данных автодеталей',
             'form_edit_part_numbers' => $form_edit_part_numbers->createView(),
             'arr_saving_information' => $arr_saving_information,
