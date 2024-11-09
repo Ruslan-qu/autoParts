@@ -233,24 +233,30 @@ class CounterpartyController extends AbstractController
             $this->addFlash('delete', 'Поставщик удален');
         } catch (HttpException $e) {
 
-            $arr_validator_errors = json_decode($e->getMessage(), true);
-
-            /* Выводим сообщения ошибки в форму через сессии  */
-            foreach ($arr_validator_errors as $key => $value_errors) {
-                if (is_array($value_errors)) {
-                    foreach ($value_errors as $key => $value) {
-                        $message = $value;
-                        $propertyPath = $key;
-                    }
-                } else {
-                    $message = $value_errors;
-                    $propertyPath = $key;
-                }
-
-                $this->addFlash($propertyPath, $message);
-            }
+            $this->errorMessageViaSession($e);
         }
 
         return $this->redirectToRoute('search_counterparty');
+    }
+
+    private function errorMessageViaSession(HttpException $e): void
+    {
+
+        $arr_validator_errors = json_decode($e->getMessage(), true);
+
+        /* Выводим сообщения ошибки в форму через сессии  */
+        foreach ($arr_validator_errors as $key => $value_errors) {
+            if (is_array($value_errors)) {
+                foreach ($value_errors as $key => $value) {
+                    $message = $value;
+                    $propertyPath = $key;
+                }
+            } else {
+                $message = $value_errors;
+                $propertyPath = $key;
+            }
+
+            $this->addFlash($propertyPath, $message);
+        }
     }
 }
