@@ -28,8 +28,6 @@
             {% endfor %}
           </div>
 
-
-
           <div class="col-sm-12 col-md-6 col-lg-3">
             <div class="lb">{{ form_label(form_save_part_numbers.id_original_number) }}</div>
             {{ form_widget(form_save_part_numbers.id_original_number, { 'attr': {'class': 'w-100'} }) }}
@@ -39,8 +37,6 @@
             {% endfor %}
           </div>
 
-
-
           <div class="col-sm-12 col-md-6 col-lg-3">
             <div class="lb">{{ form_label(form_save_part_numbers.manufacturer) }}</div>
             {{ form_widget(form_save_part_numbers.manufacturer, { 'attr': {'class': 'w-100'} }) }}
@@ -49,8 +45,6 @@
             {{ message }}
             {% endfor %}
           </div>
-
-
 
           <div class="col-sm-12 col-md-6 col-lg-3">
             <div class="lb">{{ form_label(form_save_part_numbers.additional_descriptions) }}</div>
@@ -62,8 +56,6 @@
           </div>
         </div>
       </div>
-
-
 
       <div class="col-lg-12 col-xl-5 col-xxl-5">
         <div class="row justify-content-evenly">
@@ -86,6 +78,7 @@
             {{ form_errors(form_save_part_numbers.id_side) |nl2br }}
           </div>
         </div>
+
         <div class="row justify-content-evenly">
 
           <div class="col-6">
@@ -107,10 +100,8 @@
           </div>
         </div>
 
-
       </div>
     </div>
-
 
     <div class="row mt-3">
       <div class="col-12 d-grid gap-2">
@@ -124,15 +115,12 @@
   {{ form_end(form_save_part_numbers) }}
 
   <div class="col-auto m-3">
-    {% for messages in app.flashes(['delete','Error','successfully']) %}
-    {% for message in messages %}
+    {% for message in app.flashes('Error') %}
     <h2 class="mt-3 ms-3">{{ message }}</h2>
     {% endfor %}
-    {% endfor %}
 
-    {% if arr_saving_information %}
+    {% if id %}
     <h5>Данные деталей удачно сохранены</h5>
     {% endif %}
-
   </div>
   {% endblock form %}

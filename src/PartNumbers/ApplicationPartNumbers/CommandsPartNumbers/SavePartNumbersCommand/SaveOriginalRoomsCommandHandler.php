@@ -7,8 +7,7 @@ use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
@@ -17,6 +16,7 @@ final class SaveOriginalRoomsCommandHandler
 {
 
     public function __construct(
+        private InputErrorsPartNumbers $inputErrorsPartNumbers,
         private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface,
         private OriginalRooms $originalRooms
     ) {}
@@ -54,31 +54,15 @@ final class SaveOriginalRoomsCommandHandler
             ])
         ]);
 
-        $errors = $validator->validate($input, $constraint);
-
-        if ($errors->count()) {
-            $validator_errors = [];
-            foreach ($errors as $key => $value_error) {
-
-                $validator_errors[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-            $json_data_errors = json_encode($validator_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_data_errors);
-        }
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         /* Валидация дублей */
-        $number_doubles = $this->originalRoomsRepositoryInterface
+        $count_duplicate = $this->originalRoomsRepositoryInterface
             ->numberDoubles(['original_number' => $original_number]);
-
-        if ($number_doubles != 0) {
-
-            return null;
-        }
+        $this->inputErrorsPartNumbers->errorDuplicateTwo($count_duplicate);
 
         $this->originalRooms->setOriginalNumber($original_number);
-
 
         $successfully_save = $this->originalRoomsRepositoryInterface->save($this->originalRooms);
 

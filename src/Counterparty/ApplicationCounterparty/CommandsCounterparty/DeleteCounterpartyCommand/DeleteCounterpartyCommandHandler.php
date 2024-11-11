@@ -2,7 +2,7 @@
 
 namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand;
 
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
@@ -11,6 +11,7 @@ final class DeleteCounterpartyCommandHandler
 {
 
     public function __construct(
+        private InputErrors $inputErrors,
         private CounterpartyRepositoryInterface $counterpartyRepositoryInterface,
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
     ) {}
@@ -19,24 +20,14 @@ final class DeleteCounterpartyCommandHandler
     {
 
         $id = $counterpartyCommand->getId();
-        if (empty($id)) {
+        $this->inputErrors->emptyData($id);
 
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $еntity = $this->counterpartyRepositoryInterface->findCounterparty($id);
+        $this->inputErrors->emptyEntity($еntity);
 
-        $delete_counterparty = $this->counterpartyRepositoryInterface->findCounterparty($id);
-        if (empty($delete_counterparty)) {
-
-            $arr_data_errors = ['Error' => 'Иди не существует'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
-
-        $successfully_save = $this->counterpartyRepositoryInterface->delete($delete_counterparty);
-
+        $successfully_save = $this->counterpartyRepositoryInterface->delete($еntity);
         $id = $successfully_save['delete'];
+
         return $id;
     }
 }

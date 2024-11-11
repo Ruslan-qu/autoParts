@@ -2,48 +2,85 @@
 
 namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
-abstract class PartNumbersQuery
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\MapPartNumbersQuery;
+
+final class PartNumbersQuery extends MapPartNumbersQuery
 {
+    protected ?int $id = null;
 
-    public function __construct(array $data = [])
+    protected ?string $part_number = null;
+
+    protected ?string $manufacturer = null;
+
+    protected ?PartName $id_part_name = null;
+
+    protected ?CarBrands $id_car_brand = null;
+
+    protected ?Sides $id_side = null;
+
+    protected ?Bodies $id_body = null;
+
+    protected ?Axles $id_axle = null;
+
+    protected ?Availability $id_in_stock = null;
+
+    protected ?OriginalRooms $id_original_number = null;
+
+    public function getId(): ?int
     {
-        $this->load($data);
+        return $this->id;
     }
 
-    private function load(array $data)
+    public function getPartNumber(): ?string
     {
+        return $this->part_number;
+    }
 
-        $typeResolver = TypeResolver::create();
+    public function getManufacturer(): ?string
+    {
+        return $this->manufacturer;
+    }
 
-        foreach ($data as $key => $value) {
+    public function getIdPartName(): ?PartName
+    {
+        return $this->id_part_name;
+    }
 
-            if (!empty($value)) {
+    public function getIdCarBrand(): ?CarBrands
+    {
+        return $this->id_car_brand;
+    }
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
-                settype($value, $type);
-                if ($type == 'object') {
+    public function getIdSide(): ?Sides
+    {
+        return $this->id_side;
+    }
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-                    if ($className !== get_class($value)) {
+    public function getIdBody(): ?Bodies
+    {
+        return $this->id_body;
+    }
 
-                        $arr_data_errors = ['Error' => 'Значение ' . $value->scalar .
-                            ' должно быть объектом класса ' . $className . '.'];
-                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                    }
-                }
+    public function getIdAxle(): ?Axles
+    {
+        return $this->id_axle;
+    }
 
-                $this->$key = $value;
-            }
-        }
+    public function getIdInStock(): ?Availability
+    {
+        return $this->id_in_stock;
+    }
+
+    public function getIdOriginalNumber(): ?OriginalRooms
+    {
+        return $this->id_original_number;
     }
 }

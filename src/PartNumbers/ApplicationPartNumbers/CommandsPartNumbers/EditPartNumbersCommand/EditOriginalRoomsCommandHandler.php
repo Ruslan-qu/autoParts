@@ -8,12 +8,14 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 
 final class EditOriginalRoomsCommandHandler
 {
     public function __construct(
+        private InputErrorsPartNumbers $inputErrorsPartNumbers,
         private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
     ) {}
 
@@ -52,52 +54,23 @@ final class EditOriginalRoomsCommandHandler
             ])
         ]);
 
-        $data_errors_original_number = [];
-        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-            $data_errors_original_number[$key] = [
-                $value_error->getPropertyPath() => $value_error->getMessage()
-            ];
-        }
-
-        if (!empty($data_errors_original_number)) {
-
-            $json_arr_data_errors = json_encode($data_errors_original_number, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         $id = $originalRoomsCommand->getId();
-
-        if (empty($id)) {
-
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsPartNumbers->emptyData($id);
 
         $edit_original_number = $this->originalRoomsRepositoryInterface->findOriginalRooms($id);
-
-        if (empty($edit_original_number)) {
-
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsPartNumbers->emptyEntity($edit_original_number);
 
         if ($original_number != $edit_original_number->getOriginalNumber()) {
             /* Валидация дублей */
-            $number_doubles = $this->originalRoomsRepositoryInterface
+            $count_duplicate = $this->originalRoomsRepositoryInterface
                 ->numberDoubles(['original_number' => $original_number]);
-
-            if ($number_doubles != 0) {
-
-                return null;
-            }
+            $this->inputErrorsPartNumbers->errorDuplicateTwo($count_duplicate);
         }
 
-
         $edit_original_number->setOriginalNumber($original_number);
-
 
         $successfully_edit = $this->originalRoomsRepositoryInterface->edit($edit_original_number);
 

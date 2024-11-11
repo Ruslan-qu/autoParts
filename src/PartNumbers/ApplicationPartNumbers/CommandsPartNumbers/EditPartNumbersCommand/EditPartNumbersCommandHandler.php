@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\CreatePartNumbersCommand;
@@ -15,29 +16,34 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPa
 final class EditPartNumbersCommandHandler
 {
     public function __construct(
+        private InputErrorsPartNumbers $inputErrorsPartNumbers,
         private PartNumbersRepositoryInterface $partNumbersRepositoryInterface
     ) {}
 
-    public function handler(PartNumbersCommand $partNumbersCommand): ?array
+    public function handler(PartNumbersCommand $partNumbersCommand): ?int
     {
-
-
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
 
         $part_number = strtolower(preg_replace(
             '#\s#',
             '',
             $partNumbersCommand->getPartNumber()
         ));
-
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
+        $manufacturer = strtolower(preg_replace(
+            '#\s#',
+            '',
+            $partNumbersCommand->getManufacturer()
+        ));
+        $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
 
         $input = [
             'part_number_error' => [
                 'NotBlank' => $part_number,
-                'Type' => $part_number,
                 'Regex' => $part_number,
-            ]
+            ],
+            'manufacturer_error' => $manufacturer,
+            'additional_descriptions_error' => $additional_descriptions
         ];
 
         $constraint = new Collection([
@@ -45,88 +51,32 @@ final class EditPartNumbersCommandHandler
                 'NotBlank' => new NotBlank(
                     message: 'Форма Номер детали не может быть пустой'
                 ),
-                'Type' => new Type('string'),
                 'Regex' => new Regex(
                     pattern: '/^[\da-z]*$/i',
                     message: 'Форма Номер детали содержит недопустимые символы'
                 )
-            ])
+            ]),
+            'manufacturer_error' => new Regex(
+                pattern: '/^[\da-z]*$/i',
+                message: 'Форма Производитель содержит недопустимые символы'
+            ),
+            'additional_descriptions_error' => new Regex(
+                pattern: '/^[а-яё\w\s]*$/ui',
+                message: 'Форма Описание детали содержит недопустимые символы'
+            )
         ]);
 
-        $data_errors_part_number = [];
-        foreach ($validator->validate($input, $constraint) as $key => $value_error) {
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-            $data_errors_part_number[$key] = [
-                $value_error->getPropertyPath() => $value_error->getMessage()
-            ];
-        }
-
-        $manufacturer = strtolower(preg_replace(
-            '#\s#',
-            '',
-            $partNumbersCommand->getManufacturer()
-        ));
         $arr_edit_part_number['part_number'] = $part_number;
 
         if (!empty($manufacturer)) {
             $arr_edit_part_number['manufacturer'] = $manufacturer;
-
-            $input = [
-                'manufacturer_error' => [
-                    'Type' => $manufacturer,
-                    'Regex' => $manufacturer
-                ]
-            ];
-
-            $constraint = new Collection([
-                'manufacturer_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^[\da-z]*$/i',
-                        message: 'Форма Производитель содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_manufacturer = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_manufacturer[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_manufacturer);
         }
 
-        $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
         if (!empty($additional_descriptions)) {
             $arr_edit_part_number['additional_descriptions'] = $additional_descriptions;
-
-            $input = [
-                'additional_descriptions_error' => [
-                    'Type' => $additional_descriptions,
-                    'Regex' => $additional_descriptions,
-                ]
-            ];
-
-            $constraint = new Collection([
-                'additional_descriptions_error' => new Collection([
-                    'Type' => new Type('string'),
-                    'Regex' => new Regex(
-                        pattern: '/^[а-яё\w\s]*$/ui',
-                        message: 'Форма Описание детали содержит недопустимые символы'
-                    )
-                ])
-            ]);
-            $data_errors_additional_descriptions = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $data_errors_additional_descriptions[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-
-            $data_errors_part_number = array_merge($data_errors_part_number, $data_errors_additional_descriptions);
         }
 
         $id_part_name = $partNumbersCommand->getIdPartName();
@@ -164,40 +114,18 @@ final class EditPartNumbersCommandHandler
             $arr_edit_part_number['id_original_number'] = $id_original_number;
         }
 
-        if (!empty($data_errors_part_number)) {
-
-            $json_arr_data_errors = json_encode($data_errors_part_number, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
-
         $id = $partNumbersCommand->getId();
         $arr_edit_part_number['id'] = $id;
-
-        if (empty($id)) {
-
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsPartNumbers->emptyData($id);
 
         $edit_part_number = $this->partNumbersRepositoryInterface->findPartNumbersFromManufacturers($id);
-
-        if (empty($edit_part_number)) {
-
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsPartNumbers->emptyEntity($edit_part_number);
 
         if ($part_number != $edit_part_number->getPartNumber()) {
             /* Валидация дублей */
-            $number_doubles = $this->partNumbersRepositoryInterface
+            $count_duplicate = $this->partNumbersRepositoryInterface
                 ->numberDoubles(['part_number' => $part_number]);
-
-            if ($number_doubles != 0) {
-
-                return null;
-            }
+            $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 
         $edit_part_number->setPartNumber($part_number);
@@ -213,8 +141,8 @@ final class EditPartNumbersCommandHandler
 
         $successfully_edit = $this->partNumbersRepositoryInterface->edit($arr_edit_part_number);
 
-        $successfully['successfully'] = $successfully_edit;
+        $id = $successfully_edit['edit'];
 
-        return $successfully;
+        return $id;
     }
 }

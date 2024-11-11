@@ -45,22 +45,7 @@ class CounterpartyController extends AbstractController
                         ->handler(new CounterpartyCommand($form_save_counterparty->getData()));
                 } catch (HttpException $e) {
 
-                    $arr_validator_errors = json_decode($e->getMessage(), true);
-
-                    /* Выводим сообщения ошибки в форму через сессии  */
-                    foreach ($arr_validator_errors as $key => $value_errors) {
-                        if (is_array($value_errors)) {
-                            foreach ($value_errors as $key => $value) {
-                                $message = $value;
-                                $propertyPath = $key;
-                            }
-                        } else {
-                            $message = $value_errors;
-                            $propertyPath = $key;
-                        }
-
-                        $this->addFlash($propertyPath, $message);
-                    }
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
@@ -98,22 +83,7 @@ class CounterpartyController extends AbstractController
                         ->handler(new CounterpartyQuery($form_search_counterparty->getData()));
                 } catch (HttpException $e) {
 
-                    $arr_validator_errors = json_decode($e->getMessage(), true);
-
-                    /* Выводим сообщения ошибки в форму через сессии  */
-                    foreach ($arr_validator_errors as $key => $value_errors) {
-                        if (is_array($value_errors)) {
-                            foreach ($value_errors as $key => $value) {
-                                $message = $value;
-                                $propertyPath = $key;
-                            }
-                        } else {
-                            $message = $value_errors;
-                            $propertyPath = $key;
-                        }
-
-                        $this->addFlash($propertyPath, $message);
-                    }
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
@@ -148,24 +118,7 @@ class CounterpartyController extends AbstractController
                     ->handler(new CounterpartyQuery($request->query->all()));
             } catch (HttpException $e) {
 
-                $arr_validator_errors = json_decode($e->getMessage(), true);
-
-                /* Выводим сообщения ошибки в форму через сессии  */
-                foreach ($arr_validator_errors as $key => $value_errors) {
-                    if (is_array($value_errors)) {
-                        foreach ($value_errors as $key => $value) {
-                            $message = $value;
-                            $propertyPath = $key;
-                        }
-                    } else {
-                        $message = $value_errors;
-                        $propertyPath = $key;
-                    }
-
-                    $this->addFlash($propertyPath, $message);
-
-                    return $this->redirectToRoute('search_counterparty');
-                }
+                $this->errorMessageViaSession($e);
             }
         }
 
@@ -184,22 +137,7 @@ class CounterpartyController extends AbstractController
                         ->handler(new CounterpartyCommand($form_edit_counterparty->getData()));
                 } catch (HttpException $e) {
 
-                    $arr_validator_errors = json_decode($e->getMessage(), true);
-
-                    /* Выводим сообщения ошибки в форму через сессии  */
-                    foreach ($arr_validator_errors as $key => $value_errors) {
-                        if (is_array($value_errors)) {
-                            foreach ($value_errors as $key => $value) {
-                                $message = $value;
-                                $propertyPath = $key;
-                            }
-                        } else {
-                            $message = $value_errors;
-                            $propertyPath = $key;
-                        }
-
-                        $this->addFlash($propertyPath, $message);
-                    }
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
@@ -239,7 +177,8 @@ class CounterpartyController extends AbstractController
         return $this->redirectToRoute('search_counterparty');
     }
 
-    private function errorMessageViaSession(HttpException $e): void
+
+    private function errorMessageViaSession(HttpException $e): static
     {
 
         $arr_validator_errors = json_decode($e->getMessage(), true);
@@ -258,5 +197,7 @@ class CounterpartyController extends AbstractController
 
             $this->addFlash($propertyPath, $message);
         }
+
+        return $this;
     }
 }

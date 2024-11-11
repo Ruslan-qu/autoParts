@@ -104,7 +104,7 @@
 
   {{ form_end(form_search_part_numbers) }}
 
-  {% for messages in app.flashes(['delete','Error','successfully','data_part_numbers']) %}
+  {% for messages in app.flashes(['delete','Error']) %}
   {% for message in messages %}
     <h2 class="mt-3 ms-3">{{ message }}</h2>
   {% endfor %}
@@ -123,8 +123,7 @@
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data %}
+          {% if search_data %}
           <tr>
             <th scope="col">№ детали</th>
             <th scope="col">№ оригинал</th>
@@ -140,12 +139,10 @@
             <th scope="col">Удалить</th>
           </tr>
            {% endif %}
-           {% endfor %}
 
         </thead>
         <tbody class="table-group-divider">
-          {% for arr_search_data in search_data %}
-          {% for information in arr_search_data %}
+          {% for information in search_data %}
             {% if information %}
 
           <tr>
@@ -174,20 +171,6 @@
           </tr>
           {% endif %}
           {% endfor %}
-          {% endfor %}
-
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data is empty != arr_search_data is same as NULL %}
-          <h2>Данные не найдены.</h2>
-          {% endif %}
-          {% endfor %}
-
-          {% if search_data[0] is defined  %}
-          {% if search_data[0] is same as NULL %}
-          <h2>Видите параметры в поиск</h2>
-          {% endif %}
-          {% endif %}
-
         </tbody>
       </table>
     </div>

@@ -85,6 +85,12 @@
 
   {{ form_end(form_edit_counterparty) }}
 
+  {% for messages in app.flashes(['delete','Error']) %}
+  {% for message in messages %}
+    <h2 class="mt-3 ms-3">{{ message }}</h2>
+  {% endfor %}
+  {% endfor %}
+
   <div class="m-3">
     {% if id_handler %}
     <h5>Данные поставщика изменены </h5>

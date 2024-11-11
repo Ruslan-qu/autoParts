@@ -3,12 +3,12 @@
 namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand;
 
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
@@ -17,6 +17,7 @@ final class SavePartNumbersCommandHandler
 {
 
     public function __construct(
+        private InputErrorsPartNumbers $inputErrorsPartNumbers,
         private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
         private PartNumbersFromManufacturers $partNumbersFromManufacturers
     ) {}
@@ -83,30 +84,13 @@ final class SavePartNumbersCommandHandler
             ])
         ]);
 
-        $errors = $validator->validate($input, $constraint);
-
-        if ($errors->count()) {
-            $validator_errors = [];
-            foreach ($errors as $key => $value_error) {
-
-                $validator_errors[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-            $json_data_errors = json_encode($validator_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_data_errors);
-        }
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         /* Валидация дублей */
-        $number_doubles = $this->partNumbersRepositoryInterface
+        $count_duplicate = $this->partNumbersRepositoryInterface
             ->numberDoubles(['part_number' => $part_number]);
-
-        if ($number_doubles != 0) {
-
-            $arr_data_errors = ['Error' => 'Деталь уже существует'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new ConflictHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $this->partNumbersFromManufacturers->setPartNumber($part_number);
         $this->partNumbersFromManufacturers->setManufacturer($manufacturer);

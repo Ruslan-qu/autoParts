@@ -10,8 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\EditPartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SavePartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SearchPartNumbersType;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\SearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
@@ -40,7 +43,7 @@ class PartNumbersController extends AbstractController
         /*Валидация формы */
         $form_save_part_numbers->handleRequest($request);
 
-        $arr_saving_information = [];
+        $id = null;
         if ($form_save_part_numbers->isSubmitted()) {
             if ($form_save_part_numbers->isValid()) {
 
@@ -52,55 +55,24 @@ class PartNumbersController extends AbstractController
 
                         $saveOriginalRoomsCommandHandler
                             ->handler(new OriginalRoomsCommand($arr_original_number));
+                        $object_original_number = $findOneByOriginalRoomsQueryHandler
+                            ->handler(new OriginalRoomsQuery($arr_original_number));
                     } catch (HttpException $e) {
 
-                        $arr_validator_errors = json_decode($e->getMessage(), true);
+                        $this->errorMessageViaSession($e);
 
-                        /* Выводим сообщения ошибки в форму через сессии  */
-                        foreach ($arr_validator_errors as $key => $value_errors) {
-                            if (is_array($value_errors)) {
-                                foreach ($value_errors as $key => $value) {
-                                    $message = $value;
-                                    $propertyPath = $key;
-                                }
-                            } else {
-                                $message = $value_errors;
-                                $propertyPath = $key;
-                            }
-
-                            $this->addFlash($propertyPath, $message);
-                        }
+                        return $this->redirectToRoute('save_part_numbers');
                     }
-
-
-                    $object_original_number = $findOneByOriginalRoomsQueryHandler
-                        ->handler(new OriginalRoomsQuery($arr_original_number));
-
                     $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                 }
 
                 try {
 
-                    $arr_saving_information['id'] = $savePartNumbersCommandHandler
+                    $id = $savePartNumbersCommandHandler
                         ->handler(new PartNumbersCommand($data_form_part_numbers));
                 } catch (HttpException $e) {
 
-                    $arr_validator_errors = json_decode($e->getMessage(), true);
-
-                    /* Выводим сообщения ошибки в форму через сессии  */
-                    foreach ($arr_validator_errors as $key => $value_errors) {
-                        if (is_array($value_errors)) {
-                            foreach ($value_errors as $key => $value) {
-                                $message = $value;
-                                $propertyPath = $key;
-                            }
-                        } else {
-                            $message = $value_errors;
-                            $propertyPath = $key;
-                        }
-
-                        $this->addFlash($propertyPath, $message);
-                    }
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
@@ -108,7 +80,7 @@ class PartNumbersController extends AbstractController
         return $this->render('@partNumbers/savePartNumbers.html.twig', [
             'title_logo' => 'Добавление новой автодетали',
             'form_save_part_numbers' => $form_save_part_numbers->createView(),
-            'arr_saving_information' => $arr_saving_information
+            'id' => $id
         ]);
     }
 
@@ -116,7 +88,7 @@ class PartNumbersController extends AbstractController
     #[Route('/searchPartNumbers', name: 'search_part_numbers')]
     public function searchPartNumbers(
         Request $request,
-        CreateSearchPartNumbersQueryHandler $createSearchPartNumbersQueryHandler,
+        SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
         FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
     ): Response {
 
@@ -134,14 +106,27 @@ class PartNumbersController extends AbstractController
                 if (!empty($data_form_part_numbers['id_original_number'])) {
 
                     $arr_original_number['original_number'] = $data_form_part_numbers['id_original_number'];
-                    $object_original_number = $findOneByOriginalRoomsQueryHandler
-                        ->handler(new OriginalRoomsQuery($arr_original_number));
+                    try {
+
+                        $object_original_number = $findOneByOriginalRoomsQueryHandler
+                            ->handler(new OriginalRoomsQuery($arr_original_number));
+                    } catch (HttpException $e) {
+
+                        $this->errorMessageViaSession($e);
+
+                        return $this->redirectToRoute('search_part_numbers');
+                    }
 
                     $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                 }
+                try {
 
-                $search_data[] = $createSearchPartNumbersQueryHandler
-                    ->handler(new CreatePartNumbersQuery($data_form_part_numbers));
+                    $search_data = $searchPartNumbersQueryHandler
+                        ->handler(new PartNumbersQuery($data_form_part_numbers));
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
             }
         }
 
@@ -157,7 +142,7 @@ class PartNumbersController extends AbstractController
     #[Route('/editPartNumbers', name: 'edit_part_numbers')]
     public function editPartNumbers(
         Request $request,
-        CreateFindIdPartNumbersQueryHandler $createFindIdPartNumbersQueryHandler,
+        FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
         EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
         FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
@@ -171,27 +156,29 @@ class PartNumbersController extends AbstractController
         $form_edit_part_numbers->handleRequest($request);
 
         if (empty($form_edit_part_numbers->getData())) {
+            try {
 
-            $data_form_edit_part_numbers = $createFindIdPartNumbersQueryHandler
-                ->handler(new CreatePartNumbersQuery($request->query->all()));
-            if (empty($data_form_edit_part_numbers)) {
-                $this->addFlash('data_part_numbers', 'Автодеталь не найден');
+                $data_form_edit_part_numbers = $findIdPartNumbersQueryHandler
+                    ->handler(new PartNumbersQuery($request->query->all()));
+            } catch (HttpException $e) {
+
+                $this->errorMessageViaSession($e);
 
                 return $this->redirectToRoute('search_part_numbers');
             }
         }
 
         if (!empty($request->request->all())) {
+
             $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
         }
 
-
-        $arr_saving_information = [];
+        $id = null;
         if ($form_edit_part_numbers->isSubmitted()) {
             if ($form_edit_part_numbers->isValid()) {
+
                 $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
                 $data_edit_part_numbers = $form_edit_part_numbers->getData();
-
                 if (!empty($data_edit_part_numbers['original_number'])) {
 
                     $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
@@ -199,30 +186,61 @@ class PartNumbersController extends AbstractController
 
                     if (!empty($data_edit_part_numbers['id_original_number'])) {
 
-                        $editOriginalRoomsCommandHandler
-                            ->handler(new OriginalRoomsCommand($arr_original_number));
+                        try {
+
+                            $editOriginalRoomsCommandHandler
+                                ->handler(new OriginalRoomsCommand($arr_original_number));
+                        } catch (HttpException $e) {
+
+                            $this->errorMessageViaSession($e);
+
+                            return $this->redirectToRoute('search_part_numbers');
+                        }
                     } else {
-                        $saveOriginalRoomsCommandHandler
-                            ->handler(new OriginalRoomsCommand($arr_original_number));
+
+                        try {
+
+                            $saveOriginalRoomsCommandHandler
+                                ->handler(new OriginalRoomsCommand($arr_original_number));
+                        } catch (HttpException $e) {
+
+                            $this->errorMessageViaSession($e);
+
+                            return $this->redirectToRoute('search_part_numbers');
+                        }
+                    }
+                    try {
+
+                        $object_original_number = $findOneByOriginalRoomsQueryHandler
+                            ->handler(new OriginalRoomsQuery($arr_original_number));
+                    } catch (HttpException $e) {
+
+                        $this->errorMessageViaSession($e);
+
+                        return $this->redirectToRoute('search_part_numbers');
                     }
 
-                    $object_original_number = $findOneByOriginalRoomsQueryHandler
-                        ->handler(new OriginalRoomsQuery($arr_original_number));
 
                     $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
                 }
 
                 unset($data_edit_part_numbers['original_number']);
 
-                $arr_saving_information = $editPartNumbersCommandHandler
-                    ->handler(new PartNumbersCommand($data_edit_part_numbers));
+                try {
+
+                    $id = $editPartNumbersCommandHandler
+                        ->handler(new PartNumbersCommand($data_edit_part_numbers));
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
             }
         }
 
         return $this->render('@partNumbers/editPartNumbers.html.twig', [
             'title_logo' => 'Изменение данных автодеталей',
             'form_edit_part_numbers' => $form_edit_part_numbers->createView(),
-            'arr_saving_information' => $arr_saving_information,
+            'id' => $id,
             'data_form_edit_part_numbers' => $data_form_edit_part_numbers
         ]);
     }
@@ -240,24 +258,32 @@ class PartNumbersController extends AbstractController
             $this->addFlash('delete', 'Автодеталь удалена');
         } catch (HttpException $e) {
 
-            $arr_validator_errors = json_decode($e->getMessage(), true);
-
-            /* Выводим сообщения ошибки в форму через сессии  */
-            foreach ($arr_validator_errors as $key => $value_errors) {
-                if (is_array($value_errors)) {
-                    foreach ($value_errors as $key => $value) {
-                        $message = $value;
-                        $propertyPath = $key;
-                    }
-                } else {
-                    $message = $value_errors;
-                    $propertyPath = $key;
-                }
-
-                $this->addFlash($propertyPath, $message);
-            }
+            $this->errorMessageViaSession($e);
         }
 
         return $this->redirectToRoute('search_part_numbers');
+    }
+
+    private function errorMessageViaSession(HttpException $e): static
+    {
+
+        $arr_validator_errors = json_decode($e->getMessage(), true);
+
+        /* Выводим сообщения ошибки в форму через сессии  */
+        foreach ($arr_validator_errors as $key => $value_errors) {
+            if (is_array($value_errors)) {
+                foreach ($value_errors as $key => $value) {
+                    $message = $value;
+                    $propertyPath = $key;
+                }
+            } else {
+                $message = $value_errors;
+                $propertyPath = $key;
+            }
+
+            $this->addFlash($propertyPath, $message);
+        }
+
+        return $this;
     }
 }

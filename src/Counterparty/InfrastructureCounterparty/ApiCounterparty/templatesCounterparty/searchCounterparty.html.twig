@@ -48,7 +48,7 @@
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
-          {% if search_data.0 %}
+          {% if search_data %}
           <tr>
             <th scope="col">Поставщик</th>
             <th scope="col">E-mail</th>
@@ -82,9 +82,6 @@
 
             </form>
           </tr>
-
-          {% else %}
-          <h2>Данные не найдены. Видите параметры в поиск</h2>
           {% endif %}
           {% endfor %}
         </tbody>

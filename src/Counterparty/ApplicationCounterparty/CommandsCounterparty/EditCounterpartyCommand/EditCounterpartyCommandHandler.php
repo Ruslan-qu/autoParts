@@ -7,19 +7,18 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 final class EditCounterpartyCommandHandler
 {
-    private $counterparty_repository_interface;
 
     public function __construct(
-        CounterpartyRepositoryInterface $counterpartyRepositoryInterface
-    ) {
-        $this->counterparty_repository_interface = $counterpartyRepositoryInterface;
-    }
+        private InputErrors $inputErrors,
+        private CounterpartyRepositoryInterface $counterpartyRepositoryInterface
+    ) {}
 
     public function handler(CounterpartyCommand $counterpartyCommand): int
     {
@@ -103,37 +102,21 @@ final class EditCounterpartyCommandHandler
             ])
         ]);
 
-        $errors = $validator->validate($input, $constraint);
-
-        if ($errors->count()) {
-            $validator_errors = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $validator_errors[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-            $json_data_errors = json_encode($validator_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_data_errors);
-        }
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->inputErrors->errorValidate($errors_validate);
 
         $id = $counterpartyCommand->getId();
+        $this->inputErrors->emptyData($id);
 
-        if (empty($id)) {
+        $еntity = $this->counterpartyRepositoryInterface->findCounterparty($id);
+        $this->inputErrors->emptyEntity($еntity);
 
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $еntity->setNameCounterparty($name_counterparty);
+        $еntity->setMailCounterparty($mail_counterparty);
+        $еntity->setManagerPhone($manager_phone);
+        $еntity->setDeliveryPhone($delivery_phone);
 
-        $edit_counterparty = $this->counterparty_repository_interface->findCounterparty($id);
-
-        $edit_counterparty->setNameCounterparty($name_counterparty);
-        $edit_counterparty->setMailCounterparty($mail_counterparty);
-        $edit_counterparty->setManagerPhone($manager_phone);
-        $edit_counterparty->setDeliveryPhone($delivery_phone);
-
-        $successfully_edit = $this->counterparty_repository_interface->edit($edit_counterparty);
+        $successfully_edit = $this->counterpartyRepositoryInterface->edit($еntity);
         $id = $successfully_edit['edit'];
 
         return $id;

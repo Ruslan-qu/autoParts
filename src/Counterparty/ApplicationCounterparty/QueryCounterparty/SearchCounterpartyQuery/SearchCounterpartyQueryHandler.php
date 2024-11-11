@@ -2,6 +2,7 @@
 
 namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery;
 
+use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
@@ -11,6 +12,7 @@ final class SearchCounterpartyQueryHandler
 {
 
     public function __construct(
+        private InputErrors $inputErrors,
         private CounterpartyRepositoryInterface $counterpartyRepositoryInterface
     ) {}
 
@@ -22,16 +24,11 @@ final class SearchCounterpartyQueryHandler
             '',
             $counterpartyQuery->getNameCounterparty()
         ));
+        $this->inputErrors->emptyData($name_counterparty);
 
-        $counterparty = $this->counterpartyRepositoryInterface->findOneByCounterparty($name_counterparty);
+        $arr_еntity = $this->counterpartyRepositoryInterface->findOneByCounterparty($name_counterparty);
+        $this->inputErrors->emptyArrEntity($arr_еntity);
 
-        if (empty($counterparty)) {
-
-            $arr_data_errors = ['Error' => 'Поставщик не найден'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
-
-        return $counterparty;
+        return $arr_еntity;
     }
 }

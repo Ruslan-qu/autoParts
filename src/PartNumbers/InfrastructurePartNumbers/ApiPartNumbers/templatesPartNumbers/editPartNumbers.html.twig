@@ -144,16 +144,12 @@
   {{ form_end(form_edit_part_numbers) }}
 
    <div class="col-auto m-3">
+    {% for message in app.flashes('Error') %}
+    <h2 class="mt-3 ms-3">{{ message }}</h2>
+    {% endfor %}
     
-    {% if arr_saving_information is same as NULL %}
-    <h5>Изменить на существующий номер детали нельзя</h5>
-    {% endif %}
-    
-  
-    {% for saving_information in arr_saving_information %}
-    {% if saving_information %}
+    {% if id %}
     <h5>Данные деталей изменены</h5>
     {% endif %}
-    {% endfor %}
   </div>
   {% endblock form %}
