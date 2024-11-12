@@ -72,7 +72,7 @@ class InputErrorsPartNumbers
         return $this;
     }
 
-    public function emptyEntity(OriginalRooms|PartNumbersFromManufacturers $еntity): static
+    public function emptyEntity($еntity): static
     {
         if (empty($еntity)) {
 
