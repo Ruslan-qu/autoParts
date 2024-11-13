@@ -5,7 +5,6 @@ namespace App\Counterparty\ApplicationCounterparty\Errors;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 
 class InputErrors
 {
@@ -50,7 +49,7 @@ class InputErrors
         return $this;
     }
 
-    public function emptyEntity(Counterparty $еntity): static
+    public function emptyEntity($еntity): static
     {
         if (empty($еntity)) {
 

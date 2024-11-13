@@ -15,7 +15,8 @@ class InputErrorsPartNumbers
     {
         if ($count_duplicate != 0) {
 
-            $arr_data_errors = ['Error' => 'Номер детали уже существует или Изменить на существующий номер детали нельзя'];
+            $arr_data_errors = ['Error' => 'Номер детали уже существует 
+            или Изменить на существующий номер детали нельзя'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new ConflictHttpException($json_arr_data_errors);
         }
@@ -23,12 +24,13 @@ class InputErrorsPartNumbers
         return $this;
     }
 
-    public function errorDuplicateTwo(int $count_duplicate): null
+    public function errorDuplicateTwo(int $count_duplicate): ?int
     {
         if ($count_duplicate != 0) {
 
             return null;
         }
+        return $count_duplicate;
     }
 
     public function errorValidate(ConstraintViolationList $errors_validate): static
