@@ -27,7 +27,7 @@ final class SearchCounterpartyQueryHandler
         $this->inputErrors->emptyData($name_counterparty);
 
         $arr_еntity = $this->counterpartyRepositoryInterface->findOneByCounterparty($name_counterparty);
-        $this->inputErrors->emptyArrEntity($arr_еntity);
+        $this->inputErrors->emptyEntity($arr_еntity);
 
         return $arr_еntity;
     }

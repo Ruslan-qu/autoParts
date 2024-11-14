@@ -2,12 +2,14 @@
 
 namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse;
 
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\SearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\CreateFindIdPartNumbersQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\CreateSearchPartNumbersQueryHandler;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 
 class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
@@ -15,22 +17,22 @@ class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
 
     public function __construct(
         private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
-        private CreateSearchPartNumbersQueryHandler $createSearchPartNumbersQueryHandler,
+        private SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
         private SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
-        private CreateFindIdPartNumbersQueryHandler $createFindIdPartNumbersQueryHandler
+        private FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
+        private InputErrorsPartNumbers $inputErrorsPartNumbers,
     ) {}
 
 
     public function searchIdDetails(array $arr_part_number): ?array
     {
 
-        if (empty($arr_part_number['id_details'])) {
-            return Null;
-        }
+        $this->inputErrorsPartNumbers->emptyData($arr_part_number['id_details']);
+
         $map_arr_part_numbers = ['part_number' => $arr_part_number['id_details']];
 
-        $arr_part_numbers = $this->createSearchPartNumbersQueryHandler
-            ->handler(new CreatePartNumbersQuery($map_arr_part_numbers));
+        $arr_part_numbers = $this->searchPartNumbersQueryHandler
+            ->handler(new PartNumbersQuery($map_arr_part_numbers));
 
         if (empty($arr_part_numbers)) {
 
@@ -38,11 +40,9 @@ class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
                 ->handler(new PartNumbersCommand($map_arr_part_numbers));
 
 
-            $arr_part_numbers[] = $this->createFindIdPartNumbersQueryHandler
-                ->handler(new CreatePartNumbersQuery($arr_saving_information));
+            $arr_part_numbers[] = $this->findIdPartNumbersQueryHandler
+                ->handler(new PartNumbersQuery($arr_saving_information));
         }
-
-
 
         return $arr_part_numbers;
     }

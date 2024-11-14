@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\EditPartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SavePartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SearchPartNumbersType;
@@ -32,6 +33,7 @@ class PartNumbersController extends AbstractController
         SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
         SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
         FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
+        ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
         /* Форма сохранения */
@@ -57,9 +59,7 @@ class PartNumbersController extends AbstractController
                         $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                     } catch (HttpException $e) {
 
-                        $this->errorMessageViaSession($e);
-
-                        // return $this->redirectToRoute('save_part_numbers');
+                        $errorMessageViaSession->errorMessageSession($e);
                     }
                 }
 
@@ -69,7 +69,7 @@ class PartNumbersController extends AbstractController
                         ->handler(new PartNumbersCommand($data_form_part_numbers));
                 } catch (HttpException $e) {
 
-                    $this->errorMessageViaSession($e);
+                    $errorMessageViaSession->errorMessageSession($e);
                 }
             }
         }
@@ -87,6 +87,7 @@ class PartNumbersController extends AbstractController
         Request $request,
         SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
         FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
+        ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
         /*Форма поиска*/
@@ -109,7 +110,7 @@ class PartNumbersController extends AbstractController
                             ->handler(new OriginalRoomsQuery($arr_original_number));
                     } catch (HttpException $e) {
 
-                        $this->errorMessageViaSession($e);
+                        $errorMessageViaSession->errorMessageSession($e);
 
                         return $this->redirectToRoute('search_part_numbers');
                     }
@@ -122,7 +123,7 @@ class PartNumbersController extends AbstractController
                         ->handler(new PartNumbersQuery($data_form_part_numbers));
                 } catch (HttpException $e) {
 
-                    $this->errorMessageViaSession($e);
+                    $errorMessageViaSession->errorMessageSession($e);
                 }
             }
         }
@@ -144,9 +145,10 @@ class PartNumbersController extends AbstractController
         FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
         SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
+        ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
-        /*Форма Редактирования постовщка*/
+        /*Форма Редактирования*/
         $form_edit_part_numbers = $this->createForm(EditPartNumbersType::class);
 
         /*Валидация формы */
@@ -159,7 +161,7 @@ class PartNumbersController extends AbstractController
                     ->handler(new PartNumbersQuery($request->query->all()));
             } catch (HttpException $e) {
 
-                $this->errorMessageViaSession($e);
+                $errorMessageViaSession->errorMessageSession($e);
 
                 return $this->redirectToRoute('search_part_numbers');
             }
@@ -181,44 +183,23 @@ class PartNumbersController extends AbstractController
                     $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
                     $arr_original_number['original_number'] = $data_edit_part_numbers['original_number'];
 
-                    if (!empty($data_edit_part_numbers['id_original_number'])) {
-
-                        try {
+                    try {
+                        if (!empty($data_edit_part_numbers['id_original_number'])) {
 
                             $editOriginalRoomsCommandHandler
                                 ->handler(new OriginalRoomsCommand($arr_original_number));
-                        } catch (HttpException $e) {
-
-                            $this->errorMessageViaSession($e);
-
-                            return $this->redirectToRoute('search_part_numbers');
-                        }
-                    } else {
-
-                        try {
+                        } else {
 
                             $saveOriginalRoomsCommandHandler
                                 ->handler(new OriginalRoomsCommand($arr_original_number));
-                        } catch (HttpException $e) {
-
-                            $this->errorMessageViaSession($e);
-
-                            return $this->redirectToRoute('search_part_numbers');
                         }
-                    }
-                    try {
-
                         $object_original_number = $findOneByOriginalRoomsQueryHandler
                             ->handler(new OriginalRoomsQuery($arr_original_number));
+                        $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
                     } catch (HttpException $e) {
 
-                        $this->errorMessageViaSession($e);
-
-                        return $this->redirectToRoute('search_part_numbers');
+                        $errorMessageViaSession->errorMessageSession($e);
                     }
-
-
-                    $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
                 }
 
                 unset($data_edit_part_numbers['original_number']);
@@ -229,7 +210,7 @@ class PartNumbersController extends AbstractController
                         ->handler(new PartNumbersCommand($data_edit_part_numbers));
                 } catch (HttpException $e) {
 
-                    $this->errorMessageViaSession($e);
+                    $errorMessageViaSession->errorMessageSession($e);
                 }
             }
         }
@@ -246,7 +227,8 @@ class PartNumbersController extends AbstractController
     #[Route('/deletePartNumbers', name: 'delete_part_numbers')]
     public function deletePartNumbers(
         Request $request,
-        DeletePartNumbersCommandHandler $deletePartNumbersCommandHandler
+        DeletePartNumbersCommandHandler $deletePartNumbersCommandHandler,
+        ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
 
@@ -255,32 +237,9 @@ class PartNumbersController extends AbstractController
             $this->addFlash('delete', 'Автодеталь удалена');
         } catch (HttpException $e) {
 
-            $this->errorMessageViaSession($e);
+            $errorMessageViaSession->errorMessageSession($e);
         }
 
         return $this->redirectToRoute('search_part_numbers');
-    }
-
-    private function errorMessageViaSession(HttpException $e): static
-    {
-
-        $arr_validator_errors = json_decode($e->getMessage(), true);
-
-        /* Выводим сообщения ошибки в форму через сессии  */
-        foreach ($arr_validator_errors as $key => $value_errors) {
-            if (is_array($value_errors)) {
-                foreach ($value_errors as $key => $value) {
-                    $message = $value;
-                    $propertyPath = $key;
-                }
-            } else {
-                $message = $value_errors;
-                $propertyPath = $key;
-            }
-
-            $this->addFlash($propertyPath, $message);
-        }
-
-        return $this;
     }
 }

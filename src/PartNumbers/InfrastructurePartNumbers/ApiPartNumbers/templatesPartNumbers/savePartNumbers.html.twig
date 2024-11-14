@@ -33,8 +33,8 @@
             {{ form_widget(form_save_part_numbers.id_original_number, { 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_save_part_numbers.id_original_number) |nl2br }}
             {% for message in app.flashes('[original_number_error][Regex]') %}
-          
-            {{ message.  Исправьте данные нарушения для дальнейшей работы}}
+            {{ message}}<br>
+            Исправьте нарушения для продолжения работы
             {% endfor %}
           </div>
 

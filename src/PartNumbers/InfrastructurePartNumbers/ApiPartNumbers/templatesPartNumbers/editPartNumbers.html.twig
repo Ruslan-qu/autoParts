@@ -53,36 +53,43 @@
             <div class="lb">{{ form_label(form_edit_part_numbers.part_number) }}</div>
             {{ form_widget(form_edit_part_numbers.part_number, { value : part_number_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.part_number) |nl2br }}
+            {% for message in app.flashes('[part_number_error][Regex]') %}
+            {{ message }}
+            {% endfor %}
           </div>
-
-
 
           <div class="col-sm-12 col-md-6 col-lg-3">
             <div class="lb">{{ form_label(form_edit_part_numbers.original_number) }}</div>
             {{ form_widget(form_edit_part_numbers.original_number, { value : original_number_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.original_number) |nl2br }}
+            {% for message in app.flashes('[original_number_error][Regex]') %}
+            {{ message }}
+            <br>
+            Исправьте нарушения для продолжения работы
+            {% endfor %}
           </div>
-
-
 
           <div class="col-sm-12 col-md-6 col-lg-3">
             <div class="lb">{{ form_label(form_edit_part_numbers.manufacturer) }}</div>
             {{ form_widget(form_edit_part_numbers.manufacturer, { value : manufacturer_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.manufacturer) |nl2br }}
+            {% for message in app.flashes('[manufacturer_error]') %}
+            {{ message }}
+            {% endfor %}
           </div>
-
-
 
           <div class="col-sm-12 col-md-6 col-lg-3">
             <div class="lb">{{ form_label(form_edit_part_numbers.additional_descriptions) }}</div>
             {{ form_widget(form_edit_part_numbers.additional_descriptions, 
             { value : additional_descriptions_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.additional_descriptions) |nl2br }}
+            {% for message in app.flashes('[additional_descriptions_error]') %}
+            {{ message }}
+            {% endfor %}
           </div>
+
         </div>
       </div>
-
-
 
       <div class="col-lg-12 col-xl-5 col-xxl-5">
         <div class="row justify-content-evenly">
@@ -105,6 +112,7 @@
             {{ form_errors(form_edit_part_numbers.id_side) |nl2br }}
           </div>
         </div>
+
         <div class="row justify-content-evenly">
 
           <div class="col-6">
@@ -124,8 +132,8 @@
             {{ form_widget(form_edit_part_numbers.id_in_stock, { value : in_stock_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.id_in_stock) |nl2br }}
           </div>
-        </div>
 
+        </div>
 
       </div>
     </div>
@@ -145,7 +153,7 @@
 
    <div class="col-auto m-3">
     {% for message in app.flashes('Error') %}
-    <h2 class="mt-3 ms-3">{{ message }}</h2>
+    <h5 class="mt-3 ms-3">{{ message }}</h5>
     {% endfor %}
     
     {% if id %}

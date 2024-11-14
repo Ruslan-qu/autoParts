@@ -94,7 +94,7 @@ final class SearchPartNumbersQueryHandler
 
 
         $find_by_part_numbers = $this->partNumbersFromManufacturersRepository->findByPartNumbers($arr_parameters, $where_parameter);
-        $this->inputErrorsPartNumbers->emptyArrEntity($find_by_part_numbers);
+        $this->inputErrorsPartNumbers->emptyEntity($find_by_part_numbers);
 
         return $find_by_part_numbers;
     }

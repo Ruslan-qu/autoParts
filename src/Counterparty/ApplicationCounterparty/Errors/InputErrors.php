@@ -37,7 +37,7 @@ class InputErrors
         return $this;
     }
 
-    public function emptyData(int|string $data): static
+    public function emptyData($data): static
     {
         if (empty($data)) {
 
@@ -52,18 +52,6 @@ class InputErrors
     public function emptyEntity($еntity): static
     {
         if (empty($еntity)) {
-
-            $arr_data_errors = ['Error' => 'Сущность не существует'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
-
-        return $this;
-    }
-
-    public function emptyArrEntity(array $arr_еntity): static
-    {
-        if (empty($arr_еntity)) {
 
             $arr_data_errors = ['Error' => 'Сущность не существует'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);

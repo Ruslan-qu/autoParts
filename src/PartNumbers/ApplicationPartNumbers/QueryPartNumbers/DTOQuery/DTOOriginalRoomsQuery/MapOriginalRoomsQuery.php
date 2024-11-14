@@ -43,7 +43,7 @@ abstract class MapOriginalRoomsQuery
                         ->getClassName();
                     if ($className !== get_class($value)) {
 
-                        $arr_data_errors = ['Error' => 'Значение ' . $value->scalar .
+                        $arr_data_errors = ['Error' => 'Значение ' . $key .
                             ' должно быть объектом класса ' . $className . '.'];
                         $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
                         throw new UnprocessableEntityHttpException($json_arr_data_errors);

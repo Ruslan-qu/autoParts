@@ -24,38 +24,38 @@ class SearchPartNumbersType extends AbstractType
             ->add('part_number', TextType::class, [
                 'label' => 'Номер детали',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'
                     ])
-                ]*/
+                ]
             ])
             ->add('id_original_number', TextType::class, [
                 'label' => 'Номер оригинал',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'
                     ])
-                ]*/
+                ]
             ])
             ->add('manufacturer', TextType::class, [
                 'label' => 'Производитель',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'
                     ])
-                ]*/
+                ]
             ])
             ->add('id_part_name', EntityType::class, [
                 'label' => 'Название детали',

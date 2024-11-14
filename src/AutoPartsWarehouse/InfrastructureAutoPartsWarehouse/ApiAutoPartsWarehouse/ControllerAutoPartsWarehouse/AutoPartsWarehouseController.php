@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
@@ -63,7 +64,7 @@ class AutoPartsWarehouseController extends AbstractController
             }
         }
 
-        return $this->render('autoPartsWarehouse/saveAutoPartsManually.html.twig', [
+        return $this->render('@autoPartsWarehouse/saveAutoPartsManually.html.twig', [
             'title_logo' => 'Cохранить автодеталь вручную',
             'form_save_auto_parts_manually' => $form_save_auto_parts_manually->createView(),
             'arr_saving_information' => $arr_saving_information
@@ -92,7 +93,7 @@ class AutoPartsWarehouseController extends AbstractController
             }
         }
 
-        return $this->render('autoPartsWarehouse/searchAutoPartsWarehouse.html.twig', [
+        return $this->render('@autoPartsWarehouse/searchAutoPartsWarehouse.html.twig', [
             'title_logo' => 'Поиск автодетали на сладе',
             'form_search_auto_parts_warehouse' => $form_search_auto_parts_warehouse->createView(),
             'search_data' => $search_data,
@@ -143,7 +144,7 @@ class AutoPartsWarehouseController extends AbstractController
                 ->handler(new AutoPartsWarehouseQuery($request->query->all()));
         }
 
-        return $this->render('autoPartsWarehouse/editAutoPartsManually.html.twig', [
+        return $this->render('@autoPartsWarehouse/editAutoPartsManually.html.twig', [
             'title_logo' => 'Изменение данных склада',
             'form_edit_auto_parts_warehouse' => $form_edit_auto_parts_warehouse->createView(),
             'arr_saving_information' => $arr_saving_information,
@@ -164,5 +165,28 @@ class AutoPartsWarehouseController extends AbstractController
         $this->addFlash('delete', 'Поставка удалена');
 
         return $this->redirectToRoute('search_auto_parts_warehouse');
+    }
+
+    private function errorMessageViaSession(HttpException $e): static
+    {
+
+        $arr_validator_errors = json_decode($e->getMessage(), true);
+
+        /* Выводим сообщения ошибки в форму через сессии  */
+        foreach ($arr_validator_errors as $key => $value_errors) {
+            if (is_array($value_errors)) {
+                foreach ($value_errors as $key => $value) {
+                    $message = $value;
+                    $propertyPath = $key;
+                }
+            } else {
+                $message = $value_errors;
+                $propertyPath = $key;
+            }
+
+            $this->addFlash($propertyPath, $message);
+        }
+
+        return $this;
     }
 }
