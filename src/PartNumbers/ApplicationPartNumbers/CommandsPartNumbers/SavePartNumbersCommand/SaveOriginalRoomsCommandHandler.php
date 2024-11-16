@@ -60,7 +60,10 @@ final class SaveOriginalRoomsCommandHandler
         /* Валидация дублей */
         $count_duplicate = $this->originalRoomsRepositoryInterface
             ->numberDoubles(['original_number' => $original_number]);
-        $this->inputErrorsPartNumbers->errorDuplicateTwo($count_duplicate);
+        if ($count_duplicate != 0) {
+
+            return null;
+        }
 
         $this->originalRooms->setOriginalNumber($original_number);
 

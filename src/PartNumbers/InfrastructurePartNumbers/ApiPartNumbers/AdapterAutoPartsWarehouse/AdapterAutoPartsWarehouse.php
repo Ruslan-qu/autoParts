@@ -5,11 +5,11 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPa
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindIdPartNumbersQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\CreatePartNumbersQuery;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\SearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindOneByPartNumbersQueryHandler;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 
 class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
@@ -17,33 +17,30 @@ class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
 
     public function __construct(
         private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
-        private SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
+        private FindOneByPartNumbersQueryHandler $findOneByPartNumbersQueryHandler,
         private SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
         private FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
     ) {}
 
 
-    public function searchIdDetails(array $arr_part_number): ?array
+    public function searchIdDetails(array $arr_part_number): ?PartNumbersFromManufacturers
     {
 
-        $this->inputErrorsPartNumbers->emptyData($arr_part_number['id_details']);
-
         $map_arr_part_numbers = ['part_number' => $arr_part_number['id_details']];
-
-        $arr_part_numbers = $this->searchPartNumbersQueryHandler
+        $part_number = $this->findOneByPartNumbersQueryHandler
             ->handler(new PartNumbersQuery($map_arr_part_numbers));
 
-        if (empty($arr_part_numbers)) {
+        if (empty($part_number)) {
 
             $arr_saving_information['id'] = $this->savePartNumbersCommandHandler
                 ->handler(new PartNumbersCommand($map_arr_part_numbers));
 
 
-            $arr_part_numbers[] = $this->findIdPartNumbersQueryHandler
+            $part_number = $this->findIdPartNumbersQueryHandler
                 ->handler(new PartNumbersQuery($arr_saving_information));
         }
 
-        return $arr_part_numbers;
+        return $part_number;
     }
 }

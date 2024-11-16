@@ -3,7 +3,7 @@
 namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 
 abstract class MapCounterpartyQuery
@@ -23,13 +23,8 @@ abstract class MapCounterpartyQuery
 
             if (!empty($value)) {
 
-                if (!property_exists(Counterparty::class, $key)) {
-
-                    $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                        '  не существует в Counterparty объекте.'];
-                    $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                    throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                }
+                $input_errors = new InputErrors;
+                $input_errors->propertyExistsEntity(Counterparty::class, $key, 'Counterparty');
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
                     ->getBaseType()

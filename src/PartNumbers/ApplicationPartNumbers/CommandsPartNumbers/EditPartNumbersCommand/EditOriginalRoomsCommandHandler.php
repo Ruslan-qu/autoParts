@@ -67,7 +67,10 @@ final class EditOriginalRoomsCommandHandler
             /* Валидация дублей */
             $count_duplicate = $this->originalRoomsRepositoryInterface
                 ->numberDoubles(['original_number' => $original_number]);
-            $this->inputErrorsPartNumbers->errorDuplicateTwo($count_duplicate);
+            if ($count_duplicate != 0) {
+
+                return null;
+            }
         }
 
         $edit_original_number->setOriginalNumber($original_number);

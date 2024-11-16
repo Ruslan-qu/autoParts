@@ -21,15 +21,6 @@ class InputErrorsAutoPartsWarehouse
         return $this;
     }
 
-    public function errorDuplicateTwo(int $count_duplicate): ?int
-    {
-        if ($count_duplicate != 0) {
-
-            return null;
-        }
-        return $count_duplicate;
-    }
-
     public function errorValidate(ConstraintViolationList $errors_validate): static
     {
         if ($errors_validate->count()) {
@@ -76,6 +67,32 @@ class InputErrorsAutoPartsWarehouse
         if (empty($еntity)) {
 
             $arr_data_errors = ['Error' => 'Сущность не существует'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function propertyExistsEntity($еntity, $key): static
+    {
+        if (!property_exists($еntity, $key)) {
+
+            $arr_data_errors = ['Error' => 'Свойство ' . $key .
+                '  не существует в Counterparty объекте.'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function comparingClassNames($className, $value, $key): static
+    {
+        if ($className !== get_class($value)) {
+
+            $arr_data_errors = ['Error' => 'Значение ' . $key .
+                ' должно быть объектом класса ' . $className . '.'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

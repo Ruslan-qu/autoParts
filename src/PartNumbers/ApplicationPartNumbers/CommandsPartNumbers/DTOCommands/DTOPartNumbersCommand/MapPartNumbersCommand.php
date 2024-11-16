@@ -3,7 +3,7 @@
 namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
 abstract class MapPartNumbersCommand
@@ -22,13 +22,8 @@ abstract class MapPartNumbersCommand
 
             if (!empty($value)) {
 
-                if (!property_exists(PartNumbersFromManufacturers::class, $key)) {
-
-                    $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                        '  не существует в PartNumbersFromManufacturers объекте.'];
-                    $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                    throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                }
+                $input_errors = new InputErrorsPartNumbers;
+                $input_errors->propertyExistsEntity(PartNumbersFromManufacturers::class, $key, 'PartNumbersFromManufacturers');
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
                     ->getBaseType()
@@ -40,13 +35,8 @@ abstract class MapPartNumbersCommand
                     $className = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
                         ->getBaseType()
                         ->getClassName();
-                    if ($className !== get_class($value)) {
 
-                        $arr_data_errors = ['Error' => 'Значение ' . $value->scalar .
-                            ' должно быть объектом класса ' . $className . '.'];
-                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                    }
+                    $input_errors->comparingClassNames($className, $value, $key);
                 }
 
                 $this->$key = $value;

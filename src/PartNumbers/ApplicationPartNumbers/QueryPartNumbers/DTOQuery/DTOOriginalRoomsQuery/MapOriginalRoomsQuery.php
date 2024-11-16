@@ -3,7 +3,7 @@
 namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 
 abstract class MapOriginalRoomsQuery
@@ -23,32 +23,14 @@ abstract class MapOriginalRoomsQuery
 
             if (!empty($value)) {
 
-                if (!property_exists(OriginalRooms::class, $key)) {
-
-                    $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                        '  не существует в OriginalRooms объекте.'];
-                    $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                    throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                }
+                $input_errors = new InputErrorsPartNumbers;
+                $input_errors->propertyExistsEntity(OriginalRooms::class, $key, 'OriginalRooms');
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(OriginalRooms::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
-                if ($type == 'object') {
-
-                    $className = $typeResolver->resolve(new \ReflectionProperty(OriginalRooms::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-                    if ($className !== get_class($value)) {
-
-                        $arr_data_errors = ['Error' => 'Значение ' . $key .
-                            ' должно быть объектом класса ' . $className . '.'];
-                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                    }
-                }
 
                 $this->$key = $value;
             }

@@ -53,7 +53,20 @@ class InputErrors
     {
         if (empty($еntity)) {
 
-            $arr_data_errors = ['Error' => 'Сущность не существует'];
+            $arr_data_errors = ['Error' => 'Данные не найдены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function propertyExistsEntity($еntity, $key, $data): static
+    {
+        if (!property_exists($еntity, $key)) {
+
+            $arr_data_errors = ['Error' => 'Свойство ' . $key .
+                '  не существует в ' . $data . ' объекте.'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

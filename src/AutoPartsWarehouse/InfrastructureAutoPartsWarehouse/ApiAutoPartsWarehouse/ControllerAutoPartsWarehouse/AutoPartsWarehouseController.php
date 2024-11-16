@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
@@ -27,9 +28,9 @@ class AutoPartsWarehouseController extends AbstractController
     public function saveAutoPartsManually(
         Request $request,
         SaveAutoPartsWarehouseCommandHandler $saveAutoPartsWarehouseCommandHandler,
-        AdapterAutoPartsWarehouseInterface $adapterAutoPartsWarehouseInterface
+        AdapterAutoPartsWarehouseInterface $adapterAutoPartsWarehouseInterface,
+        ErrorMessageViaSession $errorMessageViaSession
     ): Response {
-
 
         /*Подключаем формы*/
         $form_save_auto_parts_manually = $this->createForm(SaveAutoPartsManuallyType::class);
@@ -37,29 +38,25 @@ class AutoPartsWarehouseController extends AbstractController
         /*Валидация формы*/
         $form_save_auto_parts_manually->handleRequest($request);
 
-
-        $arr_saving_information = [];
+        $id = null;
         if ($form_save_auto_parts_manually->isSubmitted()) {
             if ($form_save_auto_parts_manually->isValid()) {
 
-                $map_arr_id_details = [
-                    'id_details' => $form_save_auto_parts_manually->getData()['id_details']
-                ];
+                try {
 
-                $arr_part_number = $adapterAutoPartsWarehouseInterface
-                    ->searchIdDetails($map_arr_id_details);
-                $map_arr_part_number_manufactur = ['id_details' => $arr_part_number[0]];
+                    $map_arr_id_details = [
+                        'id_details' => $form_save_auto_parts_manually->getData()['id_details']
+                    ];
+                    $part_number = $adapterAutoPartsWarehouseInterface
+                        ->searchIdDetails($map_arr_id_details);
+                    $map_arr_part_number_manufactur = ['id_details' => $part_number];
+                    $data_save_auto_parts_manually = array_replace($form_save_auto_parts_manually->getData(), $map_arr_part_number_manufactur);
 
-                $data_save_auto_parts_manually = array_replace($form_save_auto_parts_manually->getData(), $map_arr_part_number_manufactur);
+                    $id = $saveAutoPartsWarehouseCommandHandler
+                        ->handler(new AutoPartsWarehouseCommand($data_save_auto_parts_manually));
+                } catch (HttpException $e) {
 
-                $arr_saving_information['id'] = $saveAutoPartsWarehouseCommandHandler
-                    ->handler(new AutoPartsWarehouseCommand($data_save_auto_parts_manually));
-
-                if (empty($arr_saving_information['id'])) {
-
-                    $this->addFlash('data_save', 'Поставка уже была сохранена');
-
-                    return $this->redirectToRoute('save_auto_parts_manually');
+                    $errorMessageViaSession->errorMessageSession($e);
                 }
             }
         }
@@ -67,7 +64,7 @@ class AutoPartsWarehouseController extends AbstractController
         return $this->render('@autoPartsWarehouse/saveAutoPartsManually.html.twig', [
             'title_logo' => 'Cохранить автодеталь вручную',
             'form_save_auto_parts_manually' => $form_save_auto_parts_manually->createView(),
-            'arr_saving_information' => $arr_saving_information
+            'id' => $id
         ]);
     }
 
