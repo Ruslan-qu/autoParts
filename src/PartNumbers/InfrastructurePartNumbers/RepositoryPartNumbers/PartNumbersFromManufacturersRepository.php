@@ -88,6 +88,29 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     /**
      * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов или ноль
      */
+    public function findAllPartNumbers(): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p, pn, c, s, b, a, i, o
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers p
+            LEFT JOIN p.id_part_name pn
+            LEFT JOIN p.id_car_brand c
+            LEFT JOIN p.id_side s
+            LEFT JOIN p.id_body b
+            LEFT JOIN p.id_axle a
+            LEFT JOIN p.id_in_stock i
+            LEFT JOIN p.id_original_number o 
+            ORDER BY p.id DESC'
+        );
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов или ноль
+     */
     public function findByPartNumbers(array $arr_parameters, string $part_number_where): ?array
     {
         $entityManager = $this->getEntityManager();

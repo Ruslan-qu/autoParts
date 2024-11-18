@@ -1,13 +1,13 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseDeleteCounterpartyQuery;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseDeleteQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
-abstract class MapAutoPartsWarehouseDeleteCounterpartyQuery
+abstract class MapAutoPartsWarehouseDeleteQuery
 {
 
     public function __construct(array $data = [])

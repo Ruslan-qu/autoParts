@@ -36,7 +36,6 @@
         {{ form_errors(form_search_auto_parts_warehouse.id_side) |nl2br }}
       </div>
 
-
       <div class="col-sm-3 col-lg-3 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_body) }}</div>
         {{ form_widget(form_search_auto_parts_warehouse.id_body, { 'attr': {'class': 'w-100'} }) }}
@@ -62,13 +61,12 @@
 
   {{ form_end(form_search_auto_parts_warehouse) }}
 
-  {% for messages in app.flashes(['delete','Error','successfully']) %}
+  {% for messages in app.flashes(['delete','Error']) %}
   {% for message in messages %}
-  <h2 class="mt-3 ms-3">{{ message }}</h2>
+    <h5 class="mt-3 ms-3">{{ message }}</h5>
   {% endfor %}
   {% endfor %}
   {% endblock form %}
-
 
   {% block table %}
 
@@ -80,8 +78,7 @@
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data %}
+          {% if search_data %}
           <tr>
             <th scope="col">№<br>детали</th>
             <th scope="col">№<br>оригинал</th>
@@ -101,12 +98,10 @@
             <th scope="col">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</th>
           </tr>
           {% endif %}
-          {% endfor %}
 
         </thead>
         <tbody class="table-group-divider">
-          {% for arr_search_data in search_data %}
-          {% for information in arr_search_data %}
+          {% for information in search_data %}
           {% if information %}
 
           <tr>
@@ -121,45 +116,32 @@
             <td>{{ information.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
             <td>{{ information.getIdPaymentMethod.getmethod()|default('') }}</td>
             <td>{{ (information.getQuantity() - information.getQuantitySold())|default('') }}</td>
-            <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}</td>
+            <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}
+            </td>
             <td>{{ (((information.getPrice() / 100) / information.getQuantity())
-            * (information.getQuantity()- information.getQuantitySold()))|default('') }}</td>
-            
+              * (information.getQuantity()- information.getQuantitySold()))|default('') }}</td>
+
             <form action="cartAutoPartsWarehouseSold" name="cart_auto_parts_warehouse_sold">
 
-              <td><button class="btn btn-outline-success" type="submit" name="id"
-                  value="{{ information.getId() }}">{{ ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
+              <td><button class="btn btn-outline-success" type="submit" name="id" value="{{ information.getId() }}">{{
+                  ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
             <form action="/editAutoPartsWarehouse" name="edit_auto_parts_warehouse">
 
-              <td><button class="btn btn-outline-secondary" type="submit" name="id"
-                  value="{{ information.getId() }}">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
+              <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
+                  ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
             <form action="/deleteAutoPartsWarehouse" name="delete_auto_parts_warehouse">
 
-              <td><button class="btn btn-outline-danger" type="submit" name="id"
-                  value="{{ information.getId() }}">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>
+              <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ information.getId() }}">{{
+                  ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
           </tr>
           {% endif %}
           {% endfor %}
-          {% endfor %}
-
-          {% for arr_search_data in search_data %}
-          {% if arr_search_data is empty != arr_search_data is same as NULL %}
-          <h2>Данные не найдены.</h2>
-          {% endif %}
-          {% endfor %}
-
-          {% if search_data[0] is defined %}
-          {% if search_data[0] is same as NULL %}
-          <h2>Видите параметры в поиск</h2>
-          {% endif %}
-          {% endif %}
-
         </tbody>
       </table>
     </div>

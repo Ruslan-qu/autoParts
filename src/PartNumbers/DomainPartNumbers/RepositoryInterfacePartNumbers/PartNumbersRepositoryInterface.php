@@ -18,5 +18,7 @@ interface  PartNumbersRepositoryInterface
 
     public function findOneByPartNumber(string $part_number): ?PartNumbersFromManufacturers;
 
+    public function findAllPartNumbers(): ?array;
+
     public function findPartNumbersFromManufacturers(int $id): ?PartNumbersFromManufacturers;
 }

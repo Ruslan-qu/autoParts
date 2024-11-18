@@ -27,4 +27,6 @@ interface AutoPartsSoldRepositoryInterface
     public function findBySales($arr_parameters, $part_number_where): ?array;
 
     public function findBySalesToDate(): ?array;
+
+    public function findBySalesDeleteAutoPartsWarehouse($id_auto_parts_warehouse): ?array;
 }

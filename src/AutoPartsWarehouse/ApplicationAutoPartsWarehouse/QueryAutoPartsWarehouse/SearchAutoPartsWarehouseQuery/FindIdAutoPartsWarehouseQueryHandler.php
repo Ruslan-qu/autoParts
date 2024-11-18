@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery;
 
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
@@ -8,8 +8,9 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoParts
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 
 
-final class FindAutoPartsWarehouseQueryHandler
+final class FindIdAutoPartsWarehouseQueryHandler
 {
+
     public function __construct(
         private InputErrorsAutoPartsWarehouse $inputErrorsAutoPartsWarehouse,
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
@@ -21,9 +22,9 @@ final class FindAutoPartsWarehouseQueryHandler
         $id = $autoPartsWarehouseQuery->getId();
         $this->inputErrorsAutoPartsWarehouse->emptyData($id);
 
-        $edit_find_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findAutoPartsWarehouse($id);
-        $this->inputErrorsAutoPartsWarehouse->emptyEntity($edit_find_auto_parts_warehouse);
+        $auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findIdAutoPartsWarehouse($id);
+        $this->inputErrorsAutoPartsWarehouse->emptyEntity($auto_parts_warehouse);
 
-        return $edit_find_auto_parts_warehouse[0];
+        return $auto_parts_warehouse;
     }
 }

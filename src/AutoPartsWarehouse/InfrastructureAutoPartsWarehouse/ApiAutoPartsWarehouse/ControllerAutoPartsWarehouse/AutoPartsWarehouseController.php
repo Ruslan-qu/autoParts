@@ -7,14 +7,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
-use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
+use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
+use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseSalesInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindByAutoPartsWarehouseQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindIdAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
@@ -28,8 +30,7 @@ class AutoPartsWarehouseController extends AbstractController
     public function saveAutoPartsManually(
         Request $request,
         SaveAutoPartsWarehouseCommandHandler $saveAutoPartsWarehouseCommandHandler,
-        AdapterAutoPartsWarehouseInterface $adapterAutoPartsWarehouseInterface,
-        ErrorMessageViaSession $errorMessageViaSession
+        AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
     ): Response {
 
         /*Подключаем формы*/
@@ -47,16 +48,19 @@ class AutoPartsWarehouseController extends AbstractController
                     $map_arr_id_details = [
                         'id_details' => $form_save_auto_parts_manually->getData()['id_details']
                     ];
-                    $part_number = $adapterAutoPartsWarehouseInterface
+                    $part_number = $adapterAutoPartsWarehousePartNumbersInterface
                         ->searchIdDetails($map_arr_id_details);
                     $map_arr_part_number_manufactur = ['id_details' => $part_number];
-                    $data_save_auto_parts_manually = array_replace($form_save_auto_parts_manually->getData(), $map_arr_part_number_manufactur);
+                    $data_save_auto_parts_manually = array_replace(
+                        $form_save_auto_parts_manually->getData(),
+                        $map_arr_part_number_manufactur
+                    );
 
                     $id = $saveAutoPartsWarehouseCommandHandler
                         ->handler(new AutoPartsWarehouseCommand($data_save_auto_parts_manually));
                 } catch (HttpException $e) {
 
-                    $errorMessageViaSession->errorMessageSession($e);
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
@@ -85,8 +89,14 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {
 
-                $search_data[] = $findByAutoPartsWarehouseQueryHandler
-                    ->handler(new AutoPartsWarehouseQuery($form_search_auto_parts_warehouse->getData()));
+                try {
+
+                    $search_data = $findByAutoPartsWarehouseQueryHandler
+                        ->handler(new AutoPartsWarehouseQuery($form_search_auto_parts_warehouse->getData()));
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
             }
         }
 
@@ -103,7 +113,7 @@ class AutoPartsWarehouseController extends AbstractController
     public function editAutoPartsWarehouse(
         Request $request,
         FindAutoPartsWarehouseQueryHandler $findAutoPartsWarehouseQueryHandler,
-        AdapterAutoPartsWarehouseInterface $adapterAutoPartsWarehouseInterface,
+        AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         EditAutoPartsWarehouseCommandHandler $editAutoPartsWarehouseCommandHandler,
     ): Response {
 
@@ -117,34 +127,45 @@ class AutoPartsWarehouseController extends AbstractController
             $data_form_edit_auto_parts_warehouse = $form_edit_auto_parts_warehouse->getData();
         }
 
-        $arr_saving_information = [];
+        $id = null;
         if ($form_edit_auto_parts_warehouse->isSubmitted()) {
             if ($form_edit_auto_parts_warehouse->isValid()) {
+                try {
 
-                $map_arr_id_details = [
-                    'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
-                ];
+                    $map_arr_id_details = [
+                        'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
+                    ];
+                    $arr_part_number = $adapterAutoPartsWarehousePartNumbersInterface->searchIdDetails($map_arr_id_details);
+                    $map_arr_part_number = ['id_details' => $arr_part_number];
+                    $data_edit_auto_parts_manually = array_replace(
+                        $form_edit_auto_parts_warehouse->getData(),
+                        $map_arr_part_number
+                    );
 
-                $arr_part_number = $adapterAutoPartsWarehouseInterface->searchIdDetails($map_arr_id_details);
-                $map_arr_part_number = ['id_details' => $arr_part_number[0]];
+                    $id = $editAutoPartsWarehouseCommandHandler
+                        ->handler(new AutoPartsWarehouseCommand($data_edit_auto_parts_manually));
+                } catch (HttpException $e) {
 
-                $data_edit_auto_parts_manually = array_replace($form_edit_auto_parts_warehouse->getData(), $map_arr_part_number);
-
-                $arr_saving_information = $editAutoPartsWarehouseCommandHandler
-                    ->handler(new AutoPartsWarehouseCommand($data_edit_auto_parts_manually));
+                    $this->errorMessageViaSession($e);
+                }
             }
         }
 
         if (empty($form_edit_auto_parts_warehouse->getData()) || !empty($arr_saving_information)) {
+            try {
 
-            $data_form_edit_auto_parts_warehouse = $findAutoPartsWarehouseQueryHandler
-                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+                $data_form_edit_auto_parts_warehouse = $findAutoPartsWarehouseQueryHandler
+                    ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+            } catch (HttpException $e) {
+
+                $this->errorMessageViaSession($e);
+            }
         }
 
         return $this->render('@autoPartsWarehouse/editAutoPartsManually.html.twig', [
             'title_logo' => 'Изменение данных склада',
             'form_edit_auto_parts_warehouse' => $form_edit_auto_parts_warehouse->createView(),
-            'arr_saving_information' => $arr_saving_information,
+            'id' => $id,
             'data_form_edit_auto_parts_warehouse' => $data_form_edit_auto_parts_warehouse
         ]);
     }
@@ -153,13 +174,25 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/deleteAutoPartsWarehouse', name: 'delete_auto_parts_warehouse')]
     public function deleteAutoPartsWarehouse(
         Request $request,
+        FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
+        AdapterAutoPartsWarehouseSalesInterface $adapterAutoPartsWarehouseSalesInterface,
         DeleteAutoPartsWarehouseCommandHandler $deleteAutoPartsWarehouseCommandHandler
     ): Response {
+        try {
 
-        $deleteAutoPartsWarehouseCommandHandler
-            ->handler(new AutoPartsWarehouseCommand($request->query->all()));
+            $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findIdAutoPartsWarehouseQueryHandler
+                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
 
-        $this->addFlash('delete', 'Поставка удалена');
+            $adapterAutoPartsWarehouseSalesInterface->salesDeleteAutoPartsWarehouse($data_auto_parts_warehouse);
+
+            $deleteAutoPartsWarehouseCommandHandler
+                ->handler(new AutoPartsWarehouseCommand($request->query->all()));
+
+            $this->addFlash('delete', 'Поставка удалена');
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+        }
 
         return $this->redirectToRoute('search_auto_parts_warehouse');
     }

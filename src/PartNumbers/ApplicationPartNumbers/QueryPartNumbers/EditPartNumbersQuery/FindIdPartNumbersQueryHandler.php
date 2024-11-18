@@ -16,10 +16,10 @@ final class FindIdPartNumbersQueryHandler
         private PartNumbersFromManufacturersRepository $partNumbersFromManufacturersRepository
     ) {}
 
-    public function handler(PartNumbersQuery $createPartNumbersQuery): ?PartNumbersFromManufacturers
+    public function handler(PartNumbersQuery $partNumbersQuery): ?PartNumbersFromManufacturers
     {
 
-        $id = $createPartNumbersQuery->getId();
+        $id = $partNumbersQuery->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
 
         $edit_part_numbers = $this->partNumbersFromManufacturersRepository->findPartNumbersFromManufacturers($id);

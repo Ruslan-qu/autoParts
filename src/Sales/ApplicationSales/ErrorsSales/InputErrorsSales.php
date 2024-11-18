@@ -1,12 +1,12 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse;
+namespace App\Sales\ApplicationSales\ErrorsSales;
 
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-class InputErrorsAutoPartsWarehouse
+class InputErrorsSales
 {
     public function errorDuplicate(int $count_duplicate): static
     {

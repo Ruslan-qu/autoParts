@@ -15,6 +15,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumb
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\SearchPartNumbersQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindAllPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
@@ -23,6 +24,7 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCo
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindOneByOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartNumbersCommand\DeletePartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterPartNumbers\AdapterPartNumbersInterface;
 
 class PartNumbersController extends AbstractController
 {
@@ -85,6 +87,7 @@ class PartNumbersController extends AbstractController
     #[Route('/searchPartNumbers', name: 'search_part_numbers')]
     public function searchPartNumbers(
         Request $request,
+        FindAllPartNumbersQueryHandler $findAllPartNumbersQueryHandler,
         SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
         FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
@@ -96,7 +99,7 @@ class PartNumbersController extends AbstractController
         /*Валидация формы */
         $form_search_part_numbers->handleRequest($request);
 
-        $search_data = [];
+        $search_data = $findAllPartNumbersQueryHandler->handler();
         if ($form_search_part_numbers->isSubmitted()) {
             if ($form_search_part_numbers->isValid()) {
 
@@ -108,14 +111,13 @@ class PartNumbersController extends AbstractController
 
                         $object_original_number = $findOneByOriginalRoomsQueryHandler
                             ->handler(new OriginalRoomsQuery($arr_original_number));
+                        $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                     } catch (HttpException $e) {
 
                         $errorMessageViaSession->errorMessageSession($e);
 
                         return $this->redirectToRoute('search_part_numbers');
                     }
-
-                    $data_form_part_numbers = array_replace($data_form_part_numbers, $object_original_number);
                 }
                 try {
 
@@ -227,10 +229,17 @@ class PartNumbersController extends AbstractController
     #[Route('/deletePartNumbers', name: 'delete_part_numbers')]
     public function deletePartNumbers(
         Request $request,
+        FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
+        AdapterPartNumbersInterface $adapterPartNumbersInterface,
         DeletePartNumbersCommandHandler $deletePartNumbersCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
+
+            $data_part_numbers['id_details'] = $findIdPartNumbersQueryHandler
+                ->handler(new PartNumbersQuery($request->query->all()));
+
+            $adapterPartNumbersInterface->AutoPartsWarehouseDeletePartNumbers($data_part_numbers);
 
             $deletePartNumbersCommandHandler
                 ->handler(new PartNumbersCommand($request->query->all()));

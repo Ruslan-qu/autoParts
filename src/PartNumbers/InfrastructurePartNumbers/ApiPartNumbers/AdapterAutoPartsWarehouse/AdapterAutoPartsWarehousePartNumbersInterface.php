@@ -5,7 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPa
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
 
-interface AdapterAutoPartsWarehouseInterface
+interface AdapterAutoPartsWarehousePartNumbersInterface
 {
     public function searchIdDetails(array $arr_part_number): ?PartNumbersFromManufacturers;
 }

@@ -2,7 +2,6 @@
 
 namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse;
 
-use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
@@ -10,17 +9,16 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindOneByPartNumbersQueryHandler;
-use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
 
-class AdapterAutoPartsWarehouse implements AdapterAutoPartsWarehouseInterface
+class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehousePartNumbersInterface
 {
 
     public function __construct(
         private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
         private FindOneByPartNumbersQueryHandler $findOneByPartNumbersQueryHandler,
         private SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
-        private FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
-        private InputErrorsPartNumbers $inputErrorsPartNumbers,
+        private FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler
     ) {}
 
 
