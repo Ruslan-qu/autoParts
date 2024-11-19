@@ -3,8 +3,8 @@
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseDeleteQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 abstract class MapAutoPartsWarehouseDeleteQuery
@@ -23,13 +23,8 @@ abstract class MapAutoPartsWarehouseDeleteQuery
 
             if (!empty($value)) {
 
-                if (!property_exists(AutoPartsWarehouse::class, $key)) {
-
-                    $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                        '  не существует в AutoPartsWarehouse объекте.'];
-                    $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                    throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                }
+                $input_errors = new InputErrorsAutoPartsWarehouse;
+                $input_errors->propertyExistsEntity(AutoPartsWarehouse::class, $key, 'AutoPartsWarehouse');
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
                     ->getBaseType()
@@ -48,15 +43,8 @@ abstract class MapAutoPartsWarehouseDeleteQuery
                         ->getBaseType()
                         ->getClassName();
 
-                    if ($className !== get_class($value)) {
-
-                        $arr_data_errors = ['Error' => 'Значение ' . $key .
-                            ' должно быть объектом класса ' . $className . '.'];
-                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                    }
+                    $input_errors->comparingClassNames($className, $value, $key);
                 }
-
 
                 $this->$key = $value;
             }

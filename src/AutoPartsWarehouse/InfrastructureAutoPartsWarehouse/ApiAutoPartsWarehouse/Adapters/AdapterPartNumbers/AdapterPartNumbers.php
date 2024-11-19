@@ -13,7 +13,6 @@ class AdapterPartNumbers implements AdapterPartNumbersInterface
         private AutoPartsWarehouseDeletePartNumbersQueryHandler $autoPartsWarehouseDeletePartNumbersQueryHandler
     ) {}
 
-
     public function autoPartsWarehouseDeletePartNumbers(array $data_part_numbers): void
     {
 

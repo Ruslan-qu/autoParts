@@ -75,7 +75,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['delete' => $autoPartsWarehouse->getId()];
+        return $successfully = ['delete' => 0];
     }
 
     /**
@@ -180,9 +180,8 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT a, c
-            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
-            LEFT JOIN a.id_counterparty c 
+            'SELECT a
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a 
             WHERE a.id_counterparty = :id_counterparty'
         )->setParameter('id_counterparty', $delete_counterparty);
 

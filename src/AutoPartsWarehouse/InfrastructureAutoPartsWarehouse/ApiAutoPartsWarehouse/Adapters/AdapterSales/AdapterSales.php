@@ -13,13 +13,11 @@ class AdapterSales implements AdapterSalesInterface
         private FindCartAutoPartsWarehouseQueryHandler $findCartAutoPartsWarehouseQueryHandler
     ) {}
 
-
     public function findCartPartsWarehouse(array $arr_part_number): ?array
     {
 
         $car_parts_for_sale = $this->findCartAutoPartsWarehouseQueryHandler
             ->handler(new AutoPartsWarehouseQuery($arr_part_number));
-
 
         return $car_parts_for_sale;
     }

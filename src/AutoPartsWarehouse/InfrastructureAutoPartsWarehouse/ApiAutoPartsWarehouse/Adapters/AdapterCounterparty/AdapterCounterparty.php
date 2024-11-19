@@ -3,8 +3,8 @@
 namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterCounterparty;
 
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterCounterparty\AdapterCounterpartyInterface;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\AutoPartsWarehouseDeleteCounterparty\AutoPartsWarehouseDeleteCounterpartyQueryHandler;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseDeleteCounterpartyQuery\AutoPartsWarehouseDeleteCounterpartyQuery;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseDeleteQuery\AutoPartsWarehouseDeleteQuery;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\AutoPartsWarehouseDelete\AutoPartsWarehouseDeleteCounterpartyQueryHandler;
 
 class AdapterCounterparty implements AdapterCounterpartyInterface
 {
@@ -18,6 +18,6 @@ class AdapterCounterparty implements AdapterCounterpartyInterface
     {
 
         $this->autoPartsWarehouseDeleteCounterpartyQueryHandler
-            ->handler(new AutoPartsWarehouseDeleteCounterpartyQuery($arr_counterparty));
+            ->handler(new AutoPartsWarehouseDeleteQuery($arr_counterparty));
     }
 }

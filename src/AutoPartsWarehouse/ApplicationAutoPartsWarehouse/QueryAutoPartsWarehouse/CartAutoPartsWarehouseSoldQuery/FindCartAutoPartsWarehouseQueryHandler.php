@@ -2,7 +2,7 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\CartAutoPartsWarehouseSoldQuery;
 
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 
@@ -10,6 +10,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 final class FindCartAutoPartsWarehouseQueryHandler
 {
     public function __construct(
+        private InputErrorsAutoPartsWarehouse $inputErrorsAutoPartsWarehouse,
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
     ) {}
 
@@ -17,20 +18,10 @@ final class FindCartAutoPartsWarehouseQueryHandler
     {
 
         $id = $autoPartsWarehouseQuery->getId();
-
-        if (empty($id)) {
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsAutoPartsWarehouse->emptyData($id);
 
         $find_cart_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findCartAutoPartsWarehouse($id);
-
-        if (empty($find_cart_auto_parts_warehouse)) {
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsAutoPartsWarehouse->emptyEntity($find_cart_auto_parts_warehouse);
 
         return $find_cart_auto_parts_warehouse;
     }
