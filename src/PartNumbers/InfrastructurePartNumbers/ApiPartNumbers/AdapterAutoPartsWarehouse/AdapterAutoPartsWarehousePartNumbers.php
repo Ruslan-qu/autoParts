@@ -38,7 +38,7 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
             $part_number = $this->findIdPartNumbersQueryHandler
                 ->handler(new PartNumbersQuery($arr_saving_information));
         }
-
+        // dd($part_number);
         return $part_number;
     }
 }

@@ -74,12 +74,12 @@ class InputErrorsAutoPartsWarehouse
         return $this;
     }
 
-    public function propertyExistsEntity($еntity, $key): static
+    public function propertyExistsEntity($еntity, $key, $data): static
     {
         if (!property_exists($еntity, $key)) {
 
             $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                '  не существует в Counterparty объекте.'];
+                '  не существует в' . $data . 'объекте.'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
@@ -89,7 +89,8 @@ class InputErrorsAutoPartsWarehouse
 
     public function comparingClassNames($className, $value, $key): static
     {
-        if ($className !== get_class($value)) {
+
+        if (stripos(get_class($value), $className) === false) {
 
             $arr_data_errors = ['Error' => 'Значение ' . $key .
                 ' должно быть объектом класса ' . $className . '.'];
@@ -104,7 +105,7 @@ class InputErrorsAutoPartsWarehouse
     {
         if (!empty($data_delete)) {
 
-            $arr_data_errors = ['Error' => 'Удаление запрещено, используется в других таблицах'];
+            $arr_data_errors = ['Error' => 'Удаление или Изменение запрещено, используется в других таблицах'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

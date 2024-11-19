@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoParts
 use DateTime;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 abstract class MapAutoPartsWarehouseCommand
@@ -22,6 +23,9 @@ abstract class MapAutoPartsWarehouseCommand
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
+
+                $input_errors = new InputErrorsAutoPartsWarehouse;
+                $input_errors->propertyExistsEntity(AutoPartsWarehouse::class, $key, 'AutoPartsWarehouse');
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
                     ->getBaseType()
@@ -41,13 +45,7 @@ abstract class MapAutoPartsWarehouseCommand
                         ->getBaseType()
                         ->getClassName();
 
-                    if ($className !== get_class($value)) {
-
-                        $arr_data_errors = ['Error' => 'Значение ' . $key .
-                            ' должно быть объектом класса ' . $className . '.'];
-                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                    }
+                    $input_errors->comparingClassNames($className, $value, $key);
                 }
 
                 $this->$key = $value;

@@ -3,21 +3,20 @@
 namespace App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse;
 
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
-use App\Sales\ApplicationSales\QuerySales\SalesDelete\SalesDeleteAutoPartsWarehouseQueryHandler;
-use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseInterface;
+use App\Sales\ApplicationSales\QuerySales\SalesDeleteEditAutoPartsWarehouse\SalesDeleteEditAutoPartsWarehouseQueryHandler;
 
 class AdapterAutoPartsWarehouseSales implements AdapterAutoPartsWarehouseSalesInterface
 {
 
     public function __construct(
-        private SalesDeleteAutoPartsWarehouseQueryHandler $salesDeleteAutoPartsWarehouseQueryHandler
+        private SalesDeleteEditAutoPartsWarehouseQueryHandler $salesDeleteEditAutoPartsWarehouseQueryHandler
     ) {}
 
 
-    public function salesDeleteAutoPartsWarehouse(array $data_auto_parts_warehouse): void
+    public function salesDeleteEditAutoPartsWarehouse(array $data_auto_parts_warehouse): void
     {
 
-        $this->salesDeleteAutoPartsWarehouseQueryHandler
+        $this->salesDeleteEditAutoPartsWarehouseQueryHandler
             ->handler(new AutoPartsSoldQuery($data_auto_parts_warehouse));
     }
 }

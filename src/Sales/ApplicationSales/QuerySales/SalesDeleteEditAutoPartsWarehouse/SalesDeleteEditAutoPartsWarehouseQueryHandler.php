@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Sales\ApplicationSales\QuerySales\SalesDelete;
+namespace App\Sales\ApplicationSales\QuerySales\SalesDeleteEditAutoPartsWarehouse;
 
 use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 
-final class SalesDeleteAutoPartsWarehouseQueryHandler
+final class SalesDeleteEditAutoPartsWarehouseQueryHandler
 {
     public function __construct(
         private InputErrorsSales $inputErrorsSales,
@@ -19,8 +19,8 @@ final class SalesDeleteAutoPartsWarehouseQueryHandler
         $id_auto_parts_warehouse = $autoPartsSoldQuery->getIdAutoPartsWarehouse();
         $this->inputErrorsSales->emptyData($id_auto_parts_warehouse);
 
-        $delete_part_numbers_warehouse = $this->autoPartsSoldRepositoryInterface
-            ->findBySalesDeleteAutoPartsWarehouse($id_auto_parts_warehouse);
-        $this->inputErrorsSales->checkingDataIsTable($delete_part_numbers_warehouse);
+        $delete_edit_part_numbers_warehouse = $this->autoPartsSoldRepositoryInterface
+            ->findBySalesDeleteEditAutoPartsWarehouse($id_auto_parts_warehouse);
+        $this->inputErrorsSales->checkingDataIsTable($delete_edit_part_numbers_warehouse);
     }
 }

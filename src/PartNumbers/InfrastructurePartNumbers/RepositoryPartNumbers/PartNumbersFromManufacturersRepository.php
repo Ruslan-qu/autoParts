@@ -133,7 +133,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     }
 
     /**
-     * @return PartNumbersFromManufacturers[]|NULL Возвращает массив объектов или ноль
+     * @return PartNumbersFromManufacturers|NULL Возвращает массив объектов или ноль
      */
     public function findOneByPartNumber(string $part_number): ?PartNumbersFromManufacturers
     {

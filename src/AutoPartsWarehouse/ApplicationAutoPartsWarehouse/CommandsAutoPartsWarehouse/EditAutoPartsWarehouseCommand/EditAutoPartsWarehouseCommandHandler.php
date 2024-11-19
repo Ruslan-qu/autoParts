@@ -3,11 +3,9 @@
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand;
 
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
@@ -29,7 +27,7 @@ final class EditAutoPartsWarehouseCommandHandler
         $date_receipt_auto_parts_warehouse = $autoPartsWarehouseCommand->getDateReceiptAutoPartsWarehouse();
         $payment_method = $autoPartsWarehouseCommand->getIdPaymentMethod();
 
-        /* Подключаем валидацию и прописываем условида валидации */
+        /* Подключаем валидацию и прописываем условия валидации */
         $validator = Validation::createValidator();
         $input = [
             'quantity_error' => [

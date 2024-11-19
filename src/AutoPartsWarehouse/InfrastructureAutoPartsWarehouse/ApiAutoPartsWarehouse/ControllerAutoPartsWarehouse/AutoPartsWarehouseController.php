@@ -112,6 +112,8 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
     public function editAutoPartsWarehouse(
         Request $request,
+        FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
+        AdapterAutoPartsWarehouseSalesInterface $adapterAutoPartsWarehouseSalesInterface,
         FindAutoPartsWarehouseQueryHandler $findAutoPartsWarehouseQueryHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         EditAutoPartsWarehouseCommandHandler $editAutoPartsWarehouseCommandHandler,
@@ -122,6 +124,18 @@ class AutoPartsWarehouseController extends AbstractController
 
         /*Валидация формы */
         $form_edit_auto_parts_warehouse->handleRequest($request);
+
+        try {
+
+            $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findIdAutoPartsWarehouseQueryHandler
+                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+
+            $adapterAutoPartsWarehouseSalesInterface->salesDeleteEditAutoPartsWarehouse($data_auto_parts_warehouse);
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+            return $this->redirectToRoute('search_auto_parts_warehouse');
+        }
 
         if (!empty($request->request->all())) {
             $data_form_edit_auto_parts_warehouse = $form_edit_auto_parts_warehouse->getData();
@@ -136,6 +150,7 @@ class AutoPartsWarehouseController extends AbstractController
                         'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
                     ];
                     $arr_part_number = $adapterAutoPartsWarehousePartNumbersInterface->searchIdDetails($map_arr_id_details);
+                    //dd($arr_part_number);
                     $map_arr_part_number = ['id_details' => $arr_part_number];
                     $data_edit_auto_parts_manually = array_replace(
                         $form_edit_auto_parts_warehouse->getData(),
@@ -183,7 +198,7 @@ class AutoPartsWarehouseController extends AbstractController
             $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findIdAutoPartsWarehouseQueryHandler
                 ->handler(new AutoPartsWarehouseQuery($request->query->all()));
 
-            $adapterAutoPartsWarehouseSalesInterface->salesDeleteAutoPartsWarehouse($data_auto_parts_warehouse);
+            $adapterAutoPartsWarehouseSalesInterface->salesDeleteEditAutoPartsWarehouse($data_auto_parts_warehouse);
 
             $deleteAutoPartsWarehouseCommandHandler
                 ->handler(new AutoPartsWarehouseCommand($request->query->all()));
