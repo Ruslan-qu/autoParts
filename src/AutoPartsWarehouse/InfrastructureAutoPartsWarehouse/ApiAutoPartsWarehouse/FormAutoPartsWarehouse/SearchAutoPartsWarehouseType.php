@@ -2,6 +2,8 @@
 
 namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse;
 
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -29,6 +31,10 @@ class SearchAutoPartsWarehouseType extends AbstractType
             ->add('id_car_brand', EntityType::class, [
                 'label' => 'Марка',
                 'class' => CarBrands::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('u')
+                        ->orderBy('u.id', 'ASC');
+                },
                 'choice_label' => 'car_brand',
                 'required' => false
             ])

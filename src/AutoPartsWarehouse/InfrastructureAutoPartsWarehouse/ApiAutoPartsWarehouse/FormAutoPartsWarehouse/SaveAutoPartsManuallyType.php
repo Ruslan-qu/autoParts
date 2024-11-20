@@ -2,6 +2,8 @@
 
 namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse;
 
+use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -87,6 +89,10 @@ class SaveAutoPartsManuallyType extends AbstractType
             ->add('id_payment_method', EntityType::class, [
                 'label' => 'Сп. оплаты',
                 'class' => PaymentMethod::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('u')
+                        ->orderBy('u.method', 'DESC');
+                },
                 'choice_label' => 'method'
             ])
             ->add('id', HiddenType::class)

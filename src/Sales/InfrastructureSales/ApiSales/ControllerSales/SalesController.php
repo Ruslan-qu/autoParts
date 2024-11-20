@@ -22,7 +22,7 @@ use App\Sales\ApplicationSales\CommandsSales\AddCartAutoPartsCommand\AddCartAuto
 use App\Sales\ApplicationSales\CommandsSales\EditCartAutoPartsCommand\EditCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\DeleteCartAutoPartsCommand\DeleteCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\CompletionSaleAutoPartsCommand\CompletionSaleAutoPartsCommandHandler;
-use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\AdapterSales\AdapterSalesInterface;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterSales\AdapterSalesInterface;
 
 class SalesController extends AbstractController
 {
@@ -49,14 +49,8 @@ class SalesController extends AbstractController
                 ->findCartPartsWarehouse($request->query->all());
         } catch (HttpException $e) {
 
-            $arr_errors = json_decode($e->getMessage(), true);
+            $this->errorMessageViaSession($e);
 
-            /*Выводим сообщения ошибки*/
-            foreach ($arr_errors as $key => $value_error) {
-                $message = $value_error;
-                $propertyPath = $key;
-                $this->addFlash($propertyPath, $message);
-            }
             return $this->redirectToRoute('search_auto_parts_warehouse');
         }
 
@@ -69,30 +63,14 @@ class SalesController extends AbstractController
                         ->handler(new AutoPartsSoldCommand($form_cart_auto_parts_warehouse_sold->getData()));
                 } catch (HttpException $e) {
 
-                    $arr_validator_errors = json_decode($e->getMessage(), true);
-                    /* Выводим сообщения ошибки в форму через сессии  */
-
-                    foreach ($arr_validator_errors as $key => $value_arr_validator_errors) {
-                        foreach ($value_arr_validator_errors as $key => $value) {
-                            $message = $value;
-                            $propertyPath = $key;
-                            $this->addFlash($propertyPath, $message);
-                        }
-                    }
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
 
         $cartAutoParts = $findByCartAutoPartsSoldQueryHandler->handler();
 
-        $sum = 0;
-        if (!empty($cartAutoParts)) {
-
-            foreach ($cartAutoParts as $key => $value) {
-
-                $sum += ($value->getPriceSold());
-            }
-        }
+        $sum = $this->sumCartAutoPartsSales($cartAutoParts);
 
         return $this->render('sales/cartAutoPartsWarehouseSold.html.twig', [
             'title_logo' => 'Добавить в корзину',
@@ -119,14 +97,8 @@ class SalesController extends AbstractController
 
         $cartAutoParts = $findByCartAutoPartsSoldQueryHandler->handler();
 
-        $sum = 0;
-        if (!empty($cartAutoParts)) {
+        $sum = $this->sumCartAutoPartsSales($cartAutoParts);
 
-            foreach ($cartAutoParts as $key => $value) {
-
-                $sum += ($value->getPriceSold());
-            }
-        }
 
         return $this->render('sales/cartWarehouse.html.twig', [
             'title_logo' => 'Корзина',
@@ -167,20 +139,10 @@ class SalesController extends AbstractController
                     return $this->redirectToRoute('cart_warehouse');
                 } catch (HttpException $e) {
 
-                    $arr_errors = json_decode($e->getMessage(), true);
-
-                    /* Выводим сообщения ошибки в форму через сессии  */
-                    foreach ($arr_errors as $key_errors => $value_errors) {
-                        foreach ($value_errors as $key => $value) {
-                            $message = $value;
-                            $propertyPath = $key;
-                            $this->addFlash($propertyPath, $message);
-                        }
-                    }
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
-
 
         try {
 
@@ -188,15 +150,7 @@ class SalesController extends AbstractController
                 ->handler(new AutoPartsSoldQuery($request->query->all()));
         } catch (HttpException $e) {
 
-            $arr_errors = json_decode($e->getMessage(), true);
-
-            /* Выводим сообщения ошибки в форму через сессии  */
-            foreach ($arr_errors as $key => $value_error) {
-
-                $message = $value_error;
-                $propertyPath = $key;
-                $this->addFlash($propertyPath, $message);
-            }
+            $this->errorMessageViaSession($e);
             return $this->redirectToRoute('cart_warehouse');
         }
 
@@ -221,21 +175,11 @@ class SalesController extends AbstractController
 
             $deleteCartAutoPartsCommandHandler
                 ->handler(new AutoPartsSoldCommand($request->query->all()));
+            $this->addFlash('delete', 'Поставка удалена');
         } catch (HttpException $e) {
 
-            $arr_errors = json_decode($e->getMessage(), true);
-
-            /* Выводим сообщения ошибки в форму через сессии  */
-            foreach ($arr_errors as $key => $value_error) {
-
-                $message = $value_error;
-                $propertyPath = $key;
-                $this->addFlash($propertyPath, $message);
-            }
-            return $this->redirectToRoute('cart_warehouse');
+            $this->errorMessageViaSession($e);
         }
-
-        $this->addFlash('delete', 'Поставка удалена');
 
         return $this->redirectToRoute('cart_warehouse');
     }
@@ -249,21 +193,11 @@ class SalesController extends AbstractController
         try {
 
             $completionSaleAutoPartsCommandHandler->handler();
+            $this->addFlash('successfully', 'Продано');
         } catch (HttpException $e) {
 
-            $arr_errors = json_decode($e->getMessage(), true);
-
-            /* Выводим сообщения ошибки в форму через сессии  */
-            foreach ($arr_errors as $key => $value_error) {
-
-                $message = $value_error;
-                $propertyPath = $key;
-                $this->addFlash($propertyPath, $message);
-            }
-            return $this->redirectToRoute('cart_warehouse');
+            $this->errorMessageViaSession($e);
         }
-
-        $this->addFlash('successfully', 'Продано');
 
         return $this->redirectToRoute('cart_warehouse');
     }
@@ -292,15 +226,7 @@ class SalesController extends AbstractController
                         ->handler(new SalesQuery($form_search_sales->getData()));
                 } catch (HttpException $e) {
 
-                    $arr_validator_errors = json_decode($e->getMessage(), true);
-
-                    /* Выводим сообщения ошибки в форму через сессии  */
-                    foreach ($arr_validator_errors as $key => $value_errors) {
-
-                        $message = $value_errors;
-                        $propertyPath = $key;
-                        $this->addFlash($propertyPath, $message);
-                    }
+                    $this->errorMessageViaSession($e);
                 }
             }
         }
@@ -310,5 +236,42 @@ class SalesController extends AbstractController
             'form_search_sales' => $form_search_sales->createView(),
             'list_sales_auto_parts' => $list_sales_auto_parts
         ]);
+    }
+
+    private function errorMessageViaSession(HttpException $e): static
+    {
+
+        $arr_validator_errors = json_decode($e->getMessage(), true);
+
+        /* Выводим сообщения ошибки в форму через сессии  */
+        foreach ($arr_validator_errors as $key => $value_errors) {
+            if (is_array($value_errors)) {
+                foreach ($value_errors as $key => $value) {
+                    $message = $value;
+                    $propertyPath = $key;
+                }
+            } else {
+                $message = $value_errors;
+                $propertyPath = $key;
+            }
+
+            $this->addFlash($propertyPath, $message);
+        }
+
+        return $this;
+    }
+
+    private function sumCartAutoPartsSales($cartAutoParts): int
+    {
+        $sum = 0;
+        if (!empty($cartAutoParts)) {
+
+            foreach ($cartAutoParts as $key => $value) {
+
+                $sum += ($value->getPriceSold());
+            }
+        }
+
+        return $sum;
     }
 }

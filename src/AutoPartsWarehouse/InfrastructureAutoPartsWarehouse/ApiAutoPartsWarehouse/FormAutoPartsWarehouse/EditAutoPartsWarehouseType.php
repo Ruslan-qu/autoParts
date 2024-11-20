@@ -41,7 +41,7 @@ class EditAutoPartsWarehouseType extends AbstractType
                 'label' => 'Поставщик',
                 'class' => Counterparty::class,
                 'choice_label' => 'name_counterparty',
-                'required' => false,
+                'required' => false
             ])
             ->add('quantity', IntegerType::class, [
                 'label' => 'Кол-во',
@@ -55,7 +55,7 @@ class EditAutoPartsWarehouseType extends AbstractType
                         'message' => 'Форма содержит 
                     недопустимые символы'
                     ]),
-                ],
+                ]
             ])
             ->add('price', NumberType::class, [
                 'label' => 'Цена',
@@ -71,7 +71,7 @@ class EditAutoPartsWarehouseType extends AbstractType
                         'message' => 'Форма содержит 
                     недопустимые символы'
                     ]),
-                ],
+                ]
             ])
             ->add('date_receipt_auto_parts_warehouse', DateType::class, [
                 'label' => 'Дата прихода',
@@ -82,12 +82,12 @@ class EditAutoPartsWarehouseType extends AbstractType
                         'message' => 'Форма не может быть 
                     пустой'
                     ])
-                ],
+                ]
             ])
             ->add('id_payment_method', EntityType::class, [
                 'label' => 'Сп. оплаты',
                 'class' => PaymentMethod::class,
-                'choice_label' => 'method',
+                'choice_label' => 'method'
             ])
             ->add('id', HiddenType::class)
             ->add('button_edit_manually', SubmitType::class)
