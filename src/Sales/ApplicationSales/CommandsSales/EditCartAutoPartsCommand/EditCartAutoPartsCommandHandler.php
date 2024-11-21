@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
@@ -16,6 +17,7 @@ final class EditCartAutoPartsCommandHandler
 {
 
     public function __construct(
+        private InputErrorsSales $inputErrorsSales,
         private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface
     ) {}
 
@@ -26,9 +28,11 @@ final class EditCartAutoPartsCommandHandler
         $validator = Validation::createValidator();
 
         $id = $autoPartsSoldCommand->getId();
+        $this->inputErrorsSales->emptyData($id);
         $arr_auto_parts_sold['id'] = $id;
 
         $find_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findAutoPartsSold($id);
+        $this->inputErrorsSales->emptyEntity($find_auto_parts_sold);
         $find_auto_parts_sold_quantity_sold = $find_auto_parts_sold->getQuantitySold();
 
         $auto_parts_warehouse = $autoPartsSoldCommand->getIdAutoPartsWarehouse();
@@ -49,14 +53,12 @@ final class EditCartAutoPartsCommandHandler
         $input = [
             'quantity_sold_error' => [
                 'NotBlank' => $quantity_sold,
-                'Type' => $quantity_sold,
                 'Regex' => $quantity_sold,
                 'Range' => $quantity_sold,
             ],
             'quantity_sold_auto_parts_warehouse_error' => $sum_quantity_sold_auto_parts_warehouse,
             'price_sold_error' => [
                 'NotBlank' => $price_sold,
-                'Type' => $price_sold,
                 'Regex' => $price_sold,
             ],
             'date_sold' => $date_sold
@@ -68,7 +70,6 @@ final class EditCartAutoPartsCommandHandler
                     message: 'Форма Количество не может быть 
                     пустой'
                 ),
-                'Type' => new Type('int'),
                 'Regex' => new Regex(
                     pattern: '/^\d+$/',
                     message: 'Форма Количество содержит 
@@ -92,7 +93,6 @@ final class EditCartAutoPartsCommandHandler
                     message: 'Форма Цена не может быть 
                     пустой'
                 ),
-                'Type' => new Type('int'),
                 'Regex' => new Regex(
                     pattern: '/^[\d]+[\.,]?[\d]*$/',
                     message: 'Форма Цена содержит 
@@ -105,19 +105,8 @@ final class EditCartAutoPartsCommandHandler
             )
         ]);
 
-        $errors = $validator->validate($input, $constraint);
-
-        if ($errors->count()) {
-            $validator_errors = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $validator_errors[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-            $json_data_errors = json_encode($validator_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_data_errors);
-        }
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->inputErrorsSales->errorValidate($errors_validate);
 
         $auto_parts_warehouse->setQuantitySold($sum_quantity_sold_auto_parts_warehouse);
         $find_auto_parts_sold->setQuantitySold($quantity_sold);

@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
 
@@ -17,6 +17,7 @@ final class AddCartAutoPartsCommandHandler
 {
 
     public function __construct(
+        private InputErrorsSales $InputErrorsSales,
         private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface,
         private AutoPartsSold $autoPartsSold
     ) {}
@@ -100,21 +101,8 @@ final class AddCartAutoPartsCommandHandler
             )
         ]);
 
-        $errors = $validator->validate($input, $constraint);
-
-        if ($errors->count()) {
-            $validator_errors = [];
-            foreach ($validator->validate($input, $constraint) as $key => $value_error) {
-
-                $validator_errors[$key] = [
-                    $value_error->getPropertyPath() => $value_error->getMessage()
-                ];
-            }
-            $json_data_errors = json_encode($validator_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_data_errors);
-        }
-
-
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->InputErrorsSales->errorValidate($errors_validate);
 
         $auto_parts_warehouse->setQuantitySold($sum_quantity_sold_auto_parts_warehouse);
         $this->autoPartsSold->setIdAutoPartsWarehouse($auto_parts_warehouse);

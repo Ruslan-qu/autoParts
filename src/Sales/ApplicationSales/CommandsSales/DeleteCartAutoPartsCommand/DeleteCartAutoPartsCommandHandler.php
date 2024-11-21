@@ -2,6 +2,7 @@
 
 namespace App\Sales\ApplicationSales\CommandsSales\DeleteCartAutoPartsCommand;
 
+use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
@@ -9,6 +10,7 @@ use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSo
 final class DeleteCartAutoPartsCommandHandler
 {
     public function __construct(
+        private InputErrorsSales $inputErrorsSales,
         private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface
     ) {}
 
@@ -16,20 +18,10 @@ final class DeleteCartAutoPartsCommandHandler
     {
 
         $id = $autoPartsSoldCommand->getId();
-        if (empty($id)) {
-
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsSales->emptyData($id);
 
         $find_delete_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findIdAutoPartsSold($id);
-        if (empty($find_delete_auto_parts_sold)) {
-
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsSales->emptyEntity($find_delete_auto_parts_sold);
 
         $quantity_sold_auto_parts_sold = $find_delete_auto_parts_sold->getQuantitySold();
         $quantity_sold_auto_parts_warehouse = $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->getQuantitySold();
@@ -37,7 +29,6 @@ final class DeleteCartAutoPartsCommandHandler
         $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->setQuantitySold($subtraction_quantity_sold_auto_parts_warehouse);
 
         $successfully_delete = $this->autoPartsSoldRepositoryInterface->delete($find_delete_auto_parts_sold);
-
 
         return $successfully_delete['delete'];
     }

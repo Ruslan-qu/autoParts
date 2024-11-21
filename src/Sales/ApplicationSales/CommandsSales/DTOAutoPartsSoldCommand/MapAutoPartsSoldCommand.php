@@ -4,6 +4,7 @@ namespace App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand;
 
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
+use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 abstract class MapAutoPartsSoldCommand
@@ -17,16 +18,11 @@ abstract class MapAutoPartsSoldCommand
     private function load(array $data)
     {
         $typeResolver = TypeResolver::create();
+        $input_errors = new InputErrorsSales;
 
         foreach ($data as $key => $value) {
 
-            if (!property_exists(AutoPartsSold::class, $key)) {
-
-                $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                    '  не существует в AutoPartsSold объекте.'];
-                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                throw new UnprocessableEntityHttpException($json_arr_data_errors);
-            }
+            $input_errors->propertyExistsEntity(AutoPartsSold::class, $key, 'AutoPartsSold');
 
             if (!empty($value)) {
 
@@ -48,13 +44,7 @@ abstract class MapAutoPartsSoldCommand
                         ->getBaseType()
                         ->getClassName();
 
-                    if ($className !== get_class($value)) {
-
-                        $arr_data_errors = ['Error' => 'Значение ' . $key .
-                            ' должно быть объектом класса ' . $className . '.'];
-                        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-                        throw new UnprocessableEntityHttpException($json_arr_data_errors);
-                    }
+                    $input_errors->comparingClassNames($className, $value, $key);
                 }
 
                 $this->$key = $value;
