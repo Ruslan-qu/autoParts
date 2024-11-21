@@ -72,7 +72,7 @@ class SalesController extends AbstractController
 
         $sum = $this->sumCartAutoPartsSales($cartAutoParts);
 
-        return $this->render('sales/cartAutoPartsWarehouseSold.html.twig', [
+        return $this->render('@sales/cartAutoPartsWarehouseSold.html.twig', [
             'title_logo' => 'Добавить в корзину',
             'form_cart_auto_parts_warehouse_sold' => $form_cart_auto_parts_warehouse_sold->createView(),
             'cartAutoParts' => $cartAutoParts,
@@ -154,8 +154,7 @@ class SalesController extends AbstractController
             return $this->redirectToRoute('cart_warehouse');
         }
 
-        //dd($valid_form_edit_cart);
-        return $this->render('sales/editСartAutoPartsWarehouseSold.html.twig', [
+        return $this->render('@sales/editСartAutoPartsWarehouseSold.html.twig', [
             'title_logo' => 'Изменение данных склада',
             'form_edit_cart_auto_parts_warehouse_sold' => $form_edit_cart_auto_parts_warehouse_sold->createView(),
             'data_form_edit_cart_auto_parts_warehouse' => $data_form_edit_cart_auto_parts_warehouse,
@@ -231,7 +230,7 @@ class SalesController extends AbstractController
             }
         }
         //dd($list_sales_auto_parts);
-        return $this->render('sales/searchSales.html.twig', [
+        return $this->render('@sales/searchSales.html.twig', [
             'title_logo' => 'Продажи',
             'form_search_sales' => $form_search_sales->createView(),
             'list_sales_auto_parts' => $list_sales_auto_parts
@@ -273,5 +272,60 @@ class SalesController extends AbstractController
         }
 
         return $sum;
+    }
+
+    /*Редактирования автодеталей в продаже*/
+    #[Route('/editSalesAutoParts', name: 'edit_sales_auto_parts')]
+    public function editSalesAutoParts(
+        Request $request,
+        FindСartAutoPartsSoldQueryHandler $findСartAutoPartsSoldQueryHandler,
+        EditCartAutoPartsCommandHandler $editCartAutoPartsCommandHandler
+    ): Response {
+
+        /*Подключаем формы*/
+        $form_edit_cart_auto_parts_warehouse_sold = $this->createForm(EditCartPartsType::class);
+
+        /*Валидация формы */
+        $form_edit_cart_auto_parts_warehouse_sold->handleRequest($request);
+        // dd($request->query->all());
+        $valid_form_edit_cart = [];
+        if (!empty($request->request->all())) {
+            $valid_form_edit_cart = $request->request->all()['edit_cart_parts'];
+        }
+
+        if ($form_edit_cart_auto_parts_warehouse_sold->isSubmitted()) {
+            if ($form_edit_cart_auto_parts_warehouse_sold->isValid()) {
+                try {
+
+                    $editCartAutoPartsCommandHandler
+                        ->handler(new AutoPartsSoldCommand($form_edit_cart_auto_parts_warehouse_sold->getData()));
+
+                    $this->addFlash('successfully', 'Успешное изменение данных в корзине');
+
+                    return $this->redirectToRoute('cart_warehouse');
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
+            }
+        }
+
+        try {
+
+            $data_form_edit_cart_auto_parts_warehouse = $findСartAutoPartsSoldQueryHandler
+                ->handler(new AutoPartsSoldQuery($request->query->all()));
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+            dd($e);
+            return $this->redirectToRoute('cart_warehouse');
+        }
+
+        return $this->render('@sales/editSalesAutoParts.html.twig', [
+            'title_logo' => 'Изменение данных склада',
+            'form_edit_cart_auto_parts_warehouse_sold' => $form_edit_cart_auto_parts_warehouse_sold->createView(),
+            'data_form_edit_cart_auto_parts_warehouse' => $data_form_edit_cart_auto_parts_warehouse,
+            'valid_form_edit_cart' => $valid_form_edit_cart
+        ]);
     }
 }

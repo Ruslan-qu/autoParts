@@ -4,6 +4,7 @@ twig:
         'src/Counterparty/InfrastructureCounterparty/ApiCounterparty/templatesCounterparty': 'counterparty'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesPartNumbers': 'partNumbers'
         'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesAutoPartsWarehouse': 'autoPartsWarehouse'
+        'src/Sales/InfrastructureSales/ApiSales/templatesSales': 'sales'
 when@test:
     twig:
         strict_variables: true

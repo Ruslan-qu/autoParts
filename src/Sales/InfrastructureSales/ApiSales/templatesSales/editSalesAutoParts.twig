@@ -83,10 +83,8 @@
           {#} {{ dump(app.flashes('[quantity_sold_error][NotBlank]')) }}#}
               {% if data_form_edit_cart_auto_parts_warehouse %}
               <tr>
-
                 <td>{{ (data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity() 
                 - data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantitySold())|default('') }}</td>
-
                 <td>{% if  (data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity() 
                 - data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantitySold()) != 0 %}
                 {{ ((data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getPrice() / 100)
@@ -95,12 +93,10 @@
                   {% else %}
                   {{0}}
                   {% endif %}</td>
-
                 <td>{{ (((data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getPrice() / 100) 
                 / data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity()) 
                 * (data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantity() 
                 - data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getQuantitySold()))|default('') }}</td>
-
               </tr>
               {% endif %}
               
@@ -108,7 +104,6 @@
           </table>
         </div>
       </div>
-
 
       {#Форма изменения в корзину деталей#}
       <div class="col-sm-12 col-lg-6 col-xl-6">
@@ -118,17 +113,18 @@
 
           <div class="col-sm-4 col-lg-4 col-xl-4">
             <div class="lb">{{ form_label(form_edit_cart_auto_parts_warehouse_sold.date_sold) }}</div>
-            {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.date_sold, { value : date_sold_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.date_sold, 
+            { value : date_sold_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_cart_auto_parts_warehouse_sold.date_sold) |nl2br }}
             {% for message in app.flashes('[date_sold]') %}
             {{ message }}
             {% endfor %}
           </div>
 
-
           <div class="col-sm-4 col-lg-4 col-xl-4">
             <div class="lb">{{ form_label(form_edit_cart_auto_parts_warehouse_sold.quantity_sold) }}</div>
-            {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.quantity_sold, { value : quantity_sold_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.quantity_sold, 
+            { value : quantity_sold_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_cart_auto_parts_warehouse_sold.quantity_sold) |nl2br }}
             {% for messages in app.flashes(['[quantity_sold_error][Range]', '[quantity_sold_error][NotBlank]']) %}
             {% for message in messages %}
@@ -141,18 +137,18 @@
             {% endfor %}
           </div>
 
-
           <div class="col-sm-4 col-lg-4 col-xl-4">
             <div class="lb">{{ form_label(form_edit_cart_auto_parts_warehouse_sold.price_sold) }}</div>
-            {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.price_sold, { value : price_sold_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.price_sold, 
+            { value : price_sold_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_cart_auto_parts_warehouse_sold.price_sold) |nl2br }}
             {% for message in app.flashes('[price_sold_error][NotBlank]') %}
             {{ message }}
             {% endfor %}
           </div>
 
-          
-          {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, { value : id_find_id_auto_parts_warehouse }) }}
+          {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, 
+          { value : id_find_id_auto_parts_warehouse }) }}
           {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id, { value : id_find_id }) }}
           
         </div>
