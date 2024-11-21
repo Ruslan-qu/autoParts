@@ -3,6 +3,7 @@
 namespace App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold;
 
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
+use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
@@ -11,6 +12,7 @@ use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPar
 final class FindСartAutoPartsSoldQueryHandler
 {
     public function __construct(
+        private InputErrorsSales $inputErrorsSales,
         private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface
     ) {}
 
@@ -18,20 +20,10 @@ final class FindСartAutoPartsSoldQueryHandler
     {
 
         $id = $autoPartsSoldQuery->getId();
-
-        if (empty($id)) {
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsSales->emptyData($id);
 
         $edit_find_cart_auto_parts_warehouse_sold = $this->autoPartsSoldRepositoryInterface->findСartAutoPartsWarehouseSold($id);
-
-        if (empty($edit_find_cart_auto_parts_warehouse_sold)) {
-            $arr_data_errors = ['Error' => 'Иди некорректное'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
+        $this->inputErrorsSales->emptyEntity($edit_find_cart_auto_parts_warehouse_sold);
 
         return $edit_find_cart_auto_parts_warehouse_sold[0];
     }

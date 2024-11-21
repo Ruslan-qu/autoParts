@@ -205,7 +205,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN d.id_original_number o
             LEFT JOIN a.id_counterparty c '
                 .  $part_number_where .
-                'ORDER BY s.id ASC'
+                'ORDER BY s.id DESC'
         )->setParameters($arr_parameters);
 
         return $query->getResult();
@@ -235,7 +235,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN a.id_counterparty c  
             WHERE s.date_sold = :date_sold
             AND s.sold_status = :sold_status
-            ORDER BY s.id ASC'
+            ORDER BY s.id DESC'
         )->setParameters([
             'date_sold' => $format_date,
             'sold_status' => true
