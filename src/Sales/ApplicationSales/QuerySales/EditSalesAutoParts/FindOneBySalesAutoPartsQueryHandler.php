@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold;
+namespace App\Sales\ApplicationSales\QuerySales\EditSalesAutoParts;
 
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
 use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
@@ -8,7 +8,7 @@ use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterf
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 
 
-final class FindСartAutoPartsSoldQueryHandler
+final class FindOneBySalesAutoPartsQueryHandler
 {
     public function __construct(
         private InputErrorsSales $inputErrorsSales,
@@ -21,9 +21,9 @@ final class FindСartAutoPartsSoldQueryHandler
         $id = $autoPartsSoldQuery->getId();
         $this->inputErrorsSales->emptyData($id);
 
-        $edit_find_cart_auto_parts_warehouse_sold = $this->autoPartsSoldRepositoryInterface->findСartAutoPartsWarehouseSold($id);
-        $this->inputErrorsSales->emptyEntity($edit_find_cart_auto_parts_warehouse_sold);
+        $edit_find_one_by_sales_auto_parts = $this->autoPartsSoldRepositoryInterface->findOneBySalesAutoParts($id);
+        $this->inputErrorsSales->emptyEntity($edit_find_one_by_sales_auto_parts);
 
-        return $edit_find_cart_auto_parts_warehouse_sold[0];
+        return $edit_find_one_by_sales_auto_parts[0];
     }
 }

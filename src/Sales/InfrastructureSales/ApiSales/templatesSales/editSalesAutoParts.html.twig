@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
+  {% endblock Responsive_behaviors %}
+
+  {% block form %}
+
+   {#Переменный для вывода данных в форме #}
+  
+  {% set date_sold_find_id = data_form_edit_sales_auto_parts.getDateSold()|date("Y-m-d")|default('') %}
+  {% set quantity_sold_find_id = data_form_edit_sales_auto_parts.getQuantitySold()|default('') %}
+  {% set price_sold_find_id = (data_form_edit_sales_auto_parts.getPriceSold() / 100)|default('') %}
+  {% set id_find_id_auto_parts_warehouse = data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getId()|default('') %}
+  {% set id_find_id = data_form_edit_sales_auto_parts.getId()|default('') %}
+  {% if valid_form_edit %}
+  {% set date_sold_find_id = valid_form_edit.date_sold|default('') %}
+  {% set quantity_sold_find_id = valid_form_edit.quantity_sold|default('') %}
+  {% set price_sold_find_id = valid_form_edit.price_sold|default('') %}
+  {% set id_find_id = valid_form_edit.id|default('') %}
+  {% endif %}
+
+  {#Таблица автодеталей#}
+
+  <div class="container-fluid text-center pt-3">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
+        border-info shadow mb-4 bg-body-tertiary rounded">
+        <thead class="table-secondary">
+          {% if data_form_edit_sales_auto_parts %}
+          <tr>
+            <th scope="col">№ детали</th>
+            <th scope="col">Производитель</th>
+            <th scope="col">Название детали</th>
+            <th scope="col">Марка</th>
+            <th scope="col">Сторона</th>
+            <th scope="col">Кузов</th>
+            <th scope="col">Перед Зад</th>
+          </tr>
+          {% endif %}
+        </thead>
+
+        <tbody class="table-group-divider">
+          {% if data_form_edit_sales_auto_parts %}
+          <tr>
+            <td>{{ data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse.getIdDetails.getPartNumber() }}</td>
+            <td>{{ data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse.getIdDetails.getManufacturer() }}</td>
+            <td>{{ data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse.getIdDetails.getIdPartName().getPartName()|default('') }}</td>
+            <td>{{ data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse.getIdDetails.getIdCarBrand().getCarBrand()|default('') }}</td>
+            <td>{{ data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse.getIdDetails.getIdSide().getSide()|default('') }}</td>
+            <td>{{ data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse.getIdDetails.getIdBody().getBody()|default('') }}</td>
+            <td>{{ data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="container-fluid text-center pt-3">
+
+    <div class="row">
+      <div class="col-sm-12 col-lg-6 col-xl-6">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
+        border-info shadow mb-4 bg-body-tertiary rounded">
+            <thead class="table-secondary">
+              
+              {% if data_form_edit_sales_auto_parts %}
+              <tr>
+                <th scope="col">Кол-во</th>
+                <th scope="col">Цена шт</th>
+                <th scope="col">Цена общая</th>
+              </tr>
+              {% endif %}
+
+            </thead>
+            <tbody class="table-group-divider">
+          {#} {{ dump(app.flashes('[quantity_sold_error][NotBlank]')) }}#}
+              {% if data_form_edit_sales_auto_parts %}
+              <tr>
+                <td>{{ (data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantity() 
+                - data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantitySold())|default('') }}</td>
+                <td>{% if  (data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantity() 
+                - data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantitySold()) != 0 %}
+                {{ ((data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getPrice() / 100)
+                  / data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantity()) 
+                  |default('')|number_format(2,'.','')}}
+                  {% else %}
+                  {{0}}
+                  {% endif %}</td>
+                <td>{{ (((data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getPrice() / 100) 
+                / data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantity()) 
+                * (data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantity() 
+                - data_form_edit_sales_auto_parts.getIdAutoPartsWarehouse().getQuantitySold()))|default('') }}</td>
+              </tr>
+              {% endif %}
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {#Форма изменения проданной детали#}
+      <div class="col-sm-12 col-lg-6 col-xl-6">
+        {{ form_start(form_edit_sales_auto_parts) }}
+
+        <div class="row justify-content-start">
+
+          <div class="col-sm-4 col-lg-4 col-xl-4">
+            <div class="lb">{{ form_label(form_edit_sales_auto_parts.date_sold) }}</div>
+            {{ form_widget(form_edit_sales_auto_parts.date_sold, 
+            { value : date_sold_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_sales_auto_parts.date_sold) |nl2br }}
+            {% for message in app.flashes('[date_sold]') %}
+            {{ message }}
+            {% endfor %}
+          </div>
+
+          <div class="col-sm-4 col-lg-4 col-xl-4">
+            <div class="lb">{{ form_label(form_edit_sales_auto_parts.quantity_sold) }}</div>
+            {{ form_widget(form_edit_sales_auto_parts.quantity_sold, 
+            { value : quantity_sold_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_sales_auto_parts.quantity_sold) |nl2br }}
+            {% for messages in app.flashes(['[quantity_sold_error][Range]', '[quantity_sold_error][NotBlank]']) %}
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% else %}
+            {% for message in app.flashes('[quantity_sold_auto_parts_warehouse_error]') %}
+            {{ message }}
+            {% endfor %}
+            {% endfor %}
+          </div>
+
+          <div class="col-sm-4 col-lg-4 col-xl-4">
+            <div class="lb">{{ form_label(form_edit_sales_auto_parts.price_sold) }}</div>
+            {{ form_widget(form_edit_sales_auto_parts.price_sold, 
+            { value : price_sold_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_sales_auto_parts.price_sold) |nl2br }}
+            {% for message in app.flashes('[price_sold_error][NotBlank]') %}
+            {{ message }}
+            {% endfor %}
+          </div>
+
+          {{ form_widget(form_edit_sales_auto_parts.id_auto_parts_warehouse, 
+          { value : id_find_id_auto_parts_warehouse }) }}
+          {{ form_widget(form_edit_sales_auto_parts.id, { value : id_find_id }) }}
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-2 pt-2">
+      <div class="col-sm-12 col-lg-12 col-xl-12">
+        {{ form_widget(form_edit_sales_auto_parts.button_edit_cart_auto_parts,
+        { 'label': 'Изменить', 'attr': {'class': 'btn btn-secondary w-100'}}) }}
+      </div>
+    </div>
+
+  </div>
+
+  {{ form_end(form_edit_sales_auto_parts) }}
+
+  {% endblock form %}

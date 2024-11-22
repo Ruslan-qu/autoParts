@@ -12,15 +12,19 @@ use App\Sales\InfrastructureSales\ApiSales\FormSales\AutoPartsSoldType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\EditCartPartsType;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\CompletionSaleType;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOSalesQuery\SalesQuery;
+use App\Sales\InfrastructureSales\ApiSales\FormSales\EditSalesAutoPartsType;
 use App\Sales\ApplicationSales\QuerySales\SearchSalesQuery\FindBySalesQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\SalesToDate\FindBySalesToDateQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\QuerySales\ListCartAutoParts\FindByCartAutoPartsSoldQueryHandler;
+use App\Sales\ApplicationSales\QuerySales\EditSalesAutoParts\FindOneBySalesAutoPartsQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold\FindСartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\AddCartAutoPartsCommand\AddCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\EditCartAutoPartsCommand\EditCartAutoPartsCommandHandler;
+use App\Sales\ApplicationSales\CommandsSales\EditSalesAutoPartsCommand\EditSalesAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\DeleteCartAutoPartsCommand\DeleteCartAutoPartsCommandHandler;
+use App\Sales\ApplicationSales\CommandsSales\DeleteSalesAutoPartsCommand\DeleteSalesAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\CompletionSaleAutoPartsCommand\CompletionSaleAutoPartsCommandHandler;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterSales\AdapterSalesInterface;
 
@@ -237,6 +241,81 @@ class SalesController extends AbstractController
         ]);
     }
 
+    /*Редактирования автодеталей в продаже*/
+    #[Route('/editSalesAutoParts', name: 'edit_sales_auto_parts')]
+    public function editSalesAutoParts(
+        Request $request,
+        FindOneBySalesAutoPartsQueryHandler $findOneBySalesAutoPartsQueryHandler,
+        EditSalesAutoPartsCommandHandler $editSalesAutoPartsCommandHandler
+    ): Response {
+
+        /*Подключаем формы*/
+        $form_edit_sales_auto_parts = $this->createForm(EditSalesAutoPartsType::class);
+
+        /*Валидация формы */
+        $form_edit_sales_auto_parts->handleRequest($request);
+
+        $valid_form_edit = [];
+        if (!empty($request->request->all())) {
+
+            $valid_form_edit = $request->request->all()['edit_sales_auto_parts'];
+        }
+
+        if ($form_edit_sales_auto_parts->isSubmitted()) {
+            if ($form_edit_sales_auto_parts->isValid()) {
+                try {
+
+                    $editSalesAutoPartsCommandHandler
+                        ->handler(new AutoPartsSoldCommand($form_edit_sales_auto_parts->getData()));
+                    $this->addFlash('successfully', 'Успешное изменение данных');
+
+                    return $this->redirectToRoute('search_sales');
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
+            }
+        }
+
+        try {
+
+            $data_form_edit_sales_auto_parts = $findOneBySalesAutoPartsQueryHandler
+                ->handler(new AutoPartsSoldQuery($request->query->all()));
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+
+            return $this->redirectToRoute('searchSales');
+        }
+
+        return $this->render('@sales/editSalesAutoParts.html.twig', [
+            'title_logo' => 'Изменение данных проданных деталей',
+            'form_edit_sales_auto_parts' => $form_edit_sales_auto_parts->createView(),
+            'data_form_edit_sales_auto_parts' => $data_form_edit_sales_auto_parts,
+            'valid_form_edit' => $valid_form_edit
+        ]);
+    }
+
+    /*Удаление продажи*/
+    #[Route('/deleteSalesAutoParts', name: 'delete_sales_auto_parts')]
+    public function deleteSalesAutoParts(
+        Request $request,
+        DeleteSalesAutoPartsCommandHandler $deleteSalesAutoPartsCommandHandler
+    ): Response {
+
+        try {
+
+            $deleteSalesAutoPartsCommandHandler
+                ->handler(new AutoPartsSoldCommand($request->query->all()));
+            $this->addFlash('delete', 'Продажа удалена');
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+        }
+
+        return $this->redirectToRoute('searchSales');
+    }
+
     private function errorMessageViaSession(HttpException $e): static
     {
 
@@ -272,60 +351,5 @@ class SalesController extends AbstractController
         }
 
         return $sum;
-    }
-
-    /*Редактирования автодеталей в продаже*/
-    #[Route('/editSalesAutoParts', name: 'edit_sales_auto_parts')]
-    public function editSalesAutoParts(
-        Request $request,
-        FindСartAutoPartsSoldQueryHandler $findСartAutoPartsSoldQueryHandler,
-        EditCartAutoPartsCommandHandler $editCartAutoPartsCommandHandler
-    ): Response {
-
-        /*Подключаем формы*/
-        $form_edit_cart_auto_parts_warehouse_sold = $this->createForm(EditCartPartsType::class);
-
-        /*Валидация формы */
-        $form_edit_cart_auto_parts_warehouse_sold->handleRequest($request);
-        // dd($request->query->all());
-        $valid_form_edit_cart = [];
-        if (!empty($request->request->all())) {
-            $valid_form_edit_cart = $request->request->all()['edit_cart_parts'];
-        }
-
-        if ($form_edit_cart_auto_parts_warehouse_sold->isSubmitted()) {
-            if ($form_edit_cart_auto_parts_warehouse_sold->isValid()) {
-                try {
-
-                    $editCartAutoPartsCommandHandler
-                        ->handler(new AutoPartsSoldCommand($form_edit_cart_auto_parts_warehouse_sold->getData()));
-
-                    $this->addFlash('successfully', 'Успешное изменение данных в корзине');
-
-                    return $this->redirectToRoute('cart_warehouse');
-                } catch (HttpException $e) {
-
-                    $this->errorMessageViaSession($e);
-                }
-            }
-        }
-
-        try {
-
-            $data_form_edit_cart_auto_parts_warehouse = $findСartAutoPartsSoldQueryHandler
-                ->handler(new AutoPartsSoldQuery($request->query->all()));
-        } catch (HttpException $e) {
-
-            $this->errorMessageViaSession($e);
-            dd($e);
-            return $this->redirectToRoute('cart_warehouse');
-        }
-
-        return $this->render('@sales/editSalesAutoParts.html.twig', [
-            'title_logo' => 'Изменение данных склада',
-            'form_edit_cart_auto_parts_warehouse_sold' => $form_edit_cart_auto_parts_warehouse_sold->createView(),
-            'data_form_edit_cart_auto_parts_warehouse' => $data_form_edit_cart_auto_parts_warehouse,
-            'valid_form_edit_cart' => $valid_form_edit_cart
-        ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Sales\ApplicationSales\CommandsSales\EditCartAutoPartsCommand;
+namespace App\Sales\ApplicationSales\CommandsSales\EditSalesAutoPartsCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Range;
@@ -11,7 +11,7 @@ use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
 
-final class EditCartAutoPartsCommandHandler
+final class EditSalesAutoPartsCommandHandler
 {
 
     public function __construct(
@@ -21,9 +21,6 @@ final class EditCartAutoPartsCommandHandler
 
     public function handler(AutoPartsSoldCommand $autoPartsSoldCommand): ?int
     {
-
-        /* Подключаем валидацию и прописываем условие валидации */
-        $validator = Validation::createValidator();
 
         $id = $autoPartsSoldCommand->getId();
         $this->inputErrorsSales->emptyData($id);
@@ -48,6 +45,9 @@ final class EditCartAutoPartsCommandHandler
         $arr_auto_parts_sold['price_sold'] = $price_sold;
         $date_sold = $autoPartsSoldCommand->getDateSold();
         $arr_auto_parts_sold['date_sold'] = $date_sold;
+
+        /* Подключаем валидацию и прописываем условие валидации */
+        $validator = Validation::createValidator();
         $input = [
             'quantity_sold_error' => [
                 'NotBlank' => $quantity_sold,
@@ -107,6 +107,12 @@ final class EditCartAutoPartsCommandHandler
         $this->inputErrorsSales->errorValidate($errors_validate);
 
         $auto_parts_warehouse->setQuantitySold($sum_quantity_sold_auto_parts_warehouse);
+        if ($auto_parts_warehouse->getSales() == 0 && $auto_parts_warehouse->getQuantity() == $sum_quantity_sold_auto_parts_warehouse) {
+            $auto_parts_warehouse->setSales(1);
+        }
+        if ($auto_parts_warehouse->getSales() == 1 && $auto_parts_warehouse->getQuantity() != $sum_quantity_sold_auto_parts_warehouse) {
+            $auto_parts_warehouse->setSales(0);
+        }
         $find_auto_parts_sold->setQuantitySold($quantity_sold);
         $find_auto_parts_sold->setPriceSold($price_sold);
         $find_auto_parts_sold->setDateSold($date_sold);

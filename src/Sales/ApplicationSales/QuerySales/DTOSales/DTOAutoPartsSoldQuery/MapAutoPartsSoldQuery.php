@@ -5,7 +5,6 @@ namespace App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery;
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 abstract class MapAutoPartsSoldQuery
 {
