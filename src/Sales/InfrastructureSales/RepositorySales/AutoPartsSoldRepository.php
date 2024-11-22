@@ -196,6 +196,24 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
+    public function findOneByAutoPartsSold(int $id): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT s, a
+            FROM App\Sales\DomainSales\DomainModelSales\AutoPartsSold s
+            LEFT JOIN s.id_auto_parts_warehouse a
+            WHERE s.sold_status = :sold_status
+            AND s.id = :id'
+        )->setParameters(['sold_status' => true, 'id' => $id]);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return array|NULL Возвращает массив объектов или ноль
+     */
     public function findByCompletionSale(): ?array
     {
         $entityManager = $this->getEntityManager();

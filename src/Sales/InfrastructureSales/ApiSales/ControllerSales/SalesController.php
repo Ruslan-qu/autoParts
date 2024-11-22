@@ -285,7 +285,7 @@ class SalesController extends AbstractController
 
             $this->errorMessageViaSession($e);
 
-            return $this->redirectToRoute('searchSales');
+            return $this->redirectToRoute('search_sales');
         }
 
         return $this->render('@sales/editSalesAutoParts.html.twig', [
@@ -313,7 +313,7 @@ class SalesController extends AbstractController
             $this->errorMessageViaSession($e);
         }
 
-        return $this->redirectToRoute('searchSales');
+        return $this->redirectToRoute('search_sales');
     }
 
     private function errorMessageViaSession(HttpException $e): static

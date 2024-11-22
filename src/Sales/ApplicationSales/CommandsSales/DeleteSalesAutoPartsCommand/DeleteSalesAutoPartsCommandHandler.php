@@ -19,14 +19,19 @@ final class DeleteSalesAutoPartsCommandHandler
         $id = $autoPartsSoldCommand->getId();
         $this->inputErrorsSales->emptyData($id);
 
-        $find_delete_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findIdAutoPartsSold($id);
+        $find_delete_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findOneByAutoPartsSold($id)[0];
         $this->inputErrorsSales->emptyEntity($find_delete_auto_parts_sold);
 
         $quantity_sold_auto_parts_sold = $find_delete_auto_parts_sold->getQuantitySold();
         $quantity_sold_auto_parts_warehouse = $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->getQuantitySold();
         $subtraction_quantity_sold_auto_parts_warehouse = ($quantity_sold_auto_parts_warehouse - $quantity_sold_auto_parts_sold);
         $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->setQuantitySold($subtraction_quantity_sold_auto_parts_warehouse);
-
+        if (
+            $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->getSales() == 1
+            && $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->getQuantity() != $subtraction_quantity_sold_auto_parts_warehouse
+        ) {
+            $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->setSales(0);
+        }
         $successfully_delete = $this->autoPartsSoldRepositoryInterface->delete($find_delete_auto_parts_sold);
 
         return $successfully_delete['delete'];

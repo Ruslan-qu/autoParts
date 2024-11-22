@@ -16,6 +16,8 @@ interface AutoPartsSoldRepositoryInterface
 
     public function findIdAutoPartsSold(int $id): ?AutoPartsSold;
 
+    public function findOneByAutoPartsSold(int $id): ?array;
+
     public function findAutoPartsSold(int $id): ?AutoPartsSold;
 
     public function findСartAutoPartsWarehouseSold(int $id): ?array;

@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseSalesInterface;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
@@ -67,6 +68,41 @@ class AutoPartsWarehouseController extends AbstractController
         return $this->render('@autoPartsWarehouse/saveAutoPartsManually.html.twig', [
             'title_logo' => 'Cохранить автодеталь вручную',
             'form_save_auto_parts_manually' => $form_save_auto_parts_manually->createView(),
+            'id' => $id
+        ]);
+    }
+
+    /*функция сохранения через фаил входящих автодеталей */
+    #[Route('/saveAutoPartsFile', name: 'save_auto_parts_file')]
+    public function saveAutoPartsFile(
+        Request $request,
+        SaveAutoPartsWarehouseCommandHandler $saveAutoPartsWarehouseCommandHandler,
+    ): Response {
+
+        /*Подключаем формы*/
+        $form_save_auto_parts_fale = $this->createForm(SaveAutoPartsFaleType::class);
+
+        /*Валидация формы*/
+        $form_save_auto_parts_fale->handleRequest($request);
+
+        $id = null;
+        if ($form_save_auto_parts_fale->isSubmitted()) {
+            if ($form_save_auto_parts_fale->isValid()) {
+
+                try {
+
+                    $id = $saveAutoPartsWarehouseCommandHandler
+                        ->handler(new AutoPartsWarehouseCommand($form_save_auto_parts_fale->getData()['id_details']));
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
+            }
+        }
+
+        return $this->render('@autoPartsWarehouse/saveAutoPartsFale.html.twig', [
+            'title_logo' => 'Cохранить автодеталь через файл',
+            'form_save_auto_parts_fale' => $form_save_auto_parts_fale->createView(),
             'id' => $id
         ]);
     }
