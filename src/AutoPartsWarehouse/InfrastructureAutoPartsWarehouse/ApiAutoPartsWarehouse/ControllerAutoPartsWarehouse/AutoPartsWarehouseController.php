@@ -72,7 +72,7 @@ class AutoPartsWarehouseController extends AbstractController
         ]);
     }
 
-    /*функция сохранения через фаил входящих автодеталей */
+    /*функция сохранения из фаил автодеталей на склад*/
     #[Route('/saveAutoPartsFile', name: 'save_auto_parts_file')]
     public function saveAutoPartsFile(
         Request $request,
@@ -88,7 +88,7 @@ class AutoPartsWarehouseController extends AbstractController
         $id = null;
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
-
+                dd($form_save_auto_parts_fale);
                 try {
 
                     $id = $saveAutoPartsWarehouseCommandHandler
