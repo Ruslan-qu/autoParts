@@ -88,7 +88,26 @@ class AutoPartsWarehouseController extends AbstractController
         $id = null;
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
-                dd($form_save_auto_parts_fale);
+                //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
+                //dd($form_save_auto_parts_fale->getData()['file_save']);
+                $zip = new \ZipArchive();
+                $zip->open($form_save_auto_parts_fale->getData()['file_save']);
+                //$res = $zip->comment;
+                //$res = $zip->getStream('xl/worksheets/sheet1.xml');
+                /*if ($fp = $zip->getStream('xl/worksheets/sheet1.xml')) {
+                    $data = '';
+                    while (!feof($fp)) {
+                        $data .= fread($fp, 1024);
+                    }
+                    fclose($fp);
+
+                    $xml = simplexml_load_string($data);
+
+                    dd($xml);
+                }*/
+                $sharedStrings = $zip->getFromName('xl/sharedStrings.xml');
+                $xml = simplexml_load_string($sharedStrings);
+                dd($xml);
                 try {
 
                     $id = $saveAutoPartsWarehouseCommandHandler
