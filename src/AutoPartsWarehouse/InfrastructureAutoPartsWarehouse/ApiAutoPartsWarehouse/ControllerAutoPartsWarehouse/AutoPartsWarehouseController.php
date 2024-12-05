@@ -89,12 +89,12 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
                 //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
-                //dd($form_save_auto_parts_fale->getData()['file_save']);
+                // dd($form_save_auto_parts_fale->getData());
                 $zip = new \ZipArchive();
                 $zip->open($form_save_auto_parts_fale->getData()['file_save']);
-                //$res = $zip->comment;
-                //$res = $zip->getStream('xl/worksheets/sheet1.xml');
-                /*if ($fp = $zip->getStream('xl/worksheets/sheet1.xml')) {
+                $str_values = [];
+                // Прочитать строковые значения
+                if ($fp = $zip->getStream('xl/sharedStrings.xml')) {
                     $data = '';
                     while (!feof($fp)) {
                         $data .= fread($fp, 1024);
@@ -103,11 +103,63 @@ class AutoPartsWarehouseController extends AbstractController
 
                     $xml = simplexml_load_string($data);
 
-                    dd($xml);
-                }*/
-                $sharedStrings = $zip->getFromName('xl/sharedStrings.xml');
-                $xml = simplexml_load_string($sharedStrings);
-                dd($xml);
+                    if (isset($xml->si) && count($xml->si)) {
+                        foreach ($xml->si as $data) {
+                            $data = (array)$data;
+                            $str_values[] = $data['t'];
+                        }
+                    }
+                }
+                $xls_values = [];
+
+                // Прочитать значения из первой страницы документа
+                if ($fp = $zip->getStream('xl/worksheets/sheet1.xml')) {
+                    $data = '';
+                    while (!feof($fp)) {
+                        $data .= fread($fp, 1024);
+                    }
+                    fclose($fp);
+
+                    $xml = simplexml_load_string($data);
+
+                    if (isset($xml->sheetData)) {
+                        $sheetData = (array)($xml->sheetData);
+                        if (isset($sheetData['row']) && count($sheetData['row']) > 0) {
+                            foreach ($sheetData['row'] as $row) {
+                                $row = (array)$row;
+
+                                // Особый случай для одноколоночной страницы
+                                if (!is_array($row['c'])) {
+                                    $row['c'] = array($row['c']);
+                                }
+
+                                foreach ($row['c'] as $col) {
+                                    $col = (array)$col;
+
+                                    // Столбец и колонка
+                                    preg_match('/([A-Z]+)(\d+)/', $col['@attributes']['r'], $matches);
+                                    // Строка из списка
+                                    if (
+                                        isset($col['@attributes']['t'])
+                                        && $col['@attributes']['t'] == 's'
+                                        && isset($str_values[$col['v']])
+                                    ) {
+                                        $xls_values[$matches[2]][$matches[1]] = $str_values[$col['v']];
+                                    }
+                                    // Непосредственное значение
+                                    elseif (isset($col['v'])) {
+                                        $xls_values[$matches[2]][$matches[1]] = $col['v'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $zip->close();
+
+
+                dd($xls_values);
                 try {
 
                     $id = $saveAutoPartsWarehouseCommandHandler
