@@ -4,6 +4,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,11 +23,15 @@ class SaveAutoPartsFaleType extends AbstractType
                         'message' => 'Форма не может быть 
                     пустой'
                     ]),
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-                    недопустимые символы'
+                    new File([
+                        'maxSize' => '64M',
+                        'maxSizeMessage' => 'Максимальный размер файла не должен превышать 64м',
+                        'mimeTypes' => [
+                            'xlsx' => 'application/xml',
+                            'xml' => 'application/xml',
+                            'csv' => 'application/xml'
+                        ],
+                        'mimeTypesMessage' => 'The format is incorrect, only PDF allowed'
                     ]),
                 ]
             ])

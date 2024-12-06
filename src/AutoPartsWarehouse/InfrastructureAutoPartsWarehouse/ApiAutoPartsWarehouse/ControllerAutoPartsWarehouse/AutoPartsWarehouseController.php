@@ -93,7 +93,7 @@ class AutoPartsWarehouseController extends AbstractController
                 $zip = new \ZipArchive();
                 $zip->open($form_save_auto_parts_fale->getData()['file_save']);
                 $str_values = [];
-                // Прочитать строковые значения
+                /*Прочитать строковые значения*/
                 if ($fp = $zip->getStream('xl/sharedStrings.xml')) {
                     $data = '';
                     while (!feof($fp)) {
