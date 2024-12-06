@@ -26,22 +26,24 @@ class SaveAutoPartsFaleType extends AbstractType
                     new File([
                         'maxSize' => '64M',
                         'maxSizeMessage' => 'Максимальный размер файла не должен превышать 64м',
-                        'mimeTypes' => [
-                            'xlsx' => 'application/xml',
-                            'xml' => 'application/xml',
-                            'csv' => 'application/xml'
+                        'extensions' => [
+                            'xlsx',
+                            'xml',
+                            'csv',
+                            'ods'
                         ],
-                        'mimeTypesMessage' => 'The format is incorrect, only PDF allowed'
+                        'extensionsMessage' => 'Указано неверное разрешение файла
+                        разрешение должно быть XLSX(Excel), XML, CSV'
                     ]),
                 ]
             ])
-            ->add('file_extension', ChoiceType::class, [
+            /*->add('file_extension', ChoiceType::class, [
                 'choices'  => [
                     'XLSX(Excel)' => 'XLSX(Excel)',
                     'XML' => 'XML',
                     'CSV' => 'CSV'
                 ]
-            ])
+            ])*/
 
             ->add('button_save_fale', SubmitType::class);
     }

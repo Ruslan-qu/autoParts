@@ -89,7 +89,7 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
                 //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
-                // dd($form_save_auto_parts_fale->getData());
+                dd($form_save_auto_parts_fale->getData());
                 $zip = new \ZipArchive();
                 $zip->open($form_save_auto_parts_fale->getData()['file_save']);
                 $str_values = [];
