@@ -13,6 +13,7 @@ use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehous
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsFileCommand\AutoPartsFileCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindByAutoPartsWarehouseQueryHandler;
@@ -21,6 +22,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseFileCommandHandler;
 
 
 class AutoPartsWarehouseController extends AbstractController
@@ -76,7 +78,7 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/saveAutoPartsFile', name: 'save_auto_parts_file')]
     public function saveAutoPartsFile(
         Request $request,
-        SaveAutoPartsWarehouseCommandHandler $saveAutoPartsWarehouseCommandHandler,
+        SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
     ): Response {
 
         /*Подключаем формы*/
@@ -88,6 +90,11 @@ class AutoPartsWarehouseController extends AbstractController
         $id = null;
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
+
+
+                $id = $saveAutoPartsWarehouseFileCommandHandler
+                    ->handler(new AutoPartsFileCommand($form_save_auto_parts_fale->getData()));
+
                 //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
                 dd($form_save_auto_parts_fale->getData());
                 $zip = new \ZipArchive();
@@ -160,14 +167,6 @@ class AutoPartsWarehouseController extends AbstractController
 
 
                 dd($xls_values);
-                try {
-
-                    $id = $saveAutoPartsWarehouseCommandHandler
-                        ->handler(new AutoPartsWarehouseCommand($form_save_auto_parts_fale->getData()['id_details']));
-                } catch (HttpException $e) {
-
-                    $this->errorMessageViaSession($e);
-                }
             }
         }
 

@@ -16,20 +16,14 @@ abstract class MapAutoPartsFileCommand
 
     private function load(array $data)
     {
-        $typeResolver = TypeResolver::create();
+
 
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
                 $input_errors = new InputErrorsAutoPartsWarehouse;
-
-                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsWarehouse::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
-
-                settype($value, $type);
+                $input_errors->determiningFileType($value);
 
                 $this->$key = $value;
             }
