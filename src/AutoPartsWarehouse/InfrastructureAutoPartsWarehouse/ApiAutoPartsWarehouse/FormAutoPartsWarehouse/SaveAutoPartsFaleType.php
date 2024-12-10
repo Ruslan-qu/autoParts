@@ -31,7 +31,7 @@ class SaveAutoPartsFaleType extends AbstractType
                             'ods'
                         ],
                         'extensionsMessage' => 'Указано неверное разрешение файла
-                        разрешение должно быть XLSX(Excel), XML, CSV'
+                        разрешение должно быть XLSX(Excel), XML, CSV, ODS'
                     ]),
                 ]
             ])

@@ -3,6 +3,7 @@
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand;
 
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
@@ -29,17 +30,10 @@ final class SaveAutoPartsWarehouseFileCommandHandler
         /* Подключаем валидацию и прописываем условия валидации */
         $validator = Validation::createValidator();
         $input = [
-            'quantity_error' => [
-                'NotBlank' => $quantity,
-                'Regex' => $quantity,
+            'file_error' => [
+                'NotBlank' => $file,
+                'File' => $file,
             ],
-            'price_error' => [
-                'NotBlank' => $price,
-                'Regex' => $price,
-            ],
-            'part_number_error' => $part_number,
-            'date_receipt_auto_parts_warehouse_error' => $date_receipt_auto_parts_warehouse,
-            'payment_method_error' => $payment_method,
         ];
 
         $constraint = new Collection([
@@ -48,39 +42,25 @@ final class SaveAutoPartsWarehouseFileCommandHandler
                     message: 'Форма Количество не может быть 
                     пустой'
                 ),
-                'Regex' => new Regex(
-                    pattern: '/^\d+$/',
-                    message: 'Форма Количество содержит 
-                    недопустимые символы'
+                'File' => new File(
+                    maxSize: '64M',
+                    maxSizeMessage: 'Максимальный размер файла не должен превышать 64м',
+                    extensions: [
+                        'xlsx',
+                        'xml',
+                        'csv',
+                        'ods'
+                    ],
+                    extensionsMessage: 'Указано неверное разрешение файла
+                    разрешение должно быть XLSX(Excel), XML, CSV, ODS'
                 )
             ]),
-            'price_error' => new Collection([
-                'NotBlank' => new NotBlank(
-                    message: 'Форма Цена не может быть 
-                    пустой'
-                ),
-                'Regex' => new Regex(
-                    pattern: '/^[\d]+[\.,]?[\d]*$/',
-                    message: 'Форма Цена содержит 
-                    недопустимые символы'
-                )
-            ]),
-            'part_number_error' => new NotBlank(
-                message: 'Форма № Детали не может быть 
-                    пустой'
-            ),
-            'date_receipt_auto_parts_warehouse_error' => new NotBlank(
-                message: 'Форма Дата прихода не может быть 
-                    пустой'
-            ),
-            'payment_method_error' => new NotBlank(
-                message: 'Форма Способ оплаты не может быть 
-                    пустой'
-            )
         ]);
 
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsAutoPartsWarehouse->errorValidate($errors_validate);
+
+
 
         $this->autoPartsWarehouse->setQuantity($quantity);
         $this->autoPartsWarehouse->setPrice($price);
