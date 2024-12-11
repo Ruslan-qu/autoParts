@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\DTOAutoPartsFile\AutoPartsFile;
 use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseSalesInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
@@ -91,82 +93,15 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
 
+                FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
+
 
                 $id = $saveAutoPartsWarehouseFileCommandHandler
-                    ->handler(new AutoPartsFileCommand($form_save_auto_parts_fale->getData()));
+                    ->handler(new AutoPartsFile($form_save_auto_parts_fale->getData()));
 
                 //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
+
                 dd($form_save_auto_parts_fale->getData());
-                $zip = new \ZipArchive();
-                $zip->open($form_save_auto_parts_fale->getData()['file_save']);
-                $str_values = [];
-                /*Прочитать строковые значения*/
-                if ($fp = $zip->getStream('xl/sharedStrings.xml')) {
-                    $data = '';
-                    while (!feof($fp)) {
-                        $data .= fread($fp, 1024);
-                    }
-                    fclose($fp);
-
-                    $xml = simplexml_load_string($data);
-
-                    if (isset($xml->si) && count($xml->si)) {
-                        foreach ($xml->si as $data) {
-                            $data = (array)$data;
-                            $str_values[] = $data['t'];
-                        }
-                    }
-                }
-                $xls_values = [];
-
-                // Прочитать значения из первой страницы документа
-                if ($fp = $zip->getStream('xl/worksheets/sheet1.xml')) {
-                    $data = '';
-                    while (!feof($fp)) {
-                        $data .= fread($fp, 1024);
-                    }
-                    fclose($fp);
-
-                    $xml = simplexml_load_string($data);
-
-                    if (isset($xml->sheetData)) {
-                        $sheetData = (array)($xml->sheetData);
-                        if (isset($sheetData['row']) && count($sheetData['row']) > 0) {
-                            foreach ($sheetData['row'] as $row) {
-                                $row = (array)$row;
-
-                                // Особый случай для одноколоночной страницы
-                                if (!is_array($row['c'])) {
-                                    $row['c'] = array($row['c']);
-                                }
-
-                                foreach ($row['c'] as $col) {
-                                    $col = (array)$col;
-
-                                    // Столбец и колонка
-                                    preg_match('/([A-Z]+)(\d+)/', $col['@attributes']['r'], $matches);
-                                    // Строка из списка
-                                    if (
-                                        isset($col['@attributes']['t'])
-                                        && $col['@attributes']['t'] == 's'
-                                        && isset($str_values[$col['v']])
-                                    ) {
-                                        $xls_values[$matches[2]][$matches[1]] = $str_values[$col['v']];
-                                    }
-                                    // Непосредственное значение
-                                    elseif (isset($col['v'])) {
-                                        $xls_values[$matches[2]][$matches[1]] = $col['v'];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                $zip->close();
-
-
-                dd($xls_values);
             }
         }
 

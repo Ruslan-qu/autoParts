@@ -1,14 +1,11 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsFileCommand;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\DTOAutoPartsFile;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
-abstract class MapAutoPartsFileCommand
+abstract class MapAutoPartsFile
 {
-
     public function __construct(array $data = [])
     {
         $this->load($data);
@@ -16,7 +13,6 @@ abstract class MapAutoPartsFileCommand
 
     private function load(array $data)
     {
-
 
         foreach ($data as $key => $value) {
 

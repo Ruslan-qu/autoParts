@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
@@ -21,10 +22,10 @@ final class SaveAutoPartsWarehouseFileCommandHandler
         private AutoPartsWarehouse $autoPartsWarehouse
     ) {}
 
-    public function handler(AutoPartsFileCommand $autoPartsFileCommand): ?int
+    public function handler(AutoPartsFile $autoPartsFile): ?int
     {
 
-        $file = $autoPartsFileCommand->getFileSave();
+        $file = $autoPartsFile->getFileSave();
 
         dd($file);
         /* Подключаем валидацию и прописываем условия валидации */

@@ -50,6 +50,18 @@ class InputErrorsAutoPartsWarehouse
         return $this;
     }
 
+    public function notEmptyData($data): static
+    {
+        if (!empty($data)) {
+
+            $arr_data_errors = ['Error' => 'Данные не найдены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
     public function emptyDataTwo(string $where_parameter, array $arr_parameters): static
     {
         if (empty($where_parameter) || empty($arr_parameters)) {
@@ -118,6 +130,51 @@ class InputErrorsAutoPartsWarehouse
         if (filetype($file) != 'file') {
 
             $arr_data_errors = ['Error' => 'Неверный тип, файл должен быть тип File'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function determiningFileExtension(): static
+    {
+        $arr_data_errors = ['Error' => 'Неверное расширение файла, должно быть xlsx, xml, csv, ods'];
+        $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+        throw new UnprocessableEntityHttpException($json_arr_data_errors);
+
+        return $this;
+    }
+
+    public function fileOpenErrors($file_open): static
+    {
+        if ($file_open != true) {
+
+            $arr_data_errors = ['Error' => 'Ошибка: ' . $file_open . ', файл не открывается'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function fileStreamErrors($file_stream): static
+    {
+        if ($file_stream == false) {
+
+            $arr_data_errors = ['Error' => 'Ошибка чтения файла'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function emptyAndNotCount($data): static
+    {
+        if (empty($data) && !count($data)) {
+
+            $arr_data_errors = ['Error' => 'Данные не найдены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
