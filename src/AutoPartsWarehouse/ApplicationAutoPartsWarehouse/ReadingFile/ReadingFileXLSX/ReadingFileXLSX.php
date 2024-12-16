@@ -101,7 +101,8 @@ class ReadingFileXLSX
         }
         $zip->close();
 
-
-        dd($xls_values);
+        foreach ($xls_values as $key => $value) {
+            dd($value['A']);
+        }
     }
 }
