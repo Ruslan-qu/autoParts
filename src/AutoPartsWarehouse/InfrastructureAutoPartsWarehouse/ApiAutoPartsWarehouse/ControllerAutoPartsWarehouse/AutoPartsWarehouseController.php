@@ -81,6 +81,7 @@ class AutoPartsWarehouseController extends AbstractController
     public function saveAutoPartsFile(
         Request $request,
         SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
+        AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
     ): Response {
 
         /*Подключаем формы*/
@@ -93,11 +94,14 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
 
-                FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
+                $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
 
-
-                $id = $saveAutoPartsWarehouseFileCommandHandler
-                    ->handler(new AutoPartsFile($form_save_auto_parts_fale->getData()));
+                $arr_part_number = $this->mapPartNumber($file_data_array);
+                //dd($arr_part_number);
+                $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
+                    ->partNumberSearch($arr_part_number);
+                /*$id = $saveAutoPartsWarehouseFileCommandHandler
+                    ->handler(new AutoPartsFile($form_save_auto_parts_fale->getData()));*/
 
                 //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
 
@@ -273,5 +277,21 @@ class AutoPartsWarehouseController extends AbstractController
         }
 
         return $this;
+    }
+
+    private function mapPartNumber(array $file_data_array): array
+    {
+
+        $arr_part_number = [];
+        foreach ($file_data_array as $key => $value) {
+            $arr_part_number[$key] =
+                [
+                    'part_name' => $value['part_name'],
+                    'manufacturer' => $value['manufacturer'],
+                    'part_number' => $value['part_number'],
+                ];
+        }
+
+        return $arr_part_number;
     }
 }

@@ -33,6 +33,7 @@ final class SavePartNumbersCommandHandler
             '',
             $partNumbersCommand->getPartNumber()
         ));
+        // dd($part_number);
         $manufacturer = strtolower(preg_replace(
             '#\s#',
             '',

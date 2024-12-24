@@ -104,7 +104,7 @@ class ReadingFileXLSX
 
         $input_errors->emptyEntity($xls_values);
 
-        dd($this->mapXlsValues($xls_values));
+        return $this->mapXlsValues($xls_values);
     }
 
     private function mapXlsValues($xls_values): array
@@ -112,7 +112,7 @@ class ReadingFileXLSX
         $data_file_xlsx = [];
         foreach ($xls_values as $key => $value) {
 
-            /*if (empty($value['A'])) {
+            if (empty($value['A'])) {
                 $part_name = null;
             } else {
                 $part_name = $value['A'];
@@ -170,75 +170,8 @@ class ReadingFileXLSX
                     'counterparty' => $counterparty,
                     'date_receipt_auto_parts_warehouse' => $date_receipt_auto_parts_warehouse,
                     'payment_method' => $payment_method
-                ];*/
-
-
-            if (empty($value['B'])) {
-                $manufacturer = null;
-            } else {
-                $manufacturer = $value['B'];
-            }
-
-            if (empty($value['C'])) {
-                $part_number = null;
-            } else {
-                $part_number = $value['C'];
-            }
-
-            if (empty($value['D'])) {
-                $quantity = null;
-            } else {
-                $quantity = $value['D'];
-            }
-
-            if (empty($value['E'])) {
-                $price = null;
-            } else {
-                $price = $value['E'];
-            }
-
-            if (empty($value['F'])) {
-                $counterparty = null;
-            } else {
-                $counterparty = $value['F'];
-            }
-
-            if (empty($value['G']) || strtotime($value['G']) === false) {
-                $date_receipt_auto_parts_warehouse = null;
-            } else {
-                $date_receipt_auto_parts_warehouse = new DateTime($value['G']);
-            }
-
-            if (empty($value['H'])) {
-                $payment_method = null;
-            } else {
-                $payment_method = $value['H'];
-            }
-
-            $data_file_xlsx[$key] =
-                [
-                    'part_name' => $this->emptyValue($value['A']),
-                    'manufacturer' => $manufacturer,
-                    'part_number' => $part_number,
-                    'quantity' => $quantity,
-                    'price' => $price,
-                    'counterparty' => $counterparty,
-                    'date_receipt_auto_parts_warehouse' => $date_receipt_auto_parts_warehouse,
-                    'payment_method' => $payment_method
                 ];
         }
         return $data_file_xlsx;
-    }
-
-    private function emptyValue($value)
-    {
-
-        if (empty($value)) {
-            $data = null;
-        } else {
-            $data = $value;
-        }
-
-        return $data;
     }
 }

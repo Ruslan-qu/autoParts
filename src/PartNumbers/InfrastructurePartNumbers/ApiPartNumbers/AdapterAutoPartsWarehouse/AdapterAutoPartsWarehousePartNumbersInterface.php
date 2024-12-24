@@ -8,4 +8,6 @@ use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\P
 interface AdapterAutoPartsWarehousePartNumbersInterface
 {
     public function searchIdDetails(array $arr_part_number): ?PartNumbersFromManufacturers;
+
+    public function partNumberSearch(array $arr_part_number);
 }
