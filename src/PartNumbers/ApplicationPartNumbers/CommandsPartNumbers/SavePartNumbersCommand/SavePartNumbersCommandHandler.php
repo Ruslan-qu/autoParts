@@ -24,18 +24,18 @@ final class SavePartNumbersCommandHandler
 
     public function handler(PartNumbersCommand $partNumbersCommand): ?int
     {
-
+        //dd($partNumbersCommand);
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
         $part_number = strtolower(preg_replace(
-            '#\s#',
+            '#\s#u',
             '',
             $partNumbersCommand->getPartNumber()
         ));
-        // dd($part_number);
+        //dd($part_number);
         $manufacturer = strtolower(preg_replace(
-            '#\s#',
+            '#\s#u',
             '',
             $partNumbersCommand->getManufacturer()
         ));
@@ -67,13 +67,13 @@ final class SavePartNumbersCommandHandler
                     message: 'Форма Номер детали не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[\da-z]*$/i',
+                    pattern: '/^[\da-z]*$/iu',
                     message: 'Форма Номер детали содержит недопустимые символы'
                 )
             ]),
             'manufacturer_error' => new Collection([
                 'Regex' => new Regex(
-                    pattern: '/^[\da-z]*$/i',
+                    pattern: '/^[\da-z]*$/ui',
                     message: 'Форма Производитель содержит недопустимые символы'
                 )
             ]),

@@ -19,7 +19,7 @@ final class FindOneByPartNumbersQueryHandler
     {
 
         $part_number = strtolower(preg_replace(
-            '#\s#',
+            '#\s#u',
             '',
             $partNumbersQuery->getPartNumber()
         ));

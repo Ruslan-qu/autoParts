@@ -1,6 +1,6 @@
 <?php
 
-namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse;
+namespace App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse;
 
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNameQuery\PartNameQuery;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
@@ -12,8 +12,9 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPa
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindOneByPartNumbersQueryHandler;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
+use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseCounterpartyInterface;
 
-class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehousePartNumbersInterface
+class AdapterAutoPartsWarehouseCounterparty implements AdapterAutoPartsWarehouseCounterpartyInterface
 {
 
     public function __construct(
@@ -24,42 +25,15 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
         private FindOneByPartNameQueryHandler $findOneByPartNameQueryHandler,
     ) {}
 
-
-    public function searchIdDetails(array $arr_part_number): ?PartNumbersFromManufacturers
+    public function counterpartySearch(array $arr_counterparty): ?array
     {
 
-        $map_arr_part_numbers = ['part_number' => $arr_part_number['id_details']];
-        $part_number = $this->findOneByPartNumbersQueryHandler
-            ->handler(new PartNumbersQuery($map_arr_part_numbers));
+        foreach ($arr_counterparty as $key => $value) {
 
-        if (empty($part_number)) {
-
-            $arr_saving_information['id'] = $this->savePartNumbersCommandHandler
-                ->handler(new PartNumbersCommand($map_arr_part_numbers));
-
-
-            $part_number = $this->findIdPartNumbersQueryHandler
-                ->handler(new PartNumbersQuery($arr_saving_information));
-        }
-
-        return $part_number;
-    }
-
-    public function partNumberSearch(array $arr_part_number): ?array
-    {
-
-        foreach ($arr_part_number as $key => $value) {
-
-            $map_part_name = ['part_name' => $value['part_name']];
+            $map_counterparty = ['name_counterparty' => $value['counterparty']];
 
             $part_name = $this->findOneByPartNameQueryHandler
-                ->handler(new PartNameQuery($map_part_name));
-            $map_id_part_name = ['id_part_name' => $part_name];
-            $arr_map_part_name = array_replace($value, $map_id_part_name);
-            unset($arr_map_part_name['part_name']);
-
-            $part_number = $this->findOneByPartNumbersQueryHandler
-                ->handler(new PartNumbersQuery($arr_map_part_name));
+                ->handler(new CounterpartyQuery($map_counterparty));
 
             if (empty($part_number)) {
 

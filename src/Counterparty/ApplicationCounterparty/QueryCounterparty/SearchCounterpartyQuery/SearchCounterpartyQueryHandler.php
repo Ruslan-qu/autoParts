@@ -20,7 +20,7 @@ final class SearchCounterpartyQueryHandler
     {
 
         $name_counterparty = strtolower(preg_replace(
-            '#\s#',
+            '#\s#u',
             '',
             $counterpartyQuery->getNameCounterparty()
         ));

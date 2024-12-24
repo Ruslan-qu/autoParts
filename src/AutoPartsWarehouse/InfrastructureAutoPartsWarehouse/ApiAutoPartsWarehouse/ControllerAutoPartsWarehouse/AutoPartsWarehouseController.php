@@ -15,6 +15,7 @@ use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehous
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
+use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseCounterpartyInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsFileCommand\AutoPartsFileCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
@@ -82,6 +83,7 @@ class AutoPartsWarehouseController extends AbstractController
         Request $request,
         SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
+        AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface
     ): Response {
 
         /*Подключаем формы*/
@@ -96,16 +98,19 @@ class AutoPartsWarehouseController extends AbstractController
 
                 $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
 
-                $arr_part_number = $this->mapPartNumber($file_data_array);
-                //dd($arr_part_number);
+                $map_file_data = $this->mapFileData($file_data_array);
+
                 $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
-                    ->partNumberSearch($arr_part_number);
+                    ->partNumberSearch($map_file_data['arr_part_number']);
+                dd($map_file_data);
+                $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
+                    ->counterpartySearch($map_file_data['arr_counterparty']);
                 /*$id = $saveAutoPartsWarehouseFileCommandHandler
                     ->handler(new AutoPartsFile($form_save_auto_parts_fale->getData()));*/
 
                 //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
 
-                dd($form_save_auto_parts_fale->getData());
+                //dd($form_save_auto_parts_fale->getData());
             }
         }
 
@@ -194,7 +199,7 @@ class AutoPartsWarehouseController extends AbstractController
                         'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
                     ];
                     $arr_part_number = $adapterAutoPartsWarehousePartNumbersInterface->searchIdDetails($map_arr_id_details);
-                    //dd($arr_part_number);
+
                     $map_arr_part_number = ['id_details' => $arr_part_number];
                     $data_edit_auto_parts_manually = array_replace(
                         $form_edit_auto_parts_warehouse->getData(),
@@ -279,19 +284,31 @@ class AutoPartsWarehouseController extends AbstractController
         return $this;
     }
 
-    private function mapPartNumber(array $file_data_array): array
+    private function mapFileData(array $file_data_array): array
     {
 
-        $arr_part_number = [];
+        $map_file_data = [];
         foreach ($file_data_array as $key => $value) {
             $arr_part_number[$key] =
                 [
                     'part_name' => $value['part_name'],
                     'manufacturer' => $value['manufacturer'],
-                    'part_number' => $value['part_number'],
+                    'part_number' => $value['part_number']
+                ];
+            $arr_counterparty[$key] =
+                [
+                    'counterparty' => $value['counterparty']
+                ];
+            $arr_payment_method[$key] =
+                [
+                    'payment_method' => $value['payment_method']
                 ];
         }
-
-        return $arr_part_number;
+        $map_file_data = [
+            'arr_part_number' => $arr_part_number,
+            'arr_counterparty' => $arr_counterparty,
+            'arr_payment_method' => $arr_payment_method
+        ];
+        return $map_file_data;
     }
 }

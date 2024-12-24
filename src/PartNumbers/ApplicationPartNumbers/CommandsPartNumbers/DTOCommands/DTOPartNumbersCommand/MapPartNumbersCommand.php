@@ -16,6 +16,7 @@ abstract class MapPartNumbersCommand
 
     private function load(array $data)
     {
+
         $typeResolver = TypeResolver::create();
 
         foreach ($data as $key => $value) {
