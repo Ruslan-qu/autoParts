@@ -19,4 +19,6 @@ interface  CounterpartyRepositoryInterface
     public function findOneByCounterparty($name_counterparty): ?array;
 
     public function findCounterparty($id): ?Counterparty;
+
+    public function findOneByIdCounterparty(string $name_counterparty): ?Counterparty;
 }

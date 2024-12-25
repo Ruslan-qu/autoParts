@@ -112,7 +112,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return Counterparty|NULL Возвращает объектов или ноль
      */
-    public function findOneByIdCounterparty($name_counterparty): ?array
+    public function findOneByIdCounterparty(string $name_counterparty): ?Counterparty
     {
         return $this->findOneBy(['name_counterparty' => $name_counterparty]);
     }
