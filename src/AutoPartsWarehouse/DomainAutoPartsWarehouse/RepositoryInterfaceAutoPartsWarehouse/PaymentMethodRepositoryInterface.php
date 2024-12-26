@@ -7,5 +7,5 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehous
 
 interface PaymentMethodRepositoryInterface
 {
-    public function findOneByPaymentMethod(string $payment_method): ?PaymentMethod;
+    public function findOneByPaymentMethod(int|null $id): ?PaymentMethod;
 }

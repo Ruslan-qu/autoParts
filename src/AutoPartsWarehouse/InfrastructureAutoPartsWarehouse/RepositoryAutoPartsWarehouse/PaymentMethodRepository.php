@@ -20,8 +20,8 @@ class PaymentMethodRepository extends ServiceEntityRepository implements Payment
     /**
      * @return PaymentMethod|NULL Возвращает объектов или ноль
      */
-    public function findOneByPaymentMethod(string $payment_method): ?PaymentMethod
+    public function findOneByPaymentMethod(int|null $id): ?PaymentMethod
     {
-        return $this->findOneBy(['method' => $payment_method]);
+        return $this->findOneBy(['id' => $id]);
     }
 }

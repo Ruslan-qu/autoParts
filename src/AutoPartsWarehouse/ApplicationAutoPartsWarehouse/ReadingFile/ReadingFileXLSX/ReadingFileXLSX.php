@@ -2,11 +2,11 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\ReadingFileXLSX;
 
-use DateTime;
+use DateTimeImmutable;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Collection;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\DTOAutoPartsFile\AutoPartsFile;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 
 class ReadingFileXLSX
@@ -151,7 +151,7 @@ class ReadingFileXLSX
             if (empty($value['G']) || strtotime($value['G']) === false) {
                 $date_receipt_auto_parts_warehouse = null;
             } else {
-                $date_receipt_auto_parts_warehouse = new DateTime($value['G']);
+                $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['G']);
             }
 
             if (empty($value['H'])) {

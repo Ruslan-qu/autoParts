@@ -1,9 +1,9 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\DTOAutoPartsFile;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\DTOAutoPartsFile\MapAutoPartsFile;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\MapAutoPartsFile;
 
 final class AutoPartsFile extends MapAutoPartsFile
 

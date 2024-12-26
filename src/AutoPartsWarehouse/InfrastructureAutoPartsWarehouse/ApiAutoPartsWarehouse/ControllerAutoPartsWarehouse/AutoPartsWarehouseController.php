@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\DTOAutoPartsFile\AutoPartsFile;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseSalesInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\PaymentMethodQuery;
@@ -27,6 +27,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\ArrAutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseFileCommandHandler;
 
@@ -109,15 +110,19 @@ class AutoPartsWarehouseController extends AbstractController
 
                 $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
                     ->counterpartySearch($map_file_data['arr_counterparty']);
-                // dd($arr_id_counterparty);
-                $arr_id_payment_method = $findOneByPaymentMethodQueryHandler
+
+                $arr_id_method = $findOneByPaymentMethodQueryHandler
                     ->handler(new ArrPaymentMethodQuery($map_file_data['arr_payment_method']));
-                /*$id = $saveAutoPartsWarehouseFileCommandHandler
-                    ->handler(new AutoPartsFile($form_save_auto_parts_fale->getData()));*/
 
-                //$excel = file_get_contents($form_save_auto_parts_fale->getData()['file_save']);
-
-                //dd($form_save_auto_parts_fale->getData());
+                $map_processed_data = $this->mapProcessedData(
+                    $file_data_array,
+                    $arr_id_details,
+                    $arr_id_counterparty,
+                    $arr_id_method
+                );
+                dd($map_processed_data);
+                $id = $saveAutoPartsWarehouseFileCommandHandler
+                    ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }
         }
 
@@ -308,7 +313,7 @@ class AutoPartsWarehouseController extends AbstractController
                 ];
             $arr_payment_method[$key] =
                 [
-                    'method' => $value['payment_method']
+                    'id' => $value['payment_method']
                 ];
         }
         $map_file_data = [
@@ -317,5 +322,26 @@ class AutoPartsWarehouseController extends AbstractController
             'arr_payment_method' => $arr_payment_method
         ];
         return $map_file_data;
+    }
+
+    private function mapProcessedData(
+        array $file_data_array,
+        array $arr_id_details,
+        array $arr_id_counterparty,
+        array $arr_id_method,
+    ): array {
+        $arr_processed_data = [];
+        foreach ($file_data_array as $key => $value) {
+            unset(
+                $value['part_name'],
+                $value['manufacturer'],
+                $value['part_number'],
+                $value['counterparty'],
+                $value['payment_method'],
+            );
+            $arr_processed_data[$key] = $value + $arr_id_details[$key] + $arr_id_counterparty[$key] + $arr_id_method[$key];
+        }
+
+        return $arr_processed_data;
     }
 }

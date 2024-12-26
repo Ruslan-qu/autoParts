@@ -2,9 +2,7 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery;
 
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\PaymentMethodRepositoryInterface;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\PaymentMethodQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\ArrPaymentMethodQuery;
 
 final class FindOneByPaymentMethodQueryHandler
@@ -14,17 +12,15 @@ final class FindOneByPaymentMethodQueryHandler
         private PaymentMethodRepositoryInterface $paymentMethodRepositoryInterface
     ) {}
 
-    public function handler(ArrPaymentMethodQuery $arrPaymentMethodQuery): ?PaymentMethod
+    public function handler(ArrPaymentMethodQuery $arrPaymentMethodQuery): ?array
     {
-        dd($arrPaymentMethodQuery);
-        $method = strtolower(preg_replace(
-            '#\s#u',
-            '',
-            $paymentMethodQuery->getMethod()
-        ));
+        foreach ($arrPaymentMethodQuery->getArrMethod() as $key => $value) {
 
-        $counterparty = $this->paymentMethodRepositoryInterface->findOneByPaymentMethod($method);
+            $id = $value['method']->getId();
+            $payment_method = $this->paymentMethodRepositoryInterface->findOneByPaymentMethod($id);
+            $arr_method[$key] = ['id_payment_method' => $payment_method];
+        }
 
-        return $counterparty;
+        return $arr_method;
     }
 }

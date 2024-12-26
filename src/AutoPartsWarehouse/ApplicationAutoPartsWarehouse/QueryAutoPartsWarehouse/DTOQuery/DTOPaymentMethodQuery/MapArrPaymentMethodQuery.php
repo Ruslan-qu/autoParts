@@ -16,10 +16,9 @@ abstract class MapArrPaymentMethodQuery
 
     private function load(array $data)
     {
-
         foreach ($data as $key => $value) {
-            //dd($value);
-            $this->arr_method = [$key => new PaymentMethodQuery($value)];
+            $arr_method[$key] = ['method' => new PaymentMethodQuery($value)];
         }
+        $this->arr_method = (array)$arr_method;
     }
 }
