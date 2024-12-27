@@ -70,7 +70,7 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
                     ->handler(new PartNumbersQuery($arr_saving_information));
             }
 
-            $arr_part_number[$key] = ['id_part_number' => $part_number];
+            $arr_part_number[$key] = ['id_details' => $part_number];
         }
 
         return $arr_part_number;

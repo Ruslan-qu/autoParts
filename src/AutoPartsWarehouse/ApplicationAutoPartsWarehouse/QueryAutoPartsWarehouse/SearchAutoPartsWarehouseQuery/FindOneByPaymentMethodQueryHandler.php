@@ -14,6 +14,7 @@ final class FindOneByPaymentMethodQueryHandler
 
     public function handler(ArrPaymentMethodQuery $arrPaymentMethodQuery): ?array
     {
+        $arr_method = [];
         foreach ($arrPaymentMethodQuery->getArrMethod() as $key => $value) {
 
             $id = $value['method']->getId();

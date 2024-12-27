@@ -12,6 +12,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehous
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsFileCommand\AutoPartsFileCommand;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\ArrAutoPartsWarehouseCommand;
 
 final class SaveAutoPartsWarehouseFileCommandHandler
 {
@@ -22,56 +23,87 @@ final class SaveAutoPartsWarehouseFileCommandHandler
         private AutoPartsWarehouse $autoPartsWarehouse
     ) {}
 
-    public function handler(AutoPartsFile $autoPartsFile): ?int
+    public function handler(ArrAutoPartsWarehouseCommand $arrAutoPartsWarehouseCommand): ?int
     {
 
-        $file = $autoPartsFile->getFileSave();
+        foreach ($arrAutoPartsWarehouseCommand->getArrAutoPartsData() as $key => $value) {
 
-        dd($file);
-        /* Подключаем валидацию и прописываем условия валидации */
-        $validator = Validation::createValidator();
-        $input = [
-            'file_error' => [
-                'NotBlank' => $file,
-                'File' => $file,
-            ],
-        ];
+            $quantity = $value['auto_parts_data']->getQuantity();
+            $price = $value['auto_parts_data']->getPrice();
+            $part_number = $value['auto_parts_data']->getIdDetails();
+            $counterparty = $value['auto_parts_data']->getIdCounterparty();
+            $date_receipt_auto_parts_warehouse = $value['auto_parts_data']->getDateReceiptAutoPartsWarehouse();
+            $payment_method = $value['auto_parts_data']->getIdPaymentMethod();
 
-        $constraint = new Collection([
-            'quantity_error' => new Collection([
-                'NotBlank' => new NotBlank(
-                    message: 'Форма Количество не может быть 
+            /* Подключаем валидацию и прописываем условия валидации */
+            $validator = Validation::createValidator();
+            $input = [
+                'quantity_error' => [
+                    'NotBlank' => $quantity,
+                    'Regex' => $quantity,
+                ],
+                'price_error' => [
+                    'NotBlank' => $price,
+                    'Regex' => $price,
+                ],
+                'part_number_error' => $part_number,
+                'date_receipt_auto_parts_warehouse_error' => $date_receipt_auto_parts_warehouse,
+                'payment_method_error' => $payment_method,
+            ];
+
+            $constraint = new Collection([
+                'quantity_error' => new Collection([
+                    'NotBlank' => new NotBlank(
+                        message: 'Форма Количество не может быть 
+                    пустой'
+                    ),
+                    'Regex' => new Regex(
+                        pattern: '/^\d+$/',
+                        message: 'Форма Количество содержит 
+                    недопустимые символы'
+                    )
+                ]),
+                'price_error' => new Collection([
+                    'NotBlank' => new NotBlank(
+                        message: 'Форма Цена не может быть 
+                    пустой'
+                    ),
+                    'Regex' => new Regex(
+                        pattern: '/^[\d]+[\.,]?[\d]*$/',
+                        message: 'Форма Цена содержит 
+                    недопустимые символы'
+                    )
+                ]),
+                'part_number_error' => new NotBlank(
+                    message: 'Форма № Детали не может быть 
                     пустой'
                 ),
-                'File' => new File(
-                    maxSize: '64M',
-                    maxSizeMessage: 'Максимальный размер файла не должен превышать 64м',
-                    extensions: [
-                        'xlsx',
-                        'xml',
-                        'csv',
-                        'ods'
-                    ],
-                    extensionsMessage: 'Указано неверное разрешение файла
-                    разрешение должно быть XLSX(Excel), XML, CSV, ODS'
+                'date_receipt_auto_parts_warehouse_error' => new NotBlank(
+                    message: 'Форма Дата прихода не может быть 
+                    пустой'
+                ),
+                'payment_method_error' => new NotBlank(
+                    message: 'Форма Способ оплаты не может быть 
+                    пустой'
                 )
-            ]),
-        ]);
+            ]);
 
-        $errors_validate = $validator->validate($input, $constraint);
-        $this->inputErrorsAutoPartsWarehouse->errorValidate($errors_validate);
+            $errors_validate = $validator->validate($input, $constraint);
+            $this->inputErrorsAutoPartsWarehouse->errorValidate($errors_validate);
+
+            $this->autoPartsWarehouse->setQuantity($quantity);
+            $this->autoPartsWarehouse->setPrice($price);
+            $this->autoPartsWarehouse->setSales(0);
+            $this->autoPartsWarehouse->setIdCounterparty($counterparty);
+            $this->autoPartsWarehouse->setIdDetails($part_number);
+            $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
+            $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
+
+            $entityManager = $this->autoPartsWarehouseRepositoryInterface->persistData($this->autoPartsWarehouse);
+        }
 
 
-
-        $this->autoPartsWarehouse->setQuantity($quantity);
-        $this->autoPartsWarehouse->setPrice($price);
-        $this->autoPartsWarehouse->setSales(0);
-        $this->autoPartsWarehouse->setIdCounterparty($counterparty);
-        $this->autoPartsWarehouse->setIdDetails($part_number);
-        $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
-        $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
-
-        $successfully_save = $this->autoPartsWarehouseRepositoryInterface->save($this->autoPartsWarehouse);
+        $successfully_save = $this->autoPartsWarehouseRepositoryInterface->flushData($entityManager);
 
         $id = $successfully_save['save'];
         return $id;

@@ -120,7 +120,7 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_id_counterparty,
                     $arr_id_method
                 );
-                dd($map_processed_data);
+                //dd($map_processed_data);
                 $id = $saveAutoPartsWarehouseFileCommandHandler
                     ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }

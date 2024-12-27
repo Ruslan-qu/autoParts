@@ -2,11 +2,14 @@
 
 namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAutoPartsWarehouse;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use ContainerHt7Qm2w\EntityManagerGhost614a58f;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 
@@ -21,10 +24,48 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     }
 
     /**
+     * @return EntityManagerGhost614a58f Возвращается объект EntityManager
+     */
+    public function persistData(AutoPartsWarehouse $autoPartsWarehouse): EntityManagerGhost614a58f
+    {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
+        $input_errors->emptyEntity($autoPartsWarehouse->getPrice());
+
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($autoPartsWarehouse);
+
+        return $entityManager;
+    }
+
+    /**
+     * @return array Возвращается массив с данными об успешном сохранении
+     */
+    public function flushData(EntityManagerGhost614a58f $entityManager): array
+    {
+        //$input_errors = new InputErrorsAutoPartsWarehouse;
+        //$input_errors->emptyEntity($entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse));
+
+        $entityManager->flush();
+
+        //$entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse);
+        dd($entityManager);
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+        return $successfully = ['save' => $entityData['id']];
+    }
+
+    /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
     public function save(AutoPartsWarehouse $autoPartsWarehouse): array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
+        $input_errors->emptyEntity($autoPartsWarehouse->getPrice());
+
         $entityManager = $this->getEntityManager();
         $entityManager->persist($autoPartsWarehouse);
         $entityManager->flush();
