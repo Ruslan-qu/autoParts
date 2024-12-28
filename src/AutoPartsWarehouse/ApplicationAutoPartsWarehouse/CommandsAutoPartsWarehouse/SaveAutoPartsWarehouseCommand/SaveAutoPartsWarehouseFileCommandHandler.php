@@ -2,6 +2,7 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand;
 
+use Doctrine\Common\Collections\Collection as Doctrine;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -25,7 +26,7 @@ final class SaveAutoPartsWarehouseFileCommandHandler
 
     public function handler(ArrAutoPartsWarehouseCommand $arrAutoPartsWarehouseCommand): ?int
     {
-
+        $q = new Doctrine('autoPartsWarehouse');
         foreach ($arrAutoPartsWarehouseCommand->getArrAutoPartsData() as $key => $value) {
 
             $quantity = $value['auto_parts_data']->getQuantity();
@@ -99,10 +100,11 @@ final class SaveAutoPartsWarehouseFileCommandHandler
             $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
             $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
 
-            $entityManager = $this->autoPartsWarehouseRepositoryInterface->persistData($this->autoPartsWarehouse);
+            // $entityManager = $this->autoPartsWarehouseRepositoryInterface->persistData($this->autoPartsWarehouse);
+            $q->add($this->autoPartsWarehouse . $key);
         }
 
-
+        dd($q);
         $successfully_save = $this->autoPartsWarehouseRepositoryInterface->flushData($entityManager);
 
         $id = $successfully_save['save'];
