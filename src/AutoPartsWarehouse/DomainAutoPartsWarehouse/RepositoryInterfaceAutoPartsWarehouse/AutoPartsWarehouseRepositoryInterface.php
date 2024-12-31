@@ -11,9 +11,9 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehous
 
 interface AutoPartsWarehouseRepositoryInterface
 {
-    public function persistData(AutoPartsWarehouse $autoPartsWarehouse): EntityManagerGhost614a58f;
+    public function persistData(AutoPartsWarehouse $autoPartsWarehouse);
 
-    public function flushData(EntityManagerGhost614a58f $entityManager): array;
+    public function flushData($entityManager, $autoPartsWarehouse, $count_key): array;
 
     public function save(AutoPartsWarehouse $autoPartsWarehouse): array;
 

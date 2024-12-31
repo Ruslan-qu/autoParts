@@ -97,7 +97,7 @@ class AutoPartsWarehouseController extends AbstractController
         /*Валидация формы*/
         $form_save_auto_parts_fale->handleRequest($request);
 
-        $id = null;
+        $saved = '';
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
 
@@ -121,7 +121,7 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_id_method
                 );
                 //dd($map_processed_data);
-                $id = $saveAutoPartsWarehouseFileCommandHandler
+                $saved = $saveAutoPartsWarehouseFileCommandHandler
                     ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }
         }
@@ -129,7 +129,7 @@ class AutoPartsWarehouseController extends AbstractController
         return $this->render('@autoPartsWarehouse/saveAutoPartsFale.html.twig', [
             'title_logo' => 'Cохранить автодеталь через файл',
             'form_save_auto_parts_fale' => $form_save_auto_parts_fale->createView(),
-            'id' => $id
+            'saved' => $saved
         ]);
     }
 

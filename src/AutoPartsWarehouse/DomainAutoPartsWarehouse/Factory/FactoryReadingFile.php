@@ -2,6 +2,7 @@
 
 namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory;
 
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\ReadingFileCSV\ReadingFileCSV;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\ReadingFileXLSX\ReadingFileXLSX;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
@@ -20,7 +21,9 @@ class FactoryReadingFile
         } elseif ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'xml') {
             # code...
         } elseif ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'csv') {
-            # code...
+
+            $readingFileCSV = new ReadingFileCSV;
+            return $readingFileCSV->reading($autoPartsFile);
         } elseif ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'ods') {
             # code...
         }

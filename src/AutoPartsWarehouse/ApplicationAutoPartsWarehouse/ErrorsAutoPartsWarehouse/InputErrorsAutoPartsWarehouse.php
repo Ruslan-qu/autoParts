@@ -181,4 +181,16 @@ class InputErrorsAutoPartsWarehouse
 
         return $this;
     }
+
+    public function countArr($entityData, $count_key): static
+    {
+        if (count($entityData) != $count_key) {
+
+            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
 }

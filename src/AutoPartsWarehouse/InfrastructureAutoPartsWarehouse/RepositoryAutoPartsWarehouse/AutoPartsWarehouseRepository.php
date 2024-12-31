@@ -24,9 +24,9 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     }
 
     /**
-     * @return EntityManagerGhost614a58f Возвращается объект EntityManager
+     * @return EntityManager Возвращается объект EntityManager
      */
-    public function persistData(AutoPartsWarehouse $autoPartsWarehouse): EntityManagerGhost614a58f
+    public function persistData(AutoPartsWarehouse $autoPartsWarehouse)
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyEntity($autoPartsWarehouse->getPrice());
@@ -40,22 +40,18 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
-    public function flushData(EntityManagerGhost614a58f $entityManager): array
+    public function flushData($entityManager, $autoPartsWarehouse, $count_key): array
     {
-        //$input_errors = new InputErrorsAutoPartsWarehouse;
-        //$input_errors->emptyEntity($entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse));
+        $input_errors = new InputErrorsAutoPartsWarehouse;
 
         $entityManager->flush();
 
-        //$entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse);
-        dd($entityManager);
-        $exists = $this->count($entityData);
-        if ($exists == 0) {
-            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
-        }
-        return $successfully = ['save' => $entityData['id']];
+        $entityData = $entityManager
+            ->getUnitOfWork()
+            ->getIdentityMap()['App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse'];
+        $input_errors->countArr($entityData, $count_key);
+
+        return $successfully = ['save' => 'saved'];
     }
 
     /**

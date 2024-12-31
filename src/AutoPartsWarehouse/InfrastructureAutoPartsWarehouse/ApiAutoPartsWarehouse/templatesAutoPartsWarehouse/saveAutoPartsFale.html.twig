@@ -24,12 +24,6 @@
         {{ form_errors(form_save_auto_parts_fale.file_save) }}
       </div>
 
-      {# <div class="col-sm-3 col-md-2 col-lg-2 col-xl-2">
-        {{ form_widget(form_save_auto_parts_fale.file_extension,
-        { 'attr': {'class': 'form-control form-control-md w-100'} })}}
-        {{ form_errors(form_save_auto_parts_fale.file_extension) }}
-      </div>#}
-
       <div class="col-sm-3 col-md-2 col-lg-2 col-xl-2">
         {{ form_widget(form_save_auto_parts_fale.button_save_fale, { 'label': 'Загрузить', 'attr': {'class':
         'btn btn-danger w-100'}}) }}
@@ -40,7 +34,7 @@
   {{ form_end(form_save_auto_parts_fale) }}
 
   <div class="col-auto m-3">
-    {% if id %}
+    {% if saved %}
     <h5>Поставка сохранена</h5>
     {% endif %}
 

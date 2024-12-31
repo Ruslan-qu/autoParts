@@ -21,14 +21,15 @@ final class SaveAutoPartsWarehouseFileCommandHandler
     public function __construct(
         private InputErrorsAutoPartsWarehouse $inputErrorsAutoPartsWarehouse,
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface,
-        private AutoPartsWarehouse $autoPartsWarehouse
+
     ) {}
 
-    public function handler(ArrAutoPartsWarehouseCommand $arrAutoPartsWarehouseCommand): ?int
+    public function handler(ArrAutoPartsWarehouseCommand $arrAutoPartsWarehouseCommand): ?string
     {
-        $q = new Doctrine('autoPartsWarehouse');
+        $count_key = 0;
         foreach ($arrAutoPartsWarehouseCommand->getArrAutoPartsData() as $key => $value) {
 
+            $count_key++;
             $quantity = $value['auto_parts_data']->getQuantity();
             $price = $value['auto_parts_data']->getPrice();
             $part_number = $value['auto_parts_data']->getIdDetails();
@@ -92,22 +93,21 @@ final class SaveAutoPartsWarehouseFileCommandHandler
             $errors_validate = $validator->validate($input, $constraint);
             $this->inputErrorsAutoPartsWarehouse->errorValidate($errors_validate);
 
-            $this->autoPartsWarehouse->setQuantity($quantity);
-            $this->autoPartsWarehouse->setPrice($price);
-            $this->autoPartsWarehouse->setSales(0);
-            $this->autoPartsWarehouse->setIdCounterparty($counterparty);
-            $this->autoPartsWarehouse->setIdDetails($part_number);
-            $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
-            $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
+            $autoPartsWarehouse = new AutoPartsWarehouse;
+            $autoPartsWarehouse->setQuantity($quantity);
+            $autoPartsWarehouse->setPrice($price);
+            $autoPartsWarehouse->setSales(0);
+            $autoPartsWarehouse->setIdCounterparty($counterparty);
+            $autoPartsWarehouse->setIdDetails($part_number);
+            $autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
+            $autoPartsWarehouse->setIdPaymentMethod($payment_method);
 
-            // $entityManager = $this->autoPartsWarehouseRepositoryInterface->persistData($this->autoPartsWarehouse);
-            $q->add($this->autoPartsWarehouse . $key);
+            $entityManager = $this->autoPartsWarehouseRepositoryInterface->persistData($autoPartsWarehouse);
         }
 
-        dd($q);
-        $successfully_save = $this->autoPartsWarehouseRepositoryInterface->flushData($entityManager);
 
-        $id = $successfully_save['save'];
-        return $id;
+        $successfully_save = $this->autoPartsWarehouseRepositoryInterface->flushData($entityManager, $autoPartsWarehouse, $count_key);
+
+        return $successfully_save['save'];
     }
 }
