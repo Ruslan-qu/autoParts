@@ -2,8 +2,6 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\ReadingFileODS;
 
-use XMLReader;
-use SimpleXMLElement;
 use DateTimeImmutable;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\File;
@@ -42,9 +40,27 @@ class ReadingFileODS
 
         $input_errors->fileStreamErrors($data);
 
-        dd($data);
-        preg_match_all("/(<text:p>)(.*?)(<\/text:p>)/", $data, $a, PREG_SET_ORDER);
-        dd($a);
+        //dd($data);
+        preg_match_all(
+            "/(<table:table-row table:style-name=\"[a-zA-Z\d]+\">)(.*?)(<\/table:table-row>)/",
+            $data,
+            $matches,
+            PREG_SET_ORDER
+        );
+        $input_errors->emptyEntity($matches);
+
+        $arr_string_matches = [];
+        foreach ($matches as $key => $value) {
+            if (str_contains($value['2'], '<text:p>') === true) {
+                $arr_string_matches[$key] = $value['2'];
+            }
+        }
+        $input_errors->emptyEntity($arr_string_matches);
+
+        foreach ($arr_string_matches as $key => $value) {
+            $arr_explode[$key] = explode("<t", $value);
+        }
+        dd($arr_explode);
 
 
         return $this->mapCSVValues($data_file);
