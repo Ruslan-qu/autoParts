@@ -40,8 +40,16 @@ class ReadingFileODS
 
         $input_errors->fileStreamErrors($data);
 
-        //dd($data);
+        $a = str_replace("<table:table-row table:style-name=\"[a-zA-Z\d]+\">", "<text:p> <\/text:p>", $data);
+        dd($a);
         preg_match_all(
+            "/(<text:p>)(.*?)(<\/text:p>)/",
+            str_replace("<table:table-row table:style-name=\"[a-zA-Z\d]+\">", "<text:p> <\/text:p>", $data),
+            $matches,
+            PREG_SET_ORDER
+        );
+        dd($matches);
+        /* preg_match_all(
             "/(<table:table-row table:style-name=\"[a-zA-Z\d]+\">)(.*?)(<\/table:table-row>)/",
             $data,
             $matches,
@@ -59,7 +67,7 @@ class ReadingFileODS
 
         foreach ($arr_string_matches as $key => $value) {
             $arr_explode[$key] = explode("<t", $value);
-        }
+        }*/
         dd($arr_explode);
 
 
