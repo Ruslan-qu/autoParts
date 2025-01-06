@@ -40,16 +40,7 @@ class ReadingFileODS
 
         $input_errors->fileStreamErrors($data);
 
-        $a = str_replace("<table:table-row table:style-name=\"[a-zA-Z\d]+\">", "<text:p> <\/text:p>", $data);
-        dd($a);
         preg_match_all(
-            "/(<text:p>)(.*?)(<\/text:p>)/",
-            str_replace("<table:table-row table:style-name=\"[a-zA-Z\d]+\">", "<text:p> <\/text:p>", $data),
-            $matches,
-            PREG_SET_ORDER
-        );
-        dd($matches);
-        /* preg_match_all(
             "/(<table:table-row table:style-name=\"[a-zA-Z\d]+\">)(.*?)(<\/table:table-row>)/",
             $data,
             $matches,
@@ -66,68 +57,73 @@ class ReadingFileODS
         $input_errors->emptyEntity($arr_string_matches);
 
         foreach ($arr_string_matches as $key => $value) {
-            $arr_explode[$key] = explode("<t", $value);
-        }*/
-        dd($arr_explode);
 
+            preg_match_all(
+                "/(<text:p>)(.*?)(<\/text:p>)/",
+                preg_replace("<table:table-cell table:style-name=\"[a-zA-Z\d]*\"/>", "<text:p> </text:p>", $value),
+                $matches,
+                PREG_SET_ORDER
+            );
+            $arr_processed[$key] = $matches;
+        }
 
-        return $this->mapCSVValues($data_file);
+        return $this->mapCSVValues($arr_processed);
     }
 
     private function mapCSVValues($data_file): array
     {
-        $data_file_csv = [];
+        $data_file_ods = [];
         foreach ($data_file as $key => $value) {
 
-            if (empty($value['0'])) {
+            if (empty($value['0']['2'])) {
                 $part_name = null;
             } else {
-                $part_name = $value['0'];
+                $part_name = $value['0']['2'];
             }
 
-            if (empty($value['1'])) {
+            if (empty($value['1']['2'])) {
                 $manufacturer = null;
             } else {
-                $manufacturer = $value['1'];
+                $manufacturer = $value['1']['2'];
             }
 
-            if (empty($value['2'])) {
+            if (empty($value['2']['2'])) {
                 $part_number = null;
             } else {
-                $part_number = $value['2'];
+                $part_number = $value['2']['2'];
             }
 
-            if (empty($value['3'])) {
+            if (empty($value['3']['2'])) {
                 $quantity = null;
             } else {
-                $quantity = $value['3'];
+                $quantity = $value['3']['2'];
             }
 
-            if (empty($value['4'])) {
+            if (empty($value['4']['2'])) {
                 $price = null;
             } else {
-                $price = $value['4'];
+                $price = $value['4']['2'];
             }
 
-            if (empty($value['5'])) {
+            if (empty($value['5']['2'])) {
                 $counterparty = null;
             } else {
-                $counterparty = $value['5'];
+                $counterparty = $value['5']['2'];
             }
 
-            if (empty($value['6']) || strtotime($value['6']) === false) {
+            if (empty($value['6']['2']) || strtotime($value['6']['2']) === false) {
                 $date_receipt_auto_parts_warehouse = null;
             } else {
-                $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['6']);
+                $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['6']['2']);
             }
 
-            if (empty($value['7'])) {
+            if (empty($value['7']['2'])) {
                 $payment_method = null;
             } else {
-                $payment_method = $value['7'];
+                $payment_method = $value['7']['2'];
             }
 
-            $data_file_csv[$key] =
+            $data_file_ods[$key] =
                 [
                     'part_name' => $part_name,
                     'manufacturer' => $manufacturer,
@@ -139,6 +135,6 @@ class ReadingFileODS
                     'payment_method' => $payment_method
                 ];
         }
-        return $data_file_csv;
+        return $data_file_ods;
     }
 }

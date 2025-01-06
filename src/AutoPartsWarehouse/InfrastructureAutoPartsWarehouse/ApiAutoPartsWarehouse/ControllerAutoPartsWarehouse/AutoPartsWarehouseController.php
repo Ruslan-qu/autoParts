@@ -102,7 +102,7 @@ class AutoPartsWarehouseController extends AbstractController
             if ($form_save_auto_parts_fale->isValid()) {
 
                 $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
-
+                //dd($file_data_array);
                 $map_file_data = $this->mapFileData($file_data_array);
 
                 $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
@@ -120,7 +120,7 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_id_counterparty,
                     $arr_id_method
                 );
-                //dd($map_processed_data);
+
                 $saved = $saveAutoPartsWarehouseFileCommandHandler
                     ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }
