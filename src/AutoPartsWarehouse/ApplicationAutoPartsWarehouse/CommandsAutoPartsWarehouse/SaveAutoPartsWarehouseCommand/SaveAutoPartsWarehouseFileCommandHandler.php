@@ -26,12 +26,14 @@ final class SaveAutoPartsWarehouseFileCommandHandler
 
     public function handler(ArrAutoPartsWarehouseCommand $arrAutoPartsWarehouseCommand): ?string
     {
+        //dd($arrAutoPartsWarehouseCommand);
         $count_key = 0;
         foreach ($arrAutoPartsWarehouseCommand->getArrAutoPartsData() as $key => $value) {
 
             $count_key++;
             $quantity = $value['auto_parts_data']->getQuantity();
             $price = $value['auto_parts_data']->getPrice();
+            dd($price);
             $part_number = $value['auto_parts_data']->getIdDetails();
             $counterparty = $value['auto_parts_data']->getIdCounterparty();
             $date_receipt_auto_parts_warehouse = $value['auto_parts_data']->getDateReceiptAutoPartsWarehouse();

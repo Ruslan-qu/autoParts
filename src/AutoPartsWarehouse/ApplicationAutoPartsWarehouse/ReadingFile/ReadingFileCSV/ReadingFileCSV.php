@@ -75,7 +75,11 @@ class ReadingFileCSV
             if (empty($value['4'])) {
                 $price = null;
             } else {
-                $price = $value['4'];
+                if (strpos($value['4'], ',')) {
+                    $price = (float)str_replace(',', '.', $value['4']);
+                } else {
+                    $price = (float)$value['4'];
+                }
             }
 
             if (empty($value['5'])) {

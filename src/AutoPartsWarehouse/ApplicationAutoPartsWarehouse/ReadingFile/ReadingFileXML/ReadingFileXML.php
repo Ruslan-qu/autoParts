@@ -43,43 +43,47 @@ class ReadingFileXML
     {
         $data_file_xml = [];
         $data_file_xml_key = 0;
-        dd((array)$data_file->table);
-        foreach ($data_file->table as $key => $value) {
+        //dd($data_file->table);
+        foreach ($data_file as $key => $value) {
 
             if (empty($value->part_name)) {
                 $part_name = null;
             } else {
-                $part_name = $value->part_name;
+                $part_name = (string)$value->part_name;
             }
 
             if (empty($value->manufacturer)) {
                 $manufacturer = null;
             } else {
-                $manufacturer = $value->manufacturer;
+                $manufacturer = (string)$value->manufacturer;
             }
 
             if (empty($value->part_number)) {
                 $part_number = null;
             } else {
-                $part_number = $value->part_number;
+                $part_number = (string)$value->part_number;
             }
 
             if (empty($value->quantity)) {
                 $quantity = null;
             } else {
-                $quantity = $value->quantity;
+                $quantity = (string)$value->quantity;
             }
 
             if (empty($value->price)) {
                 $price = null;
             } else {
-                $price = $value->price;
+                if (strpos((string)$value->price, ',')) {
+                    $price = (float)str_replace(',', '.', (string)$value->price);
+                } else {
+                    $price = (float)$value->price;
+                }
             }
 
             if (empty($value->counterparty)) {
                 $counterparty = null;
             } else {
-                $counterparty = $value->counterparty;
+                $counterparty = (string)$value->counterparty;
             }
 
             if (
@@ -94,7 +98,7 @@ class ReadingFileXML
             if (empty($value->payment_method)) {
                 $payment_method = null;
             } else {
-                $payment_method = $value->payment_method;
+                $payment_method = (string)$value->payment_method;
             }
 
             $data_file_xml[$data_file_xml_key] =

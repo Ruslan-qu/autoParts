@@ -33,7 +33,7 @@ abstract class MapAutoPartsWarehouseCommand
                     ->value;
 
                 if (gettype($value) == 'double' || gettype($value) == 'float') {
-
+dd()
                     $value = $value * 100;
                 }
 

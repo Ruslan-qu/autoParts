@@ -139,7 +139,7 @@ class ReadingFileXLSX
             if (empty($value['E'])) {
                 $price = null;
             } else {
-                $price = $value['E'];
+                $price = (float)$value['E'];
             }
 
             if (empty($value['F'])) {

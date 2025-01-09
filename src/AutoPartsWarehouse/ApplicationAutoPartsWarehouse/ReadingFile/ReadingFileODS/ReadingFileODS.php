@@ -102,7 +102,11 @@ class ReadingFileODS
             if (empty($value['4']['2'])) {
                 $price = null;
             } else {
-                $price = $value['4']['2'];
+                if (strpos($value['4']['2'], ',')) {
+                    $price = (float)str_replace(',', '.', $value['4']['2']);
+                } else {
+                    $price = (float)$value['4']['2'];
+                }
             }
 
             if (empty($value['5']['2'])) {
