@@ -109,56 +109,39 @@ class ReadingFileXLSX
 
     private function mapXlsValues($xls_values): array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
         $data_file_xlsx = [];
         foreach ($xls_values as $key => $value) {
 
-            if (empty($value['A'])) {
-                $part_name = null;
-            } else {
-                $part_name = $value['A'];
-            }
+            $input_errors->emptyFileCells($value['A']);
+            $part_name = $value['A'];
 
-            if (empty($value['B'])) {
-                $manufacturer = null;
-            } else {
-                $manufacturer = $value['B'];
-            }
 
-            if (empty($value['C'])) {
-                $part_number = null;
-            } else {
-                $part_number = $value['C'];
-            }
+            $input_errors->emptyFileCells($value['B']);
+            $manufacturer = $value['B'];
 
-            if (empty($value['D'])) {
-                $quantity = null;
-            } else {
-                $quantity = $value['D'];
-            }
 
-            if (empty($value['E'])) {
-                $price = null;
-            } else {
-                $price = (float)$value['E'];
-            }
+            $input_errors->emptyFileCells($value['C']);
+            $part_number = $value['C'];
 
-            if (empty($value['F'])) {
-                $counterparty = null;
-            } else {
-                $counterparty = $value['F'];
-            }
 
-            if (empty($value['G']) || strtotime($value['G']) === false) {
-                $date_receipt_auto_parts_warehouse = null;
-            } else {
-                $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['G']);
-            }
+            $input_errors->emptyFileCells($value['D']);
+            $quantity = $value['D'];
 
-            if (empty($value['H'])) {
-                $payment_method = null;
-            } else {
-                $payment_method = $value['H'];
-            }
+
+            $input_errors->emptyFileCells($value['E']);
+            $price = (float)$value['E'];
+
+            $input_errors->emptyFileCells($value['F']);
+            $counterparty = $value['F'];
+
+
+            $input_errors->emptyFileCellsDate($value['G']);
+            $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['G']);
+
+            $input_errors->emptyFileCells($value['H']);
+            $payment_method = $value['H'];
+
 
             $data_file_xlsx[$key] =
                 [

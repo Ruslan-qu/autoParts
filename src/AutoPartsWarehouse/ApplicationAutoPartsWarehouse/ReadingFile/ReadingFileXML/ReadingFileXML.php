@@ -46,10 +46,8 @@ class ReadingFileXML
         $data_file_xml_key = 0;
         foreach ($data_file as $key => $value) {
 
-
             $input_errors->emptyFileCells($value->part_name);
             $part_name = (string)$value->part_name;
-
 
             $input_errors->emptyFileCells($value->manufacturer);
             $manufacturer = (string)$value->manufacturer;
@@ -57,10 +55,8 @@ class ReadingFileXML
             $input_errors->emptyFileCells($value->part_number);
             $part_number = (string)$value->part_number;
 
-
             $input_errors->emptyFileCells($value->quantity);
             $quantity = (string)$value->quantity;
-
 
             $input_errors->emptyFileCells($value->price);
             if (strpos((string)$value->price, ',')) {
@@ -69,23 +65,14 @@ class ReadingFileXML
                 $price = (float)$value->price;
             }
 
-
             $input_errors->emptyFileCells($value->counterparty);
             $counterparty = (string)$value->counterparty;
 
-
-            if (
-                empty($value->date_receipt_auto_parts_warehouse)
-                || strtotime($value->date_receipt_auto_parts_warehouse) === false
-            ) {
-                $date_receipt_auto_parts_warehouse = null;
-            } else {
-                $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value->date_receipt_auto_parts_warehouse);
-            }
+            $input_errors->emptyFileCellsDate($value->date_receipt_auto_parts_warehouse);
+            $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value->date_receipt_auto_parts_warehouse);
 
             $input_errors->emptyFileCells($value->payment_method);
             $payment_method = (string)$value->payment_method;
-
 
             $data_file_xml[$data_file_xml_key] =
                 [

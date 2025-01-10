@@ -60,72 +60,50 @@ class ReadingFileODS
 
             preg_match_all(
                 "/(<text:p>)(.*?)(<\/text:p>)/",
-                preg_replace("<table:table-cell table:style-name=\"[a-zA-Z\d]*\"/>", "<text:p> </text:p>", $value),
+                preg_replace("<table:table-cell table:style-name=\"[a-zA-Z\d]*\"/>", "<text:p></text:p>", $value),
                 $matches,
                 PREG_SET_ORDER
             );
             $arr_processed[$key] = $matches;
         }
+        $zip->close();
 
         return $this->mapCSVValues($arr_processed);
     }
 
     private function mapCSVValues($data_file): array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
         $data_file_ods = [];
         foreach ($data_file as $key => $value) {
+            //dd($value);
+            $input_errors->emptyFileCells($value['0']['2']);
+            $part_name = $value['0']['2'];
 
-            if (empty($value['0']['2'])) {
-                $part_name = null;
+            $input_errors->emptyFileCells($value['1']['2']);
+            $manufacturer = $value['1']['2'];
+
+            $input_errors->emptyFileCells($value['2']['2']);
+            $part_number = $value['2']['2'];
+
+            $input_errors->emptyFileCells($value['3']['2']);
+            $quantity = $value['3']['2'];
+
+            $input_errors->emptyFileCells($value['4']['2']);
+            if (strpos($value['4']['2'], ',')) {
+                $price = (float)str_replace(',', '.', $value['4']['2']);
             } else {
-                $part_name = $value['0']['2'];
+                $price = (float)$value['4']['2'];
             }
 
-            if (empty($value['1']['2'])) {
-                $manufacturer = null;
-            } else {
-                $manufacturer = $value['1']['2'];
-            }
+            $input_errors->emptyFileCells($value['5']['2']);
+            $counterparty = $value['5']['2'];
 
-            if (empty($value['2']['2'])) {
-                $part_number = null;
-            } else {
-                $part_number = $value['2']['2'];
-            }
+            $input_errors->emptyFileCellsDate($value['6']['2']);
+            $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['6']['2']);
 
-            if (empty($value['3']['2'])) {
-                $quantity = null;
-            } else {
-                $quantity = $value['3']['2'];
-            }
-
-            if (empty($value['4']['2'])) {
-                $price = null;
-            } else {
-                if (strpos($value['4']['2'], ',')) {
-                    $price = (float)str_replace(',', '.', $value['4']['2']);
-                } else {
-                    $price = (float)$value['4']['2'];
-                }
-            }
-
-            if (empty($value['5']['2'])) {
-                $counterparty = null;
-            } else {
-                $counterparty = $value['5']['2'];
-            }
-
-            if (empty($value['6']['2']) || strtotime($value['6']['2']) === false) {
-                $date_receipt_auto_parts_warehouse = null;
-            } else {
-                $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['6']['2']);
-            }
-
-            if (empty($value['7']['2'])) {
-                $payment_method = null;
-            } else {
-                $payment_method = $value['7']['2'];
-            }
+            $input_errors->emptyFileCells($value['7']['2']);
+            $payment_method = $value['7']['2'];
 
             $data_file_ods[$key] =
                 [
@@ -139,6 +117,7 @@ class ReadingFileODS
                     'payment_method' => $payment_method
                 ];
         }
+
         return $data_file_ods;
     }
 }
