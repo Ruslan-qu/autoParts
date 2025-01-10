@@ -193,4 +193,16 @@ class InputErrorsAutoPartsWarehouse
 
         return $this;
     }
+
+    public function emptyFileCells($value): static
+    {
+        if (empty($value)) {
+
+            $arr_data_errors = ['Error' => 'Фаил содержит пустые ячейки'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
 }

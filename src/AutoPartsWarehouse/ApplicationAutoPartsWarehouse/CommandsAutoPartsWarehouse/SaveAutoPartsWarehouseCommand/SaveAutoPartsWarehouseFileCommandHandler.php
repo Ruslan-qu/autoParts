@@ -2,17 +2,13 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand;
 
-use Doctrine\Common\Collections\Collection as Doctrine;
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsFileCommand\AutoPartsFileCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\ArrAutoPartsWarehouseCommand;
 
 final class SaveAutoPartsWarehouseFileCommandHandler
@@ -26,14 +22,13 @@ final class SaveAutoPartsWarehouseFileCommandHandler
 
     public function handler(ArrAutoPartsWarehouseCommand $arrAutoPartsWarehouseCommand): ?string
     {
-        //dd($arrAutoPartsWarehouseCommand);
+
         $count_key = 0;
         foreach ($arrAutoPartsWarehouseCommand->getArrAutoPartsData() as $key => $value) {
 
             $count_key++;
             $quantity = $value['auto_parts_data']->getQuantity();
             $price = $value['auto_parts_data']->getPrice();
-            dd($price);
             $part_number = $value['auto_parts_data']->getIdDetails();
             $counterparty = $value['auto_parts_data']->getIdCounterparty();
             $date_receipt_auto_parts_warehouse = $value['auto_parts_data']->getDateReceiptAutoPartsWarehouse();

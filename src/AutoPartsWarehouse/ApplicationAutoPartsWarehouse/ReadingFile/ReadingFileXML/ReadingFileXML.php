@@ -41,50 +41,38 @@ class ReadingFileXML
 
     private function mapCSVValues($data_file): array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
         $data_file_xml = [];
         $data_file_xml_key = 0;
-        //dd($data_file->table);
         foreach ($data_file as $key => $value) {
 
-            if (empty($value->part_name)) {
-                $part_name = null;
+
+            $input_errors->emptyFileCells($value->part_name);
+            $part_name = (string)$value->part_name;
+
+
+            $input_errors->emptyFileCells($value->manufacturer);
+            $manufacturer = (string)$value->manufacturer;
+
+            $input_errors->emptyFileCells($value->part_number);
+            $part_number = (string)$value->part_number;
+
+
+            $input_errors->emptyFileCells($value->quantity);
+            $quantity = (string)$value->quantity;
+
+
+            $input_errors->emptyFileCells($value->price);
+            if (strpos((string)$value->price, ',')) {
+                $price = (float)str_replace(',', '.', (string)$value->price);
             } else {
-                $part_name = (string)$value->part_name;
+                $price = (float)$value->price;
             }
 
-            if (empty($value->manufacturer)) {
-                $manufacturer = null;
-            } else {
-                $manufacturer = (string)$value->manufacturer;
-            }
 
-            if (empty($value->part_number)) {
-                $part_number = null;
-            } else {
-                $part_number = (string)$value->part_number;
-            }
+            $input_errors->emptyFileCells($value->counterparty);
+            $counterparty = (string)$value->counterparty;
 
-            if (empty($value->quantity)) {
-                $quantity = null;
-            } else {
-                $quantity = (string)$value->quantity;
-            }
-
-            if (empty($value->price)) {
-                $price = null;
-            } else {
-                if (strpos((string)$value->price, ',')) {
-                    $price = (float)str_replace(',', '.', (string)$value->price);
-                } else {
-                    $price = (float)$value->price;
-                }
-            }
-
-            if (empty($value->counterparty)) {
-                $counterparty = null;
-            } else {
-                $counterparty = (string)$value->counterparty;
-            }
 
             if (
                 empty($value->date_receipt_auto_parts_warehouse)
@@ -95,11 +83,9 @@ class ReadingFileXML
                 $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value->date_receipt_auto_parts_warehouse);
             }
 
-            if (empty($value->payment_method)) {
-                $payment_method = null;
-            } else {
-                $payment_method = (string)$value->payment_method;
-            }
+            $input_errors->emptyFileCells($value->payment_method);
+            $payment_method = (string)$value->payment_method;
+
 
             $data_file_xml[$data_file_xml_key] =
                 [

@@ -32,7 +32,7 @@ abstract class MapAutoPartsWarehouseDeleteQuery
                     ->value;
 
                 if (gettype($value) == 'double' || gettype($value) == 'float') {
-                    $value = $value * 100;
+                    $value = round($value * 100);
                 }
 
                 settype($value, $type);

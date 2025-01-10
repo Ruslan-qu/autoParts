@@ -101,28 +101,34 @@ class AutoPartsWarehouseController extends AbstractController
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
 
-                $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
-                //dd($file_data_array);
-                $map_file_data = $this->mapFileData($file_data_array);
+                try {
 
-                $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
-                    ->partNumberSearch($map_file_data['arr_part_number']);
+                    $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
 
-                $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
-                    ->counterpartySearch($map_file_data['arr_counterparty']);
+                    $map_file_data = $this->mapFileData($file_data_array);
 
-                $arr_id_method = $findOneByPaymentMethodQueryHandler
-                    ->handler(new ArrPaymentMethodQuery($map_file_data['arr_payment_method']));
+                    $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
+                        ->partNumberSearch($map_file_data['arr_part_number']);
 
-                $map_processed_data = $this->mapProcessedData(
-                    $file_data_array,
-                    $arr_id_details,
-                    $arr_id_counterparty,
-                    $arr_id_method
-                );
+                    $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
+                        ->counterpartySearch($map_file_data['arr_counterparty']);
 
-                $saved = $saveAutoPartsWarehouseFileCommandHandler
-                    ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
+                    $arr_id_method = $findOneByPaymentMethodQueryHandler
+                        ->handler(new ArrPaymentMethodQuery($map_file_data['arr_payment_method']));
+
+                    $map_processed_data = $this->mapProcessedData(
+                        $file_data_array,
+                        $arr_id_details,
+                        $arr_id_counterparty,
+                        $arr_id_method
+                    );
+
+                    $saved = $saveAutoPartsWarehouseFileCommandHandler
+                        ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
             }
         }
 

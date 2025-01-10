@@ -14,7 +14,7 @@ class FactoryReadingFile
     public static function choiceReadingFile(AutoPartsFile $autoPartsFile)
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
-        $input_errors->emptyData($autoPartsFile);
+        $input_errors->emptyData($autoPartsFile->getFileSave());
 
         if ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'xlsx') {
 
