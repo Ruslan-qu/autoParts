@@ -218,4 +218,29 @@ class InputErrorsAutoPartsWarehouse
 
         return $this;
     }
+
+    public function emptyFileCellsKey(array $value, string $key): static
+    {
+        //dd(empty($value));
+        if (empty($value[$key])) {
+
+            $arr_data_errors = ['Error' => 'Фаил содержит пустые ячейки'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function emptyFileCellsDateKey(array $value, string $key): static
+    {
+        if (empty($value[$key]) || strtotime($value[$key]) === false) {
+
+            $arr_data_errors = ['Error' => 'Фаил содержит пустую ячейку дата'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
 }

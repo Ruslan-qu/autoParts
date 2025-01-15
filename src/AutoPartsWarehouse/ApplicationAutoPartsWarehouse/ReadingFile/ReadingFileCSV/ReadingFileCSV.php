@@ -45,60 +45,38 @@ class ReadingFileCSV
 
     private function mapCSVValues($data_file): array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
         $data_file_csv = [];
         foreach ($data_file as $key => $value) {
 
-            if (empty($value['0'])) {
-                $part_name = null;
+            $input_errors->emptyFileCells($value['0']);
+            $part_name = $value['0'];
+
+            $input_errors->emptyFileCells($value['1']);
+            $manufacturer = $value['1'];
+
+            $input_errors->emptyFileCells($value['2']);
+            $part_number = $value['2'];
+
+            $input_errors->emptyFileCells($value['3']);
+            $quantity = $value['3'];
+
+            $input_errors->emptyFileCells($value['4']);
+            if (strpos($value['4'], ',')) {
+                $price = (float)str_replace(',', '.', $value['4']);
             } else {
-                $part_name = $value['0'];
+                $price = (float)$value['4'];
             }
 
-            if (empty($value['1'])) {
-                $manufacturer = null;
-            } else {
-                $manufacturer = $value['1'];
-            }
+            $input_errors->emptyFileCells($value['5']);
+            $counterparty = $value['5'];
 
-            if (empty($value['2'])) {
-                $part_number = null;
-            } else {
-                $part_number = $value['2'];
-            }
+            $input_errors->emptyFileCellsDate($value['6']);
+            $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['6']);
 
-            if (empty($value['3'])) {
-                $quantity = null;
-            } else {
-                $quantity = $value['3'];
-            }
+            $input_errors->emptyFileCells($value['7']);
+            $payment_method = $value['7'];
 
-            if (empty($value['4'])) {
-                $price = null;
-            } else {
-                if (strpos($value['4'], ',')) {
-                    $price = (float)str_replace(',', '.', $value['4']);
-                } else {
-                    $price = (float)$value['4'];
-                }
-            }
-
-            if (empty($value['5'])) {
-                $counterparty = null;
-            } else {
-                $counterparty = $value['5'];
-            }
-
-            if (empty($value['6']) || strtotime($value['6']) === false) {
-                $date_receipt_auto_parts_warehouse = null;
-            } else {
-                $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['6']);
-            }
-
-            if (empty($value['7'])) {
-                $payment_method = null;
-            } else {
-                $payment_method = $value['7'];
-            }
 
             $data_file_csv[$key] =
                 [

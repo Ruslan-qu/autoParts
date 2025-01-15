@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+  <body>
+    <table>
+      <part_name>Опорный подшипник</part_name>
+      <manufacturer>Sampa</manufacturer>
+      <part_number>fg32318502</part_number>
+      <quantity>1</quantity>
+      <price>33,3</price>
+      <counterparty>cserr</counterparty>
+      <date_receipt_auto_parts_warehouse>27-12-2024</date_receipt_auto_parts_warehouse>
+      <payment_method>1</payment_method>
+    </table>
+    <table>
+      <part_name>Опорный подшипник</part_name>
+      <manufacturer>SAKURA</manufacturer>
+      <part_number>fg32318502</part_number>
+      <quantity>2</quantity>
+      <price>33.3</price>
+      <counterparty>cserr</counterparty>
+      <date_receipt_auto_parts_warehouse>27-12-2024</date_receipt_auto_parts_warehouse>
+      <payment_method>2</payment_method>
+    </table>
+    <table>
+      <part_name>Опорный подшипник</part_name>
+      <manufacturer>SAKURA</manufacturer>
+      <part_number>ff301095</part_number>
+      <quantity>3</quantity>
+      <price>66,6</price>
+      <counterparty>cserr</counterparty>
+      <date_receipt_auto_parts_warehouse>27-12-2024</date_receipt_auto_parts_warehouse>
+      <payment_method>2</payment_method>
+    </table>
+ </body>
+

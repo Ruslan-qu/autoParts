@@ -76,7 +76,7 @@ class ReadingFileODS
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $data_file_ods = [];
         foreach ($data_file as $key => $value) {
-            //dd($value);
+
             $input_errors->emptyFileCells($value['0']['2']);
             $part_name = $value['0']['2'];
 

@@ -39,7 +39,12 @@ class ReadingFileXLSX
         /*Прочитать строковые значения*/
         $str_values = [];
         $fp = $zip->getStream('xl/sharedStrings.xml');
-
+        //dd($fp);
+        /*$xml = simplexml_load_string($fp);
+        $sheetData = (array)($xml->sheetData);
+        $a = (array)$sheetData['row']['0'];
+        $b = (array)$a['c']['0'];
+        dd(!isset($b['v']));*/
         $input_errors->fileStreamErrors($fp);
 
         $data = '';
@@ -74,7 +79,8 @@ class ReadingFileXLSX
         $sheetData = (array)($xml->sheetData);
 
         $input_errors->emptyAndNotCount($sheetData['row']);
-
+        /* $a = (array)$sheetData['row']['0'];
+        dd($a);*/
         foreach ($sheetData['row'] as $row) {
             $row = (array)$row;
 
@@ -87,6 +93,7 @@ class ReadingFileXLSX
                 $col = (array)$col;
                 /*Столбец и колонка*/
                 preg_match('/([A-Z]+)(\d+)/', $col['@attributes']['r'], $matches);
+                //dd($matches);
                 /*Строка из списка*/
                 if (
                     isset($col['@attributes']['t'])
@@ -100,6 +107,7 @@ class ReadingFileXLSX
                 }
             }
         }
+
         $zip->close();
 
         $input_errors->emptyEntity($xls_values);
@@ -113,33 +121,33 @@ class ReadingFileXLSX
         $data_file_xlsx = [];
         foreach ($xls_values as $key => $value) {
 
-            $input_errors->emptyFileCells($value['A']);
+            $input_errors->emptyFileCellsKey($value, 'A');
             $part_name = $value['A'];
 
 
-            $input_errors->emptyFileCells($value['B']);
+            $input_errors->emptyFileCellsKey($value, 'B');
             $manufacturer = $value['B'];
 
 
-            $input_errors->emptyFileCells($value['C']);
+            $input_errors->emptyFileCellsKey($value, 'C');
             $part_number = $value['C'];
 
 
-            $input_errors->emptyFileCells($value['D']);
+            $input_errors->emptyFileCellsKey($value, 'D');
             $quantity = $value['D'];
 
 
-            $input_errors->emptyFileCells($value['E']);
+            $input_errors->emptyFileCellsKey($value, 'E');
             $price = (float)$value['E'];
 
-            $input_errors->emptyFileCells($value['F']);
+            $input_errors->emptyFileCellsKey($value, 'F');
             $counterparty = $value['F'];
 
 
-            $input_errors->emptyFileCellsDate($value['G']);
+            $input_errors->emptyFileCellsDateKey($value, 'G');
             $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['G']);
 
-            $input_errors->emptyFileCells($value['H']);
+            $input_errors->emptyFileCellsKey($value, 'H');
             $payment_method = $value['H'];
 
 
