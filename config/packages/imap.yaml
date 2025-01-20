@@ -1,2 +1,6 @@
 imap:
-    connections: []
+    connections: 
+        example:
+            imap_path: "{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX"
+            username: "imap_test_test_test@mail.ru"
+            password: "jVRBymTQUhzvExwcka67"

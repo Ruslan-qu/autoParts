@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use SecIT\ImapBundle\Connection\ConnectionInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
@@ -138,6 +139,75 @@ class AutoPartsWarehouseController extends AbstractController
             'saved' => $saved
         ]);
     }
+
+    /*функция сохранения из электронного почтового ящика автодеталей на склад*/
+    #[Route('/saveAutoPartsImap', name: 'save_auto_parts_imap')]
+    public function saveAutoPartsImap(
+        Request $request,
+        ConnectionInterface $exampleConnection,
+        SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
+        AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
+        AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
+        FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler
+    ): Response {
+
+
+        /*$mailbox = $exampleConnection->getMailbox();
+        $a = $mailbox->searchMailbox('ALL');
+        $m = $mailbox->getMail($a[0]);*/
+        //$hed = mb_decode_mimeheader($m->headers->subject);
+        $imap = imap_open('{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX', 'imap_test_test_test@mail.ru', 'jVRBymTQUhzvExwcka67');
+        $mails_id = imap_search($imap, 'ALL');
+        $header = imap_fetchbody($imap, $mails_id[1], 2);
+        dd(imap_base64($header));
+        /*Подключаем формы*/
+        $form_save_auto_parts_fale = $this->createForm(SaveAutoPartsFaleType::class);
+
+        /*Валидация формы*/
+        $form_save_auto_parts_fale->handleRequest($request);
+
+        $saved = '';
+        if ($form_save_auto_parts_fale->isSubmitted()) {
+            if ($form_save_auto_parts_fale->isValid()) {
+
+                try {
+
+                    $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
+
+                    $map_file_data = $this->mapFileData($file_data_array);
+
+                    $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
+                        ->partNumberSearch($map_file_data['arr_part_number']);
+
+                    $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
+                        ->counterpartySearch($map_file_data['arr_counterparty']);
+
+                    $arr_id_method = $findOneByPaymentMethodQueryHandler
+                        ->handler(new ArrPaymentMethodQuery($map_file_data['arr_payment_method']));
+
+                    $map_processed_data = $this->mapProcessedData(
+                        $file_data_array,
+                        $arr_id_details,
+                        $arr_id_counterparty,
+                        $arr_id_method
+                    );
+
+                    $saved = $saveAutoPartsWarehouseFileCommandHandler
+                        ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
+            }
+        }
+
+        return $this->render('@autoPartsWarehouse/saveAutoPartsFale.html.twig', [
+            'title_logo' => 'Cохранить автодеталь через файл',
+            'form_save_auto_parts_fale' => $form_save_auto_parts_fale->createView(),
+            'saved' => $saved
+        ]);
+    }
+
 
     /*Поиск автодеталей на сладе*/
     #[Route('/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
