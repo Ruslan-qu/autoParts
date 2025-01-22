@@ -10,7 +10,9 @@ use SecIT\ImapBundle\Connection\ConnectionInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingEmail;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
 use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseSalesInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\PaymentMethodQuery;
@@ -102,7 +104,7 @@ class AutoPartsWarehouseController extends AbstractController
         $saved = '';
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
-
+                dd($form_save_auto_parts_fale->getData());
                 try {
 
                     $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
@@ -145,6 +147,7 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/saveAutoPartsImap', name: 'save_auto_parts_imap')]
     public function saveAutoPartsImap(
         Request $request,
+        FactoryReadingEmail $factoryReadingEmail,
         ConnectionInterface $exampleConnection,
         SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
@@ -153,6 +156,9 @@ class AutoPartsWarehouseController extends AbstractController
     ): Response {
 
         $imap = imap_open('{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX', 'imap_test_test_test@mail.ru', 'jVRBymTQUhzvExwcka67');
+
+        $email_data_array = $factoryReadingEmail->choiceReadingEmail(new AutoPartsEmail(['email_imap' => $imap]));
+        dd($email_data_array);
         $mails_id = imap_search($imap, 'ALL');
         $body = imap_fetchbody($imap, $mails_id[0], 2);
         $utf8_body = imap_base64($body);

@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWa
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use IMAP\Connection;
 
 class InputErrorsAutoPartsWarehouse
 {
@@ -196,7 +197,6 @@ class InputErrorsAutoPartsWarehouse
 
     public function emptyFileCells(string $value): static
     {
-        //dd(empty($value));
         if (empty($value)) {
 
             $arr_data_errors = ['Error' => 'Фаил содержит пустые ячейки'];
@@ -237,6 +237,30 @@ class InputErrorsAutoPartsWarehouse
         if (empty($value[$key]) || strtotime($value[$key]) === false) {
 
             $arr_data_errors = ['Error' => 'Фаил содержит пустую ячейку дата'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function instanceofEmail($imap): static
+    {
+        if (!($imap instanceof Connection)) {
+
+            $arr_data_errors = ['Error' => 'Неверный тип, файл должен быть тип Connection'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function imapOpenErrors(): static
+    {
+        if (imap_errors() != false) {
+
+            $arr_data_errors = ['Error' => imap_errors()];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
