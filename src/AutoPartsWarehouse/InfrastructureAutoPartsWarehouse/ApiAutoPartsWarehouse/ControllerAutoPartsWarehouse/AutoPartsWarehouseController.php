@@ -171,21 +171,6 @@ class AutoPartsWarehouseController extends AbstractController
         unset($arr_tr[0]);
         $matches_td = [];
         foreach ($arr_tr as $key => $value) {
-            /* if (str_contains($value[1], 'span') === true) {
-                preg_match_all(
-                    "/<span .*?>(.*?)[ р\.<\/span>]/",
-                    $value[1],
-                    $arr_td,
-                    PREG_SET_ORDER
-                );
-            } else {
-                preg_match_all(
-                    "/<td>(.*?)<\/td>/",
-                    $value[1],
-                    $arr_td,
-                    PREG_SET_ORDER
-                );
-            }*/
 
             preg_match_all(
                 "/<td>(<span.*?>)*(.*?)[ р\.<\/span>]*<\/td>/",
