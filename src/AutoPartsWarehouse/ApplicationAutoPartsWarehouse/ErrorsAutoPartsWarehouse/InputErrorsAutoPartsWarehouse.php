@@ -221,7 +221,6 @@ class InputErrorsAutoPartsWarehouse
 
     public function emptyFileCellsKey(array $value, string $key): static
     {
-        //dd(empty($value));
         if (empty($value[$key])) {
 
             $arr_data_errors = ['Error' => 'Фаил содержит пустые ячейки'];
@@ -274,6 +273,18 @@ class InputErrorsAutoPartsWarehouse
         if (empty($headers->from[$key]->mailbox)) {
 
             $arr_data_errors = ['Error' => 'Данные headers->from пустые'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function emptyDataEmail(array $value, int $key): static
+    {
+        if (empty($value[$key])) {
+
+            $arr_data_errors = ['Error' => 'Емаил содержит пустые данные'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

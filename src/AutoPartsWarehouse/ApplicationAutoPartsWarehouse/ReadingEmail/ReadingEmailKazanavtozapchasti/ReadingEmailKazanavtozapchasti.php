@@ -22,48 +22,50 @@ class ReadingEmailKazanavtozapchasti
 
         $body = imap_base64(imap_fetchbody($imap, $email_id, 2));
         $part_umber_uantity_price_email = $this->partNumberQuantityPriceEmail($body);
-        $data_email = [];
+        $data_imap = [];
         foreach ($part_umber_uantity_price_email as $key => $value) {
             $value[] = $counterparty_email;
             $value[] = $date_email;
             $value[] = $payment_method_email;
-            $data_email[$key] = $value;
+            $data_imap[$key] = $value;
         }
-        dd($data_email);
 
-        return $this->mapDataEmail($data_email);
+
+        return $this->mapDataEmail($data_imap);
     }
 
-    private function mapDataEmail($data_file): array
+    private function mapDataEmail($data_imap): array
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
-        $data_file_csv = [];
-        foreach ($data_file as $key => $value) {
+        $input_errors->emptyData($data_imap);
 
-            $input_errors->emptyFileCells($value['2']);
-            $part_number = $value['2'];
+        $data_email = [];
+        foreach ($data_imap as $key => $value) {
 
-            $input_errors->emptyFileCells($value['3']);
-            $quantity = $value['3'];
+            $input_errors->emptyDataEmail($value, 0);
+            $part_number = $value[0];
 
-            $input_errors->emptyFileCells($value['4']);
-            if (strpos($value['4'], ',')) {
-                $price = (float)str_replace(',', '.', $value['4']);
+            $input_errors->emptyDataEmail($value, 1);
+            $quantity = $value[1];
+
+            $input_errors->emptyDataEmail($value, 2);
+            if (strpos($value[2], ',')) {
+                $price = (float)str_replace(',', '.', $value[2]);
             } else {
-                $price = (float)$value['4'];
+                $price = (float)$value[2];
             }
 
-            $input_errors->emptyFileCells($value['5']);
-            $counterparty = $value['5'];
+            $input_errors->emptyDataEmail($value, 3);
+            $counterparty = $value[3];
 
-            $input_errors->emptyFileCellsDate($value['6']);
-            $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value['6']);
+            $input_errors->emptyDataEmail($value, 4);
+            $date_receipt_auto_parts_warehouse = new DateTimeImmutable($value[4]);
 
-            $input_errors->emptyFileCells($value['7']);
-            $payment_method = $value['7'];
+            $input_errors->emptyDataEmail($value, 5);
+            $payment_method = $value[5];
 
 
-            $data_file_csv[$key] =
+            $data_email[$key] =
                 [
                     'part_number' => $part_number,
                     'quantity' => $quantity,
@@ -73,7 +75,8 @@ class ReadingEmailKazanavtozapchasti
                     'payment_method' => $payment_method
                 ];
         }
-        return $data_file_csv;
+        dd($data_email);
+        return $data_email;
     }
 
     private function dateEmail($headers): string
@@ -99,6 +102,8 @@ class ReadingEmailKazanavtozapchasti
 
     private function partNumberQuantityPriceEmail($body): array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
+        $input_errors->emptyData($body);
 
         preg_match_all(
             "/<tr(.*?)<\/tr>/",
