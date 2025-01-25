@@ -6,7 +6,7 @@ use IMAP\Connection;
 use DateTimeImmutable;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 
-class ReadingEmailKazanavtozapchasti
+class ReadingEmailQuqichbakich
 {
     public function reading(Connection $imap, int $email_id)
     {
@@ -21,6 +21,7 @@ class ReadingEmailKazanavtozapchasti
         $payment_method_email = $this->paymentMethodEmail();
 
         $body = imap_base64(imap_fetchbody($imap, $email_id, 2));
+
         $part_umber_uantity_price_email = $this->partNumberQuantityPriceEmail($body);
         $data_imap = [];
         foreach ($part_umber_uantity_price_email as $key => $value) {
@@ -75,7 +76,7 @@ class ReadingEmailKazanavtozapchasti
                     'payment_method' => $payment_method
                 ];
         }
-
+        dd($data_email);
         return $data_email;
     }
 
@@ -105,38 +106,43 @@ class ReadingEmailKazanavtozapchasti
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($body);
 
+
         preg_match_all(
-            "/<tr(.*?)<\/tr>/",
+            "/<tr>[<\w>]{0}(.*?)<\/tr>/",
             $body,
             $arr_tr,
             PREG_SET_ORDER
         );
-        unset($arr_tr[0]);
+        $input_errors->emptyData($arr_tr);
+        array_shift($arr_tr);
+        array_pop($arr_tr);
+
         $matches_td = [];
         foreach ($arr_tr as $key_tr => $value_tr) {
 
             preg_match_all(
-                "/<td>(<span.*?>)*(.*?)[ р\.<\/span>]*<\/td>/",
+                "/<td.*?>(.*?)<\/td>/",
                 $value_tr[1],
                 $arr_td,
                 PREG_SET_ORDER
             );
+
             unset(
                 $arr_td[0],
                 $arr_td[1],
                 $arr_td[2],
+                $arr_td[3],
                 $arr_td[4],
-                $arr_td[5],
                 $arr_td[6],
+                $arr_td[8],
                 $arr_td[9],
-                $arr_td[10],
                 $arr_td[11],
                 $arr_td[12]
             );
-
+            $input_errors->emptyData($arr_td);
             $arr_value_td = [];
             foreach ($arr_td as $key => $value) { {
-                    $arr_value_td[$key] = $value[2];
+                    $arr_value_td[$key] = $value[1];
                 }
             }
 

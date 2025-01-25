@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory;
 use IMAP\Connection;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailKazanavtozapchasti\ReadingEmailQuqichbakich;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailKazanavtozapchasti\ReadingEmailKazanavtozapchasti;
 
 class FactoryReadingEmail
@@ -20,12 +21,12 @@ class FactoryReadingEmail
 
             if ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), $value) == 'kazan_avtozapchasti@mail.ru') {
 
-                $readingEmailKazanavtozapchasti = new ReadingEmailKazanavtozapchasti;
-                return $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), $value);
+                //$readingEmailKazanavtozapchasti = new ReadingEmailKazanavtozapchasti;
+                //return $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), $value);
             } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), $value) == 'quqichbakich@mail.ru') {
-                dd(2);
-                // $readingFileXML = new ReadingFileXML;
-                // return $readingFileXML->reading($autoPartsFile);
+
+                $readingEmailQuqichbakich = new ReadingEmailQuqichbakich;
+                return $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap(), $value);
             }
         }
 
