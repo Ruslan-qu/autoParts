@@ -27,7 +27,7 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
 
     public function searchIdDetails(array $arr_part_number): ?PartNumbersFromManufacturers
     {
-
+        dd($arr_part_number);
         $map_arr_part_numbers = ['part_number' => $arr_part_number['id_details']];
         $part_number = $this->findOneByPartNumbersQueryHandler
             ->handler(new PartNumbersQuery($map_arr_part_numbers));

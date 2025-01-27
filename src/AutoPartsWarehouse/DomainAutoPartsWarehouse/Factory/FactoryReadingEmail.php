@@ -10,28 +10,26 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEma
 
 class FactoryReadingEmail
 {
-    public function choiceReadingEmail(AutoPartsEmail $autoPartsEmail)
+    public function choiceReadingEmail(AutoPartsEmail $autoPartsEmail): ?array
     {
 
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($autoPartsEmail->getEmailImap());
-        $mails_id = imap_search($autoPartsEmail->getEmailImap(), 'ALL');
+        $mails_id = imap_search($autoPartsEmail->getEmailImap(), 'UNSEEN');
 
-        foreach ($mails_id as $key => $value) {
+        if ($mails_id == false) {
 
-            if ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), $value) == 'kazan_avtozapchasti@mail.ru') {
+            //$input_errors->isIMAPStreamClosed(imap_close($autoPartsEmail->getEmailImap(), CL_EXPUNGE));
+            return null;
+        } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'kazan_avtozapchasti@mail.ru') {
 
-                //$readingEmailKazanavtozapchasti = new ReadingEmailKazanavtozapchasti;
-                //return $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), $value);
-            } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), $value) == 'quqichbakich@mail.ru') {
+            $readingEmailKazanavtozapchasti = new ReadingEmailKazanavtozapchasti;
+            return $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), 1);
+        } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'quqichbakich@mail.ru') {
 
-                $readingEmailQuqichbakich = new ReadingEmailQuqichbakich;
-                return $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap(), $value);
-            }
+            $readingEmailQuqichbakich = new ReadingEmailQuqichbakich;
+            return $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap(), 1);
         }
-
-
-        //$input_errors->determiningFileExtension();
     }
 
     private function addressEmailCounterparty(Connection $imap, int $value): string

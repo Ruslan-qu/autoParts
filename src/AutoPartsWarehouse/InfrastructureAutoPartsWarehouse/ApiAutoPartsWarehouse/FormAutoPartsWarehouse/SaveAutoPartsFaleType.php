@@ -35,14 +35,6 @@ class SaveAutoPartsFaleType extends AbstractType
                     ]),
                 ]
             ])
-            /*->add('file_extension', ChoiceType::class, [
-                'choices'  => [
-                    'XLSX(Excel)' => 'XLSX(Excel)',
-                    'XML' => 'XML',
-                    'CSV' => 'CSV'
-                ]
-            ])*/
-
             ->add('button_save_fale', SubmitType::class);
     }
 
