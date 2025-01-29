@@ -27,7 +27,7 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
 
     public function searchIdDetails(array $arr_part_number): ?PartNumbersFromManufacturers
     {
-        dd($arr_part_number);
+
         $map_arr_part_numbers = ['part_number' => $arr_part_number['id_details']];
         $part_number = $this->findOneByPartNumbersQueryHandler
             ->handler(new PartNumbersQuery($map_arr_part_numbers));
@@ -70,9 +70,33 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
                     ->handler(new PartNumbersQuery($arr_saving_information));
             }
 
-            $arr_part_number[$key] = ['id_details' => $part_number];
+            $arr_id_details[$key] = ['id_details' => $part_number];
         }
 
-        return $arr_part_number;
+        return $arr_id_details;
+    }
+
+    public function idPartNumbersSearch(array $arr_part_number): ?array
+    {
+
+        foreach ($arr_part_number as $key => $value) {
+
+            $part_number = $this->findOneByPartNumbersQueryHandler
+                ->handler(new PartNumbersQuery($value));
+
+            if (empty($part_number)) {
+
+                $arr_saving_information['id'] = $this->savePartNumbersCommandHandler
+                    ->handler(new PartNumbersCommand($value));
+
+                $part_number = $this->findIdPartNumbersQueryHandler
+                    ->handler(new PartNumbersQuery($arr_saving_information));
+            }
+
+            $arr_id_details[$key] = ['id_details' => $part_number];
+            dd($arr_id_details);
+        }
+
+        return $arr_id_details;
     }
 }
