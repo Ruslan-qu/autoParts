@@ -47,7 +47,7 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
 
     public function partNumberSearch(array $arr_part_number): ?array
     {
-
+        $arr_id_details = [];
         foreach ($arr_part_number as $key => $value) {
 
             $map_part_name = ['part_name' => $value['part_name']];
@@ -78,6 +78,7 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
 
     public function idPartNumbersSearch(array $arr_part_number): ?array
     {
+        $arr_id_details = [];
 
         foreach ($arr_part_number as $key => $value) {
 
@@ -94,9 +95,8 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
             }
 
             $arr_id_details[$key] = ['id_details' => $part_number];
-            dd($arr_id_details);
         }
-
+        dd($arr_id_details);
         return $arr_id_details;
     }
 }
