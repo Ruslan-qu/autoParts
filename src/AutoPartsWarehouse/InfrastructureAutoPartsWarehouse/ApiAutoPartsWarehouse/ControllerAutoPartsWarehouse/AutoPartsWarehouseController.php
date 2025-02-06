@@ -156,7 +156,7 @@ class AutoPartsWarehouseController extends AbstractController
         FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler
     ): Response {
 
-        $imap = imap_open('{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX', 'imap_test_test_test@mail.ru', 'jVRBymTQUhzvExwcka67');
+
 
         /*Подключаем формы*/
         $form_save_auto_parts_email = $this->createForm(SaveAutoPartsEmailType::class);
@@ -168,34 +168,41 @@ class AutoPartsWarehouseController extends AbstractController
 
         try {
 
+            $imap = imap_open(
+                '{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX',
+                'imap_test_test_test@mail.ru',
+                'jVRBymTQUhzvExwcka67'
+            );
             $email_data_array = $factoryReadingEmail->choiceReadingEmail(new AutoPartsEmail(['email_imap' => $imap]));
 
-            $map_data_email = $this->mapEmailData($email_data_array);
+            if ($email_data_array != null) {
+                $map_data_email = $this->mapEmailData($email_data_array);
 
-            $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
-                ->idPartNumbersSearch($map_data_email['arr_part_number']);
+                $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
+                    ->idPartNumbersSearch($map_data_email['arr_part_number']);
 
-            $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
-                ->counterpartySearch($map_data_email['arr_counterparty']);
+                $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
+                    ->counterpartySearch($map_data_email['arr_counterparty']);
 
-            $arr_id_method = $findOneByPaymentMethodQueryHandler
-                ->handler(new ArrPaymentMethodQuery($map_data_email['arr_payment_method']));
-            dd($arr_id_details);
-            $map_processed_data = $this->mapProcessedData(
-                $email_data_array,
-                $arr_id_details,
-                $arr_id_counterparty,
-                $arr_id_method
-            );
+                $arr_id_method = $findOneByPaymentMethodQueryHandler
+                    ->handler(new ArrPaymentMethodQuery($map_data_email['arr_payment_method']));
 
-            $saved = $saveAutoPartsWarehouseFileCommandHandler
-                ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
+                $map_processed_data = $this->mapProcessedData(
+                    $email_data_array,
+                    $arr_id_details,
+                    $arr_id_counterparty,
+                    $arr_id_method
+                );
+                dd($arr_id_details);
+                $saved = $saveAutoPartsWarehouseFileCommandHandler
+                    ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
+            }
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
         }
 
-
+        imap_close($imap);
         return $this->render('@autoPartsWarehouse/saveAutoPartsEmail.html.twig', [
             'title_logo' => 'Cохранить автодеталь через Email',
             'form_save_auto_parts_email' => $form_save_auto_parts_email->createView(),
@@ -423,7 +430,7 @@ class AutoPartsWarehouseController extends AbstractController
         $input_errors->emptyData($email_data_array);
 
         $map_data = [];
-        foreach ($email_data_array as $key => $value) {
+        foreach (array_values($email_data_array) as $key => $value) {
             $arr_part_number[$key] =
                 [
                     'part_number' => $value['part_number']
@@ -442,6 +449,7 @@ class AutoPartsWarehouseController extends AbstractController
             'arr_counterparty' => $arr_counterparty,
             'arr_payment_method' => $arr_payment_method
         ];
+
         return $map_data;
     }
 

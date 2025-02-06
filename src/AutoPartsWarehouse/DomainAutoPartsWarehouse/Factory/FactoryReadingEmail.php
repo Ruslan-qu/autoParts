@@ -13,13 +13,10 @@ class FactoryReadingEmail
     public function choiceReadingEmail(AutoPartsEmail $autoPartsEmail): ?array
     {
 
-        $input_errors = new InputErrorsAutoPartsWarehouse;
-        $input_errors->emptyData($autoPartsEmail->getEmailImap());
         $mails_id = imap_search($autoPartsEmail->getEmailImap(), 'UNSEEN');
 
         if ($mails_id == false) {
 
-            //$input_errors->isIMAPStreamClosed(imap_close($autoPartsEmail->getEmailImap(), CL_EXPUNGE));
             return null;
         } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'kazan_avtozapchasti@mail.ru') {
 

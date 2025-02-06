@@ -31,8 +31,7 @@ class ReadingEmailQuqichbakich
             $data_imap[$key] = $value;
         }
 
-        $input_errors
-            ->isMessageMarkedDeletion(imap_delete($imap, $email_id));
+        $input_errors->isMessageMarkedDeletion(imap_delete($imap, $email_id));
 
         return $this->mapDataEmail($data_imap);
     }
@@ -78,7 +77,7 @@ class ReadingEmailQuqichbakich
                     'payment_method' => $payment_method
                 ];
         }
-        dd($data_email);
+
         return $data_email;
     }
 

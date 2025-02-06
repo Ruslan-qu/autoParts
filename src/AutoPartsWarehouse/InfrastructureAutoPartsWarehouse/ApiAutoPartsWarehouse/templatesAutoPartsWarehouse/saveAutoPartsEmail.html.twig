@@ -46,10 +46,6 @@
             <td>{{ information.payment_method }}</td>
           </tr>
           {% endif %}
-          {% else %}
-          <div class="col-auto m-3">
-            <h5>Поставок нет</h5>
-          </div>
           {% endfor %}
         </tbody>
       </table>
@@ -63,9 +59,14 @@
   </div>
   {{ form_end(form_save_auto_parts_email) }}
   {% endif %}
+  {% if saved is empty and email_data_array == null %}
+  <div class="col-auto m-3">
+    <h5>Поставок нет</h5>
+  </div>
+  {% endif %}
   <div class="col-auto m-3">
     {% for message in app.flashes('Error') %}
-    <h5 class="mt-3 ms-3">{{ message }}</h5>
+    <h5>{{ message }}</h5>
     {% endfor %}
   </div>
   {% endblock form %}
