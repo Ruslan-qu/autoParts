@@ -114,14 +114,13 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
         //dd($count_arr_part_number);
         for ($i = 0; $i < $count_arr_part_number; $i++) {
 
-            $value_part_number = $arr_part_number[$i];
+            $value_part_number = reset($arr_part_number[$i]);
 
             $part_number = $this->findOneByPartNumbersQueryHandler
                 ->handler(new PartNumbersQuery($value_part_number));
             //dd($i);
             if (empty($part_number)) {
 
-                $value_part_number = $arr_part_number[$i];
                 $arr_saving_information = $this->savePartNumbersCommandHandler
                     ->handler(new PartNumbersCommand($value_part_number));
                 $part_number = $this->findIdPartNumbersQueryHandler
