@@ -31,7 +31,7 @@ class ReadingEmailKazanavtozapchasti
         }
 
         //$input_errors->isMessageMarkedDeletion(imap_delete($imap, $email_id));
-
+        imap_close($imap);
         return $this->mapDataEmail($data_imap);
     }
 

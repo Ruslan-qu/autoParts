@@ -202,7 +202,7 @@ class AutoPartsWarehouseController extends AbstractController
             $this->errorMessageViaSession($e);
         }
 
-        imap_close($imap);
+
         return $this->render('@autoPartsWarehouse/saveAutoPartsEmail.html.twig', [
             'title_logo' => 'Cохранить автодеталь через Email',
             'form_save_auto_parts_email' => $form_save_auto_parts_email->createView(),
