@@ -18,13 +18,12 @@ final class SavePartNumbersCommandHandler
 
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
-        private PartNumbersFromManufacturers $partNumbersFromManufacturers
+        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface
     ) {}
 
     public function handler(PartNumbersCommand $partNumbersCommand): ?int
     {
-        //dd($partNumbersCommand);
+
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
@@ -33,7 +32,7 @@ final class SavePartNumbersCommandHandler
             '',
             $partNumbersCommand->getPartNumber()
         ));
-        //dd($part_number);
+
         $manufacturer = strtolower(preg_replace(
             '#\s#u',
             '',
@@ -93,19 +92,20 @@ final class SavePartNumbersCommandHandler
             ->numberDoubles(['part_number' => $part_number]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
-        $this->partNumbersFromManufacturers->setPartNumber($part_number);
-        $this->partNumbersFromManufacturers->setManufacturer($manufacturer);
-        $this->partNumbersFromManufacturers->setAdditionalDescriptions($additional_descriptions);
-        $this->partNumbersFromManufacturers->setIdPartName($id_part_name);
-        $this->partNumbersFromManufacturers->setIdCarBrand($id_car_brand);
-        $this->partNumbersFromManufacturers->setIdSide($id_side);
-        $this->partNumbersFromManufacturers->setIdBody($id_body);
-        $this->partNumbersFromManufacturers->setIdAxle($id_axle);
-        $this->partNumbersFromManufacturers->setIdInStock($id_in_stock);
-        $this->partNumbersFromManufacturers->setIdOriginalNumber($id_original_number);
+        $partNumbersFromManufacturers = new PartNumbersFromManufacturers;
+        $partNumbersFromManufacturers->setPartNumber($part_number);
+        $partNumbersFromManufacturers->setManufacturer($manufacturer);
+        $partNumbersFromManufacturers->setAdditionalDescriptions($additional_descriptions);
+        $partNumbersFromManufacturers->setIdPartName($id_part_name);
+        $partNumbersFromManufacturers->setIdCarBrand($id_car_brand);
+        $partNumbersFromManufacturers->setIdSide($id_side);
+        $partNumbersFromManufacturers->setIdBody($id_body);
+        $partNumbersFromManufacturers->setIdAxle($id_axle);
+        $partNumbersFromManufacturers->setIdInStock($id_in_stock);
+        $partNumbersFromManufacturers->setIdOriginalNumber($id_original_number);
 
 
-        $successfully_save = $this->partNumbersRepositoryInterface->save($this->partNumbersFromManufacturers);
+        $successfully_save = $this->partNumbersRepositoryInterface->save($partNumbersFromManufacturers);
 
         $id = $successfully_save['save'];
         return $id;

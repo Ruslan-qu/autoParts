@@ -30,8 +30,10 @@ class ReadingEmailKazanavtozapchasti
             $data_imap[$key] = $value;
         }
 
-        //$input_errors->isMessageMarkedDeletion(imap_delete($imap, $email_id));
-        imap_close($imap);
+        $uid = imap_uid($imap, '1');
+        $mail_move = imap_mail_move($imap, $uid, '&BBoEPgRABDcEOAQ9BDA-', CP_UID);
+        $input_errors->emptyData($mail_move);
+
         return $this->mapDataEmail($data_imap);
     }
 

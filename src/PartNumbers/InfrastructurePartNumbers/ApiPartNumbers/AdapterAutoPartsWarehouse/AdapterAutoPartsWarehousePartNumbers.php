@@ -78,63 +78,24 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
 
     public function idPartNumbersSearch(array $arr_part_number): ?array
     {
-        /*reset($arr_part_number);
         $arr_id_details = [];
-        $a = [];
-        $s = 0;
-        foreach (reset($arr_part_number) as $key => $value) {
-
-            $a[$s] = [$value];
-            $s++;
-        }
-        dd($a);
-        reset($a);
-        foreach ($a as $k => $v) {
-            foreach ($v as $ke => $valuee) {
-                $part_number = $this->findOneByPartNumbersQueryHandler
-                    ->handler(new PartNumbersQuery(['part_number' => $valuee]));
-                // $part_number = $this->findOneByPartNumbersQueryHandler
-                //   ->handler(new PartNumbersQuery($value));
-                if (empty($part_number)) {
-
-                    $arr_saving_information = $this->savePartNumbersCommandHandler
-                        ->handler(new PartNumbersCommand(['part_number' => $valuee]));
-                    // $arr_saving_information = $this->savePartNumbersCommandHandler
-                    //   ->handler(new PartNumbersCommand($value));
-                    $part_number = $this->findIdPartNumbersQueryHandler
-                        ->handler(new PartNumbersQuery(['id' => $arr_saving_information]));
-                }
-            }
-
-
-            $arr_id_details[$k] = ['id_details' => $part_number];
-        }*/
-        $arr_id_details = [];
-        $count_arr_part_number = count($arr_part_number);
-        //dd($count_arr_part_number);
-        for ($i = 0; $i < $count_arr_part_number; $i++) {
-
-            $value_part_number = $arr_part_number[$i];
+        foreach ($arr_part_number as $key => $value) {
 
             $part_number = $this->findOneByPartNumbersQueryHandler
-                ->handler(new PartNumbersQuery($value_part_number));
-            //dd($i);
+                ->handler(new PartNumbersQuery($value));
+
             if (empty($part_number)) {
 
-                $arr_saving_information = $this->savePartNumbersCommandHandler
-                    ->handler(new PartNumbersCommand($value_part_number));
+                $arr_saving_information['id'] = $this->savePartNumbersCommandHandler
+                    ->handler(new PartNumbersCommand($value));
+
                 $part_number = $this->findIdPartNumbersQueryHandler
-                    ->handler(new PartNumbersQuery(['id' => $arr_saving_information]));
+                    ->handler(new PartNumbersQuery($arr_saving_information));
             }
 
-            $arr_id_details[$i] = ['id_details' => $part_number];
+            $arr_id_details[$key] = ['id_details' => $part_number];
         }
 
-
-
-
-
-        dd($arr_id_details);
         return $arr_id_details;
     }
 }

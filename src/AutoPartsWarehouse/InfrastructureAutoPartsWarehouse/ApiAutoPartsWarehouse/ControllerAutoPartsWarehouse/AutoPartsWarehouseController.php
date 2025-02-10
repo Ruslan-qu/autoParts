@@ -2,11 +2,9 @@
 
 namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\ControllerAutoPartsWarehouse;
 
-use DOMDocument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use SecIT\ImapBundle\Connection\ConnectionInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
@@ -17,14 +15,12 @@ use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAuto
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsEmailType;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\PaymentMethodQuery;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\ArrPaymentMethodQuery;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseCounterpartyInterface;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsFileCommand\AutoPartsFileCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindOneByPaymentMethodQueryHandler;
@@ -106,7 +102,7 @@ class AutoPartsWarehouseController extends AbstractController
         $saved = '';
         if ($form_save_auto_parts_fale->isSubmitted()) {
             if ($form_save_auto_parts_fale->isValid()) {
-                dd($form_save_auto_parts_fale->getData());
+
                 try {
 
                     $file_data_array = FactoryReadingFile::choiceReadingFile(new AutoPartsFile($form_save_auto_parts_fale->getData()));
@@ -156,8 +152,6 @@ class AutoPartsWarehouseController extends AbstractController
         FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler
     ): Response {
 
-
-
         /*Подключаем формы*/
         $form_save_auto_parts_email = $this->createForm(SaveAutoPartsEmailType::class);
 
@@ -173,6 +167,7 @@ class AutoPartsWarehouseController extends AbstractController
                 'imap_test_test_test@mail.ru',
                 'jVRBymTQUhzvExwcka67'
             );
+
             $email_data_array = $factoryReadingEmail->choiceReadingEmail(new AutoPartsEmail(['email_imap' => $imap]));
 
             if ($email_data_array != null) {
@@ -193,7 +188,7 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_id_counterparty,
                     $arr_id_method
                 );
-                dd($arr_id_details);
+
                 $saved = $saveAutoPartsWarehouseFileCommandHandler
                     ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }
@@ -201,7 +196,7 @@ class AutoPartsWarehouseController extends AbstractController
 
             $this->errorMessageViaSession($e);
         }
-
+        imap_close($imap);
 
         return $this->render('@autoPartsWarehouse/saveAutoPartsEmail.html.twig', [
             'title_logo' => 'Cохранить автодеталь через Email',
@@ -430,7 +425,7 @@ class AutoPartsWarehouseController extends AbstractController
         $input_errors->emptyData($email_data_array);
 
         $map_data = [];
-        foreach (array_values($email_data_array) as $key => $value) {
+        foreach ($email_data_array as $key => $value) {
             $arr_part_number[$key] =
                 [
                     'part_number' => $value['part_number']
