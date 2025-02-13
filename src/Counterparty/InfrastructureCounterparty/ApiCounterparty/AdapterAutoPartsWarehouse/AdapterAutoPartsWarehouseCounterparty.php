@@ -3,6 +3,7 @@
 namespace App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse;
 
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindAllCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindOneByCounterpartyQueryHandler;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseCounterpartyInterface;
 
@@ -11,6 +12,7 @@ class AdapterAutoPartsWarehouseCounterparty implements AdapterAutoPartsWarehouse
 
     public function __construct(
         private FindOneByCounterpartyQueryHandler $findOneByCounterpartyQueryHandler,
+        private FindAllCounterpartyQueryHandler $findAllCounterpartyQueryHandler
     ) {}
 
     public function counterpartySearch(array $arr_counterparty): ?array
@@ -27,5 +29,14 @@ class AdapterAutoPartsWarehouseCounterparty implements AdapterAutoPartsWarehouse
         }
 
         return $arr_counterparty;
+    }
+
+    public function allCounterparty(): ?array
+    {
+
+        $counterparty = $this->findAllCounterpartyQueryHandler
+            ->handler();
+
+        return $counterparty;
     }
 }

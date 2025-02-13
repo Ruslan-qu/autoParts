@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
+  {% endblock Responsive_behaviors %}
+
+  {% block form %}
+
+  {#Таблица автодеталей из Email#}
+  <div class="col-auto m-3">
+    {% if saved %}
+    <h5>Поставка сохранена</h5>
+    {% endif %}
+  </div>
+  <div class="container-fluid text-center pt-4 ">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
+        border-info shadow p-3 mb-5 bg-body-tertiary rounded">
+        <thead class="table-secondary">
+
+          {% if email_data_array %}
+          <tr>
+            <th scope="col">№ детали</th>
+            <th scope="col">Поставщик</th>
+            <th scope="col">Кол-во</th>
+            <th scope="col">Цена</th>
+            <th scope="col">Дата</th>
+            <th scope="col">Сп. оплаты</th>
+          </tr>
+          {% endif %}
+
+        </thead>
+        <tbody class="table-group-divider">
+          {% for information in email_data_array %}
+          {% if information %}
+          <tr>
+            <td>{{ information.part_number }}</td>
+            <td>{{ information.counterparty }}</td>
+            <td>{{ information.quantity }}</td>
+            <td>{{ information.price }}</td>
+            <td>{{ information.date_receipt_auto_parts_warehouse|date("d-m-Y") }}</td>
+            <td>{{ information.payment_method }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% if email_data_array %}
+  {{ form_start(form_save_auto_parts_email) }}
+  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    {{ form_widget(form_save_auto_parts_email.button_save_Email, { 'label': 'Продолжить', 'attr': {'class':
+    'btn btn-danger w-100'}}) }}
+  </div>
+  {{ form_end(form_save_auto_parts_email) }}
+  {% endif %}
+  {% if saved is empty and email_data_array == null %}
+  <div class="col-auto m-3">
+    <h5>Поставок нет</h5>
+  </div>
+  {% endif %}
+  <div class="col-auto m-3">
+    {% for message in app.flashes('Error') %}
+    <h5>{{ message }}</h5>
+    {% endfor %}
+  </div>
+  {% endblock form %}

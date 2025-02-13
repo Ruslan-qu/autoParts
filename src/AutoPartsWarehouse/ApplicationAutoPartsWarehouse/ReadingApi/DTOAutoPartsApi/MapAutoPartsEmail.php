@@ -13,11 +13,10 @@ abstract class MapAutoPartsEmail
 
     private function load(array $data)
     {
-        $input_errors = new InputErrorsAutoPartsWarehouse;
-        $input_errors->emptyData($data);
 
         foreach ($data as $key => $value) {
 
+            $input_errors = new InputErrorsAutoPartsWarehouse;
             $input_errors->emptyData($value)->imapOpenErrors()->instanceofEmail($value);
 
             $this->$key = $value;

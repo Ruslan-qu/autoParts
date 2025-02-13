@@ -5,12 +5,15 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingApi;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingEmail;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts\ArrCounterparty;
 use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseSalesInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
@@ -205,6 +208,65 @@ class AutoPartsWarehouseController extends AbstractController
             'saved' => $saved
         ]);
     }
+
+    /*функция сохранения автодеталей на склад по API поставщиков*/
+    #[Route('/saveAutoPartsApi', name: 'save_auto_parts_api')]
+    public function saveAutoPartsApi(
+        Request $request,
+        HttpClientInterface $client,
+        FactoryReadingApi $factoryReadingApi,
+        SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
+        AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
+        AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
+        FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler
+    ): Response {
+
+
+
+        $saved = '';
+
+        //try {
+
+        $arr_name_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->allCounterparty();
+
+        $email_data_array = $factoryReadingApi->choiceReadingApi(new ArrCounterparty($arr_name_counterparty));
+
+        /* if ($email_data_array != null) {
+                $map_data_email = $this->mapEmailData($email_data_array);
+
+                $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
+                    ->idPartNumbersSearch($map_data_email['arr_part_number']);
+
+                $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
+                    ->counterpartySearch($map_data_email['arr_counterparty']);
+
+                $arr_id_method = $findOneByPaymentMethodQueryHandler
+                    ->handler(new ArrPaymentMethodQuery($map_data_email['arr_payment_method']));
+
+                $map_processed_data = $this->mapProcessedData(
+                    $email_data_array,
+                    $arr_id_details,
+                    $arr_id_counterparty,
+                    $arr_id_method
+                );
+
+                $saved = $saveAutoPartsWarehouseFileCommandHandler
+                    ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
+            }
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+        }
+*/
+
+        return $this->render('@autoPartsWarehouse/saveAutoPartsApi.html.twig', [
+            'title_logo' => 'Cохранить автодеталь через Email',
+            //'form_save_auto_parts_email' => $form_save_auto_parts_email->createView(),
+            //'email_data_array' => $email_data_array,
+            'saved' => $saved
+        ]);
+    }
+
 
 
     /*Поиск автодеталей на сладе*/

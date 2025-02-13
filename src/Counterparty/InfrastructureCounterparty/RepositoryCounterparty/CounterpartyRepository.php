@@ -88,6 +88,21 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return Counterparty[]|NULL Возвращает массив объектов поставщиков или ноль
      */
+    public function findAllCounterparty(): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a.name_counterparty
+            FROM App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty a'
+        );
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return Counterparty[]|NULL Возвращает массив объектов поставщиков или ноль
+     */
     public function findByCounterparty(): ?array
     {
         return $this->findBy([], ['id' => 'ASC']);

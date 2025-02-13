@@ -1,10 +1,11 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts;
 
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts\CounterpartyAutoParts;
 
-abstract class MapAutoPartsEmail
+abstract class MapArrCounterparty
 {
     public function __construct(array $data = [])
     {
@@ -18,9 +19,9 @@ abstract class MapAutoPartsEmail
 
         foreach ($data as $key => $value) {
 
-            $input_errors->emptyData($value)->imapOpenErrors()->instanceofEmail($value);
-
-            $this->$key = $value;
+            $arr_counterparty_data[$key] = new CounterpartyAutoParts($value);
         }
+
+        $this->$arr_name_counterparty = $arr_counterparty_data;
     }
 }
