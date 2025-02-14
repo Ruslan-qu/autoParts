@@ -2,7 +2,7 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts;
 
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOArrCounterparty\MapArrCounterparty;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts\MapArrCounterparty;
 
 final class ArrCounterparty extends MapArrCounterparty
 

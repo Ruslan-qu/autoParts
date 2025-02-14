@@ -22,6 +22,6 @@ abstract class MapArrCounterparty
             $arr_counterparty_data[$key] = new CounterpartyAutoParts($value);
         }
 
-        $this->$arr_name_counterparty = $arr_counterparty_data;
+        $this->arr_name_counterparty = $arr_counterparty_data;
     }
 }

@@ -1,17 +1,15 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailKazanavtozapchasti;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ReadingApiKazanavtozapchasti;
 
-use IMAP\Connection;
 use DateTimeImmutable;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 
-class ReadingEmailKazanavtozapchasti
+class ReadingApiKazanavtozapchasti
 {
     public function reading(Connection $imap, int $email_id)
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
-        $headers = imap_headerinfo($imap, $email_id);
         $input_errors->emptyData($headers);
 
         $counterparty_email = $this->counterpartyEmail($headers);
