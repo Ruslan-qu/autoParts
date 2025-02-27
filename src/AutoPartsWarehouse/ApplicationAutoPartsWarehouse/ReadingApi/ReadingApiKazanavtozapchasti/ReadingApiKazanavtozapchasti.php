@@ -7,7 +7,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehous
 
 class ReadingApiKazanavtozapchasti
 {
-    public function reading(Connection $imap, int $email_id)
+    public function reading()
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($headers);

@@ -12,15 +12,15 @@ class FactoryReadingApi
 {
     public function choiceReadingApi(ArrCounterparty $arrCounterparty): ?array
     {
-        dd($arrCounterparty[0]);
+        dd($arrCounterparty);
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($arrCounterparty);
 
         foreach ($arrCounterparty as $key => $value) {
             if ($value->getNameCounterparty() == 'kazanavtozapchasti') {
 
-                $readingEmailKazanavtozapchasti = new ReadingApiKazanavtozapchasti;
-                return $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), 1);
+                $readingApiKazanavtozapchasti = new ReadingApiKazanavtozapchasti;
+                return $readingApiKazanavtozapchasti->reading();
             } /*elseif ($value->getNameCounterparty() == 'quqichbakich') {
     
                 $readingEmailQuqichbakich = new ReadingEmailQuqichbakich;
@@ -28,20 +28,4 @@ class FactoryReadingApi
             }*/
         }
     }
-
-
-    /*private function addressEmailCounterparty(Connection $imap, int $value): string
-    {
-
-        $headers = imap_headerinfo($imap, $value);
-
-        preg_match_all(
-            "/.*?<(.*?)>/",
-            $headers->fromaddress,
-            $matches,
-            PREG_SET_ORDER
-        );
-
-        return $matches[0][1];
-    }*/
 }
