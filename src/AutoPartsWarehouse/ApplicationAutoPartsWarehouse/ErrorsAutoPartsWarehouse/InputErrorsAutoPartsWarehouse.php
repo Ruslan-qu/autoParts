@@ -2,10 +2,11 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse;
 
+use IMAP\Connection;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use IMAP\Connection;
 
 class InputErrorsAutoPartsWarehouse
 {
@@ -311,6 +312,18 @@ class InputErrorsAutoPartsWarehouse
             $arr_data_errors = ['Error' => 'Закрыть поток IMAP не удалось'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function statusCode($statusCode): static
+    {
+        if ($statusCode !== 200) {
+
+            $arr_data_errors = ['Error' => 'Ответ с сайта статус-' . $statusCode];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new HttpException($statusCode, $json_arr_data_errors);
         }
 
         return $this;

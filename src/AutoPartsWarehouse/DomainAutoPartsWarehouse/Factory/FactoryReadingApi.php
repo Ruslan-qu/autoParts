@@ -4,28 +4,33 @@ namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory;
 
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts\ArrCounterparty;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ReadingApiQuqichbakich\ReadingApiQuqichbakich;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ReadingApiKazanavtozapchasti\ReadingApiKazanavtozapchasti;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailKazanavtozapchasti\ReadingEmailQuqichbakich;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailKazanavtozapchasti\ReadingEmailKazanavtozapchasti;
 
 class FactoryReadingApi
 {
-    public function choiceReadingApi(ArrCounterparty $arrCounterparty): ?array
+    public function choiceReadingApi(ArrCounterparty $arrCounterparty, $client)
     {
-        dd($arrCounterparty);
+
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($arrCounterparty);
 
-        foreach ($arrCounterparty as $key => $value) {
+        foreach ($arrCounterparty->getArrNameCounterparty() as $key => $value) {
+
             if ($value->getNameCounterparty() == 'kazanavtozapchasti') {
 
                 $readingApiKazanavtozapchasti = new ReadingApiKazanavtozapchasti;
-                return $readingApiKazanavtozapchasti->reading();
-            } /*elseif ($value->getNameCounterparty() == 'quqichbakich') {
+                
+                return $readingApiKazanavtozapchasti->reading($client, $value->getNameCounterparty());
+            }elseif ($value->getNameCounterparty() == 'quqichbakich') {
     
-                $readingEmailQuqichbakich = new ReadingEmailQuqichbakich;
-                return $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap(), 1);
-            }*/
+                $readingApiQuqichbakich = new ReadingApiQuqichbakich;
+
+                return $readingApiQuqichbakich->reading($client, $value->getNameCounterparty());
+            }else {
+
+                return NULL;
+            }
         }
     }
 }

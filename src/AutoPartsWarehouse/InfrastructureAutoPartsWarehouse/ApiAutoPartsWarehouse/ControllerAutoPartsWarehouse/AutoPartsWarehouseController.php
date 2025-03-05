@@ -229,7 +229,7 @@ class AutoPartsWarehouseController extends AbstractController
 
         $arr_name_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->allCounterparty();
 
-        $email_data_array = $factoryReadingApi->choiceReadingApi(new ArrCounterparty($arr_name_counterparty));
+        $email_data_array = $factoryReadingApi->choiceReadingApi(new ArrCounterparty($arr_name_counterparty), $client);
 
         /* if ($email_data_array != null) {
                 $map_data_email = $this->mapEmailData($email_data_array);
