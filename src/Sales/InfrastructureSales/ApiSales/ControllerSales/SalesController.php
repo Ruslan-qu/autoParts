@@ -233,7 +233,7 @@ class SalesController extends AbstractController
                 }
             }
         }
-        //dd($list_sales_auto_parts);
+
         return $this->render('@sales/searchSales.html.twig', [
             'title_logo' => 'Продажи',
             'form_search_sales' => $form_search_sales->createView(),

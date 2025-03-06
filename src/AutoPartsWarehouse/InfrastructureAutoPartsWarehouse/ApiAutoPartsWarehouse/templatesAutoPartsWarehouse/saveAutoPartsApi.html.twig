@@ -22,7 +22,7 @@
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
-          {% if email_data_array %}
+          {% if api_data_array %}
           <tr>
             <th scope="col">№ детали</th>
             <th scope="col">Поставщик</th>
@@ -35,7 +35,7 @@
 
         </thead>
         <tbody class="table-group-divider">
-          {% for information in email_data_array %}
+          {% for information in api_data_array %}
           {% if information %}
           <tr>
             <td>{{ information.part_number }}</td>
@@ -51,15 +51,15 @@
       </table>
     </div>
   </div>
-  {% if email_data_array %}
-  {{ form_start(form_save_auto_parts_email) }}
+  {% if api_data_array %}
+  {{ form_start(form_save_auto_parts_api) }}
   <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-    {{ form_widget(form_save_auto_parts_email.button_save_Email, { 'label': 'Продолжить', 'attr': {'class':
+    {{ form_widget(form_save_auto_parts_api.button_save_api, { 'label': 'Продолжить', 'attr': {'class':
     'btn btn-danger w-100'}}) }}
   </div>
-  {{ form_end(form_save_auto_parts_email) }}
+  {{ form_end(form_save_auto_parts_api) }}
   {% endif %}
-  {% if saved is empty and email_data_array == null %}
+  {% if saved is empty and api_data_array == null %}
   <div class="col-auto m-3">
     <h5>Поставок нет</h5>
   </div>

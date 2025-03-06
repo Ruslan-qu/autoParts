@@ -16,7 +16,9 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPar
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts\ArrCounterparty;
 use App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseSalesInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsApiType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsEmailType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
@@ -24,6 +26,7 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWar
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\ArrPaymentMethodQuery;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehouseCounterpartyInterface;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\ShipmentAutoPartsToDate\FindByShipmentToDateQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindOneByPaymentMethodQueryHandler;
@@ -218,21 +221,31 @@ class AutoPartsWarehouseController extends AbstractController
         SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
-        FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler
+        FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler,
+        AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
     ): Response {
 
+        /*Подключаем формы*/
+        $form_save_auto_parts_api = $this->createForm(SaveAutoPartsApiType::class);
 
+        /*Валидация формы*/
+        $form_save_auto_parts_api->handleRequest($request);
 
         $saved = '';
 
-        //try {
+        try {
 
-        $arr_name_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->allCounterparty();
+            $arr_name_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->allCounterparty();
 
-        $email_data_array = $factoryReadingApi->choiceReadingApi(new ArrCounterparty($arr_name_counterparty), $client);
 
-        /* if ($email_data_array != null) {
-                $map_data_email = $this->mapEmailData($email_data_array);
+            $api_data_array = $factoryReadingApi->choiceReadingApi(
+                new ArrCounterparty($arr_name_counterparty),
+                $client,
+                $autoPartsWarehouseRepositoryInterface
+            );
+
+            if ($api_data_array != null) {
+                $map_data_email = $this->mapApiData($api_data_array);
 
                 $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
                     ->idPartNumbersSearch($map_data_email['arr_part_number']);
@@ -244,7 +257,7 @@ class AutoPartsWarehouseController extends AbstractController
                     ->handler(new ArrPaymentMethodQuery($map_data_email['arr_payment_method']));
 
                 $map_processed_data = $this->mapProcessedData(
-                    $email_data_array,
+                    $api_data_array,
                     $arr_id_details,
                     $arr_id_counterparty,
                     $arr_id_method
@@ -257,12 +270,12 @@ class AutoPartsWarehouseController extends AbstractController
 
             $this->errorMessageViaSession($e);
         }
-*/
+
 
         return $this->render('@autoPartsWarehouse/saveAutoPartsApi.html.twig', [
-            'title_logo' => 'Cохранить автодеталь через Email',
-            //'form_save_auto_parts_email' => $form_save_auto_parts_email->createView(),
-            //'email_data_array' => $email_data_array,
+            'title_logo' => 'Cохранить автодеталь через Api',
+            'form_save_auto_parts_api' => $form_save_auto_parts_api->createView(),
+            'api_data_array' => $api_data_array,
             'saved' => $saved
         ]);
     }
@@ -273,7 +286,8 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
     public function searchAutoPartsWarehouse(
         Request $request,
-        FindByAutoPartsWarehouseQueryHandler $findByAutoPartsWarehouseQueryHandler
+        FindByAutoPartsWarehouseQueryHandler $findByAutoPartsWarehouseQueryHandler,
+        FindByShipmentToDateQueryHandler $findByShipmentToDateQueryHandler,
     ): Response {
 
         /*Подключаем формы*/
@@ -282,7 +296,8 @@ class AutoPartsWarehouseController extends AbstractController
         /*Валидация формы */
         $form_search_auto_parts_warehouse->handleRequest($request);
 
-        $search_data = [];
+        $search_data = $findByShipmentToDateQueryHandler->handler();
+
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {
 
@@ -301,7 +316,6 @@ class AutoPartsWarehouseController extends AbstractController
             'title_logo' => 'Поиск автодетали на сладе',
             'form_search_auto_parts_warehouse' => $form_search_auto_parts_warehouse->createView(),
             'search_data' => $search_data,
-
         ]);
     }
 
@@ -519,5 +533,34 @@ class AutoPartsWarehouseController extends AbstractController
             $id = 1;
         }
         return $id;
+    }
+
+    private function mapApiData($api_data_array): array
+    {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
+        $input_errors->emptyData($api_data_array);
+
+        $map_data = [];
+        foreach ($api_data_array as $key => $value) {
+            $arr_part_number[$key] =
+                [
+                    'part_number' => $value['part_number']
+                ];
+            $arr_counterparty[$key] =
+                [
+                    'counterparty' => $value['counterparty']
+                ];
+            $arr_payment_method[$key] =
+                [
+                    'id' => $this->mapPaymentMethod($value['payment_method'])
+                ];
+        }
+        $map_data = [
+            'arr_part_number' => $arr_part_number,
+            'arr_counterparty' => $arr_counterparty,
+            'arr_payment_method' => $arr_payment_method
+        ];
+
+        return $map_data;
     }
 }

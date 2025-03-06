@@ -9,7 +9,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ReadingApiKa
 
 class FactoryReadingApi
 {
-    public function choiceReadingApi(ArrCounterparty $arrCounterparty, $client)
+    public function choiceReadingApi(ArrCounterparty $arrCounterparty, $client, $autoPartsWarehouseRepositoryInterface)
     {
 
         $input_errors = new InputErrorsAutoPartsWarehouse;
@@ -20,14 +20,9 @@ class FactoryReadingApi
             if ($value->getNameCounterparty() == 'kazanavtozapchasti') {
 
                 $readingApiKazanavtozapchasti = new ReadingApiKazanavtozapchasti;
-                
-                return $readingApiKazanavtozapchasti->reading($client, $value->getNameCounterparty());
-            }elseif ($value->getNameCounterparty() == 'quqichbakich') {
-    
-                $readingApiQuqichbakich = new ReadingApiQuqichbakich;
 
-                return $readingApiQuqichbakich->reading($client, $value->getNameCounterparty());
-            }else {
+                return $readingApiKazanavtozapchasti->reading($client, $value->getNameCounterparty(), $autoPartsWarehouseRepositoryInterface);
+            } else {
 
                 return NULL;
             }

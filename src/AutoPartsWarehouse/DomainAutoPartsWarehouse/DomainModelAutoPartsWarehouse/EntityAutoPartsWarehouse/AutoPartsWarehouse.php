@@ -38,7 +38,7 @@ class AutoPartsWarehouse
     #[ORM\ManyToOne]
     private ?PaymentMethod $id_payment_method = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
 
     public function getId(): ?int

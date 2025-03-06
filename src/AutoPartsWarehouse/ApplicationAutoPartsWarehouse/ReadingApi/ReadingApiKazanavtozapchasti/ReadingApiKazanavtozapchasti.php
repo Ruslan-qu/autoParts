@@ -3,12 +3,11 @@
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ReadingApiKazanavtozapchasti;
 
 use DateTimeImmutable;
-use Symfony\Component\HttpClient\HttpClient;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 
 class ReadingApiKazanavtozapchasti
 {
-    public function reading($client, $counterpartyApi): ?array
+    public function reading($client, $counterpartyApi, $autoPartsWarehouseRepositoryInterface): ?array
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
 
@@ -22,7 +21,14 @@ class ReadingApiKazanavtozapchasti
 
         $contentHeadersDate = $response->getHeaders()['date']['0'];
 
-        $content = $response->getContent();
+        $empty_date_auto_parts_warehouse = $autoPartsWarehouseRepositoryInterface
+            ->emptyDateAutoPartsWarehouse(new DateTimeImmutable($contentHeadersDate));
+        if ($empty_date_auto_parts_warehouse != 0) {
+
+            return NULL;
+        }
+
+        $response->getContent();
         $contentProducts = $response->toArray()['data']['products'];
 
         $payment_method_api = $this->paymentMethod();
@@ -37,8 +43,8 @@ class ReadingApiKazanavtozapchasti
         $data_api = [];
         foreach ($contentProducts as $key => $value) {
 
-            $input_errors->emptyData($value['name']);
-            $part_number = $value['name'];
+            $input_errors->emptyData($value['id']);
+            $part_number = $value['id'];
 
             $input_errors->emptyData($value['ref']);
             $quantity = $value['ref'];

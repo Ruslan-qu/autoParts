@@ -2,9 +2,7 @@
 
 namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use ContainerHt7Qm2w\EntityManagerGhost614a58f;
+use DateTimeImmutable;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
@@ -32,4 +30,8 @@ interface AutoPartsWarehouseRepositoryInterface
     public function findByAutoPartsWarehouseDeletePartNumbers(PartNumbersFromManufacturers $find_part_numbers): ?array;
 
     public function findByAutoPartsWarehouseDeleteCounterparty(Counterparty $delete_counterparty): ?array;
+
+    public function emptyDateAutoPartsWarehouse(DateTimeImmutable $contentHeadersDate): ?int;
+
+    public function findByShipmentToDate(): ?array;
 }

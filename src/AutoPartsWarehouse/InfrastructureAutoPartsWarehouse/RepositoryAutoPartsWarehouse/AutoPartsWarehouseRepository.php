@@ -2,6 +2,7 @@
 
 namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAutoPartsWarehouse;
 
+use DateTimeImmutable;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use ContainerHt7Qm2w\EntityManagerGhost614a58f;
@@ -221,6 +222,43 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a 
             WHERE a.id_counterparty = :id_counterparty'
         )->setParameter('id_counterparty', $delete_counterparty);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return int|NULL число или ноль
+     */
+    public function emptyDateAutoPartsWarehouse(DateTimeImmutable $contentHeadersDate): ?int
+    {
+        return $this->count(['date_receipt_auto_parts_warehouse' => $contentHeadersDate]);
+    }
+
+    /**
+     * @return array|NULL Возвращает массив объектов или ноль
+     */
+    public function findByShipmentToDate(): ?array
+    {
+        $date = new \DateTime();
+        $format_date = $date->format('Y-m-d-1 H:i:s');
+        dd($format_date);
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a, d, pn, cb, s, b, ax, o, c, pm
+            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
+            LEFT JOIN a.id_details d
+            LEFT JOIN d.id_part_name pn
+            LEFT JOIN d.id_car_brand cb
+            LEFT JOIN d.id_side s
+            LEFT JOIN d.id_body b
+            LEFT JOIN d.id_axle ax
+            LEFT JOIN d.id_original_number o
+            LEFT JOIN a.id_counterparty c
+            LEFT JOIN a.id_payment_method pm 
+            WHERE a.date_receipt_auto_parts_warehouse = :date_receipt_auto_parts_warehouse
+            ORDER BY s.id ASC'
+        )->setParameter('date_receipt_auto_parts_warehouse', $format_date);
 
         return $query->getResult();
     }
