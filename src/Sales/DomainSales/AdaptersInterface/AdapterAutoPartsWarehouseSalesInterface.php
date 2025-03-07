@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Sales\InfrastructureSales\ApiSales\AdapterAutoPartsWarehouse;
+namespace App\Sales\DomainSales\AdaptersInterface;
 
 
 interface AdapterAutoPartsWarehouseSalesInterface

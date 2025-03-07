@@ -1,6 +1,6 @@
 <?php
 
-namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterCounterparty;
+namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface;
 
 
 interface AdapterCounterpartyInterface

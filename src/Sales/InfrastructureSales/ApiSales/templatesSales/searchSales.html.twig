@@ -143,7 +143,9 @@
             <th scope="col">Перед<br>Зад</th>
             <th scope="col">Дата</th>
             <th scope="col">Кол-во</th>
-            <th scope="col">Цена</th>
+            <th scope="col">Цена<br>продажи</th>
+            <th scope="col">Цена<br>закуп</th>
+            <th scope="col">Прибыл</th>
             <th scope="col">{{ ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</th>
             <th scope="col">{{ ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</th>
           </tr>
@@ -170,6 +172,12 @@
             <td>{{ information.getDateSold()|date("d-m-Y")|default('') }}</td>
             <td>{{ information.getQuantitySold()|default('') }}</td>
             <td>{{ (information.getPriceSold() / 100)|default('') }}</td>
+            <td>{{ (((information.getIdAutoPartsWarehouse().getPrice() / 100)
+              / information.getIdAutoPartsWarehouse().getQuantity())
+              * information.getQuantitySold())|default('') }}</td>
+            <td>{{ ((information.getPriceSold() / 100) - (((information.getIdAutoPartsWarehouse().getPrice() / 100)
+              / information.getIdAutoPartsWarehouse().getQuantity())
+              * information.getQuantitySold()))|default('') }}</td>
             <form action="/editSalesAutoParts" name="edit_sales_auto_parts">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
@@ -187,6 +195,42 @@
           {% endfor %}
 
         </tbody>
+        {% set sum_sales = 0 %}
+        {% set sum_purchases = 0 %}
+        {% set sum_profit = 0 %}
+        {% for information in list_sales_auto_parts %}
+        {% set sum_sales = sum_sales + (information.getPriceSold() / 100) %}
+        {% set sum_purchases = sum_purchases + (((information.getIdAutoPartsWarehouse().getPrice() / 100)
+        / information.getIdAutoPartsWarehouse().getQuantity())
+        * information.getQuantitySold()) %}
+        {% set sum_profit = sum_profit + ((information.getPriceSold() / 100) -
+        (((information.getIdAutoPartsWarehouse().getPrice() / 100)
+        / information.getIdAutoPartsWarehouse().getQuantity())
+        * information.getQuantitySold())) %}
+        {% endfor %}
+
+        <tfoot>
+          {% if list_sales_auto_parts %}
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Общая<br>сумма</td>
+            <td>{{ sum_sales|default('') }}</td>
+            <td>{{ sum_purchases|default('') }}</td>
+            <td>{{ sum_profit|default('') }}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          {% endif %}
+        </tfoot>
       </table>
     </div>
   </div>

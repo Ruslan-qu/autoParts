@@ -240,8 +240,8 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     public function findByShipmentToDate(): ?array
     {
         $date = new \DateTime();
-        $format_date = $date->format('Y-m-d-1 H:i:s');
-        dd($format_date);
+        $format_date = $date->format('Y-m-d');
+
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -256,7 +256,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN d.id_original_number o
             LEFT JOIN a.id_counterparty c
             LEFT JOIN a.id_payment_method pm 
-            WHERE a.date_receipt_auto_parts_warehouse = :date_receipt_auto_parts_warehouse
+            WHERE a.date_receipt_auto_parts_warehouse >= :date_receipt_auto_parts_warehouse
             ORDER BY s.id ASC'
         )->setParameter('date_receipt_auto_parts_warehouse', $format_date);
 

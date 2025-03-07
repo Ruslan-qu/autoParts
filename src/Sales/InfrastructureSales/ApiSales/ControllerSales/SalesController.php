@@ -16,6 +16,7 @@ use App\Sales\InfrastructureSales\ApiSales\FormSales\EditSalesAutoPartsType;
 use App\Sales\ApplicationSales\QuerySales\SearchSalesQuery\FindBySalesQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\SalesToDate\FindBySalesToDateQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterSalesInterface;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\QuerySales\ListCartAutoParts\FindByCartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\EditSalesAutoParts\FindOneBySalesAutoPartsQueryHandler;
@@ -26,7 +27,6 @@ use App\Sales\ApplicationSales\CommandsSales\EditSalesAutoPartsCommand\EditSales
 use App\Sales\ApplicationSales\CommandsSales\DeleteCartAutoPartsCommand\DeleteCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\DeleteSalesAutoPartsCommand\DeleteSalesAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\CompletionSaleAutoPartsCommand\CompletionSaleAutoPartsCommandHandler;
-use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\Adapters\AdapterSales\AdapterSalesInterface;
 
 class SalesController extends AbstractController
 {
@@ -104,7 +104,7 @@ class SalesController extends AbstractController
         $sum = $this->sumCartAutoPartsSales($cartAutoParts);
 
 
-        return $this->render('sales/cartWarehouse.html.twig', [
+        return $this->render('@sales/cartWarehouse.html.twig', [
             'title_logo' => 'Корзина',
             'cartAutoParts' => $cartAutoParts,
             'sum_price_sold_cart_auto_parts' => $sum,
@@ -220,7 +220,7 @@ class SalesController extends AbstractController
         $form_search_sales->handleRequest($request);
 
         $list_sales_auto_parts = $findBySalesToDateQueryHandler->handler();
-
+        //dd($list_sales_auto_parts);
         if ($form_search_sales->isSubmitted()) {
             if ($form_search_sales->isValid()) {
                 try {

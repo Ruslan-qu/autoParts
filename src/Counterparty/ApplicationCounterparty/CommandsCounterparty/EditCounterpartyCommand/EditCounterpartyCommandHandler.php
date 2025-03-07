@@ -8,7 +8,6 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
@@ -20,11 +19,8 @@ final class EditCounterpartyCommandHandler
         private CounterpartyRepositoryInterface $counterpartyRepositoryInterface
     ) {}
 
-    public function handler(CounterpartyCommand $counterpartyCommand): int
+    public function handler(CounterpartyCommand $counterpartyCommand): ?int
     {
-
-
-
         $name_counterparty = strtolower(preg_replace(
             '#\s#',
             '',
@@ -110,6 +106,13 @@ final class EditCounterpartyCommandHandler
 
         $еntity = $this->counterpartyRepositoryInterface->findCounterparty($id);
         $this->inputErrors->emptyEntity($еntity);
+
+        if ($name_counterparty != $еntity->getNameCounterparty()) {
+            /* Валидация дублей */
+            $count_duplicate = $this->counterpartyRepositoryInterface
+                ->numberDoubles(['name_counterparty' => $name_counterparty]);
+            $this->inputErrors->errorDuplicate($count_duplicate);
+        }
 
         $еntity->setNameCounterparty($name_counterparty);
         $еntity->setMailCounterparty($mail_counterparty);
