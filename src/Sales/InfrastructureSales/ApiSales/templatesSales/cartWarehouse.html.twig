@@ -80,21 +80,13 @@
           {% endfor %}
 
         </tbody>
-        <tfoot>
+        <tfoot class="table table-group-divider align-middle">
           {% if cartAutoParts %}
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="8"></td>
             <td>Общая<br>сумма</td>
             <td>{{ (sum_price_sold_cart_auto_parts / 100)|default('') }}</td>
-            <td></td>
-            <td></td>
+            <td colspan="2"></td>
           </tr>
           {% endif %}
         </tfoot>
