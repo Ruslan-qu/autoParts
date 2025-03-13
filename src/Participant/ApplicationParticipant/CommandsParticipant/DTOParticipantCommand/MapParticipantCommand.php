@@ -2,10 +2,9 @@
 
 namespace App\Participant\ApplicationParticipant\CommandsParticipant\DTOParticipantCommand;
 
-use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
+use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
 
 abstract class MapParticipantCommand
 {
@@ -18,35 +17,19 @@ abstract class MapParticipantCommand
     private function load(array $data)
     {
         $typeResolver = TypeResolver::create();
-        $input_errors = new InputErrorsSales;
+        $input_errors = new InputErrorsParticipant;
 
         foreach ($data as $key => $value) {
 
-            $input_errors->propertyExistsEntity(AutoPartsSold::class, $key, 'AutoPartsSold');
+            $input_errors->propertyExistsEntity(Participant::class, $key, 'Participant');
 
             if (!empty($value)) {
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(Participant::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
-
-                if (gettype($value) == 'double' || gettype($value) == 'float') {
-
-                    $value = round($value * 100);
-                }
-
                 settype($value, $type);
-
-                if ($type == 'object') {
-
-                    $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-
-                    $input_errors->comparingClassNames($className, $value, $key);
-                }
-
                 $this->$key = $value;
             }
         }

@@ -7,16 +7,48 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Participant\DomainParticipant\RepositoryInterfaceParticipant\ParticipantRepositoryInterface;
 
 /**
  * @extends ServiceEntityRepository<Participant>
  */
-class ParticipantRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class ParticipantRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, ParticipantRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Participant::class);
+    }
+
+    /**
+     * @return int Возвращается число дублей 
+     */
+    public function numberDoubles(array $array): int
+    {
+
+        return $this->count($array);
+    }
+
+    /**
+     * @return array Возвращается массив с данными об успешном сохранении пользователя 
+     */
+    public function save(Participant $participant): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($participant);
+        $entityManager->flush();
+
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($participant);
+
+        $exists_counterparty = $this->count($entityData);
+        if ($exists_counterparty == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $successfully = ['save' => $entityData['id']];
     }
 
     /**
@@ -32,29 +64,4 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
-
-    //    /**
-    //     * @return Participant[] Returns an array of Participant objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Participant
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

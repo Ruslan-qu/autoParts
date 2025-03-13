@@ -3,57 +3,28 @@
 namespace App\Participant\ApplicationParticipant\CommandsParticipant\DTOParticipantCommand;
 
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOParticipantCommand\MapParticipantCommand;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 final class ParticipantCommand extends MapParticipantCommand
 
 {
     protected ?int $id = null;
 
-    protected ?AutoPartsWarehouse $id_auto_parts_warehouse = null;
+    protected ?string $email = null;
 
-    protected ?int $quantity_sold = null;
-
-    protected ?int $price_sold = null;
-
-    protected ?\DateTimeImmutable $date_sold = null;
-
-    protected ?int $id_sold = null;
-
-    protected ?bool $sold_status = null;
+    protected ?string $password = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getIdAutoPartsWarehouse(): ?AutoPartsWarehouse
+    public function getEmail(): ?string
     {
-        return $this->id_auto_parts_warehouse;
+        return $this->email;
     }
 
-    public function getQuantitySold(): ?int
+    public function getPassword(): ?string
     {
-        return $this->quantity_sold;
-    }
-
-    public function getPriceSold(): ?int
-    {
-        return $this->price_sold;
-    }
-
-    public function getDateSold(): ?\DateTimeImmutable
-    {
-        return $this->date_sold;
-    }
-
-    public function getIdSold(): ?int
-    {
-        return $this->id_sold;
-    }
-
-    public function isSoldStatus(): ?bool
-    {
-        return $this->sold_status;
+        return $this->password;
     }
 }

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
+    {% endblock Responsive_behaviors %}
+
+    {% block form %}
+
+    {{ form_start(registrationForm) }}
+    <div class="container-fluid text-center mt-3">
+        <div class="row">
+
+            <div class="col-sm-5 col-md-4 col-lg-3 col-xl-2">
+                <div class="lb">{{ form_label(registrationForm.email) }}</div>
+                {{ form_widget(registrationForm.email, { 'attr': {'class': 'w-100'} }) }}
+                {{ form_errors(registrationForm.email) |nl2br }}
+                {% for message in app.flashes('[name_counterparty_error][Email]') %}
+                {{ message }}
+                {% endfor %}
+            </div>
+
+            <div class="col-sm-5 col-md-4 col-lg-3 col-xl-2">
+                <div class="lb">{{ form_label(registrationForm.plainPassword) }}</div>
+                {{ form_widget(registrationForm.plainPassword, { 'attr': {'class': 'w-100'} }) }}
+                {{ form_errors(registrationForm.plainPassword) |nl2br }}
+                {% for message in app.flashes('[mail_counterparty_error][Regex]') %}
+                {{ message }}
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <div class="row my-2 pt-2">
+            <div class="col-sm-10 col-md-8 col-lg-6 col-xl-4">
+                {{ form_widget(registrationForm.button_registration_participant, { 'label': 'Зарегистрироватся', 'attr':
+                {'class': 'btn
+                btn-danger w-100'}}) }}
+            </div>
+        </div>
+    </div>
+
+    {# {{ form_row(registrationForm.agreeTerms) }}#}
+    {{ form_end(registrationForm) }}
+    {% endblock form %}

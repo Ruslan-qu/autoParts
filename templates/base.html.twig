@@ -36,9 +36,12 @@
                                     Сохранить в ручную
                                 </a>
                             </li>
-                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_file')}}">Сохранить из файла</a></li>
-                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_imap')}}">Сохранить из майла</a></li>
-                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_api')}}">Сохранить по API</a></li>
+                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_file')}}">Сохранить из файла</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_imap')}}">Сохранить из майла</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_api')}}">Сохранить по API</a>
+                            </li>
                             <li><a class="dropdown-item" href="{{ path('cart_warehouse')}}">Корзина</a></li>
                         </ul>
                     </li>
@@ -65,6 +68,16 @@
                             <li><a class="dropdown-item" href="{{ path('search_part_numbers')}}">Поиск</a></li>
                             <li><a class="dropdown-item" href="{{ path('save_part_numbers')}}">Сохранить</a></li>
                         </ul>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link" role="button" aria-expanded="false"
+                            href="{{ path('app_register')}}">Регистрация</a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link" role="button" aria-expanded="false" href="#">Вход</a>
+                    </li>
+                    <li class="nav-item px-2">
+                        <a class="nav-link" role="button" aria-expanded="false" href="#">Выход</a>
                     </li>
                 </ul>
             </div>

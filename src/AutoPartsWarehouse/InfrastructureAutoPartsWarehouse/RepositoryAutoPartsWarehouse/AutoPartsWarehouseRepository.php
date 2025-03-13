@@ -3,9 +3,7 @@
 namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAutoPartsWarehouse;
 
 use DateTimeImmutable;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use ContainerHt7Qm2w\EntityManagerGhost614a58f;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
@@ -257,8 +255,9 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN a.id_counterparty c
             LEFT JOIN a.id_payment_method pm 
             WHERE a.date_receipt_auto_parts_warehouse >= :date_receipt_auto_parts_warehouse
+            AND a.sales = :sales
             ORDER BY s.id ASC'
-        )->setParameter('date_receipt_auto_parts_warehouse', $format_date);
+        )->setParameters(['date_receipt_auto_parts_warehouse' => $format_date, 'sales' => 0]);
 
         return $query->getResult();
     }
