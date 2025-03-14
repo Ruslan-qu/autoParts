@@ -4,12 +4,12 @@ namespace App\Participant\ApplicationParticipant\CommandsParticipant\UserRegistr
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
-use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Participant\DomainParticipant\RepositoryInterfaceParticipant\ParticipantRepositoryInterface;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOParticipantCommand\ParticipantCommand;
 
@@ -19,7 +19,8 @@ final class UserRegistrationCommandHandler
     public function __construct(
         private InputErrorsParticipant $inputErrorsParticipant,
         private ParticipantRepositoryInterface $participantRepositoryInterface,
-        private Participant $participant
+        private Participant $participant,
+        private UserPasswordHasherInterface $userPasswordHasher,
     ) {}
 
     public function handler(ParticipantCommand $participantCommand): int
@@ -33,29 +34,32 @@ final class UserRegistrationCommandHandler
         $validator = Validation::createValidator();
 
         $input = [
-            'name_counterparty_error' => [
+            'mail_user_error' => [
                 'NotBlank' => $emailUser,
                 'Email' => $emailUser,
             ],
-            'mail_counterparty_error' => [
+            'password_user_error' => [
                 'NotBlank' => $passwordUser,
-                'Email' => $passwordUser,
+                'PasswordStrength' => $passwordUser,
             ]
         ];
 
         $constraint = new Collection([
-            'name_counterparty_error' => new Collection([
+            'mail_user_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Поставщик не может быть пустой'
+                    message: 'Форма E-mail не может быть пустой'
                 ),
-                'Regex' => new Regex(
-                    pattern: '/^[\da-z]*$/i',
-                    message: 'Форма Поставщик содержит недопустимые символы'
-                )
-            ]),
-            'mail_counterparty_error' => new Collection([
                 'Email' => new Email(
                     message: 'Форма E-mail содержит недопустимые символы'
+                )
+            ]),
+            'password_user_error' => new Collection([
+                'NotBlank' => new NotBlank(
+                    message: 'Форма E-mail не может быть пустой'
+                ),
+                'PasswordStrength' => new PasswordStrength(
+                    message: 'Ваш пароль слишком легко угадать. 
+                        Введите более надежный пароль.'
                 )
             ])
         ]);
@@ -63,19 +67,15 @@ final class UserRegistrationCommandHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsParticipant->errorValidate($errors_validate);
 
-        /* Валидация дублей */
-        $count_duplicate = $this->participantRepositoryInterface
-            ->numberDoubles(['name_counterparty' => $name_counterparty]);
-        $this->inputErrorsParticipant->errorDuplicate($count_duplicate);
+        $this->participant->setEmail($emailUser);
+        $this->participant->setRoles(['ROLE_USER']);
+        $this->participant->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $this->participant,
+                $passwordUser
+            )
+        );
 
-        $this->counterparty->setNameCounterparty($name_counterparty);
-        $this->counterparty->setMailCounterparty($mail_counterparty);
-        $this->counterparty->setManagerPhone($manager_phone);
-        $this->counterparty->setDeliveryPhone($delivery_phone);
-
-        $successfully_save = $this->participantRepositoryInterface->save($this->counterparty);
-
-        $id = $successfully_save['save'];
-        return $id;
+        return $this->participantRepositoryInterface->save($this->participant);
     }
 }

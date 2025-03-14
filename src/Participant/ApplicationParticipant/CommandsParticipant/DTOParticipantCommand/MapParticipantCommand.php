@@ -19,12 +19,14 @@ abstract class MapParticipantCommand
         $typeResolver = TypeResolver::create();
         $input_errors = new InputErrorsParticipant;
 
+        unset($data['button_registration_participant']);
+
         foreach ($data as $key => $value) {
 
             $input_errors->propertyExistsEntity(Participant::class, $key, 'Participant');
 
-            if (!empty($value)) {
-
+            if (!empty($value->getData())) {
+                $value = $value->getData();
                 $type = $typeResolver->resolve(new \ReflectionProperty(Participant::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()

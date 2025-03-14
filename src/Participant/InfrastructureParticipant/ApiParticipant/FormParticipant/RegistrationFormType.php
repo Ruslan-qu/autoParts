@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 
 class RegistrationFormType extends AbstractType
@@ -33,7 +34,7 @@ class RegistrationFormType extends AbstractType
                     ])
                 ]
             ])
-            ->add('plainPassword', PasswordType::class, [
+            ->add('password', PasswordType::class, [
                 'label' => 'Пароль',
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
@@ -44,11 +45,9 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Форма не может быть 
                         пустой',
                     ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Ваш пароль должен быть не менее {{ limit }} символов',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
+                    new PasswordStrength([
+                        'message' => 'Ваш пароль слишком легко угадать. 
+                        Введите более надежный пароль.',
                     ]),
                 ],
             ])

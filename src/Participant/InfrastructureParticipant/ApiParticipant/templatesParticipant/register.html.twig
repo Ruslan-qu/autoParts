@@ -24,9 +24,9 @@
             </div>
 
             <div class="col-sm-5 col-md-4 col-lg-3 col-xl-2">
-                <div class="lb">{{ form_label(registrationForm.plainPassword) }}</div>
-                {{ form_widget(registrationForm.plainPassword, { 'attr': {'class': 'w-100'} }) }}
-                {{ form_errors(registrationForm.plainPassword) |nl2br }}
+                <div class="lb">{{ form_label(registrationForm.password) }}</div>
+                {{ form_widget(registrationForm.password, { 'attr': {'class': 'w-100'} }) }}
+                {{ form_errors(registrationForm.password) |nl2br }}
                 {% for message in app.flashes('[mail_counterparty_error][Regex]') %}
                 {{ message }}
                 {% endfor %}
@@ -42,7 +42,15 @@
             </div>
         </div>
     </div>
-
-    {# {{ form_row(registrationForm.agreeTerms) }}#}
     {{ form_end(registrationForm) }}
+    <div class="col-auto m-3">
+        {% if id %}
+        <h5>Пользователь зарегистрирован</h5>
+        {% endif %}
+    </div>
+    <div>
+        {% for message in app.flashes('Error') %}
+        <h5 class="mt-3 ms-3">{{ message }}</h5>
+        {% endfor %}
+    </div>
     {% endblock form %}

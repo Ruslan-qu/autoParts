@@ -6,7 +6,7 @@ use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 
 interface  ParticipantRepositoryInterface
 {
-    public function save(Participant $participant): array;
+    public function save(Participant $participant): int;
 
     public function numberDoubles(array $array): int;
 }

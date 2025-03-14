@@ -20,47 +20,34 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
-        UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface $entityManager,
-        UserRegistrationCommandHandler $userRegistrationCommandHandler
+        UserRegistrationCommandHandler $userRegistrationCommandHandler,
+        Participant $participant
     ): Response {
 
-        $user = new Participant();
-        $form_registration_participant = $this->createForm(RegistrationFormType::class, $user);
+        $form_registration_participant = $this->createForm(RegistrationFormType::class, $participant);
         $form_registration_participant->handleRequest($request);
 
+        $id = 0;
         if ($form_registration_participant->isSubmitted()) {
             if ($form_registration_participant->isValid()) {
 
-
                 try {
 
-                    $id_handler = $userRegistrationCommandHandler
-                        ->handler(new ParticipantCommand($form_registration_participant->getData()));
+                    $id = $userRegistrationCommandHandler
+                        ->handler(new ParticipantCommand($form_registration_participant->all()));
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);
                 }
-                // encode the plain password
-                $user->setPassword(
-                    $userPasswordHasher->hashPassword(
-                        $user,
-                        $form_registration_participant->get('plainPassword')->getData()
-                    )
-                );
 
-                $entityManager->persist($user);
-                $entityManager->flush();
-
-                // do anything else you need here, like send an email
-
-                return $this->redirectToRoute('main_page');
+                //return $this->redirectToRoute('main_page');
             }
         }
 
         return $this->render('@registerParticipant/register.html.twig', [
             'title_logo' => 'Регистрация',
             'registrationForm' => $form_registration_participant,
+            'id' => $id
         ]);
     }
 

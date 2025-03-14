@@ -33,7 +33,7 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     /**
      * @return array Возвращается массив с данными об успешном сохранении пользователя 
      */
-    public function save(Participant $participant): array
+    public function save(Participant $participant): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->persist($participant);
@@ -41,14 +41,14 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($participant);
 
-        $exists_counterparty = $this->count($entityData);
+        $exists_counterparty = $this->count(['id' => $entityData['id']]);
         if ($exists_counterparty == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['save' => $entityData['id']];
+        return $entityData['id'];
     }
 
     /**
