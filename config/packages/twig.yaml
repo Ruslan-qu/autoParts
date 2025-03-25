@@ -5,9 +5,8 @@ twig:
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesPartNumbers': 'partNumbers'
         'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesAutoPartsWarehouse': 'autoPartsWarehouse'
         'src/Sales/InfrastructureSales/ApiSales/templatesSales': 'sales'
-        'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'registerParticipant'
+        'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'registerAuthenticationParticipant'
         'src/Main/InfrastructureMain/ApiMain/templatesMain': 'main'
-        'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'authentication'
 when@test:
     twig:
         strict_variables: true
