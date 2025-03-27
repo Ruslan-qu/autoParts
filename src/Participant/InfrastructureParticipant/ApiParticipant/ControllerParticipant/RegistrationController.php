@@ -35,12 +35,12 @@ class RegistrationController extends AbstractController
 
                     $id = $userRegistrationCommandHandler
                         ->handler(new ParticipantCommand($form_registration_participant->all()));
+
+                    return $this->redirectToRoute('app_login');
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);
                 }
-
-                //return $this->redirectToRoute('main_page');
             }
         }
 
