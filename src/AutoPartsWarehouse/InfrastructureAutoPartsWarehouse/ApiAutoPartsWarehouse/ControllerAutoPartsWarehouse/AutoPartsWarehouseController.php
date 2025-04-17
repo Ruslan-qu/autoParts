@@ -43,7 +43,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 class AutoPartsWarehouseController extends AbstractController
 {
     /*функция сохранения в ручную входящих автодеталей */
-    #[Route('/saveAutoPartsManually', name: 'save_auto_parts_manually')]
+    #[Route('/admin/saveAutoPartsManually', name: 'save_auto_parts_manually')]
     public function saveAutoPartsManually(
         Request $request,
         SaveAutoPartsWarehouseCommandHandler $saveAutoPartsWarehouseCommandHandler,
@@ -90,7 +90,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*функция сохранения из фаил автодеталей на склад*/
-    #[Route('/saveAutoPartsFile', name: 'save_auto_parts_file')]
+    #[Route('/admin/saveAutoPartsFile', name: 'save_auto_parts_file')]
     public function saveAutoPartsFile(
         Request $request,
         SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
@@ -148,7 +148,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*функция сохранения из электронного почтового ящика автодеталей на склад*/
-    #[Route('/saveAutoPartsImap', name: 'save_auto_parts_imap')]
+    #[Route('/admin/saveAutoPartsImap', name: 'save_auto_parts_imap')]
     public function saveAutoPartsImap(
         Request $request,
         FactoryReadingEmail $factoryReadingEmail,
@@ -213,7 +213,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*функция сохранения автодеталей на склад по API поставщиков*/
-    #[Route('/saveAutoPartsApi', name: 'save_auto_parts_api')]
+    #[Route('/admin/saveAutoPartsApi', name: 'save_auto_parts_api')]
     public function saveAutoPartsApi(
         Request $request,
         HttpClientInterface $client,
@@ -283,7 +283,7 @@ class AutoPartsWarehouseController extends AbstractController
 
 
     /*Поиск автодеталей на сладе*/
-    #[Route('/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
+    #[Route('/profile/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
     public function searchAutoPartsWarehouse(
         Request $request,
         FindByAutoPartsWarehouseQueryHandler $findByAutoPartsWarehouseQueryHandler,
@@ -320,7 +320,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*Редактирования наличия автодеталей на складе*/
-    #[Route('/editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
+    #[Route('/admin/editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
     public function editAutoPartsWarehouse(
         Request $request,
         FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
@@ -397,7 +397,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*Удаление автодетали*/
-    #[Route('/deleteAutoPartsWarehouse', name: 'delete_auto_parts_warehouse')]
+    #[Route('/admin/deleteAutoPartsWarehouse', name: 'delete_auto_parts_warehouse')]
     public function deleteAutoPartsWarehouse(
         Request $request,
         FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
