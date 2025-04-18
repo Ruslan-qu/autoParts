@@ -121,19 +121,19 @@
             <td>{{ (((information.getPrice() / 100) / information.getQuantity())
               * (information.getQuantity()- information.getQuantitySold()))|default('') }}</td>
 
-            <form action="cartAutoPartsWarehouseSold" name="cart_auto_parts_warehouse_sold">
+            <form action="{{ path('cart_auto_parts_warehouse_sold')}}" name="cart_auto_parts_warehouse_sold">
 
               <td><button class="btn btn-outline-success" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('bi:basket2', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
-            <form action="/editAutoPartsWarehouse" name="edit_auto_parts_warehouse">
+            <form action="{{ path('edit_auto_parts_warehouse')}}" name="edit_auto_parts_warehouse">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
-            <form action="/deleteAutoPartsWarehouse" name="delete_auto_parts_warehouse">
+            <form action="{{ path('delete_auto_parts_warehouse')}}" name="delete_auto_parts_warehouse">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>

@@ -21,6 +21,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto pe-4 mb-2 mb-lg-0">
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item pe-2">
                         <a class="nav-link" href="{{ path('main_page')}}">Главная</a>
                     </li>
@@ -69,6 +70,8 @@
                             <li><a class="dropdown-item" href="{{ path('save_part_numbers')}}">Сохранить</a></li>
                         </ul>
                     </li>
+                    {% endif %}
+                    {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item px-2">
                         <a class="nav-link" role="button" aria-expanded="false"
                             href="{{ path('app_register')}}">Регистрация</a>
@@ -76,9 +79,11 @@
                     <li class="nav-item px-2">
                         <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_login')}}">Вход</a>
                     </li>
+                    {% else %}
                     <li class="nav-item px-2">
                         <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_logout')}}">Выход</a>
                     </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

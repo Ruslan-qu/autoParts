@@ -29,7 +29,7 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOr
 class PartNumbersController extends AbstractController
 {
     /*Сохранения автодеталей*/
-    #[Route('/savePartNumbers', name: 'save_part_numbers')]
+    #[Route('/admin/savePartNumbers', name: 'save_part_numbers')]
     public function savePartNumbers(
         Request $request,
         SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
@@ -84,7 +84,7 @@ class PartNumbersController extends AbstractController
     }
 
     /*Поиск автодеталей*/
-    #[Route('/searchPartNumbers', name: 'search_part_numbers')]
+    #[Route('/profile/searchPartNumbers', name: 'search_part_numbers')]
     public function searchPartNumbers(
         Request $request,
         FindAllPartNumbersQueryHandler $findAllPartNumbersQueryHandler,
@@ -139,7 +139,7 @@ class PartNumbersController extends AbstractController
     }
 
     /*Редактирования автодеталей*/
-    #[Route('/editPartNumbers', name: 'edit_part_numbers')]
+    #[Route('/admin/editPartNumbers', name: 'edit_part_numbers')]
     public function editPartNumbers(
         Request $request,
         FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
@@ -226,7 +226,7 @@ class PartNumbersController extends AbstractController
     }
 
     /*Удаление автодетали*/
-    #[Route('/deletePartNumbers', name: 'delete_part_numbers')]
+    #[Route('/admin/deletePartNumbers', name: 'delete_part_numbers')]
     public function deletePartNumbers(
         Request $request,
         FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,

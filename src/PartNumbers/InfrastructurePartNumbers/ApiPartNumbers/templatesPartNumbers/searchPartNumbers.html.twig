@@ -156,13 +156,13 @@
             <td>{{ information.getIdBody().getBody()|default('') }}</td>
             <td>{{ information.getIdAxle().getAxle()|default('') }}</td>
             <td>{{ information.getIdInStock().getInStock()|default('') }}</td>
-            <form action="/editPartNumbers" name="edit_part_numbers">
+            <form action="{{ path('edit_part_numbers') }}" name="edit_part_numbers">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
-            <form action="/deletePartNumbers" name="delete_part_numbers">
+            <form action="{{ path('delete_part_numbers') }}" name="delete_part_numbers">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ information.getId() }}">Удалить</button></td>

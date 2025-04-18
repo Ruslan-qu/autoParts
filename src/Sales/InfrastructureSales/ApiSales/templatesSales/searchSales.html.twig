@@ -178,13 +178,13 @@
             <td>{{ ((information.getPriceSold() / 100) - (((information.getIdAutoPartsWarehouse().getPrice() / 100)
               / information.getIdAutoPartsWarehouse().getQuantity())
               * information.getQuantitySold()))|default('') }}</td>
-            <form action="/editSalesAutoParts" name="edit_sales_auto_parts">
+            <form action="{ path('edit_sales_auto_parts') }}" name="edit_sales_auto_parts">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
-            <form action="/deleteSalesAutoParts" name="delete_sales_auto_parts">
+            <form action="{ path('delete_sales_auto_parts') }}" name="delete_sales_auto_parts">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>

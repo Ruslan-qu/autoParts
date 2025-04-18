@@ -2,13 +2,11 @@
 
 namespace App\Participant\InfrastructureParticipant\ApiParticipant\ControllerParticipant;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\RegistrationFormType;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOParticipantCommand\ParticipantCommand;

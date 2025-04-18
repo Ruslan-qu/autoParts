@@ -32,7 +32,7 @@ class SalesController extends AbstractController
 {
 
     /*Добавляет автодетали в корзину*/
-    #[Route('/cartAutoPartsWarehouseSold', name: 'cart_auto_parts_warehouse_sold')]
+    #[Route('/admin/cartAutoPartsWarehouseSold', name: 'cart_auto_parts_warehouse_sold')]
     public function cartAutoPartsWarehouseSold(
         Request $request,
         AdapterSalesInterface $adapterSalesInterface,
@@ -87,7 +87,7 @@ class SalesController extends AbstractController
     }
 
     /*Корзина для продажи автодетали*/
-    #[Route('/cartWarehouse', name: 'cart_warehouse')]
+    #[Route('/admin/cartWarehouse', name: 'cart_warehouse')]
     public function cartWarehouse(
         Request $request,
         FindByCartAutoPartsSoldQueryHandler $findByCartAutoPartsSoldQueryHandler
@@ -113,7 +113,7 @@ class SalesController extends AbstractController
     }
 
     /*Редактирования автодеталей в корзине*/
-    #[Route('/editСartAutoPartsWarehouseSold', name: 'edit_cart_auto_parts_warehouse_sold')]
+    #[Route('/admin/editСartAutoPartsWarehouseSold', name: 'edit_cart_auto_parts_warehouse_sold')]
     public function editСartAutoPartsWarehouseSold(
         Request $request,
         FindСartAutoPartsSoldQueryHandler $findСartAutoPartsSoldQueryHandler,
@@ -168,7 +168,7 @@ class SalesController extends AbstractController
 
 
     /*Удаление автодетали из корзины*/
-    #[Route('/deleteСartAutoPartsWarehouseSold', name: 'delete_cart_auto_parts_warehouse_sold')]
+    #[Route('/admin/deleteСartAutoPartsWarehouseSold', name: 'delete_cart_auto_parts_warehouse_sold')]
     public function deleteСartAutoPartsWarehouseSold(
         Request $request,
         DeleteCartAutoPartsCommandHandler $deleteCartAutoPartsCommandHandler
@@ -188,7 +188,7 @@ class SalesController extends AbstractController
     }
 
     /*Завершение продажи*/
-    #[Route('/completionSale', name: 'completion_sale')]
+    #[Route('/admin/completionSale', name: 'completion_sale')]
     public function completionSale(
         CompletionSaleAutoPartsCommandHandler $completionSaleAutoPartsCommandHandler
     ): Response {
@@ -206,7 +206,7 @@ class SalesController extends AbstractController
     }
 
     /*Поиск проданых деталей*/
-    #[Route('/searchSales', name: 'search_sales')]
+    #[Route('/admin/searchSales', name: 'search_sales')]
     public function searchSales(
         Request $request,
         FindBySalesQueryHandler $findBySalesQueryHandler,
@@ -242,7 +242,7 @@ class SalesController extends AbstractController
     }
 
     /*Редактирования автодеталей в продаже*/
-    #[Route('/editSalesAutoParts', name: 'edit_sales_auto_parts')]
+    #[Route('/admin/editSalesAutoParts', name: 'edit_sales_auto_parts')]
     public function editSalesAutoParts(
         Request $request,
         FindOneBySalesAutoPartsQueryHandler $findOneBySalesAutoPartsQueryHandler,
@@ -297,7 +297,7 @@ class SalesController extends AbstractController
     }
 
     /*Удаление продажи*/
-    #[Route('/deleteSalesAutoParts', name: 'delete_sales_auto_parts')]
+    #[Route('/admin/deleteSalesAutoParts', name: 'delete_sales_auto_parts')]
     public function deleteSalesAutoParts(
         Request $request,
         DeleteSalesAutoPartsCommandHandler $deleteSalesAutoPartsCommandHandler
