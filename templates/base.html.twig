@@ -21,7 +21,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto pe-4 mb-2 mb-lg-0">
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item pe-2">
                         <a class="nav-link" href="{{ path('main_page')}}">Главная</a>
                     </li>
@@ -70,6 +70,86 @@
                             <li><a class="dropdown-item" href="{{ path('save_part_numbers')}}">Сохранить</a></li>
                         </ul>
                     </li>
+                    <li class="dropdown ps-2">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" aria-expanded="false">
+                            Прин-ть деталей
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Название детали
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('save_part_name')}}">Сохранить</a></li>
+                                </ul>
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Марка
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                </ul>
+                            </li>
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Сторона
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                </ul>
+                            </li>
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Кузов
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                </ul>
+                            </li>
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Перед Зад
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                </ul>
+                            </li>
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Наличие
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                </ul>
+                            </li>
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Сп. оплаты
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+
+
                     {% endif %}
                     {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item px-2">

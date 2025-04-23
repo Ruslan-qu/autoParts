@@ -69,13 +69,13 @@
             <td>{{ information.getMailCounterparty() }}</td>
             <td>{{ information.getManagerPhone() }}</td>
             <td>{{ information.getDeliveryPhone() }}</td>
-            <form action="/editCounterparty" name="edit_counterparty">
+            <form action="{ path('edit_counterparty') }}" name="edit_counterparty">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
-            <form action="/deleteCounterparty" name="delete_counterparty">
+            <form action="{ path('delete_counterparty') }}" name="delete_counterparty">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ information.getId() }}">Удалить</button></td>
