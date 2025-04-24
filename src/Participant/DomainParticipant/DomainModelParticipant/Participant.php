@@ -2,6 +2,9 @@
 
 namespace App\Participant\DomainParticipant\DomainModelParticipant;
 
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -35,6 +38,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    /**
+     * @var Collection<int, PartName>
+     */
+    #[ORM\OneToMany(targetEntity: PartName::class, mappedBy: 'id_participant')]
+    private Collection $partNames;
+
+    public function __construct()
+    {
+        $this->partNames = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -119,6 +133,36 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PartName>
+     */
+    public function getPartNames(): Collection
+    {
+        return $this->partNames;
+    }
+
+    public function addPartName(PartName $partName): static
+    {
+        if (!$this->partNames->contains($partName)) {
+            $this->partNames->add($partName);
+            $partName->setIdParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartName(PartName $partName): static
+    {
+        if ($this->partNames->removeElement($partName)) {
+            // set the owning side to null (unless already changed)
+            if ($partName->getIdParticipant() === $this) {
+                $partName->setIdParticipant(null);
+            }
+        }
 
         return $this;
     }

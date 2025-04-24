@@ -5,26 +5,33 @@
 {% block logo %}{{title_logo}}{% endblock logo %}
 
 {% block Responsive_behaviors %}
-<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+<nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
   {% endblock Responsive_behaviors %}
 
   {% block form %}
 
   {#Форма поиска постовщиков#}
 
-  {{ form_start(form_save_part_name, {'attr': {'class': 'row row-cols-12 text-center
-  mt-2'}}) }}
-
-  <div class="col-auto ms-3">
-    <div class="lb">{{ form_label(form_save_part_name.part_name) }}</div>
-    {{ form_widget(form_save_part_name.part_name) }}
-    {{ form_errors(form_save_part_name.part_name) }}
-  </div>
-
-  <div class="row mt-3">
-    <div class="col-auto">
-      {{ form_widget(form_save_part_name.button_part_name, { 'attr': {'class': 'btn btn-danger'}}) }}
+  {{ form_start(form_save_part_name) }}
+  
+  <div class="container-fluid text-center mt-3">
+    <div class="row">
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="lb">{{ form_label(form_save_part_name.part_name) }}</div>
+        {{ form_widget(form_save_part_name.part_name, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_save_part_name.part_name) }}
+        {% for message in app.flashes('[part_name_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+      </div>
     </div>
+
+    <div class="row mt-3">
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        {{ form_widget(form_save_part_name.button_part_name, { 'attr': {'class': 'btn btn-danger w-100'}}) }}
+      </div>
+    </div>
+
   </div>
 
   {{ form_end(form_save_part_name) }}

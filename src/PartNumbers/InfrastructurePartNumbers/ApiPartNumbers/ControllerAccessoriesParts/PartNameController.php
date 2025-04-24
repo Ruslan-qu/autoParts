@@ -9,6 +9,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartName\SavePartNameType;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNameCommand\PartNameCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNameCommandHandler;
 
 class PartNameController extends AbstractController
 {
@@ -16,7 +18,7 @@ class PartNameController extends AbstractController
     #[Route('/savePartName', name: 'save_part_name')]
     public function savePartName(
         Request $request,
-        // SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
+        SavePartNameCommandHandler $savePartNameCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -32,17 +34,17 @@ class PartNameController extends AbstractController
 
                 try {
 
-                    //$id_handler = $saveCounterpartyCommandHandler
-                    //  ->handler(new CounterpartyCommand($form_save_part_name->getData()));
+                    $id = $savePartNameCommandHandler
+                        ->handler(new PartNameCommand($form_save_part_name->getData()));
                 } catch (HttpException $e) {
-
+                    // dd($e);
                     $errorMessageViaSession->errorMessageSession($e);
                 }
             }
         }
 
         return $this->render('@partName/savePartName.html.twig', [
-            'title_logo' => 'Добавление названия автодетали',
+            'title_logo' => 'Добавление названия детали',
             'form_save_part_name' => $form_save_part_name->createView(),
             'id' => $id
         ]);

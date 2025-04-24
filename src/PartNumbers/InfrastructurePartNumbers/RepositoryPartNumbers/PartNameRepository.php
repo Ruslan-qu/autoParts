@@ -4,6 +4,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNameRepositoryInterface;
 
@@ -17,6 +18,35 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
         parent::__construct($registry, PartName::class);
     }
 
+    /**
+     * @return int Возвращается число дублей 
+     */
+    public function numberDoubles(array $array): int
+    {
+
+        return $this->count($array);
+    }
+
+    /**
+     * @return array Возвращается массив с данными об успешном сохранении
+     */
+    public function save(PartName $partName): int
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->persist($partName);
+        $entityManager->flush();
+
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($partName);
+
+        $exists_part_name = $this->count($entityData);
+        if ($exists_part_name == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $entityData['id'];
+    }
     /**
      * @return PartName|NULL Возвращает массив объектов или ноль
      */

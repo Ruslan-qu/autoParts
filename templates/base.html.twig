@@ -25,7 +25,7 @@
                     <li class="nav-item pe-2">
                         <a class="nav-link" href="{{ path('main_page')}}">Главная</a>
                     </li>
-                    <li class="nav-item dropdown px-2">
+                    <li class="nav-item dropdown px-1">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Склад
@@ -46,11 +46,11 @@
                             <li><a class="dropdown-item" href="{{ path('cart_warehouse')}}">Корзина</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item px-2">
+                    <li class="nav-item px-1">
                         <a class="nav-link" role="button" aria-expanded="false"
                             href="{{ path('search_sales')}}">Продажи</a>
                     </li>
-                    <li class="nav-item dropdown px-2">
+                    <li class="nav-item dropdown px-1">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Контрагент
@@ -60,7 +60,7 @@
                             <li><a class="dropdown-item" href="{{ path('save_counterparty')}}">Сохранить</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown ps-2">
+                    <li class="nav-item dropdown ps-1">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Детали
@@ -70,7 +70,7 @@
                             <li><a class="dropdown-item" href="{{ path('save_part_numbers')}}">Сохранить</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown ps-2">
+                    <li class="dropdown ps-1">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" aria-expanded="false">
                             Прин-ть деталей
@@ -147,9 +147,6 @@
                             </li>
                         </ul>
                     </li>
-
-
-
                     {% endif %}
                     {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item px-2">
