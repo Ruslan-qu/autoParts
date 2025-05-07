@@ -11,4 +11,6 @@ interface  PartNameRepositoryInterface
     public function numberDoubles(array $array): int;
 
     public function findOneByPartName(string $part_name): ?PartName;
+
+    public function countId(): ?array;
 }

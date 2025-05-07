@@ -56,10 +56,52 @@ final class SavePartNameCommandHandler
             ->numberDoubles(['part_name' => $part_name]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
+        $arr_count_id = $this->partNameRepositoryInterface
+            ->countId();
+
+        $count_id = $this->arrayMapping($arr_count_id);
+
+        dd($count_id);
+
         $partName = new PartName;
         $partName->setPartName($part_name);
         $partName->setIdParticipant($id_participant);
 
         return $this->partNameRepositoryInterface->save($partName);
+    }
+
+    private function savingData(PartName $partName, int $count_id): ?int
+    {
+
+        /* Выводим сообщения ошибки в форму через сессии  */
+        foreach ($arr_validator_errors as $key => $value_errors) {
+            if (is_array($value_errors)) {
+                foreach ($value_errors as $key => $value) {
+                    $message = $value;
+                    $propertyPath = $key;
+                }
+            } else {
+                $message = $value_errors;
+                $propertyPath = $key;
+            }
+
+            $this->addFlash($propertyPath, $message);
+        }
+
+        return $this;
+    }
+
+    private function arrayMapping(array $arr_count_id): ?int
+    {
+        if ($arr_count_id !== Null) {
+            foreach ($arr_count_id as $key => $value_arr_count_id) {
+                foreach ($value_arr_count_id as $key => $count_id) {
+
+                    return $count_id;
+                }
+            }
+        }
+
+        return Null;
     }
 }

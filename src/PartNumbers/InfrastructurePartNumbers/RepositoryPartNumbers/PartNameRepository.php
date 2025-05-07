@@ -54,4 +54,19 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
     {
         return $this->findOneBy(['part_name' => $part_name]);
     }
+
+    /**
+     * @return ARRAY|NULL Возвращает массив количество id или ноль
+     */
+    public function countId(): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(p.id)
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName p'
+        );
+
+        return $query->getResult();
+    }
 }
