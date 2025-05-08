@@ -1,9 +1,9 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNameCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameCommand;
 
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNameCommand\MapPartNameCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameCommand\MapPartNameCommand;
 
 final class PartNameCommand extends MapPartNameCommand
 {

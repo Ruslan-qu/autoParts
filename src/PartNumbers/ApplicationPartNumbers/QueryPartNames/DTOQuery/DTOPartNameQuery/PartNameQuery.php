@@ -1,8 +1,8 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNameQuery;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DTOQuery\DTOPartNameQuery;
 
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNameQuery\MapPartNameQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DTOQuery\DTOPartNameQuery\MapPartNameQuery;
 
 final class PartNameQuery extends MapPartNameQuery
 {

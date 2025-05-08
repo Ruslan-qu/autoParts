@@ -1,12 +1,12 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNameCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DTOQuery\DTOPartNameQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 
-abstract class MapPartNameCommand
+abstract class MapPartNameQuery
 {
 
     public function __construct(array $data = [])
@@ -31,14 +31,6 @@ abstract class MapPartNameCommand
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
-                if ($type == 'object') {
-
-                    $className = $typeResolver->resolve(new \ReflectionProperty(PartName::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-
-                    $input_errors->comparingClassNames($className, $value, $key);
-                }
 
                 $this->$key = $value;
             }

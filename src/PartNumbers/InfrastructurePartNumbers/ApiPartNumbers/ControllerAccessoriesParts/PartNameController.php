@@ -7,10 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartName\SavePartNameType;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNameCommand\PartNameCommand;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNameCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\UserExtractionQuery\UserExtractionQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameCommand\PartNameCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\SavePartNameCommand\SavePartNameCommandHandler;
 
 class PartNameController extends AbstractController
 {
@@ -19,6 +21,7 @@ class PartNameController extends AbstractController
     public function savePartName(
         Request $request,
         SavePartNameCommandHandler $savePartNameCommandHandler,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -34,6 +37,8 @@ class PartNameController extends AbstractController
 
                 try {
 
+                    $participant = $adapterUserExtractionInterface->userExtraction();
+                    dd($participant);
                     $id = $savePartNameCommandHandler
                         ->handler(new PartNameCommand($form_save_part_name->getData()));
                 } catch (HttpException $e) {
