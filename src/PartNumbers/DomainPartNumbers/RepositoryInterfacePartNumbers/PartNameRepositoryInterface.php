@@ -13,4 +13,6 @@ interface  PartNameRepositoryInterface
     public function findOneByPartName(string $part_name): ?PartName;
 
     public function countId(): ?array;
+
+    public function findAllPartName(): ?array;
 }

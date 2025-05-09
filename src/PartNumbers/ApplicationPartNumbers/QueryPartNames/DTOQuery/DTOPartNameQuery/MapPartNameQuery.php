@@ -31,6 +31,14 @@ abstract class MapPartNameQuery
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
+                if ($type == 'object') {
+
+                    $className = $typeResolver->resolve(new \ReflectionProperty(PartName::class, $key))
+                        ->getBaseType()
+                        ->getClassName();
+
+                    $input_errors->comparingClassNames($className, $value, $key);
+                }
 
                 $this->$key = $value;
             }

@@ -69,4 +69,13 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
 
         return $query->getResult();
     }
+
+    /**
+     * @return PartName|NULL Возвращает массив объектов или ноль
+     */
+    public function findAllPartName(): ?array
+    {
+
+        return $this->findAll();
+    }
 }

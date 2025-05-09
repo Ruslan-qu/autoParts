@@ -2,7 +2,6 @@
 
 namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartName;
 
-use App\Form\Type\EntityHiddenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -10,9 +9,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 
-class SavePartNameType extends AbstractType
+class SearchPartNameType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -24,18 +22,17 @@ class SavePartNameType extends AbstractType
                         'pattern' => '/^[а-яё\s]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
-                    недопустимые символы'
+                недопустимые символы'
                     ]),
                     new NotBlank([
                         'message' => 'Форма не может быть 
-                    пустой'
+                пустой'
                     ])
                 ]
             ])
             ->add('button_part_name', SubmitType::class, [
-                'label' => 'Сохранить'
-            ])
-        ;
+                'label' => 'Поиск'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

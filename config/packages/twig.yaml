@@ -3,7 +3,7 @@ twig:
     paths:
         'src/Counterparty/InfrastructureCounterparty/ApiCounterparty/templatesCounterparty': 'counterparty'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesPartNumbers': 'partNumbers'
-        'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts': 'partName'
+        'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/PartName': 'partName'
         'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesAutoPartsWarehouse': 'autoPartsWarehouse'
         'src/Sales/InfrastructureSales/ApiSales/templatesSales': 'sales'
         'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'registerAuthenticationParticipant'
