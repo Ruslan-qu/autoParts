@@ -38,7 +38,7 @@ class PartNameController extends AbstractController
                 try {
 
                     $participant = $adapterUserExtractionInterface->userExtraction();
-                    dd($participant);
+                    dd($form_save_part_name->getData());
                     $id = $savePartNameCommandHandler
                         ->handler(new PartNameCommand($form_save_part_name->getData()));
                 } catch (HttpException $e) {
