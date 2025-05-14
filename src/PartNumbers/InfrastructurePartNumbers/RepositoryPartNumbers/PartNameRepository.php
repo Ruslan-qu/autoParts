@@ -4,6 +4,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNameRepositoryInterface;
@@ -50,9 +51,9 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
     /**
      * @return PartName|NULL Возвращает массив объектов или ноль
      */
-    public function findOneByPartName(string $part_name): ?PartName
+    public function findOneByPartName(string $part_name, Participant $id_participant): ?PartName
     {
-        return $this->findOneBy(['part_name' => $part_name]);
+        return $this->findOneBy(['part_name' => $part_name, 'id_participant' => $id_participant]);
     }
 
     /**
@@ -73,9 +74,9 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
     /**
      * @return PartName|NULL Возвращает массив объектов или ноль
      */
-    public function findAllPartName(): ?array
+    public function findByPartName(Participant $id_participant): ?array
     {
 
-        return $this->findAll();
+        return $this->findBy(['id_participant' => $id_participant]);
     }
 }

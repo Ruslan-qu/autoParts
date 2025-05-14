@@ -2,6 +2,7 @@
 
 namespace App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 
 interface  PartNameRepositoryInterface
@@ -10,9 +11,9 @@ interface  PartNameRepositoryInterface
 
     public function numberDoubles(array $array): int;
 
-    public function findOneByPartName(string $part_name): ?PartName;
+    public function findOneByPartName(string $part_name, Participant $id_participant): ?PartName;
 
     public function countId(): ?array;
 
-    public function findAllPartName(): ?array;
+    public function findByPartName(Participant $id_participant): ?array;
 }

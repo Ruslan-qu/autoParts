@@ -29,6 +29,7 @@ final class SearchPartNameQueryHandler
         $validator = Validation::createValidator();
 
         $part_name = $PartNameQuery->getPartName();
+        $id_participant = $PartNameQuery->getIdParticipant();
 
         $input = [
             'part_name_error' => [
@@ -52,7 +53,7 @@ final class SearchPartNameQueryHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-        $find_one_by_part_name['part_name'] = [$this->partNameRepositoryInterface->findOneByPartName($part_name)];
+        $find_one_by_part_name['part_name'] = $this->partNameRepositoryInterface->findOneByPartName($part_name, $id_participant);
 
         return $find_one_by_part_name;
     }
