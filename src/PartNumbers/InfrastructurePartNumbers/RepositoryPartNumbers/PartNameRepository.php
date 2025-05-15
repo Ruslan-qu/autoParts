@@ -79,4 +79,13 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
 
         return $this->findBy(['id_participant' => $id_participant]);
     }
+
+    /**
+     * @return PartName|NULL Возвращает массив объектов или ноль
+     */
+    public function findPartName(int $id): ?PartName
+    {
+
+        return $this->find($id);
+    }
 }

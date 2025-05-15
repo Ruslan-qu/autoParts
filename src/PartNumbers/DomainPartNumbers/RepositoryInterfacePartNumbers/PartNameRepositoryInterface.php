@@ -16,4 +16,6 @@ interface  PartNameRepositoryInterface
     public function countId(): ?array;
 
     public function findByPartName(Participant $id_participant): ?array;
+
+    public function findPartName(int $id): ?PartName;
 }

@@ -7,12 +7,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartName\SavePartNameType;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartName\SearchPartNameType;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DTOQuery\DTOPartNameQuery\PartNameQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DeletePartNameQuery\FindPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\SearchPartNameQuery\FindByPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\SearchPartNameQuery\SearchPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\UserExtractionQuery\UserExtractionQueryHandler;
@@ -20,6 +22,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\SearchPartNameQuery\Fi
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameCommand\PartNameCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\SavePartNameCommand\SavePartNameCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DeletePartNameCommand\DeletePartNameCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameObjCommand\PartNameObjCommand;
 
 class PartNameController extends AbstractController
 {
@@ -45,7 +48,7 @@ class PartNameController extends AbstractController
                 try {
 
                     $participant = $adapterUserExtractionInterface->userExtraction();
-                    $part_name = $this->mapPartName($form_save_part_name->getData(), $participant);
+                    $part_name = $this->mapPartNameParticipant($form_save_part_name->getData(), $participant);
                     $id = $savePartNameCommandHandler
                         ->handler(new PartNameCommand($part_name));
                 } catch (HttpException $e) {
@@ -93,7 +96,7 @@ class PartNameController extends AbstractController
             if ($form_search_part_name->isValid()) {
 
                 try {
-                    $part_name = $this->mapPartName($form_search_part_name->getData(), $participant);
+                    $part_name = $this->mapPartNameParticipant($form_search_part_name->getData(), $participant);
                     $search_data = $searchPartNameQueryHandler
                         ->handler(new PartNameQuery($part_name));
                 } catch (HttpException $e) {
@@ -115,20 +118,18 @@ class PartNameController extends AbstractController
     #[Route('deletePartName', name: 'delete_part_name')]
     public function deletePartNumbers(
         Request $request,
-        //  FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
-        // AdapterPartNumbersInterface $adapterPartNumbersInterface,
+        FindPartNameQueryHandler $findPartNameQueryHandler,
         DeletePartNameCommandHandler $deletePartNameCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
-            dd($request);
-            // $data_part_numbers['id_details'] = $findIdPartNumbersQueryHandler
-            //    ->handler(new PartNumbersQuery($request->query->all()));
 
-            // $adapterPartNumbersInterface->AutoPartsWarehouseDeletePartNumbers($data_part_numbers);
-
+            $part_name = $findPartNameQueryHandler
+                ->handler(new PartNameQuery($request->query->all()));
+            //dd($part_name);
+            //$arr_part_name = $this->mapPartName($part_name);
             $deletePartNameCommandHandler
-                ->handler(new PartNameCommand($request->query->all()));
+                ->handler(new PartNameObjCommand($part_name));
             $this->addFlash('delete', 'Автодеталь удалена');
         } catch (HttpException $e) {
 
@@ -138,14 +139,14 @@ class PartNameController extends AbstractController
         return $this->redirectToRoute('search_part_numbers');
     }
 
-    private function mapPartName(array $part_name, object $participant): array
+    private function mapPartNameParticipant(array $part_name, Participant $participant): array
     {
         $part_name['id_participant'] = $participant;
 
         return $part_name;
     }
 
-    private function mapObjectPartName(PartName $part_name, object $participant): array
+    private function mapObjectPartName(PartName $part_name, Participant $participant): array
     {
         $arr_part_name['id'] = $part_name->getId();
         $arr_part_name['part_name'] = $part_name->getPartName();
@@ -153,4 +154,13 @@ class PartNameController extends AbstractController
 
         return $arr_part_name;
     }
+
+    /*private function mapPartName(PartName $part_name): array
+    {
+        $arr_part_name['id'] = $part_name->getId();
+        $arr_part_name['part_name'] = $part_name->getPartName();
+        $arr_part_name['id_participant'] = $part_name->getIdParticipant();
+
+        return $arr_part_name;
+    }*/
 }
