@@ -8,6 +8,7 @@ use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNameRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameObjCommand\PartNameObjCommand;
 
 /**
  * @extends ServiceEntityRepository<PartName>
@@ -48,6 +49,28 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
 
         return $entityData['id'];
     }
+
+    /**
+     * @return array Возвращается массив с данными об удаление 
+     */
+    public function delete(PartName $partName): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->remove($partName);
+        dd($entityManager);
+        $entityManager->flush();
+
+        $entityData = $entityManager->contains($partName);
+        dd($entityData);
+        if ($entityData != false) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $successfully = ['delete' => 0];
+    }
+
     /**
      * @return PartName|NULL Возвращает массив объектов или ноль
      */

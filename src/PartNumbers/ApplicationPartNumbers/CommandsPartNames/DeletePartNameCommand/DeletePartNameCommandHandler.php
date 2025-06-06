@@ -18,9 +18,9 @@ final class DeletePartNameCommandHandler
 
     public function handler(PartNameObjCommand $partNameObjCommand): ?int
     {
+        $part_name = $partNameObjCommand->getPartName();
 
-
-        $successfully_delete = $this->partNameRepositoryInterface->delete($find_part_numbers);
+        $successfully_delete = $this->partNameRepositoryInterface->delete($part_name);
 
         return $successfully_delete['delete'];
     }

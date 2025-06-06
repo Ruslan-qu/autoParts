@@ -9,6 +9,8 @@ interface  PartNameRepositoryInterface
 {
     public function save(PartName $partName): int;
 
+    public function delete(PartName $partName): ?array;
+
     public function numberDoubles(array $array): int;
 
     public function findOneByPartName(string $part_name, Participant $id_participant): ?PartName;
