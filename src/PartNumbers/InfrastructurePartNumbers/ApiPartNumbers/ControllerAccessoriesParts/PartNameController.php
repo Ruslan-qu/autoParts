@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartName\SavePartNameType;
@@ -114,6 +115,93 @@ class PartNameController extends AbstractController
         ]);
     }
 
+    /*Редактирования автодеталей*/
+    #[Route('editPartName', name: 'edit_part_name')]
+    public function editPartNumbers(
+        Request $request,
+        //FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
+        // EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
+        // FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
+        // EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
+        // SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
+        // ErrorMessageViaSession $errorMessageViaSession
+    ): Response {
+
+        /*Форма Редактирования*/
+        $form_edit_part_numbers = $this->createForm(EditPartNumbersType::class);
+
+        /*Валидация формы */
+        $form_edit_part_numbers->handleRequest($request);
+
+        if (empty($form_edit_part_numbers->getData())) {
+            try {
+
+                $data_form_edit_part_numbers = $findIdPartNumbersQueryHandler
+                    ->handler(new PartNumbersQuery($request->query->all()));
+            } catch (HttpException $e) {
+
+                $errorMessageViaSession->errorMessageSession($e);
+
+                return $this->redirectToRoute('search_part_numbers');
+            }
+        }
+
+        if (!empty($request->request->all())) {
+
+            $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
+        }
+
+        $id = null;
+        if ($form_edit_part_numbers->isSubmitted()) {
+            if ($form_edit_part_numbers->isValid()) {
+
+                $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
+                $data_edit_part_numbers = $form_edit_part_numbers->getData();
+                if (!empty($data_edit_part_numbers['original_number'])) {
+
+                    $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
+                    $arr_original_number['original_number'] = $data_edit_part_numbers['original_number'];
+
+                    try {
+                        if (!empty($data_edit_part_numbers['id_original_number'])) {
+
+                            $editOriginalRoomsCommandHandler
+                                ->handler(new OriginalRoomsCommand($arr_original_number));
+                        } else {
+
+                            $saveOriginalRoomsCommandHandler
+                                ->handler(new OriginalRoomsCommand($arr_original_number));
+                        }
+                        $object_original_number = $findOneByOriginalRoomsQueryHandler
+                            ->handler(new OriginalRoomsQuery($arr_original_number));
+                        $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
+                    } catch (HttpException $e) {
+
+                        $errorMessageViaSession->errorMessageSession($e);
+                    }
+                }
+
+                unset($data_edit_part_numbers['original_number']);
+
+                try {
+
+                    $id = $editPartNumbersCommandHandler
+                        ->handler(new PartNumbersCommand($data_edit_part_numbers));
+                } catch (HttpException $e) {
+
+                    $errorMessageViaSession->errorMessageSession($e);
+                }
+            }
+        }
+
+        return $this->render('@partNumbers/editPartNumbers.html.twig', [
+            'title_logo' => 'Изменение данных автодеталей',
+            'form_edit_part_numbers' => $form_edit_part_numbers->createView(),
+            'id' => $id,
+            'data_form_edit_part_numbers' => $data_form_edit_part_numbers
+        ]);
+    }
+
     /*Удаление название автодетали*/
     #[Route('deletePartName', name: 'delete_part_name')]
     public function deletePartNumbers(
@@ -126,8 +214,7 @@ class PartNameController extends AbstractController
 
             $part_name = $findPartNameQueryHandler
                 ->handler(new PartNameQuery($request->query->all()));
-            //dd($part_name);
-            //$arr_part_name = $this->mapPartName($part_name);
+
             $deletePartNameCommandHandler
                 ->handler(new PartNameObjCommand($part_name));
             $this->addFlash('delete', 'Автодеталь удалена');
@@ -136,7 +223,7 @@ class PartNameController extends AbstractController
             $errorMessageViaSession->errorMessageSession($e);
         }
 
-        return $this->redirectToRoute('search_part_numbers');
+        return $this->redirectToRoute('search_part_name');
     }
 
     private function mapPartNameParticipant(array $part_name, Participant $participant): array

@@ -37,9 +37,11 @@
   {{ form_end(form_search_part_name) }}
 
   <div class="col-auto m-3">
-    {% for message in app.flashes('Error') %}
+    {% for messages in app.flashes(['delete','Error']) %}
+  {% for message in messages %}
     <h5 class="mt-3 ms-3">{{ message }}</h5>
-    {% endfor %}
+  {% endfor %}
+  {% endfor %}
   {% endblock form %}
 
   {% block table %}
