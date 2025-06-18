@@ -15,6 +15,8 @@ interface  PartNameRepositoryInterface
 
     public function findOneByPartName(string $part_name, Participant $id_participant): ?PartName;
 
+    public function findOneByIdPartName(int $id, Participant $id_participant): ?PartName;
+
     public function countId(): ?array;
 
     public function findByPartName(Participant $id_participant): ?array;

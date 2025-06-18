@@ -78,11 +78,19 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
     }
 
     /**
-     * @return PartName|NULL Возвращает массив объектов или ноль
+     * @return PartName|NULL Возвращает объект или ноль
      */
     public function findOneByPartName(string $part_name, Participant $id_participant): ?PartName
     {
         return $this->findOneBy(['part_name' => $part_name, 'id_participant' => $id_participant]);
+    }
+
+    /**
+     * @return PartName|NULL Возвращает или ноль
+     */
+    public function findOneByIdPartName(int $id, Participant $id_participant): ?PartName
+    {
+        return $this->findOneBy(['id' => $id, 'id_participant' => $id_participant]);
     }
 
     /**

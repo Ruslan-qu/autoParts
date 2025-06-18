@@ -70,12 +70,14 @@
 
           <tr>
             <td>{{ information.getPartName()|default('') }}</td>
-            <form action="#" name="edit_part_name">
+
+            <form action="{{ path('edit_part_name') }}" name="edit_part_name">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
+            
             <form action="{{ path('delete_part_name') }}" name="delete_part_name">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
