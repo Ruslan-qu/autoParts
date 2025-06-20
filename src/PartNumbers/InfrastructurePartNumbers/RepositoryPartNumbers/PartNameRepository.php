@@ -51,6 +51,24 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
     }
 
     /**
+     * @return array Возвращается массив с данными об успешном изменения  
+     */
+    public function edit(PartName $partName): array
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->flush();
+
+        $exists_part_name = $this->count(['part_name' => $partName->getPartName()]);
+        if ($exists_part_name == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $successfully = ['edit' => $partName->getId()];
+    }
+
+    /**
      * @return array Возвращается массив с данными об удаление 
      */
     public function delete(PartName $partName): array

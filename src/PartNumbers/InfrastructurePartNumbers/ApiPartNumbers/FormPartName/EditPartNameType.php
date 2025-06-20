@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class EditPartNameType extends AbstractType
@@ -30,6 +31,7 @@ class EditPartNameType extends AbstractType
                     ])
                 ]
             ])
+            ->add('id', HiddenType::class)
             ->add('button_part_name', SubmitType::class, [
                 'label' => 'Изменить'
             ]);

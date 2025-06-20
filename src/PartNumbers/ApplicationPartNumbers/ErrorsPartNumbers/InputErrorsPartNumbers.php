@@ -12,8 +12,8 @@ class InputErrorsPartNumbers
     {
         if ($count_duplicate != 0) {
 
-            $arr_data_errors = ['Error' => 'Номер детали уже существует 
-            или Изменить на существующий номер детали нельзя'];
+            $arr_data_errors = ['Error' => 'Данные автодетали уже существуют 
+            Сохранить или Изменить на существующие данные автодетали нельзя'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new ConflictHttpException($json_arr_data_errors);
         }
@@ -67,6 +67,18 @@ class InputErrorsPartNumbers
         if (empty($еntity)) {
 
             $arr_data_errors = ['Error' => 'Данные не найдены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function userIsNotIdentified($participant): static
+    {
+        if (empty($participant)) {
+
+            $arr_data_errors = ['Error' => 'Пользователь не идентифицируется'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

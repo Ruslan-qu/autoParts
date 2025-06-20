@@ -20,7 +20,7 @@ class AdapterUserExtraction implements AdapterUserExtractionInterface
     {
 
         $participant = $this->security->getUser();
-        $this->inputErrorsPartNumbers->emptyData($participant);
+        $this->inputErrorsPartNumbers->userIsNotIdentified($participant);
         return $participant;
     }
 }

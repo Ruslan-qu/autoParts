@@ -8,7 +8,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
-use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartName\EditPartNameType;
@@ -19,9 +18,8 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DTOQuery\DTOPartNameQu
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DeletePartNameQuery\FindPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\SearchPartNameQuery\FindByPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\SearchPartNameQuery\SearchPartNameQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\UserExtractionQuery\UserExtractionQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\SearchPartNameQuery\FindAllPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameCommand\PartNameCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\EditPartNameCommand\EditPartNameCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\SavePartNameCommand\SavePartNameCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\EditPartNameQuery\FindOneByIdPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DeletePartNameCommand\DeletePartNameCommandHandler;
@@ -108,7 +106,7 @@ class PartNameController extends AbstractController
                 }
             }
         }
-        //dd($search_data);
+
         return $this->render('@partName/searchPartName.html.twig', [
             'title_logo' => 'Поиск название детали',
             'form_search_part_name' => $form_search_part_name->createView(),
@@ -123,7 +121,7 @@ class PartNameController extends AbstractController
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindOneByIdPartNameQueryHandler $findOneByIdPartNameQueryHandler,
-        // EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
+        EditPartNameCommandHandler $editPartNameCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -138,16 +136,17 @@ class PartNameController extends AbstractController
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);
+
+            return $this->redirectToRoute('search_part_name');
         }
 
         if (empty($form_edit_part_name->getData())) {
-            try {
 
-                $part_name = $this->mapPartName($request->query->all()['id'], '', $participant);
+            $part_name = $this->mapPartName($request->query->all()['id'], '', $participant);
+            try {
 
                 $data_form_edit_part_name = $findOneByIdPartNameQueryHandler
                     ->handler(new PartNameQuery($part_name));
-                dd($data_form_edit_part_name);
             } catch (HttpException $e) {
 
                 $errorMessageViaSession->errorMessageSession($e);
@@ -158,19 +157,24 @@ class PartNameController extends AbstractController
 
         if (!empty($request->request->all())) {
 
-            $data_form_edit_part_name = $request->request->all()['search_part_name'];
+            $data_form_edit_part_name = $request->request->all()['edit_part_name'];
         }
 
         $id = null;
         if ($form_edit_part_name->isSubmitted()) {
             if ($form_edit_part_name->isValid()) {
 
-                $data_form_edit_part_name = $request->request->all()['search_part_name'];
-                $data_edit_part_name = $form_edit_part_name->getData();
+                $data_form_edit_part_name = $request->request->all()['edit_part_name'];
+                $data_edit_part_name = $this->mapPartName(
+                    $form_edit_part_name->getData()['id'],
+                    $form_edit_part_name->getData()['part_name'],
+                    $participant
+                );
+                //dd($data_edit_part_name);
                 try {
 
-                    $id = $editPartNumbersCommandHandler
-                        ->handler(new PartNumbersCommand($data_edit_part_name));
+                    $id = $editPartNameCommandHandler
+                        ->handler(new PartNameCommand($data_edit_part_name));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -178,7 +182,7 @@ class PartNameController extends AbstractController
             }
         }
 
-        return $this->render('@partNumbers/editPartNumbers.html.twig', [
+        return $this->render('@partName/editPartName.html.twig', [
             'title_logo' => 'Изменение название автодеталей',
             'form_edit_part_name' => $form_edit_part_name->createView(),
             'id' => $id,

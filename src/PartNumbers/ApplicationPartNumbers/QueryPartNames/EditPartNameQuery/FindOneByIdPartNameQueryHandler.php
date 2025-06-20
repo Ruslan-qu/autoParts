@@ -22,6 +22,7 @@ final class FindOneByIdPartNameQueryHandler
         $id = $partNameQuery->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
         $participant = $partNameQuery->getIdParticipant();
+        $this->inputErrorsPartNumbers->userIsNotIdentified($participant);
 
         $edit_part_name = $this->partNameRepositoryInterface->findOneByIdPartName($id, $participant);
         $this->inputErrorsPartNumbers->emptyEntity($edit_part_name);
