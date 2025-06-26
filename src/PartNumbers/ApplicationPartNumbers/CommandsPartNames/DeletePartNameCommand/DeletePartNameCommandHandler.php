@@ -12,8 +12,7 @@ final class DeletePartNameCommandHandler
 
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private PartNameRepositoryInterface $partNameRepositoryInterface,
-        private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
+        private PartNameRepositoryInterface $partNameRepositoryInterface
     ) {}
 
     public function handler(PartNameObjCommand $partNameObjCommand): ?int

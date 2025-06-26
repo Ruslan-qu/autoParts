@@ -14,6 +14,16 @@ use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessag
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormCarBrands\EditCarBrandsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormCarBrands\SaveCarBrandsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormCarBrands\SearchCarBrandsType;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOPartNameQuery\CarBrandsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DeleteCarBrandsQuery\FindCarBrandsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\SearchCarBrandsQuery\FindByCarBrandsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\SearchCarBrandsQuery\SearchCarBrandsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\DTOCommands\DTOCarBrandsCommand\CarBrandsCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\EditCarBrandsCommand\EditCarBrandsCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\SaveCarBrandsCommand\SaveCarBrandsCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\EditCarBrandsQuery\FindOneByIdCarBrandsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\DeleteCarBrandsCommand\DeleteCarBrandsCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\DTOCommands\DTOCarBrandsObjCommand\CarBrandsObjCommand;
 
 class CarBrandsController extends AbstractController
 {
@@ -21,7 +31,7 @@ class CarBrandsController extends AbstractController
     #[Route('/saveCarBrands', name: 'save_car_brands')]
     public function saveCarBrands(
         Request $request,
-        //   SaveCarBrandsCommandHandler $saveCarBrandsCommandHandler,
+        SaveCarBrandsCommandHandler $saveCarBrandsCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -62,8 +72,8 @@ class CarBrandsController extends AbstractController
         Request $request,
         CarBrands $сarBrands,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //  FindByCarBrandsQueryHandler $findByCarBrandsQueryHandler,
-        //  SearchCarBrandsQueryHandler $searchCarBrandsQueryHandler,
+        FindByCarBrandsQueryHandler $findByCarBrandsQueryHandler,
+        SearchCarBrandsQueryHandler $searchCarBrandsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -110,8 +120,8 @@ class CarBrandsController extends AbstractController
     public function editCarBrands(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //  FindOneByIdCarBrandsQueryHandler $findOneByIdCarBrandsQueryHandler,
-        //   EditCarBrandsCommandHandler $editCarBrandsCommandHandler,
+        FindOneByIdCarBrandsQueryHandler $findOneByIdCarBrandsQueryHandler,
+        EditCarBrandsCommandHandler $editCarBrandsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -184,8 +194,8 @@ class CarBrandsController extends AbstractController
     #[Route('deleteCarBrands', name: 'delete_car_brands')]
     public function deleteCarBrands(
         Request $request,
-        // FindCarBrandsQueryHandler $findCarBrandsQueryHandler,
-        // DeleteCarBrandsCommandHandler $deleteCarBrandsCommandHandler,
+        FindCarBrandsQueryHandler $findCarBrandsQueryHandler,
+        DeleteCarBrandsCommandHandler $deleteCarBrandsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {

@@ -3,7 +3,6 @@
 namespace App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers;
 
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
