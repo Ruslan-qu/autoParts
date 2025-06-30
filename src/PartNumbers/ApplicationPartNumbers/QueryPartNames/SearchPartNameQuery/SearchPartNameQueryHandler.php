@@ -7,11 +7,9 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNameRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNames\DTOQuery\DTOPartNameQuery\PartNameQuery;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
-use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\PartNumbersFromManufacturersRepository;
+
 
 
 final class SearchPartNameQueryHandler
@@ -54,6 +52,7 @@ final class SearchPartNameQueryHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         $find_one_by_part_name['part_name'] = $this->partNameRepositoryInterface->findOneByPartName($part_name, $id_participant);
+        $this->inputErrorsPartNumbers->issetEntity($find_one_by_part_name);
 
         return $find_one_by_part_name;
     }

@@ -37,7 +37,7 @@ final class EditCarBrandsCommandHandler
                     message: 'Форма Марка не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[a-z\s]*$/i',
                     message: 'Форма Марка содержит недопустимые символы'
                 )
             ])

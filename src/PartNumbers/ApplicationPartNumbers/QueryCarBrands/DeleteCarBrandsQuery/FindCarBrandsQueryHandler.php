@@ -19,7 +19,7 @@ final class FindCarBrandsQueryHandler
         $id = $carBrandsQuery->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
 
-        $find_car_brand['car_brand'] = $this->carBrandsRepositoryInterface->findCarBrands($id);
+        $find_car_brand['car_brands'] = $this->carBrandsRepositoryInterface->findCarBrands($id);
         $this->inputErrorsPartNumbers->emptyEntity($find_car_brand);
 
         return $find_car_brand;

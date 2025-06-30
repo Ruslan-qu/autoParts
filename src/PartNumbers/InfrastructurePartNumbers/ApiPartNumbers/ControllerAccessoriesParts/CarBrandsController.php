@@ -157,14 +157,14 @@ class CarBrandsController extends AbstractController
 
         if (!empty($request->request->all())) {
 
-            $data_form_edit_car_brands = $request->request->all()['form_edit_car_brands'];
+            $data_form_edit_car_brands = $request->request->all()['edit_car_brands'];
         }
 
         $id = null;
         if ($form_edit_car_brands->isSubmitted()) {
             if ($form_edit_car_brands->isValid()) {
 
-                $data_form_edit_car_brands = $request->request->all()['form_edit_car_brands'];
+                $data_form_edit_car_brands = $request->request->all()['edit_car_brands'];
                 $data_edit_car_brands = $this->mapCarBrands(
                     $form_edit_car_brands->getData()['id'],
                     $form_edit_car_brands->getData()['car_brand'],

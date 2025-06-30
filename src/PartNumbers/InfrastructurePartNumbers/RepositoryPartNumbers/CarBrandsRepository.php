@@ -39,8 +39,8 @@ class CarBrandsRepository extends ServiceEntityRepository implements CarBrandsRe
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($carBrands);
 
-        $exists_part_name = $this->count($entityData);
-        if ($exists_part_name == 0) {
+        $exists_car_brands = $this->count($entityData);
+        if ($exists_car_brands == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
@@ -57,8 +57,8 @@ class CarBrandsRepository extends ServiceEntityRepository implements CarBrandsRe
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
 
-        $exists_part_name = $this->count(['car_brand' => $carBrands->getCarBrand()]);
-        if ($exists_part_name == 0) {
+        $exists_car_brands = $this->count(['car_brand' => $carBrands->getCarBrand()]);
+        if ($exists_car_brands == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);

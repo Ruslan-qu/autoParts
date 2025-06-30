@@ -17,7 +17,6 @@ final class DeleteCarBrandsCommandHandler
     public function handler(CarBrandsObjCommand $carBrandsObjCommand): ?int
     {
         $car_brands = $carBrandsObjCommand->getCarBrands();
-
         $successfully_delete = $this->carBrandsRepositoryInterface->delete($car_brands);
 
         return $successfully_delete['delete'];

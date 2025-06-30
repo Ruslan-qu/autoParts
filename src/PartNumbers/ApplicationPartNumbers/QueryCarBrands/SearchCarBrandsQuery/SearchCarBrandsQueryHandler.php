@@ -41,7 +41,7 @@ final class SearchCarBrandsQueryHandler
                     message: 'Форма Марка не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[a-z\s]*$/i',
                     message: 'Форма Марка содержит недопустимые символы'
                 )
             ])
@@ -51,6 +51,7 @@ final class SearchCarBrandsQueryHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         $find_one_by_car_brands['car_brands'] = $this->carBrandsRepositoryInterface->findOneByCarBrands($car_brand, $id_participant);
+        $this->inputErrorsPartNumbers->issetEntity($find_one_by_car_brands);
 
         return $find_one_by_car_brands;
     }
