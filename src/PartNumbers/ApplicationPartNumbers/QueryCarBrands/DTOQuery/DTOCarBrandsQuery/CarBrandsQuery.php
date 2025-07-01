@@ -1,9 +1,9 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOPartNameQuery;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOCarBrandsQuery;
 
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
-use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOPartNameQuery\MapCarBrandsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOCarBrandsQuery\MapCarBrandsQuery;
 
 final class CarBrandsQuery extends MapCarBrandsQuery
 {

@@ -13,7 +13,17 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormSides\EditSides
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormSides\SaveSidesType;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormSides\SearchSidesType;
+use App\PartNumbers\ApplicationPartNumbers\QuerySides\DTOQuery\DTOSidesQuery\SidesQuery;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
+use App\PartNumbers\ApplicationPartNumbers\QuerySides\DeleteSidesQuery\FindSidesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QuerySides\SearchSidesQuery\FindBySidesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QuerySides\SearchSidesQuery\SearchSidesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand\SidesCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsSides\EditSidesCommand\EditSidesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsSides\SaveSidesCommand\SaveSidesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QuerySides\EditSidesQuery\FindOneByIdSidesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DeleteSidesCommand\DeleteSidesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesObjCommand\SidesObjCommand;
 
 class SidesController extends AbstractController
 {
@@ -21,7 +31,7 @@ class SidesController extends AbstractController
     #[Route('/saveSide', name: 'save_side')]
     public function saveSide(
         Request $request,
-        // SaveSidesCommandHandler $saveSidesCommandHandler,
+        SaveSidesCommandHandler $saveSidesCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -62,8 +72,8 @@ class SidesController extends AbstractController
         Request $request,
         Sides $sides,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindBySidesQueryHandler $findBySidesQueryHandler,
-        //SearchSidesQueryHandler $searchSidesQueryHandler,
+        FindBySidesQueryHandler $findBySidesQueryHandler,
+        SearchSidesQueryHandler $searchSidesQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -77,7 +87,7 @@ class SidesController extends AbstractController
 
             $participant = $adapterUserExtractionInterface->userExtraction();
             $sides = $this->mapObjectsides($sides, $participant);
-            $search_data = $findBySidesQueryHandler->handler(new sidesQuery($sides));
+            $search_data = $findBySidesQueryHandler->handler(new SidesQuery($sides));
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);
@@ -110,8 +120,8 @@ class SidesController extends AbstractController
     public function editSide(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindOneByIdSidesQueryHandler $findOneByIdSidesQueryHandler,
-        // EditSidesCommandHandler $editSidesCommandHandler,
+        FindOneByIdSidesQueryHandler $findOneByIdSidesQueryHandler,
+        EditSidesCommandHandler $editSidesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -184,8 +194,8 @@ class SidesController extends AbstractController
     #[Route('deleteSide', name: 'delete_side')]
     public function deleteSide(
         Request $request,
-        //FindSidesQueryHandler $findSidesQueryHandler,
-        //DeleteSidesCommandHandler $deleteSidesCommandHandler,
+        FindSidesQueryHandler $findSidesQueryHandler,
+        DeleteSidesCommandHandler $deleteSidesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {

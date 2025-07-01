@@ -14,7 +14,7 @@ use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessag
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormCarBrands\EditCarBrandsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormCarBrands\SaveCarBrandsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormCarBrands\SearchCarBrandsType;
-use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOPartNameQuery\CarBrandsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOCarBrandsQuery\CarBrandsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DeleteCarBrandsQuery\FindCarBrandsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\SearchCarBrandsQuery\FindByCarBrandsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\SearchCarBrandsQuery\SearchCarBrandsQueryHandler;
