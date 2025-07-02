@@ -57,8 +57,8 @@ class SidesRepository extends ServiceEntityRepository implements SidesRepository
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
 
-        $exists_Sides = $this->count(['Side' => $sides->getSide()]);
-        if ($exists_Sides == 0) {
+        $exists_sides = $this->count(['side' => $sides->getSide()]);
+        if ($exists_sides == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);

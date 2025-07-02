@@ -69,7 +69,7 @@
             {% if information %}
 
           <tr>
-            <td>{{ information.getPartName()|default('') }}</td>
+            <td>{{ information.getSide()|default('') }}</td>
 
             <form action="{{ path('edit_side') }}" name="edit_side">
 

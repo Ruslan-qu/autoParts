@@ -3,7 +3,7 @@
 namespace App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\SearchCarBrandsQuery;
 
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\CarBrandsRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOPartNameQuery\CarBrandsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOCarBrandsQuery\CarBrandsQuery;
 
 final class FindByCarBrandsQueryHandler
 {

@@ -42,7 +42,7 @@ final class SaveSidesCommandHandler
                     message: 'Форма Сторона не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[a-z\s]*$/i',
+                    pattern: '/^[а-яё\s]*$/ui',
                     message: 'Форма Сторона содержит недопустимые символы'
                 )
             ])

@@ -7,51 +7,37 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
-use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormSides\EditSidesType;
-use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormSides\SaveSidesType;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
-use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormSides\SearchSidesType;
-use App\PartNumbers\ApplicationPartNumbers\QuerySides\DTOQuery\DTOSidesQuery\SidesQuery;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
-use App\PartNumbers\ApplicationPartNumbers\QuerySides\DeleteSidesQuery\FindSidesQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QuerySides\SearchSidesQuery\FindBySidesQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QuerySides\SearchSidesQuery\SearchSidesQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand\SidesCommand;
-use App\PartNumbers\ApplicationPartNumbers\CommandsSides\EditSidesCommand\EditSidesCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsSides\SaveSidesCommand\SaveSidesCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\QuerySides\EditSidesQuery\FindOneByIdSidesQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DeleteSidesCommand\DeleteSidesCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesObjCommand\SidesObjCommand;
 
-class SidesController extends AbstractController
+class BodiesController extends AbstractController
 {
-    /*Сохранения сторону авто*/
-    #[Route('/saveSide', name: 'save_side')]
-    public function saveSide(
+    /*Сохранения Кузов авто*/
+    #[Route('/saveBody', name: 'save_body')]
+    public function saveBody(
         Request $request,
-        SaveSidesCommandHandler $saveSidesCommandHandler,
+        //SaveBodiesCommandHandler $saveBodiesCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
         /* Форма сохранения */
-        $form_save_sides = $this->createForm(SaveSidesType::class);
+        $form_save_bodies = $this->createForm(SaveBodiesType::class);
 
         /*Валидация формы */
-        $form_save_sides->handleRequest($request);
+        $form_save_bodies->handleRequest($request);
 
         $id = null;
-        if ($form_save_sides->isSubmitted()) {
-            if ($form_save_sides->isValid()) {
+        if ($form_save_bodies->isSubmitted()) {
+            if ($form_save_bodies->isValid()) {
 
                 try {
 
                     $participant = $adapterUserExtractionInterface->userExtraction();
-                    $sides = $this->mapSidesParticipant($form_save_sides->getData(), $participant);
-                    $id = $saveSidesCommandHandler
-                        ->handler(new SidesCommand($sides));
+                    $bodies = $this->mapBodiesParticipant($form_save_bodies->getData(), $participant);
+                    $id = $saveBodiesCommandHandler
+                        ->handler(new BodiesCommand($bodies));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -59,35 +45,35 @@ class SidesController extends AbstractController
             }
         }
 
-        return $this->render('@sides/saveSide.html.twig', [
+        return $this->render('@bodies/saveBody.html.twig', [
             'title_logo' => 'Добавление стороны авто',
-            'form_save_sides' => $form_save_sides->createView(),
+            'form_save_bodies' => $form_save_bodies->createView(),
             'id' => $id
         ]);
     }
 
-    /*Поиск стороны авто*/
-    #[Route('searchSide', name: 'search_side')]
-    public function searchSide(
+    /*Поиск Кузов авто*/
+    #[Route('searchBody', name: 'search_body')]
+    public function searchBody(
         Request $request,
-        Sides $sides,
+        Bodies $bodies,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        FindBySidesQueryHandler $findBySidesQueryHandler,
-        SearchSidesQueryHandler $searchSidesQueryHandler,
+        //FindByBodiesQueryHandler $findByBodiesQueryHandler,
+        //SearchBodiesQueryHandler $searchBodiesQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
         /*Форма поиска*/
-        $form_search_sides = $this->createForm(SearchSidesType::class);
+        $form_search_bodies = $this->createForm(SearchBodiesType::class);
 
         /*Валидация формы */
-        $form_search_sides->handleRequest($request);
+        $form_search_bodies->handleRequest($request);
 
         try {
 
             $participant = $adapterUserExtractionInterface->userExtraction();
-            $sides = $this->mapObjectSides($sides, $participant);
-            $search_data = $findBySidesQueryHandler->handler(new SidesQuery($sides));
+            $bodies = $this->mapObjectBodies($bodies, $participant);
+            $search_data = $findByBodiesQueryHandler->handler(new BodiesQuery($bodies));
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);

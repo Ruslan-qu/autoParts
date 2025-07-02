@@ -76,7 +76,7 @@ class InputErrorsPartNumbers
 
     public function issetEntity($еntity): static
     {
-        if (isset($еntity)) {
+        if (!isset($еntity)) {
 
             $arr_data_errors = ['Error' => 'Данные не найдены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
