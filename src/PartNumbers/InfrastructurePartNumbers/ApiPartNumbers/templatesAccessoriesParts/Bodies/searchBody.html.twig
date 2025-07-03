@@ -10,17 +10,17 @@
 
   {% block form %}
 
-  {#Форма поиска постовщиков#}
+  {#Форма поиска#}
 
-  {{ form_start(form_search_sides) }}
+  {{ form_start(form_search_bodies) }}
 
   <div class="container-fluid text-center mt-3">
     <div class="row">
       <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        <div class="lb">{{ form_label(form_search_sides.side) }}</div>
-        {{ form_widget(form_search_sides.side, { 'attr': {'class': 'w-100'} }) }}
-        {{ form_errors(form_search_sides.side) }}
-        {% for message in app.flashes('[side_error][Regex]') %}
+        <div class="lb">{{ form_label(form_search_bodies.body) }}</div>
+        {{ form_widget(form_search_bodies.body, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_search_bodies.body) }}
+        {% for message in app.flashes('[body_error][Regex]') %}
         {{ message }}
         {% endfor %}
       </div>
@@ -28,13 +28,13 @@
 
     <div class="row mt-3">
       <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        {{ form_widget(form_search_sides.button_side, { 'attr': {'class': 'btn btn-danger w-100'}}) }}
+        {{ form_widget(form_search_bodies.button_body, { 'attr': {'class': 'btn btn-danger w-100'}}) }}
       </div>
     </div>
 
   </div>
 
-  {{ form_end(form_search_sides) }}
+  {{ form_end(form_search_bodies) }}
 
   <div class="col-auto m-3">
     {% for messages in app.flashes(['delete','Error']) %}
@@ -56,7 +56,7 @@
 
           {% if search_data %}
           <tr>
-            <th scope="col">Сторона</th>
+            <th scope="col">Кузов</th>
             <th scope="col">Редактировать</th>
             <th scope="col">Удалить</th>
           </tr>
@@ -69,16 +69,16 @@
             {% if information %}
 
           <tr>
-            <td>{{ information.getSide()|default('') }}</td>
+            <td>{{ information.getBody()|default('') }}</td>
 
-            <form action="{{ path('edit_side') }}" name="edit_side">
+            <form action="{{ path('edit_body') }}" name="edit_body">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ information.getId() }}">Изменить</button></td>
 
             </form>
             
-            <form action="{{ path('delete_side') }}" name="delete_side">
+            <form action="{{ path('delete_body') }}" name="delete_body">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ information.getId() }}">Удалить</button></td>

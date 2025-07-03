@@ -6,6 +6,7 @@ twig:
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/PartName': 'partName'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/CarBrands': 'сarBrands'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/Sides': 'sides'
+        'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/Bodies': 'bodies'
         'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesAutoPartsWarehouse': 'autoPartsWarehouse'
         'src/Sales/InfrastructureSales/ApiSales/templatesSales': 'sales'
         'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'registerAuthenticationParticipant'

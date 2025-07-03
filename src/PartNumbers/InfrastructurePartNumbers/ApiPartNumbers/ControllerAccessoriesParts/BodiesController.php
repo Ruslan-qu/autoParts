@@ -7,8 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\EditBodiesType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\SaveBodiesType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\SearchBodiesType;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
 
 class BodiesController extends AbstractController
@@ -79,14 +83,14 @@ class BodiesController extends AbstractController
             $errorMessageViaSession->errorMessageSession($e);
         }
 
-        if ($form_search_sides->isSubmitted()) {
-            if ($form_search_sides->isValid()) {
+        if ($form_search_bodies->isSubmitted()) {
+            if ($form_search_bodies->isValid()) {
 
                 try {
-                    $sides = $this->mapSidesParticipant($form_search_sides->getData(), $participant);
+                    $sides = $this->mapSidesParticipant($form_search_bodies->getData(), $participant);
 
                     $search_data = $searchSidesQueryHandler
-                        ->handler(new SidesQuery($sides));
+                        ->handler(new BodiesQuery($sides));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -94,29 +98,29 @@ class BodiesController extends AbstractController
             }
         }
 
-        return $this->render('@sides/searchSide.html.twig', [
-            'title_logo' => 'Поиск стороны авто',
-            'form_search_sides' => $form_search_sides->createView(),
+        return $this->render('@bodies/searchBody.html.twig', [
+            'title_logo' => 'Поиск кузов авто',
+            'form_search_bodies' => $form_search_bodies->createView(),
             'search_data' => $search_data,
 
         ]);
     }
 
-    /*Редактирования сторона авто*/
-    #[Route('editSide', name: 'edit_side')]
-    public function editSide(
+    /*Редактирования Кузов авто*/
+    #[Route('editBody', name: 'edit_body')]
+    public function editBody(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        FindOneByIdSidesQueryHandler $findOneByIdSidesQueryHandler,
-        EditSidesCommandHandler $editSidesCommandHandler,
+        //FindOneByIdBodiesQueryHandler $findOneByIdBodiesQueryHandler,
+        //EditBodiesCommandHandler $editBodiesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
         /*Форма Редактирования*/
-        $form_edit_sides = $this->createForm(EditSidesType::class);
+        $form_edit_bodies = $this->createForm(EditBodiesType::class);
 
         /*Валидация формы */
-        $form_edit_sides->handleRequest($request);
+        $form_edit_bodies->handleRequest($request);
 
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
@@ -124,43 +128,43 @@ class BodiesController extends AbstractController
 
             $errorMessageViaSession->errorMessageSession($e);
 
-            return $this->redirectToRoute('search_side');
+            return $this->redirectToRoute('search_body');
         }
 
-        if (empty($form_edit_sides->getData())) {
+        if (empty($form_edit_bodies->getData())) {
 
-            $sides = $this->mapCarBrands($request->query->all()['id'], '', $participant);
+            $bodies = $this->mapBodies($request->query->all()['id'], '', $participant);
             try {
 
-                $data_form_edit_sides = $findOneByIdSidesQueryHandler
-                    ->handler(new SidesQuery($sides));
+                $data_form_edit_bodies = $findOneByIdBodiesQueryHandler
+                    ->handler(new BodiesQuery($bodies));
             } catch (HttpException $e) {
 
                 $errorMessageViaSession->errorMessageSession($e);
 
-                return $this->redirectToRoute('search_side');
+                return $this->redirectToRoute('search_body');
             }
         }
 
         if (!empty($request->request->all())) {
-            $data_form_edit_sides = $request->request->all()['edit_sides'];
+            $data_form_edit_bodies = $request->request->all()['edit_bodies'];
         }
 
         $id = null;
-        if ($form_edit_sides->isSubmitted()) {
-            if ($form_edit_sides->isValid()) {
+        if ($form_edit_bodies->isSubmitted()) {
+            if ($form_edit_bodies->isValid()) {
 
-                $data_form_edit_sides = $request->request->all()['edit_sides'];
-                $data_edit_sides = $this->mapCarBrands(
-                    $form_edit_sides->getData()['id'],
-                    $form_edit_sides->getData()['side'],
+                $data_form_edit_bodies = $request->request->all()['edit_bodies'];
+                $data_edit_Bodies = $this->mapBodies(
+                    $form_edit_bodies->getData()['id'],
+                    $form_edit_bodies->getData()['body'],
                     $participant
                 );
 
                 try {
 
-                    $id = $editSidesCommandHandler
-                        ->handler(new SidesCommand($data_edit_sides));
+                    $id = $editBodiesCommandHandler
+                        ->handler(new BodiesCommand($data_edit_bodies));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -168,60 +172,60 @@ class BodiesController extends AbstractController
             }
         }
 
-        return $this->render('@sides/editSide.html.twig', [
-            'title_logo' => 'Изменение марки авто',
-            'form_edit_sides' => $form_edit_sides->createView(),
+        return $this->render('@bodies/editBody.html.twig', [
+            'title_logo' => 'Изменение кузов авто',
+            'form_edit_bodies' => $form_edit_bodies->createView(),
             'id' => $id,
-            'data_form_edit_sides' => $data_form_edit_sides
+            'data_form_edit_bodies' => $data_form_edit_bodies
         ]);
     }
 
-    /*Удаление стороны авто*/
-    #[Route('deleteSide', name: 'delete_side')]
-    public function deleteSide(
+    /*Удаление кузова авто*/
+    #[Route('deleteBody', name: 'delete_body')]
+    public function deleteBody(
         Request $request,
-        FindSidesQueryHandler $findSidesQueryHandler,
-        DeleteSidesCommandHandler $deleteSidesCommandHandler,
+        //FindBodiesQueryHandler $findBodiesQueryHandler,
+        //DeleteBodiesCommandHandler $deleteBodiesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
 
-            $sides = $findSidesQueryHandler
-                ->handler(new SidesQuery($request->query->all()));
+            $bodies = $findBodiesQueryHandler
+                ->handler(new BodiesQuery($request->query->all()));
 
-            $deleteSidesCommandHandler
-                ->handler(new SidesObjCommand($sides));
-            $this->addFlash('delete', 'сторона авто удалена');
+            $deleteBodiesCommandHandler
+                ->handler(new BodiesObjCommand($bodies));
+            $this->addFlash('delete', 'Кузов авто удален');
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);
         }
 
-        return $this->redirectToRoute('search_side');
+        return $this->redirectToRoute('search_Bodн');
     }
 
-    private function mapSidesParticipant(array $sides, Participant $participant): array
+    private function mapBodiesParticipant(array $bodies, Participant $participant): array
     {
-        $sides['id_participant'] = $participant;
+        $bodies['id_participant'] = $participant;
 
-        return $sides;
+        return $bodies;
     }
 
-    private function mapObjectSides(Sides $sides, Participant $participant): array
+    private function mapObjectBodies(Bodies $bodies, Participant $participant): array
     {
-        $arr_sides['id'] = $sides->getId();
-        $arr_sides['side'] = $sides->getSide();
-        $arr_sides['id_participant'] = $participant;
+        $arr_bodies['id'] = $bodies->getId();
+        $arr_bodies['body'] = $bodies->getBody();
+        $arr_bodies['id_participant'] = $participant;
 
-        return $arr_sides;
+        return $arr_bodies;
     }
 
-    private function mapCarBrands($id = null, $side = null, $participant = null): array
+    private function mapBodies($id = null, $body = null, $participant = null): array
     {
-        $arr_sides['id'] = $id;
-        $arr_sides['side'] = $side;
-        $arr_sides['id_participant'] = $participant;
+        $arr_bodies['id'] = $id;
+        $arr_bodies['body'] = $body;
+        $arr_bodies['id_participant'] = $participant;
 
-        return $arr_sides;
+        return $arr_bodies;
     }
 }
