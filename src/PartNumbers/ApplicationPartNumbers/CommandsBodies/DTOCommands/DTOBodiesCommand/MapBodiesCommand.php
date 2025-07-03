@@ -1,12 +1,12 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesCommand;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
 
-abstract class MapSidesCommand
+abstract class MapBodiesCommand
 {
 
     public function __construct(array $data = [])
@@ -24,16 +24,16 @@ abstract class MapSidesCommand
             if (!empty($value)) {
 
                 $input_errors = new InputErrorsPartNumbers;
-                $input_errors->propertyExistsEntity(Sides::class, $key, 'Sides');
+                $input_errors->propertyExistsEntity(Bodies::class, $key, 'Bodies');
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(Sides::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(Bodies::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
                 if ($type == 'object') {
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(Sides::class, $key))
+                    $className = $typeResolver->resolve(new \ReflectionProperty(Bodies::class, $key))
                         ->getBaseType()
                         ->getClassName();
 

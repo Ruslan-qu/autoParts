@@ -14,6 +14,8 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\EditBodi
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\SaveBodiesType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\SearchBodiesType;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
+use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DeleteBodiesCommand\DeleteBodiesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesObjCommand\BodiesObjCommand;
 
 class BodiesController extends AbstractController
 {
@@ -185,7 +187,7 @@ class BodiesController extends AbstractController
     public function deleteBody(
         Request $request,
         //FindBodiesQueryHandler $findBodiesQueryHandler,
-        //DeleteBodiesCommandHandler $deleteBodiesCommandHandler,
+        DeleteBodiesCommandHandler $deleteBodiesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {

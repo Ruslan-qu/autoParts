@@ -1,15 +1,15 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesCommand;
 
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
-use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand\MapSidesCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesCommand\MapBodiesCommand;
 
-final class SidesCommand extends MapSidesCommand
+final class BodiesCommand extends MapBodiesCommand
 {
     protected ?int $id = null;
 
-    protected ?string $side = null;
+    protected ?string $body = null;
 
     protected ?Participant $id_participant = null;
 
@@ -18,9 +18,9 @@ final class SidesCommand extends MapSidesCommand
         return $this->id;
     }
 
-    public function getSide(): ?string
+    public function getBody(): ?string
     {
-        return $this->side;
+        return $this->body;
     }
 
     public function getIdParticipant(): ?Participant

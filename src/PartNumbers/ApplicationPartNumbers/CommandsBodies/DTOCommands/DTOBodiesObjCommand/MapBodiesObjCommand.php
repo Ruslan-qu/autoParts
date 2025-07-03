@@ -1,14 +1,13 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesObjCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesObjCommand;
 
 use Symfony\Component\TypeInfo\Type;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
 
-abstract class MapSidesObjCommand
+abstract class MapBodiesObjCommand
 {
-
     public function __construct(array $data = [])
     {
         $this->load($data);
@@ -19,7 +18,7 @@ abstract class MapSidesObjCommand
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
-                $type = Type::object(Sides::class);
+                $type = Type::object(Bodies::class);
                 $className = $type->getBaseType()->getClassName();
                 $input_errors = new InputErrorsPartNumbers;
                 $input_errors->comparingClassNames($className, $value, $key);

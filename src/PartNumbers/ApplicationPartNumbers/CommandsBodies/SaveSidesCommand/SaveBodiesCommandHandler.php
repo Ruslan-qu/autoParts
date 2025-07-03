@@ -9,17 +9,18 @@ use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\SidesRepositoryInterface;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\BodiesRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand\SidesCommand;
 
-final class SaveSidesCommandHandler
+final class SaveBodiesCommandHandler
 {
 
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private SidesRepositoryInterface $sidesRepositoryInterface
+        private BodiesRepositoryInterface $bodiesRepositoryInterface
     ) {}
 
-    public function handler(SidesCommand $sidesCommand): ?int
+    public function handler(BodiesCommand $sidesCommand): ?int
     {
 
         /* Подключаем валидацию и прописываем условида валидации */
