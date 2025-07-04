@@ -17,6 +17,7 @@ final class DeleteBodiesCommandHandler
     public function handler(BodiesObjCommand $bodiesObjCommand): ?int
     {
         $bodies = $bodiesObjCommand->getBodies();
+        $this->inputErrorsPartNumbers->emptyEntity($bodies);
         $successfully_delete = $this->bodiesRepositoryInterface->delete($bodies);
 
         return $successfully_delete['delete'];

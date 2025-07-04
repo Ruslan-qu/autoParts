@@ -1,16 +1,15 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsSides\SaveSidesCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsBodies\SaveBodiesCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\SidesRepositoryInterface;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\BodiesRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand\SidesCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesCommand\BodiesCommand;
 
 final class SaveBodiesCommandHandler
 {
@@ -20,31 +19,31 @@ final class SaveBodiesCommandHandler
         private BodiesRepositoryInterface $bodiesRepositoryInterface
     ) {}
 
-    public function handler(BodiesCommand $sidesCommand): ?int
+    public function handler(BodiesCommand $bodiesCommand): ?int
     {
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
-        $side = $sidesCommand->getSide();
+        $body = $bodiesCommand->getBody();
 
-        $id_participant = $sidesCommand->getIdParticipant();
+        $id_participant = $bodiesCommand->getIdParticipant();
 
         $input = [
-            'side_error' => [
-                'NotBlank' => $side,
-                'Regex' => $side,
+            'body_error' => [
+                'NotBlank' => $body,
+                'Regex' => $body,
             ]
         ];
 
         $constraint = new Collection([
-            'side_error' => new Collection([
+            'body_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Сторона не может быть пустой'
+                    message: 'Форма Кузов не может быть пустой'
                 ),
                 'Regex' => new Regex(
                     pattern: '/^[а-яё\s]*$/ui',
-                    message: 'Форма Сторона содержит недопустимые символы'
+                    message: 'Форма Кузов содержит недопустимые символы'
                 )
             ])
         ]);
@@ -53,14 +52,14 @@ final class SaveBodiesCommandHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         /* Валидация дублей */
-        $count_duplicate = $this->sidesRepositoryInterface
-            ->numberDoubles(['side' => $side]);
+        $count_duplicate = $this->bodiesRepositoryInterface
+            ->numberDoubles(['body' => $body]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
-        $sides = new Sides;
-        $sides->setSide($side);
-        $sides->setIdParticipant($id_participant);
+        $bodies = new Bodies;
+        $bodies->setBody($body);
+        $bodies->setIdParticipant($id_participant);
 
-        return $this->sidesRepositoryInterface->save($sides);
+        return $this->bodiesRepositoryInterface->save($bodies);
     }
 }

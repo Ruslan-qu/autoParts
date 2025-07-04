@@ -5,8 +5,6 @@ namespace App\PartNumbers\ApplicationPartNumbers\QuerySides\DeleteSidesQuery;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\ApplicationPartNumbers\QuerySides\DTOQuery\DTOSidesQuery\SidesQuery;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\SidesRepositoryInterface;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\CarBrandsRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\DTOQuery\DTOCarBrandsQuery\CarBrandsQuery;
 
 final class FindSidesQueryHandler
 {

@@ -13,7 +13,15 @@ use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInt
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\EditBodiesType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\SaveBodiesType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormBodies\SearchBodiesType;
+use App\PartNumbers\ApplicationPartNumbers\QueryBodies\DTOQuery\DTOBodiesQuery\BodiesQuery;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
+use App\PartNumbers\ApplicationPartNumbers\QueryBodies\DeleteBodiesQuery\FindBodiesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryBodies\SearchBodiesQuery\FindByBodiesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryBodies\SearchBodiesQuery\SearchBodiesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesCommand\BodiesCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\EditBodiesCommand\EditBodiesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\SaveBodiesCommand\SaveBodiesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryBodies\EditBodiesQuery\FindOneByIdBodiesQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DeleteBodiesCommand\DeleteBodiesCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesObjCommand\BodiesObjCommand;
 
@@ -23,7 +31,7 @@ class BodiesController extends AbstractController
     #[Route('/saveBody', name: 'save_body')]
     public function saveBody(
         Request $request,
-        //SaveBodiesCommandHandler $saveBodiesCommandHandler,
+        SaveBodiesCommandHandler $saveBodiesCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -64,8 +72,8 @@ class BodiesController extends AbstractController
         Request $request,
         Bodies $bodies,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindByBodiesQueryHandler $findByBodiesQueryHandler,
-        //SearchBodiesQueryHandler $searchBodiesQueryHandler,
+        FindByBodiesQueryHandler $findByBodiesQueryHandler,
+        SearchBodiesQueryHandler $searchBodiesQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -89,10 +97,9 @@ class BodiesController extends AbstractController
             if ($form_search_bodies->isValid()) {
 
                 try {
-                    $sides = $this->mapSidesParticipant($form_search_bodies->getData(), $participant);
-
-                    $search_data = $searchSidesQueryHandler
-                        ->handler(new BodiesQuery($sides));
+                    $bodies = $this->mapBodiesParticipant($form_search_bodies->getData(), $participant);
+                    $search_data = $searchBodiesQueryHandler
+                        ->handler(new BodiesQuery($bodies));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -113,8 +120,8 @@ class BodiesController extends AbstractController
     public function editBody(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindOneByIdBodiesQueryHandler $findOneByIdBodiesQueryHandler,
-        //EditBodiesCommandHandler $editBodiesCommandHandler,
+        FindOneByIdBodiesQueryHandler $findOneByIdBodiesQueryHandler,
+        EditBodiesCommandHandler $editBodiesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -157,7 +164,7 @@ class BodiesController extends AbstractController
             if ($form_edit_bodies->isValid()) {
 
                 $data_form_edit_bodies = $request->request->all()['edit_bodies'];
-                $data_edit_Bodies = $this->mapBodies(
+                $data_edit_bodies = $this->mapBodies(
                     $form_edit_bodies->getData()['id'],
                     $form_edit_bodies->getData()['body'],
                     $participant
@@ -186,7 +193,7 @@ class BodiesController extends AbstractController
     #[Route('deleteBody', name: 'delete_body')]
     public function deleteBody(
         Request $request,
-        //FindBodiesQueryHandler $findBodiesQueryHandler,
+        FindBodiesQueryHandler $findBodiesQueryHandler,
         DeleteBodiesCommandHandler $deleteBodiesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -203,7 +210,7 @@ class BodiesController extends AbstractController
             $errorMessageViaSession->errorMessageSession($e);
         }
 
-        return $this->redirectToRoute('search_Bodн');
+        return $this->redirectToRoute('search_body');
     }
 
     private function mapBodiesParticipant(array $bodies, Participant $participant): array
