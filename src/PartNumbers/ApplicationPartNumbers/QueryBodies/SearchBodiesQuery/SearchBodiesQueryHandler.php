@@ -29,14 +29,14 @@ final class SearchBodiesQueryHandler
         $id_participant = $bodiesQuery->getIdParticipant();
 
         $input = [
-            'side_error' => [
+            'body_error' => [
                 'NotBlank' => $body,
                 'Regex' => $body,
             ]
         ];
 
         $constraint = new Collection([
-            'side_error' => new Collection([
+            'body_error' => new Collection([
                 'NotBlank' => new NotBlank(
                     message: 'Форма Кузов не может быть пустой'
                 ),
@@ -51,7 +51,7 @@ final class SearchBodiesQueryHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         $find_one_by_bodies['bodies'] = $this->bodiesRepositoryInterface->findOneByBodies($body, $id_participant);
-        $this->inputErrorsPartNumbers->issetEntity($find_one_by_bodies);
+        $this->inputErrorsPartNumbers->issetEntity($find_one_by_bodies['bodies']);
 
         return $find_one_by_bodies;
     }

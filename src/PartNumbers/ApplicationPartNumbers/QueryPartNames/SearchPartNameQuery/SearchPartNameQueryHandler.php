@@ -52,7 +52,7 @@ final class SearchPartNameQueryHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         $find_one_by_part_name['part_name'] = $this->partNameRepositoryInterface->findOneByPartName($part_name, $id_participant);
-        $this->inputErrorsPartNumbers->issetEntity($find_one_by_part_name);
+        $this->inputErrorsPartNumbers->issetEntity($find_one_by_part_name['part_name']);
 
         return $find_one_by_part_name;
     }

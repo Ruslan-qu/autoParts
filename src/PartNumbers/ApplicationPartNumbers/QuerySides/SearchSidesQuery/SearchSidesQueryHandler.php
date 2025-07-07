@@ -51,7 +51,7 @@ final class SearchSidesQueryHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         $find_one_by_sides['sides'] = $this->sidesRepositoryInterface->findOneBySides($side, $id_participant);
-        $this->inputErrorsPartNumbers->issetEntity($find_one_by_sides);
+        $this->inputErrorsPartNumbers->issetEntity($find_one_by_sides['sides']);
 
         return $find_one_by_sides;
     }

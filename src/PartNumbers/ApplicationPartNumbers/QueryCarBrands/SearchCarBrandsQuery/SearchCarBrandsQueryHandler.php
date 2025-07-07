@@ -29,14 +29,14 @@ final class SearchCarBrandsQueryHandler
         $id_participant = $carBrandsQuery->getIdParticipant();
 
         $input = [
-            'part_name_error' => [
+            'car_brand_error' => [
                 'NotBlank' => $car_brand,
                 'Regex' => $car_brand,
             ]
         ];
 
         $constraint = new Collection([
-            'part_name_error' => new Collection([
+            'car_brand_error' => new Collection([
                 'NotBlank' => new NotBlank(
                     message: 'Форма Марка не может быть пустой'
                 ),
@@ -51,7 +51,7 @@ final class SearchCarBrandsQueryHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         $find_one_by_car_brands['car_brands'] = $this->carBrandsRepositoryInterface->findOneByCarBrands($car_brand, $id_participant);
-        $this->inputErrorsPartNumbers->issetEntity($find_one_by_car_brands);
+        $this->inputErrorsPartNumbers->issetEntity($find_one_by_car_brands['car_brands']);
 
         return $find_one_by_car_brands;
     }
