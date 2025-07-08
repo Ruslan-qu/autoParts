@@ -13,7 +13,17 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAxles\EditAxles
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAxles\SaveAxlesType;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAxles\SearchAxlesType;
+use App\PartNumbers\ApplicationPartNumbers\QueryAxles\DTOQuery\DTOAxlesQuery\AxlesQuery;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
+use App\PartNumbers\ApplicationPartNumbers\QueryAxles\DeleteAxlesQuery\FindAxlesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryAxles\SearchAxlesQuery\FindByAxlesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryAxles\SearchAxlesQuery\SearchAxlesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\DTOCommands\DTOAxlesCommand\AxlesCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\EditAxlesCommand\EditAxlesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\SaveAxlesCommand\SaveAxlesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryAxles\EditAxlesQuery\FindOneByIdAxlesQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\DeleteAxlesCommand\DeleteAxlesCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\DTOCommands\DTOAxlesObjCommand\AxlesObjCommand;
 
 class AxlesController extends AbstractController
 {
@@ -21,7 +31,7 @@ class AxlesController extends AbstractController
     #[Route('/saveAxle', name: 'save_axle')]
     public function saveAxle(
         Request $request,
-        //SaveAxlesCommandHandler $saveAxlesCommandHandler,
+        SaveAxlesCommandHandler $saveAxlesCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -62,8 +72,8 @@ class AxlesController extends AbstractController
         Request $request,
         Axles $axles,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindByAxlesQueryHandler $findByAxlesQueryHandler,
-        //SearchAxlesQueryHandler $searchAxlesQueryHandler,
+        FindByAxlesQueryHandler $findByAxlesQueryHandler,
+        SearchAxlesQueryHandler $searchAxlesQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -77,7 +87,7 @@ class AxlesController extends AbstractController
 
             $participant = $adapterUserExtractionInterface->userExtraction();
             $axles = $this->mapObjectAxles($axles, $participant);
-            $search_data = $findByAxlesQueryHandler->handler(new AxlesQuery($bodies));
+            $search_data = $findByAxlesQueryHandler->handler(new AxlesQuery($axles));
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);
@@ -110,8 +120,8 @@ class AxlesController extends AbstractController
     public function editAxle(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindOneByIdAxlesQueryHandler $findOneByIdAxlesQueryHandler,
-        // EditAxlesCommandHandler $editAxlesCommandHandler,
+        FindOneByIdAxlesQueryHandler $findOneByIdAxlesQueryHandler,
+        EditAxlesCommandHandler $editAxlesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -183,8 +193,8 @@ class AxlesController extends AbstractController
     #[Route('deleteAxle', name: 'delete_axle')]
     public function deleteAxle(
         Request $request,
-        //FindAxlesQueryHandler $findAxlesQueryHandler,
-        //DeleteAxlesCommandHandler $deleteAxlesCommandHandler,
+        FindAxlesQueryHandler $findAxlesQueryHandler,
+        DeleteAxlesCommandHandler $deleteAxlesCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
