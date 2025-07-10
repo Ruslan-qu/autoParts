@@ -14,7 +14,7 @@ class Axles
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 12, nullable: true)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $axle = null;
 
     #[ORM\ManyToOne]

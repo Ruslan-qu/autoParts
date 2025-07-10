@@ -2,6 +2,7 @@
 
 namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Doctrine\ORM\Mapping as ORM;
 use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\AvailabilityRepository;
 
@@ -16,6 +17,9 @@ class Availability
     #[ORM\Column(length: 28, nullable: true)]
     private ?string $in_stock = null;
 
+    #[ORM\ManyToOne]
+    private ?Participant $id_participant = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +33,18 @@ class Availability
     public function setInStock(?string $in_stock): static
     {
         $this->in_stock = $in_stock;
+
+        return $this;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
+    }
+
+    public function setIdParticipant(?Participant $id_participant): static
+    {
+        $this->id_participant = $id_participant;
 
         return $this;
     }
