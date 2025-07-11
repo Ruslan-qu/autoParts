@@ -15,7 +15,7 @@ interface  AxlesRepositoryInterface
 
     public function numberDoubles(array $array): int;
 
-    public function findOneByAxles(string $axles, Participant $id_participant): ?Axles;
+    public function findOneByAxles(string $axle, Participant $id_participant): ?Axles;
 
     public function findOneByIdAxles(int $id, Participant $id_participant): ?Axles;
 

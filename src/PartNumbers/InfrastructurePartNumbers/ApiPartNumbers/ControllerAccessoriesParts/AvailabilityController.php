@@ -7,9 +7,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAvailability\EditAvailabilityType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAvailability\SaveAvailabilityType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAvailability\SearchAvailabilityType;
+use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\DTOQuery\DTOAvailabilityQuery\AvailabilityQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\SearchAvailabilityQuery\FindByAvailabilityQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\SearchAvailabilityQuery\SearchAvailabilityQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityCommand\AvailabilityCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\SaveAvailabilityCommand\SaveAvailabilityCommandHandler;
 
 class AvailabilityController extends AbstractController
 {
@@ -17,7 +26,7 @@ class AvailabilityController extends AbstractController
     #[Route('/saveInStock', name: 'save_in_stock')]
     public function saveInStock(
         Request $request,
-        //SaveAvailabilityCommandHandler $saveAvailabilityCommandHandler,
+        SaveAvailabilityCommandHandler $saveAvailabilityCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -58,8 +67,8 @@ class AvailabilityController extends AbstractController
         Request $request,
         Availability $availability,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindByAvailabilityQueryHandler $findByAvailabilityQueryHandler,
-        //SearchAvailabilityQueryHandler $searchAvailabilityQueryHandler,
+        FindByAvailabilityQueryHandler $findByAvailabilityQueryHandler,
+        SearchAvailabilityQueryHandler $searchAvailabilityQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -131,35 +140,35 @@ class AvailabilityController extends AbstractController
             $availability = $this->mapAvailability($request->query->all()['id'], '', $participant);
             try {
 
-                $data_form_edit_axles = $findOneByIdAxlesQueryHandler
-                    ->handler(new AxlesQuery($axles));
+                $data_form_edit_Availability = $findOneByIdAvailabilityQueryHandler
+                    ->handler(new AvailabilityQuery($availability));
             } catch (HttpException $e) {
 
                 $errorMessageViaSession->errorMessageSession($e);
 
-                return $this->redirectToRoute('search_axle');
+                return $this->redirectToRoute('search_in_stock');
             }
         }
 
         if (!empty($request->request->all())) {
-            $data_form_edit_axles = $request->request->all()['edit_axles'];
+            $data_form_edit_axles = $request->request->all()['edit_availability'];
         }
 
         $id = null;
         if ($form_edit_availability->isSubmitted()) {
             if ($form_edit_availability->isValid()) {
 
-                $data_form_edit_axles = $request->request->all()['edit_axles'];
-                $data_edit_axles = $this->mapAxles(
+                $data_form_edit_availability = $request->request->all()['edit_availability'];
+                $data_edit_availability = $this->mapAvailability(
                     $form_edit_availability->getData()['id'],
-                    $form_edit_availability->getData()['axle'],
+                    $form_edit_availability->getData()['in_stock'],
                     $participant
                 );
 
                 try {
 
-                    $id = $editAxlesCommandHandler
-                        ->handler(new AxlesCommand($data_edit_axles));
+                    $id = $editAvailabilityCommandHandler
+                        ->handler(new AvailabilityCommand($data_edit_availability));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -167,60 +176,60 @@ class AvailabilityController extends AbstractController
             }
         }
 
-        return $this->render('@axles/editAxle.html.twig', [
-            'title_logo' => 'Изменение Оси авто',
+        return $this->render('@availability/editInStock.html.twig', [
+            'title_logo' => 'Изменение наличие детали',
             'form_edit_availability' => $form_edit_availability->createView(),
             'id' => $id,
-            'data_form_edit_axles' => $data_form_edit_axles
+            'data_form_edit_availability' => $data_form_edit_availability
         ]);
     }
 
-    /*Удаление Оси авто*/
-    #[Route('deleteAxle', name: 'delete_axle')]
-    public function deleteAxle(
+    /*Удаление наличие детали*/
+    #[Route('deleteInStock', name: 'delete_axle')]
+    public function deleteInStock(
         Request $request,
-        FindAxlesQueryHandler $findAxlesQueryHandler,
-        DeleteAxlesCommandHandler $deleteAxlesCommandHandler,
+        //FindAvailabilityQueryHandler $findAvailabilityQueryHandler,
+        //DeleteAvailabilityCommandHandler $deleteAvailabilityCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
 
-            $axles = $findAxlesQueryHandler
-                ->handler(new AxlesQuery($request->query->all()));
+            $availability = $findAvailabilityQueryHandler
+                ->handler(new AvailabilityQuery($request->query->all()));
 
-            $deleteAxlesCommandHandler
-                ->handler(new AxlesObjCommand($axles));
-            $this->addFlash('delete', 'Ось авто удалена');
+            $deleteAvailabilityCommandHandler
+                ->handler(new AvailabilityObjCommand($availability));
+            $this->addFlash('delete', 'Наличие детали удалено');
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);
         }
 
-        return $this->redirectToRoute('search_axle');
+        return $this->redirectToRoute('search_in_stock');
     }
 
-    private function mapAxlesParticipant(array $axles, Participant $participant): array
+    private function mapAvailabilityParticipant(array $availability, Participant $participant): array
     {
-        $axles['id_participant'] = $participant;
+        $availability['id_participant'] = $participant;
 
-        return $axles;
+        return $availability;
     }
 
-    private function mapObjectAxles(Axles $axles, Participant $participant): array
+    private function mapObjectAvailability(Availability $availability, Participant $participant): array
     {
-        $arr_axles['id'] = $axles->getId();
-        $arr_axles['axle'] = $axles->getAxle();
-        $arr_axles['id_participant'] = $participant;
+        $arr_availability['id'] = $availability->getId();
+        $arr_availability['in_stock'] = $availability->getInStock();
+        $arr_availability['id_participant'] = $participant;
 
-        return $arr_axles;
+        return $arr_availability;
     }
 
-    private function mapAxles($id = null, $axle = null, $participant = null): array
+    private function mapAvailability($id = null, $in_stock = null, $participant = null): array
     {
-        $arr_axles['id'] = $id;
-        $arr_axles['axle'] = $axle;
-        $arr_axles['id_participant'] = $participant;
+        $arr_availability['id'] = $id;
+        $arr_availability['in_stock'] = $in_stock;
+        $arr_availability['id_participant'] = $participant;
 
-        return $arr_axles;
+        return $arr_availability;
     }
 }
