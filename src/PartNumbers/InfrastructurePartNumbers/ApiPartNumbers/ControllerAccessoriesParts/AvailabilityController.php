@@ -15,10 +15,15 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAvailability\Ed
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAvailability\SaveAvailabilityType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormAvailability\SearchAvailabilityType;
 use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\DTOQuery\DTOAvailabilityQuery\AvailabilityQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\DeleteAvailabilityQuery\FindAvailabilityQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\SearchAvailabilityQuery\FindByAvailabilityQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\SearchAvailabilityQuery\SearchAvailabilityQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityCommand\AvailabilityCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\EditAvailabilityCommand\EditAvailabilityCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\SaveAvailabilityCommand\SaveAvailabilityCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\EditAvailabilityQuery\FindOneByIdAvailabilityQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DeleteAvailabilityCommand\DeleteAvailabilityCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityObjCommand\AvailabilityObjCommand;
 
 class AvailabilityController extends AbstractController
 {
@@ -115,8 +120,8 @@ class AvailabilityController extends AbstractController
     public function editInStock(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindOneByIdAvailabilityQueryHandler $findOneByIdAvailabilityQueryHandler,
-        //EditAvailabilityCommandHandler $editAvailabilityCommandHandler,
+        FindOneByIdAvailabilityQueryHandler $findOneByIdAvailabilityQueryHandler,
+        EditAvailabilityCommandHandler $editAvailabilityCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -140,7 +145,7 @@ class AvailabilityController extends AbstractController
             $availability = $this->mapAvailability($request->query->all()['id'], '', $participant);
             try {
 
-                $data_form_edit_Availability = $findOneByIdAvailabilityQueryHandler
+                $data_form_edit_availability = $findOneByIdAvailabilityQueryHandler
                     ->handler(new AvailabilityQuery($availability));
             } catch (HttpException $e) {
 
@@ -151,7 +156,7 @@ class AvailabilityController extends AbstractController
         }
 
         if (!empty($request->request->all())) {
-            $data_form_edit_axles = $request->request->all()['edit_availability'];
+            $data_form_edit_availability = $request->request->all()['edit_availability'];
         }
 
         $id = null;
@@ -185,11 +190,11 @@ class AvailabilityController extends AbstractController
     }
 
     /*Удаление наличие детали*/
-    #[Route('deleteInStock', name: 'delete_axle')]
+    #[Route('deleteInStock', name: 'delete_in_stock')]
     public function deleteInStock(
         Request $request,
-        //FindAvailabilityQueryHandler $findAvailabilityQueryHandler,
-        //DeleteAvailabilityCommandHandler $deleteAvailabilityCommandHandler,
+        FindAvailabilityQueryHandler $findAvailabilityQueryHandler,
+        DeleteAvailabilityCommandHandler $deleteAvailabilityCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {

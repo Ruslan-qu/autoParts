@@ -1,38 +1,38 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsAxles\EditAxlesCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\EditAvailabilityCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AxlesRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\DTOCommands\DTOAxlesCommand\AxlesCommand;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityCommand\AvailabilityCommand;
 
-final class EditAxlesCommandHandler
+final class EditAvailabilityCommandHandler
 {
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private AxlesRepositoryInterface $axlesRepositoryInterface
+        private AvailabilityRepositoryInterface $availabilityRepositoryInterface
     ) {}
 
-    public function handler(AxlesCommand $axlesCommand): ?int
+    public function handler(AvailabilityCommand $availabilityCommand): ?int
     {
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
-        $edit_axle = $axlesCommand->getAxle();
+        $edit_in_stock = $availabilityCommand->getInStock();
 
         $input = [
-            'axle_error' => [
-                'NotBlank' => $edit_axle,
-                'Regex' => $edit_axle,
+            'in_stock_error' => [
+                'NotBlank' => $edit_in_stock,
+                'Regex' => $edit_in_stock,
             ]
         ];
 
         $constraint = new Collection([
-            'axle_error' => new Collection([
+            'in_stock_error' => new Collection([
                 'NotBlank' => new NotBlank(
                     message: 'Форма Ось не может быть пустой'
                 ),
@@ -47,29 +47,29 @@ final class EditAxlesCommandHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
 
-        $id = $axlesCommand->getId();
+        $id = $availabilityCommand->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
 
-        $axles = $this->axlesRepositoryInterface->findAxles($id);
-        $this->inputErrorsPartNumbers->emptyEntity($axles);
+        $availability = $this->availabilityRepositoryInterface->findAvailability($id);
+        $this->inputErrorsPartNumbers->emptyEntity($availability);
 
-        $this->countDuplicate($edit_axle, $axles->getAxle());
+        $this->countDuplicate($edit_in_stock, $availability->getInStock());
 
-        $axles->setAxle($edit_axle);
+        $availability->setInStock($edit_in_stock);
 
-        $successfully_edit = $this->axlesRepositoryInterface->edit($axles);
+        $successfully_edit = $this->availabilityRepositoryInterface->edit($availability);
 
         $id = $successfully_edit['edit'];
 
         return $id;
     }
 
-    private function countDuplicate(string $edit_axle, string $axle): static
+    private function countDuplicate(string $edit_in_stock, string $in_stock): static
     {
-        if ($edit_axle != $axle) {
+        if ($edit_in_stock != $in_stock) {
             /* Валидация дублей */
-            $count_duplicate = $this->axlesRepositoryInterface
-                ->numberDoubles(['axle' => $edit_axle]);
+            $count_duplicate = $this->availabilityRepositoryInterface
+                ->numberDoubles(['in_stock' => $edit_in_stock]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 
