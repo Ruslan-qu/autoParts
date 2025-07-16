@@ -27,23 +27,52 @@
                     </li>
                     <li class="nav-item dropdown px-1">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                            data-bs-auto-close="outside" aria-expanded="false">
                             Склад
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ path('search_auto_parts_warehouse')}}">Поиск</a></li>
-                            <li>
-                                <a class="dropdown-item" href="{{ path('save_auto_parts_manually')}}">
-                                    Сохранить в ручную
+
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Сохранить
                                 </a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_file')}}">Сохранить из файла</a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_imap')}}">Сохранить из майла</a>
-                            </li>
-                            <li><a class="dropdown-item" href="{{ path('save_auto_parts_api')}}">Сохранить по API</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('save_auto_parts_manually')}}">
+                                            Сохранить в ручную
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('save_auto_parts_file')}}">
+                                            Сохранить из файла
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('save_auto_parts_imap')}}">
+                                            Сохранить из майла
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('save_auto_parts_api')}}">
+                                            Сохранить по API
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                             <li><a class="dropdown-item" href="{{ path('cart_warehouse')}}">Корзина</a></li>
+                            <li class="btn-group dropend">
+                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Сп. оплаты
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                </ul>
+                            </li>
+
                         </ul>
                     </li>
                     <li class="nav-item px-1">
@@ -62,91 +91,120 @@
                     </li>
                     <li class="nav-item dropdown ps-1">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                            data-bs-auto-close="outside" aria-expanded="false">
                             Детали
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ path('search_part_numbers')}}">Поиск</a></li>
-                            <li><a class="dropdown-item" href="{{ path('save_part_numbers')}}">Сохранить</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown ps-1">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-                            data-bs-auto-close="outside" aria-expanded="false">
-                            Прин-ть деталей
-                        </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropstart">
                             <li class="btn-group dropend">
                                 <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    Название детали
+                                    Не оригинал
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('search_part_name')}}">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('save_part_name')}}">Сохранить</a></li>
-                                </ul>
-                            <li class="btn-group dropend">
-                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Марка
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('search_car_brands')}}">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('save_car_brands')}}">Сохранить</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('search_part_numbers')}}">Поиск</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('save_part_numbers')}}">Сохранить</a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="btn-group dropend">
                                 <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
                                     aria-expanded="false">
-                                    Сторона
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('search_side')}}">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('save_side')}}">Сохранить</a></li>
-                                </ul>
-                            </li>
-                            <li class="btn-group dropend">
-                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Кузов
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('search_body')}}">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('save_body')}}">Сохранить</a></li>
-                                </ul>
-                            </li>
-                            <li class="btn-group dropend">
-                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Оси установки
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('search_axle')}}">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('save_axle')}}">Сохранить</a></li>
-                                </ul>
-                            </li>
-                            <li class="btn-group dropend">
-                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Наличие
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('search_in_stock')}}">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('save_in_stock')}}">Сохранить</a></li>
-                                </ul>
-                            </li>
-                            <li class="btn-group dropend">
-                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    Сп. оплаты
+                                    Оригинал
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="#">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="#">Сохранить</a></li>
+                                    <li><a class="dropdown-item" href="#">Сохранить</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a class="dropdown-item dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside" aria-expanded="false">
+                                    Прин-ть деталей
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Название детали
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('search_part_name')}}">
+                                                    Поиск
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('save_part_name')}}">
+                                                    Сохранить
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Марка
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ path('search_car_brands')}}">Поиск</a>
+                                            </li>
+                                            <li><a class="dropdown-item"
+                                                    href="{{ path('save_car_brands')}}">Сохранить</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Сторона
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ path('search_side')}}">Поиск</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('save_side')}}">Сохранить</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Кузов
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ path('search_body')}}">Поиск</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('save_body')}}">Сохранить</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Оси установки
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ path('search_axle')}}">Поиск</a></li>
+                                            <li><a class="dropdown-item" href="{{ path('save_axle')}}">Сохранить</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Наличие
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ path('search_in_stock')}}">Поиск</a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="{{ path('save_in_stock')}}">Сохранить</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+
                                 </ul>
                             </li>
                         </ul>
+
                     </li>
+
                     {% endif %}
                     {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item px-2">

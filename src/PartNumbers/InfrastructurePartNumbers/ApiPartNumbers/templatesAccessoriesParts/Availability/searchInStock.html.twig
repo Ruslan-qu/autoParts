@@ -69,7 +69,7 @@
             {% if information %}
 
           <tr>
-            <td>{{ information.getAxle()|default('') }}</td>
+            <td>{{ information.getInStock()|default('') }}</td>
 
             <form action="{{ path('edit_in_stock') }}" name="edit_in_stock">
 
