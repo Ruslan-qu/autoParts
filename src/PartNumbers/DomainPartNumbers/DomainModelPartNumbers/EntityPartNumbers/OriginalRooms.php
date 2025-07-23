@@ -23,6 +23,9 @@ class OriginalRooms
     #[ORM\ManyToOne]
     private ?Participant $id_participant = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?array $replacing_original_number = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class OriginalRooms
     public function setIdParticipant(?Participant $id_participant): static
     {
         $this->id_participant = $id_participant;
+
+        return $this;
+    }
+
+    public function getReplacingOriginalNumber(): ?array
+    {
+        return $this->replacing_original_number;
+    }
+
+    public function setReplacingOriginalNumber(?array $replacing_original_number): static
+    {
+        $this->replacing_original_number = $replacing_original_number;
 
         return $this;
     }
