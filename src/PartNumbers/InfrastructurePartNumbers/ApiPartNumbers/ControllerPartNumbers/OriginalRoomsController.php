@@ -1,15 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\ControllerPartNumbers;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\EditOriginalRoomsType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SaveOriginalRoomsType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SearchOriginalRoomsType;
 
 class OriginalRoomsController extends AbstractController
 {
@@ -94,28 +98,28 @@ class OriginalRoomsController extends AbstractController
         }
 
         return $this->render('@original_rooms/searchOriginalNumber.html.twig', [
-            'title_logo' => 'Поиск наличие детали',
+            'title_logo' => 'Поиск оригиналного номера детали',
             'form_search_original_rooms' => $form_search_original_rooms->createView(),
             'search_data' => $search_data,
 
         ]);
     }
 
-    /*Редактирования наличие детали*/
-    #[Route('editInStock', name: 'edit_in_stock')]
-    public function editInStock(
+    /*Редактирования оригиналного номера детали*/
+    #[Route('editOriginalNumber', name: 'edit_original_number')]
+    public function editOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        FindOneByIdAvailabilityQueryHandler $findOneByIdAvailabilityQueryHandler,
-        EditAvailabilityCommandHandler $editAvailabilityCommandHandler,
+        //FindOneByIdOriginalRoomsQueryHandler $findOneByIdOriginalRoomsQueryHandler,
+        //EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
         /*Форма Редактирования*/
-        $form_edit_availability = $this->createForm(EditAvailabilityType::class);
+        $form_edit_original_rooms = $this->createForm(EditOriginalRoomsType::class);
 
         /*Валидация формы */
-        $form_edit_availability->handleRequest($request);
+        $form_edit_original_rooms->handleRequest($request);
 
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
@@ -123,43 +127,43 @@ class OriginalRoomsController extends AbstractController
 
             $errorMessageViaSession->errorMessageSession($e);
 
-            return $this->redirectToRoute('search_in_stock');
+            return $this->redirectToRoute('search_original_number');
         }
 
-        if (empty($form_edit_availability->getData())) {
+        if (empty($form_edit_original_rooms->getData())) {
 
-            $availability = $this->mapAvailability($request->query->all()['id'], '', $participant);
+            $original_rooms = $this->mapOriginalRooms($request->query->all()['id'], '', $participant);
             try {
 
-                $data_form_edit_availability = $findOneByIdAvailabilityQueryHandler
-                    ->handler(new AvailabilityQuery($availability));
+                $data_form_edit_original_rooms = $findOneByIdOriginalRoomsQueryHandler
+                    ->handler(new OriginalRoomsQuery($original_rooms));
             } catch (HttpException $e) {
 
                 $errorMessageViaSession->errorMessageSession($e);
 
-                return $this->redirectToRoute('search_in_stock');
+                return $this->redirectToRoute('search_original_number');
             }
         }
 
         if (!empty($request->request->all())) {
-            $data_form_edit_availability = $request->request->all()['edit_availability'];
+            $data_form_edit_original_rooms = $request->request->all()['edit_original_rooms'];
         }
 
         $id = null;
-        if ($form_edit_availability->isSubmitted()) {
-            if ($form_edit_availability->isValid()) {
+        if ($form_edit_original_rooms->isSubmitted()) {
+            if ($form_edit_original_rooms->isValid()) {
 
-                $data_form_edit_availability = $request->request->all()['edit_availability'];
-                $data_edit_availability = $this->mapAvailability(
-                    $form_edit_availability->getData()['id'],
-                    $form_edit_availability->getData()['in_stock'],
+                $data_form_edit_original_rooms = $request->request->all()['edit_original_rooms'];
+                $data_edit_original_rooms = $this->mapOriginalRooms(
+                    $form_edit_original_rooms->getData()['id'],
+                    $form_edit_original_rooms->getData()['original_number'],
                     $participant
                 );
 
                 try {
 
-                    $id = $editAvailabilityCommandHandler
-                        ->handler(new AvailabilityCommand($data_edit_availability));
+                    $id = $editOriginalRoomsCommandHandler
+                        ->handler(new OriginalRoomsCommand($data_edit_original_rooms));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -167,60 +171,60 @@ class OriginalRoomsController extends AbstractController
             }
         }
 
-        return $this->render('@availability/editInStock.html.twig', [
-            'title_logo' => 'Изменение наличие детали',
-            'form_edit_availability' => $form_edit_availability->createView(),
+        return $this->render('@original_rooms/editOriginalNumber.html.twig', [
+            'title_logo' => 'Изменение оригиналного номера детали',
+            'form_edit_original_rooms' => $form_edit_original_rooms->createView(),
             'id' => $id,
-            'data_form_edit_availability' => $data_form_edit_availability
+            'data_form_edit_original_rooms' => $data_form_edit_original_rooms
         ]);
     }
 
-    /*Удаление наличие детали*/
-    #[Route('deleteInStock', name: 'delete_in_stock')]
-    public function deleteInStock(
+    /*Удаление оригиналного номера детали*/
+    #[Route('deleteOriginalNumber', name: 'delete_original_number')]
+    public function deleteOriginalNumber(
         Request $request,
-        FindAvailabilityQueryHandler $findAvailabilityQueryHandler,
-        DeleteAvailabilityCommandHandler $deleteAvailabilityCommandHandler,
+        //FindOriginalRoomsQueryHandler $findOriginalRoomsQueryHandler,
+        //DeleteOriginalRoomsCommandHandler $deleteOriginalRoomsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
 
-            $availability = $findAvailabilityQueryHandler
-                ->handler(new AvailabilityQuery($request->query->all()));
+            $original_rooms = $findOriginalRoomsQueryHandler
+                ->handler(new OriginalRoomsQuery($request->query->all()));
 
-            $deleteAvailabilityCommandHandler
-                ->handler(new AvailabilityObjCommand($availability));
-            $this->addFlash('delete', 'Наличие детали удалено');
+            $deleteOriginalRoomsCommandHandler
+                ->handler(new OriginalRoomsObjCommand($original_rooms));
+            $this->addFlash('delete', 'Оригиналный номер детали удален');
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);
         }
 
-        return $this->redirectToRoute('search_in_stock');
+        return $this->redirectToRoute('search_original_number');
     }
 
-    private function mapAvailabilityParticipant(array $availability, Participant $participant): array
+    private function mapOriginalRoomsParticipant(array $original_rooms, Participant $participant): array
     {
-        $availability['id_participant'] = $participant;
+        $original_rooms['id_participant'] = $participant;
 
-        return $availability;
+        return $original_rooms;
     }
 
-    private function mapObjectAvailability(Availability $availability, Participant $participant): array
+    private function mapObjectOriginalRooms(OriginalRooms $original_rooms, Participant $participant): array
     {
-        $arr_availability['id'] = $availability->getId();
-        $arr_availability['in_stock'] = $availability->getInStock();
-        $arr_availability['id_participant'] = $participant;
+        $arr_original_rooms['id'] = $original_rooms->getId();
+        $arr_original_rooms['original_number'] = $original_rooms->getOriginalNumber();
+        $arr_original_rooms['id_participant'] = $participant;
 
-        return $arr_availability;
+        return $arr_original_rooms;
     }
 
-    private function mapAvailability($id = null, $in_stock = null, $participant = null): array
+    private function mapOriginalRooms($id = null, $original_number = null, $participant = null): array
     {
-        $arr_availability['id'] = $id;
-        $arr_availability['in_stock'] = $in_stock;
-        $arr_availability['id_participant'] = $participant;
+        $arr_original_rooms['id'] = $id;
+        $arr_original_rooms['original_number'] = $original_number;
+        $arr_original_rooms['id_participant'] = $participant;
 
-        return $arr_availability;
+        return $arr_original_rooms;
     }
 }
