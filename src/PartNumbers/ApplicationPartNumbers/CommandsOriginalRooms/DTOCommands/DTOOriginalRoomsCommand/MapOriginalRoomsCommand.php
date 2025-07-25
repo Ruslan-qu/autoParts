@@ -1,9 +1,8 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 
@@ -32,6 +31,15 @@ abstract class MapOriginalRoomsCommand
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
+                if ($type == 'object') {
+
+                    $className = $typeResolver->resolve(new \ReflectionProperty(OriginalRooms::class, $key))
+                        ->getBaseType()
+                        ->getClassName();
+
+                    $input_errors->comparingClassNames($className, $value, $key);
+                }
+
                 $this->$key = $value;
             }
         }

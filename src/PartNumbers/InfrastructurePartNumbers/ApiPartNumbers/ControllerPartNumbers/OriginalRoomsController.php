@@ -14,6 +14,8 @@ use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\O
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\EditOriginalRoomsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SaveOriginalRoomsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SearchOriginalRoomsType;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\SaveOriginalRoomsCommand\SaveOriginalRoomsCommandHandler;
 
 class OriginalRoomsController extends AbstractController
 {
@@ -21,7 +23,7 @@ class OriginalRoomsController extends AbstractController
     #[Route('/saveOriginalNumber', name: 'save_original_number')]
     public function saveOriginalNumber(
         Request $request,
-        //SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
+        SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -39,7 +41,14 @@ class OriginalRoomsController extends AbstractController
                 try {
 
                     $participant = $adapterUserExtractionInterface->userExtraction();
-                    $original_rooms = $this->mapOriginalRoomsParticipant($form_save_original_rooms->getData(), $participant);
+                    $original_rooms = $this->mapOriginalRooms(
+                        null,
+                        $form_save_original_rooms->getData()['original_number'],
+                        $form_save_original_rooms->getData()['replacing_original_number'],
+                        $form_save_original_rooms->getData()['original_manufacturer'],
+                        $participant
+                    );
+
                     $id = $saveOriginalRoomsCommandHandler
                         ->handler(new OriginalRoomsCommand($original_rooms));
                 } catch (HttpException $e) {
@@ -49,8 +58,8 @@ class OriginalRoomsController extends AbstractController
             }
         }
 
-        return $this->render('@original_rooms/saveOriginalNumber.html.twig', [
-            'title_logo' => 'Добавление оригиналного номера детали',
+        return $this->render('@originalRooms/saveOriginalNumber.html.twig', [
+            'title_logo' => 'Добавление оригиналного номера',
             'form_save_original_rooms' => $form_save_original_rooms->createView(),
             'id' => $id
         ]);
@@ -97,7 +106,7 @@ class OriginalRoomsController extends AbstractController
             }
         }
 
-        return $this->render('@original_rooms/searchOriginalNumber.html.twig', [
+        return $this->render('@originalRooms/searchOriginalNumber.html.twig', [
             'title_logo' => 'Поиск оригиналного номера детали',
             'form_search_original_rooms' => $form_search_original_rooms->createView(),
             'search_data' => $search_data,
@@ -171,7 +180,7 @@ class OriginalRoomsController extends AbstractController
             }
         }
 
-        return $this->render('@original_rooms/editOriginalNumber.html.twig', [
+        return $this->render('@originalRooms/editOriginalNumber.html.twig', [
             'title_logo' => 'Изменение оригиналного номера детали',
             'form_edit_original_rooms' => $form_edit_original_rooms->createView(),
             'id' => $id,
@@ -219,10 +228,17 @@ class OriginalRoomsController extends AbstractController
         return $arr_original_rooms;
     }
 
-    private function mapOriginalRooms($id = null, $original_number = null, $participant = null): array
-    {
+    private function mapOriginalRooms(
+        $id,
+        $original_number,
+        $replacing_original_number,
+        $original_manufacturer,
+        $participant
+    ): array {
         $arr_original_rooms['id'] = $id;
         $arr_original_rooms['original_number'] = $original_number;
+        $arr_original_rooms['replacing_original_number'] = [$replacing_original_number];
+        $arr_original_rooms['original_manufacturer'] = $original_manufacturer;
         $arr_original_rooms['id_participant'] = $participant;
 
         return $arr_original_rooms;

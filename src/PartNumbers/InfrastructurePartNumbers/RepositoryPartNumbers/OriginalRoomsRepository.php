@@ -70,7 +70,7 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     /**
      * @return array Возвращается массив с данными об удаление 
      */
-    public function delete(OriginalRooms $originalRooms): array
+    public function delete(OriginalRooms $originalRooms): ?array
     {
         try {
 
@@ -100,6 +100,38 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     public function findOneByOriginalRooms(string $original_number, Participant $id_participant): ?OriginalRooms
     {
         return $this->findOneBy(['original_number' => $original_number, 'id_participant' => $id_participant]);
+    }
+
+    /**
+     * @return OriginalRooms|NULL Возвращает объект или ноль
+     */
+    public function findOneByIdOriginalRooms(int $id, Participant $id_participant): ?OriginalRooms
+    {
+        return $this->findOneBy(['id' => $id, 'id_participant' => $id_participant]);
+    }
+
+    /**
+     * @return ARRAY|NULL Возвращает массив количество id или ноль
+     */
+    public function countId(): ?array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(o.id)
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms o'
+        );
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return ARRAY|NULL Возвращает массив объектов или ноль
+     */
+    public function findByOriginalRooms(Participant $id_participant): ?array
+    {
+
+        return $this->findBy(['id_participant' => $id_participant]);
     }
 
     /**

@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
+  {% endblock Responsive_behaviors %}
+
+  {% block form %}
+
+  {#Форма сохранения номеров деталей#}
+
+  {{ form_start(form_search_part_numbers) }}
+  <div class="container-fluid text-center mt-3">
+    <div class="row">
+
+      <div class="col-lg-12 col-xl-7 col-xxl-7">
+        <div class="row">
+
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="lb">{{ form_label(form_search_part_numbers.part_number) }}</div>
+            {{ form_widget(form_search_part_numbers.part_number, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.part_number) |nl2br }}
+          </div>
+
+
+
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="lb">{{ form_label(form_search_part_numbers.id_original_number) }}</div>
+            {{ form_widget(form_search_part_numbers.id_original_number, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_original_number) |nl2br }}
+          </div>
+
+
+
+          <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="lb">{{ form_label(form_search_part_numbers.manufacturer) }}</div>
+            {{ form_widget(form_search_part_numbers.manufacturer, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.manufacturer) |nl2br }}
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <div class="col-lg-12 col-xl-5 col-xxl-5">
+        <div class="row justify-content-evenly">
+
+          <div class="col-6">
+            <div class="lb">{{ form_label(form_search_part_numbers.id_part_name) }}</div>
+            {{ form_widget(form_search_part_numbers.id_part_name, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_part_name) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_search_part_numbers.id_car_brand) }}</div>
+            {{ form_widget(form_search_part_numbers.id_car_brand, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_car_brand) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_search_part_numbers.id_side) }}</div>
+            {{ form_widget(form_search_part_numbers.id_side, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_side) |nl2br }}
+          </div>
+        </div>
+        <div class="row justify-content-evenly">
+
+          <div class="col-6">
+            <div class="lb">{{ form_label(form_search_part_numbers.id_body) }}</div>
+            {{ form_widget(form_search_part_numbers.id_body, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_body) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_search_part_numbers.id_axle) }}</div>
+            {{ form_widget(form_search_part_numbers.id_axle, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_axle) |nl2br }}
+          </div>
+
+          <div class="col-3">
+            <div class="lb">{{ form_label(form_search_part_numbers.id_in_stock) }}</div>
+            {{ form_widget(form_search_part_numbers.id_in_stock, { 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_search_part_numbers.id_in_stock) |nl2br }}
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+    <div class="row mt-3">
+      <div class="col-12 d-grid gap-2">
+        {{ form_widget(form_search_part_numbers.button_part_number, { 'label': 'Поиск', 'attr': {'class': 'btn
+        btn-primary'}}) }}
+      </div>
+    </div>
+
+  </div>
+
+  {{ form_end(form_search_part_numbers) }}
+
+  {% for messages in app.flashes(['delete','Error']) %}
+  {% for message in messages %}
+    <h2 class="mt-3 ms-3">{{ message }}</h2>
+  {% endfor %}
+  {% endfor %}
+
+  {% endblock form %}
+
+
+  {% block table %}
+
+  {#Таблица автодеталей#}
+
+  <div class="container-fluid text-center pt-4 ">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
+        border-info shadow p-3 mb-5 bg-body-tertiary rounded">
+        <thead class="table-secondary">
+
+          {% if search_data %}
+          <tr>
+            <th scope="col">№ детали</th>
+            <th scope="col">№ оригинал</th>
+            <th scope="col">Производитель</th>
+            <th scope="col">Описание детали</th>
+            <th scope="col">Название детали</th>
+            <th scope="col">Марка</th>
+            <th scope="col">Сторона</th>
+            <th scope="col">Кузов</th>
+            <th scope="col">Перед Зад</th>
+            <th scope="col">Наличие</th>
+            <th scope="col">Редактировать</th>
+            <th scope="col">Удалить</th>
+          </tr>
+           {% endif %}
+
+        </thead>
+        <tbody class="table-group-divider">
+          {% for information in search_data %}
+            {% if information %}
+
+          <tr>
+            <td>{{ information.getPartNumber() }}</td>
+            <td>{{ information.getIdOriginalNumber().getOriginalNumber()|default('') }}</td>
+            <td>{{ information.getManufacturer() }}</td>
+            <td>{{ information.getAdditionalDescriptions() }}</td>
+            <td>{{ information.getIdPartName().getPartName()|default('') }}</td>
+            <td>{{ information.getIdCarBrand().getCarBrand()|default('') }}</td>
+            <td>{{ information.getIdSide().getSide()|default('') }}</td>
+            <td>{{ information.getIdBody().getBody()|default('') }}</td>
+            <td>{{ information.getIdAxle().getAxle()|default('') }}</td>
+            <td>{{ information.getIdInStock().getInStock()|default('') }}</td>
+            <form action="{{ path('edit_part_numbers') }}" name="edit_part_numbers">
+
+              <td><button class="btn btn-outline-secondary" type="submit" name="id"
+                  value="{{ information.getId() }}">Изменить</button></td>
+
+            </form>
+            <form action="{{ path('delete_part_numbers') }}" name="delete_part_numbers">
+
+              <td><button class="btn btn-outline-danger" type="submit" name="id"
+                  value="{{ information.getId() }}">Удалить</button></td>
+
+            </form>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endblock table %}

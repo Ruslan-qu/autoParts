@@ -43,7 +43,7 @@ class SaveOriginalRoomsType extends AbstractType
                 ]
             ])
             ->add('replacing_original_number', TextType::class, [
-                'label' => 'Замена ориг-ного номнра',
+                'label' => 'Замена номера',
                 'required' => false,
                 'constraints' => [
                     new Regex([

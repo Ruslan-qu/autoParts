@@ -17,7 +17,7 @@ interface  OriginalRoomsRepositoryInterface
 
     public function findOneByOriginalRooms(string $original_number, Participant $id_participant): ?OriginalRooms;
 
-    public function findOneByIdOriginalRoom(int $id, Participant $id_participant): ?OriginalRooms;
+    public function findOneByIdOriginalRooms(int $id, Participant $id_participant): ?OriginalRooms;
 
     public function countId(): ?array;
 
