@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityCommand\AvailabilityCommand;
@@ -40,25 +41,49 @@ final class SaveOriginalRoomsCommandHandler
             $originalRoomsCommand->getOriginalManufacturer()
         ));
 
-        $replacing_original_number = $originalRoomsCommand->getReplacingOriginalNumber();
+        $arr_replacing_original_number = $originalRoomsCommand->getReplacingOriginalNumber();
+        $replacing_original_number = strtolower(preg_replace(
+            '#\s#u',
+            '',
+            $this->isArrayReplacingOriginalNumber($arr_replacing_original_number)
+        ));
+
 
         $id_participant = $originalRoomsCommand->getIdParticipant();
 
         $input = [
-            'in_stock_error' => [
-                'NotBlank' => $in_stock,
-                'Regex' => $in_stock,
+            'original_number_error' => [
+                'NotBlank' => $original_number,
+                'Regex' => $original_number,
+            ],
+            'original_manufacturer_error' => [
+                'Regex' => $original_manufacturer
+            ],
+            'replacing_original_number_error' => [
+                'Regex' => $replacing_original_number
             ]
         ];
 
         $constraint = new Collection([
-            'in_stock_error' => new Collection([
+            'original_number_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Наличие не может быть пустой'
+                    message: 'Форма оригинальный номер не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
-                    message: 'Форма Наличие содержит недопустимые символы'
+                    pattern: '/^[\da-z]*$/ui',
+                    message: 'Форма оригинальный номер содержит недопустимые символы'
+                )
+            ]),
+            'original_manufacturer_error' => new Collection([
+                'Regex' => new Regex(
+                    pattern: '/^[\da-z]*$/ui',
+                    message: 'Форма оригинальный номер содержит недопустимые символы'
+                )
+            ]),
+            'replacing_original_number_error' => new Collection([
+                'Regex' => new Regex(
+                    pattern: '/^[\da-z]*$/ui',
+                    message: 'Форма оригинальный номер содержит недопустимые символы'
                 )
             ])
         ]);
@@ -67,26 +92,26 @@ final class SaveOriginalRoomsCommandHandler
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
         /* Валидация дублей */
-        $count_duplicate = $this->availabilityRepositoryInterface
-            ->numberDoubles(['in_stock' => $in_stock]);
+        $count_duplicate = $this->originalRoomsRepositoryInterface
+            ->numberDoubles(['replacing_original_number' => [$replacing_original_number]]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
-        $availability = new Availability;
-        $availability->setInStock($in_stock);
-        $availability->setIdParticipant($id_participant);
+        $original_rooms = new OriginalRooms;
+        $original_rooms->setOriginalNumber($original_number);
+        $original_rooms->setReplacingOriginalNumber([$replacing_original_number]);
+        $original_rooms->setOriginalManufacturer($original_manufacturer);
+        $original_rooms->setIdParticipant($id_participant);
 
-        return $this->availabilityRepositoryInterface->save($availability);
+        return $this->originalRoomsRepositoryInterface->save($availability);
     }
 
     private function isArrayReplacingOriginalNumber($replacing_original_number): ?string
     {
-        if (empty($data)) {
+        if (is_array($replacing_original_number)) {
 
-            $arr_data_errors = ['Error' => 'Пустые данные'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            return $replacing_original_number[0];
         }
 
-        return $this;
+        return $replacing_original_number;
     }
 }
