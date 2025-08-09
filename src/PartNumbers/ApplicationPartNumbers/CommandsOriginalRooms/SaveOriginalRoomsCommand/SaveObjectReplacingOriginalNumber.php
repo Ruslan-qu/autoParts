@@ -30,15 +30,23 @@ final class SaveObjectReplacingOriginalNumber
         );
         if ($find_one_by_original_rooms === null) {
             $original_rooms->setOriginalNumber($originalRoomsCommand->getOriginalNumber());
-            $original_rooms->setReplacingOriginalNumber([$originalRoomsCommand->getOriginalNumber()]);
+            $original_rooms->setReplacingOriginalNumber([
+                $originalRoomsCommand->getOriginalNumber(),
+                $originalRoomsCommand->getReplacingOriginalNumber()[0]
+            ]);
             $original_rooms->setOriginalManufacturer($originalRoomsCommand->getOriginalManufacturer());
             $original_rooms->setIdParticipant($originalRoomsCommand->getIdParticipant());
 
             $id = $originalRoomsRepositoryInterface->save($original_rooms);
         } elseif ($find_one_by_original_rooms != null) {
+            $this->countDuplicate(
+                $originalRoomsCommand->getReplacingOriginalNumber()[0],
+                $find_one_by_original_rooms->getReplacingOriginalNumber()[0],
+                $originalRoomsRepositoryInterface
+            );
 
             $find_one_by_original_rooms->setOriginalNumber($originalRoomsCommand->getOriginalNumber());
-            $find_one_by_original_rooms->setReplacingOriginalNumber([$originalRoomsCommand->getReplacingOriginalNumber()]);
+            $find_one_by_original_rooms->setReplacingOriginalNumber($originalRoomsCommand->getReplacingOriginalNumber());
             $find_one_by_original_rooms->setOriginalManufacturer($originalRoomsCommand->getOriginalManufacturer());
             $find_one_by_original_rooms->setIdParticipant($originalRoomsCommand->getIdParticipant());
 
@@ -46,5 +54,22 @@ final class SaveObjectReplacingOriginalNumber
         }
 
         return $id;
+    }
+
+    private function countDuplicate(
+        string $edit_replacing_original_number,
+        string $replacing_original_number,
+        OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
+    ): static {
+        if ($edit_replacing_original_number != $replacing_original_number) {
+
+            $inputErrorsPartNumbers = new InputErrorsPartNumbers;
+            /* Валидация дублей */
+            $count_duplicate = $originalRoomsRepositoryInterface
+                ->numberDoubles(['replacing_original_number' => $edit_replacing_original_number]);
+            $inputErrorsPartNumbers->errorDuplicate($count_duplicate);
+        }
+
+        return $this;
     }
 }
