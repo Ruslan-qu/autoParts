@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\PartNumbers\DomainPartNumbers\Factory\FactorySaveOriginalRooms;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
@@ -48,6 +49,7 @@ class OriginalRoomsController extends AbstractController
                         $form_save_original_rooms->getData()['original_manufacturer'],
                         $participant
                     );
+
 
                     $id = $saveOriginalRoomsCommandHandler
                         ->handler(new OriginalRoomsCommand($original_rooms));

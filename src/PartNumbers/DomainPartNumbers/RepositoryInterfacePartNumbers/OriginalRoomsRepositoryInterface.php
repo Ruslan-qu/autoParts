@@ -7,9 +7,9 @@ use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\O
 
 interface  OriginalRoomsRepositoryInterface
 {
-    public function save(OriginalRooms $originalRooms): array;
+    public function save(OriginalRooms $originalRooms): int;
 
-    public function edit(OriginalRooms $originalRooms): array;
+    public function edit(OriginalRooms $originalRooms): int;
 
     public function delete(OriginalRooms $originalRooms): ?array;
 

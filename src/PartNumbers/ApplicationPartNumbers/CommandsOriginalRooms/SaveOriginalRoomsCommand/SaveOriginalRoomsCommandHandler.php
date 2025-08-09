@@ -6,12 +6,9 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\PartNumbers\DomainPartNumbers\Factory\FactorySaveOriginalRooms;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityCommand\AvailabilityCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 
 final class SaveOriginalRoomsCommandHandler
@@ -24,7 +21,6 @@ final class SaveOriginalRoomsCommandHandler
 
     public function handler(OriginalRoomsCommand $originalRoomsCommand): ?int
     {
-        dd($originalRoomsCommand);
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -47,9 +43,6 @@ final class SaveOriginalRoomsCommandHandler
             '',
             $this->isArrayReplacingOriginalNumber($arr_replacing_original_number)
         ));
-
-
-        $id_participant = $originalRoomsCommand->getIdParticipant();
 
         $input = [
             'original_number_error' => [
@@ -91,18 +84,13 @@ final class SaveOriginalRoomsCommandHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-        /* Валидация дублей */
-        $count_duplicate = $this->originalRoomsRepositoryInterface
-            ->numberDoubles(['replacing_original_number' => [$replacing_original_number]]);
-        $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
+        $factorySaveOriginalRooms = new FactorySaveOriginalRooms;
+        $id = $factorySaveOriginalRooms->saveOriginalRooms(
+            $originalRoomsCommand,
+            $this->originalRoomsRepositoryInterface
+        );
 
-        $original_rooms = new OriginalRooms;
-        $original_rooms->setOriginalNumber($original_number);
-        $original_rooms->setReplacingOriginalNumber([$replacing_original_number]);
-        $original_rooms->setOriginalManufacturer($original_manufacturer);
-        $original_rooms->setIdParticipant($id_participant);
-
-        return $this->originalRoomsRepositoryInterface->save($availability);
+        return $id;
     }
 
     private function isArrayReplacingOriginalNumber($replacing_original_number): ?string
