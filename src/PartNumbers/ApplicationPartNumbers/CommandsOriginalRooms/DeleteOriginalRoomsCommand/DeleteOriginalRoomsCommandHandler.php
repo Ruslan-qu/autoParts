@@ -3,21 +3,21 @@
 namespace App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DeleteOriginalRoomsCommand;
 
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityObjCommand\AvailabilityObjCommand;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsObjCommand\OriginalRoomsObjCommand;
 
 final class DeleteOriginalRoomsCommandHandler
 {
 
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private AvailabilityRepositoryInterface $availabilityRepositoryInterface,
+        private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface,
     ) {}
 
-    public function handler(AvailabilityObjCommand $availabilityObjCommand): ?int
+    public function handler(OriginalRoomsObjCommand $originalRoomsObjCommand): ?int
     {
-        $availability = $availabilityObjCommand->getAvailability();
-        $successfully_delete = $this->availabilityRepositoryInterface->delete($availability);
+        $original_rooms = $originalRoomsObjCommand->getOriginalRooms();
+        $successfully_delete = $this->originalRoomsRepositoryInterface->delete($original_rooms);
 
         return $successfully_delete['delete'];
     }

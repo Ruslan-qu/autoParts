@@ -25,7 +25,7 @@ class SaveObjectOriginalNumber
 
         $original_rooms = new OriginalRooms;
         $original_rooms->setOriginalNumber($originalRoomsCommand->getOriginalNumber());
-        $original_rooms->setReplacingOriginalNumber([$originalRoomsCommand->getOriginalNumber()]);
+        //$original_rooms->setReplacingOriginalNumber([$originalRoomsCommand->getOriginalNumber()]);
         $original_rooms->setOriginalManufacturer($originalRoomsCommand->getOriginalManufacturer());
         $original_rooms->setIdParticipant($originalRoomsCommand->getIdParticipant());
 

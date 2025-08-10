@@ -17,7 +17,7 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTO
 final class SaveObjectReplacingOriginalNumber
 {
 
-    public function objectReplacingOriginalNumber(
+    /* public function objectReplacingOriginalNumber(
         OriginalRoomsCommand $originalRoomsCommand,
         OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
     ): ?int {
@@ -54,7 +54,7 @@ final class SaveObjectReplacingOriginalNumber
         }
 
         return $id;
-    }
+    }*/
 
     private function countDuplicate(
         string $edit_replacing_original_number,
@@ -66,7 +66,7 @@ final class SaveObjectReplacingOriginalNumber
             $inputErrorsPartNumbers = new InputErrorsPartNumbers;
             /* Валидация дублей */
             $count_duplicate = $originalRoomsRepositoryInterface
-                ->numberDoubles(['replacing_original_number' => $edit_replacing_original_number]);
+                ->numberDoubles(['replacing_original_number' => $edit_replacing_original_number[0]]);
             $inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

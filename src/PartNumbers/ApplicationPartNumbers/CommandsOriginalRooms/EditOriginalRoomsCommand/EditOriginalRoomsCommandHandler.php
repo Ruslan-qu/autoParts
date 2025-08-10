@@ -7,69 +7,88 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
-use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityCommand\AvailabilityCommand;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 
 final class EditOriginalRoomsCommandHandler
 {
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private AvailabilityRepositoryInterface $availabilityRepositoryInterface
+        private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
     ) {}
 
-    public function handler(AvailabilityCommand $availabilityCommand): ?int
+    public function handler(OriginalRoomsCommand $originalRoomsCommand): ?int
     {
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
-        $edit_in_stock = $availabilityCommand->getInStock();
+        $edit_original_number = strtolower(preg_replace(
+            '#\s#u',
+            '',
+            $originalRoomsCommand->getOriginalNumber()
+        ));
+
+        $original_manufacturer = strtolower(preg_replace(
+            '#\s#u',
+            '',
+            $originalRoomsCommand->getOriginalManufacturer()
+        ));
 
         $input = [
-            'in_stock_error' => [
-                'NotBlank' => $edit_in_stock,
-                'Regex' => $edit_in_stock,
+            'edit_original_number_error' => [
+                'NotBlank' => $edit_original_number,
+                'Regex' => $edit_original_number,
+            ],
+            'original_manufacturer_error' => [
+                'Regex' => $original_manufacturer
             ]
         ];
 
         $constraint = new Collection([
-            'in_stock_error' => new Collection([
+            'edit_original_number_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Ось не может быть пустой'
+                    message: 'Форма оригинальный номер не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
-                    message: 'Форма Ось содержит недопустимые символы'
+                    pattern: '/^[\da-z]*$/ui',
+                    message: 'Форма оригинальный номер содержит недопустимые символы'
+                )
+            ]),
+            'original_manufacturer_error' => new Collection([
+                'Regex' => new Regex(
+                    pattern: '/^[\da-z]*$/ui',
+                    message: 'Форма Производитель содержит недопустимые символы'
                 )
             ])
         ]);
+
 
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
 
-        $id = $availabilityCommand->getId();
+        $id = $originalRoomsCommand->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
 
-        $availability = $this->availabilityRepositoryInterface->findAvailability($id);
-        $this->inputErrorsPartNumbers->emptyEntity($availability);
+        $original_rooms = $this->originalRoomsRepositoryInterface->findOriginalRooms($id);
+        $this->inputErrorsPartNumbers->emptyEntity($original_rooms);
 
-        $this->countDuplicate($edit_in_stock, $availability->getInStock());
+        $this->countDuplicate($edit_original_number, $original_rooms->getOriginalNumber());
 
-        $availability->setInStock($edit_in_stock);
+        $original_rooms->setOriginalNumber($edit_original_number);
+        $original_rooms->setOriginalManufacturer($original_manufacturer);
 
-        $successfully_edit = $this->availabilityRepositoryInterface->edit($availability);
-
-        $id = $successfully_edit['edit'];
+        $id = $this->originalRoomsRepositoryInterface->edit($original_rooms);
 
         return $id;
     }
 
-    private function countDuplicate(string $edit_in_stock, string $in_stock): static
+    private function countDuplicate(string $edit_original_number, string $original_number): static
     {
-        if ($edit_in_stock != $in_stock) {
+        if ($edit_original_number != $original_number) {
             /* Валидация дублей */
-            $count_duplicate = $this->availabilityRepositoryInterface
-                ->numberDoubles(['in_stock' => $edit_in_stock]);
+            $count_duplicate = $this->originalRoomsRepositoryInterface
+                ->numberDoubles(['original_number' => $edit_original_number]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

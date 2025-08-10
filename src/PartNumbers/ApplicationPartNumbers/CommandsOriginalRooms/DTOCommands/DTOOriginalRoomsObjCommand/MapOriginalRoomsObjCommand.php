@@ -4,7 +4,7 @@ namespace App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOComman
 
 use Symfony\Component\TypeInfo\Type;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 
 abstract class MapOriginalRoomsObjCommand
 {
@@ -19,7 +19,7 @@ abstract class MapOriginalRoomsObjCommand
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
-                $type = Type::object(Availability::class);
+                $type = Type::object(OriginalRooms::class);
                 $className = $type->getBaseType()->getClassName();
                 $input_errors = new InputErrorsPartNumbers;
                 $input_errors->comparingClassNames($className, $value, $key);

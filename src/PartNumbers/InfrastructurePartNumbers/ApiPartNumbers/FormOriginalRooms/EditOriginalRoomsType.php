@@ -43,18 +43,6 @@ class EditOriginalRoomsType extends AbstractType
                     ])
                 ]
             ])
-            ->add('replacing_original_number', TextType::class, [
-                'label' => 'Замена ориг-ного номнра',
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-                    недопустимые символы'
-                    ])
-                ]
-            ])
             ->add('id', HiddenType::class)
             ->add('button_original_number', SubmitType::class, [
                 'label' => 'Изменить'

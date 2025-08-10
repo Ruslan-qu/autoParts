@@ -106,14 +106,47 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="btn-group dropend">
-                                <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
+                            <li class="dropdown">
+                                <a class="dropdown-item dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside" aria-expanded="false">
                                     Оригинал
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ path('search_original_number')}}">Поиск</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('save_original_number')}}">Сохранить</a>
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Оригинал
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('search_original_number')}}">
+                                                    Поиск
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('save_original_number')}}">
+                                                    Сохранить
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="btn-group dropend">
+                                        <a type="button" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Замена
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('search_original_number')}}">
+                                                    Поиск
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{{ path('save_original_number')}}">
+                                                    Сохранить
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
                             </li>

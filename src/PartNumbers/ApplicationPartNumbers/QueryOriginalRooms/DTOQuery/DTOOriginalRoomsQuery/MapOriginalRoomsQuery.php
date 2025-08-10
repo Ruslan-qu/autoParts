@@ -1,6 +1,6 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
@@ -31,6 +31,14 @@ abstract class MapOriginalRoomsQuery
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
+                if ($type == 'object') {
+
+                    $className = $typeResolver->resolve(new \ReflectionProperty(OriginalRooms::class, $key))
+                        ->getBaseType()
+                        ->getClassName();
+
+                    $input_errors->comparingClassNames($className, $value, $key);
+                }
 
                 $this->$key = $value;
             }

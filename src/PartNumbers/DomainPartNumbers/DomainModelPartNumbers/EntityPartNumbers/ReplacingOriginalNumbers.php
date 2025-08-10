@@ -1,0 +1,51 @@
+<?php
+
+namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
+
+use Doctrine\ORM\Mapping as ORM;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
+use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\ReplacingOriginalNumbersRepository;
+
+#[ORM\Entity(repositoryClass: ReplacingOriginalNumbersRepository::class)]
+class ReplacingOriginalNumbers
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 33, nullable: true)]
+    private ?string $replacing_original_number = null;
+
+    #[ORM\ManyToOne]
+    private ?OriginalRooms $id_original_number = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getReplacingOriginalNumber(): ?string
+    {
+        return $this->replacing_original_number;
+    }
+
+    public function setReplacingOriginalNumber(?string $replacing_original_number): static
+    {
+        $this->replacing_original_number = $replacing_original_number;
+
+        return $this;
+    }
+
+    public function getIdOriginalNumber(): ?OriginalRooms
+    {
+        return $this->id_original_number;
+    }
+
+    public function setIdOriginalNumber(?OriginalRooms $id_original_number): static
+    {
+        $this->id_original_number = $id_original_number;
+
+        return $this;
+    }
+}

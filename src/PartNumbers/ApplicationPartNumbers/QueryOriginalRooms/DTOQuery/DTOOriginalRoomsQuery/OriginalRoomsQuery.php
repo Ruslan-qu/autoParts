@@ -1,11 +1,11 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery;
 
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
-use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\MapOriginalRoomsCommand;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\MapOriginalRoomsQuery;
 
-final class OriginalRoomsCommand extends MapOriginalRoomsCommand
+final class OriginalRoomsQuery extends MapOriginalRoomsQuery
 {
     protected ?int $id = null;
 

@@ -2,16 +2,15 @@
 
 namespace App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsObjCommand;
 
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
-use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityObjCommand\MapAvailabilityObjCommand;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsObjCommand\MapOriginalRoomsObjCommand;
 
 final class OriginalRoomsObjCommand extends MapOriginalRoomsObjCommand
 {
-    protected ?Availability $availability = null;
+    protected ?OriginalRooms $original_rooms = null;
 
-    public function getAvailability(): ?Availability
+    public function getOriginalRooms(): ?OriginalRooms
     {
-        return $this->availability;
+        return $this->original_rooms;
     }
 }

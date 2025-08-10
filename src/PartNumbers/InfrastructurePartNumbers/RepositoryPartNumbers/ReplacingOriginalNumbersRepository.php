@@ -6,17 +6,17 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\ReplacingOriginalNumbers;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\ReplacingOriginalNumbersRepositoryInterface;
 
 /**
- * @extends ServiceEntityRepository<OriginalRooms>
+ * @extends ServiceEntityRepository<ReplacingOriginalNumber>
  */
-class OriginalRoomsRepository extends ServiceEntityRepository implements OriginalRoomsRepositoryInterface
+class ReplacingOriginalNumbersRepository extends ServiceEntityRepository implements ReplacingOriginalNumbersRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, OriginalRooms::class);
+        parent::__construct($registry, ReplacingOriginalNumbers::class);
     }
 
     /**
@@ -31,13 +31,13 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
-    public function save(OriginalRooms $originalRooms): int
+    public function save(ReplacingOriginalNumbers $replacing_original_numbers): int
     {
         $entityManager = $this->getEntityManager();
-        $entityManager->persist($originalRooms);
+        $entityManager->persist($replacing_original_numbers);
         $entityManager->flush();
 
-        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($replacing_original_numbers);
 
         $exists = $this->count(['id' => $entityData['id']]);
         if ($exists == 0) {
@@ -51,12 +51,11 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     /**
      * @return array Возвращается массив с данными об успешном изменения  
      */
-    public function edit(OriginalRooms $originalRooms): int
+    public function edit(ReplacingOriginalNumbers $replacing_original_numbers): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
-        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
-        unset($entityData['id_participant_id']);
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($replacing_original_numbers);
 
         $exists = $this->count($entityData);
         if ($exists == 0) {
@@ -71,14 +70,14 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     /**
      * @return array Возвращается массив с данными об удаление 
      */
-    public function delete(OriginalRooms $originalRooms): ?array
+    public function delete(ReplacingOriginalNumbers $replacing_original_numbers): ?array
     {
         try {
 
             $entityManager = $this->getEntityManager();
-            $entityManager->remove($originalRooms);
+            $entityManager->remove($replacing_original_numbers);
             $entityManager->flush();
-            $entityData = $entityManager->contains($originalRooms);
+            $entityData = $entityManager->contains($replacing_original_numbers);
             if ($entityData != false) {
                 $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
                 $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
@@ -96,17 +95,40 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     }
 
     /**
-     * @return OriginalRooms|NULL Возвращает массив объектов или ноль
+     * @return ReplacingOriginalNumbers|NULL Возвращает массив объектов или ноль
      */
-    public function findOneByOriginalRooms(string $original_number, Participant $id_participant): ?OriginalRooms
-    {
-        return $this->findOneBy(['original_number' => $original_number, 'id_participant' => $id_participant]);
+    public function findOneByReplacingOriginalNumbers(
+        string $replacing_original_number,
+        Participant $id_participant
+    ): ?ReplacingOriginalNumbers {
+        return $this->findOneBy(['replacing_original_number' => $replacing_original_number, 'id_participant' => $id_participant]);
     }
 
     /**
-     * @return OriginalRooms|NULL Возвращает объект или ноль
+     * @return ARRAY|NULL Возвращает массив объектов или ноль
      */
-    public function findOneByIdOriginalRooms(int $id, Participant $id_participant): ?OriginalRooms
+    public function findOneByOriginalNumbers(
+        string $original_number,
+        Participant $id_participant
+    ): ?array {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT r, o
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\ReplacingOriginalNumbers r
+            LEFT JOIN r.id_original_number o
+            WHERE o.original_number = :original_number
+            AND o.id_participant = :id_participant
+            ORDER BY r.id ASC'
+        )->setParameters(['original_number' => $original_number, 'id_participant' => $id_participant]);
+
+        return $query->getResult();
+    }
+
+    /**
+     * @return ReplacingOriginalNumbers|NULL Возвращает объект или ноль
+     */
+    public function findOneByIdReplacingOriginalNumbers(int $id, Participant $id_participant): ?ReplacingOriginalNumbers
     {
         return $this->findOneBy(['id' => $id, 'id_participant' => $id_participant]);
     }
@@ -120,7 +142,7 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
 
         $query = $entityManager->createQuery(
             'SELECT COUNT(o.id)
-            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms o'
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\ReplacingOriginalNumbers o'
         );
 
         return $query->getResult();
@@ -129,25 +151,17 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     /**
      * @return ARRAY|NULL Возвращает массив объектов или ноль
      */
-    public function findByOriginalRooms(Participant $id_participant): ?array
+    public function findByReplacingOriginalNumbers(Participant $id_participant): ?array
     {
 
         return $this->findBy(['id_participant' => $id_participant]);
     }
 
     /**
-     * @return OriginalRooms|NULL Возвращает объект или ноль
+     * @return ReplacingOriginalNumbers|NULL Возвращает объект или ноль
      */
-    public function findOriginalRooms(int $id): ?OriginalRooms
+    public function findReplacingOriginalNumbers(int $id): ?ReplacingOriginalNumbers
     {
         return $this->find($id);
-    }
-
-    /**
-     * @return ARRAY|NULL Возвращает объект или ноль
-     */
-    public function findAllRoomsRepository(): ?array
-    {
-        return $this->findAll();
     }
 }

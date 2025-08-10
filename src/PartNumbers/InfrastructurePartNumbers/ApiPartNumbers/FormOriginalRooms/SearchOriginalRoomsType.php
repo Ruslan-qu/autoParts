@@ -19,7 +19,7 @@ class SearchOriginalRoomsType extends AbstractType
                 'label' => 'Оригиналный номер',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё\s]*$/ui',
+                        'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'

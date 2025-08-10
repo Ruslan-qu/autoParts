@@ -42,7 +42,7 @@ class SaveOriginalRoomsType extends AbstractType
                     ])
                 ]
             ])
-            ->add('replacing_original_number', TextType::class, [
+            /*->add('replacing_original_number', TextType::class, [
                 'label' => 'Замена номера',
                 'required' => false,
                 'constraints' => [
@@ -53,7 +53,7 @@ class SaveOriginalRoomsType extends AbstractType
                     недопустимые символы'
                     ])
                 ]
-            ])
+            ])*/
             ->add('button_original_number', SubmitType::class, [
                 'label' => 'Сохранить'
             ])

@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\PartNumbers\DomainPartNumbers\Factory\FactorySaveOriginalRooms;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
@@ -15,8 +14,16 @@ use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\O
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\EditOriginalRoomsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SaveOriginalRoomsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SearchOriginalRoomsType;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DeleteOriginalRoomsQuery\FindOriginalRoomsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\FindByOriginalRoomsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\SearchOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\EditOriginalRoomsCommand\EditOriginalRoomsCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\SaveOriginalRoomsCommand\SaveOriginalRoomsCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\EditOriginalRoomsQuery\FindOneByIdOriginalRoomsQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DeleteOriginalRoomsCommand\DeleteOriginalRoomsCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsObjCommand\OriginalRoomsObjCommand;
 
 class OriginalRoomsController extends AbstractController
 {
@@ -45,7 +52,6 @@ class OriginalRoomsController extends AbstractController
                     $original_rooms = $this->mapOriginalRooms(
                         null,
                         $form_save_original_rooms->getData()['original_number'],
-                        $form_save_original_rooms->getData()['replacing_original_number'],
                         $form_save_original_rooms->getData()['original_manufacturer'],
                         $participant
                     );
@@ -71,10 +77,9 @@ class OriginalRoomsController extends AbstractController
     #[Route('searchOriginalNumber', name: 'search_original_number')]
     public function searchOriginalNumber(
         Request $request,
-        OriginalRooms $originalRooms,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        // FindByOriginalRoomsQueryHandler $findByOriginalRoomsQueryHandler,
-        // SearchOriginalRoomsQueryHandler $searchOriginalRoomsQueryHandler,
+        FindByOriginalRoomsQueryHandler $findByOriginalRoomsQueryHandler,
+        SearchOriginalRoomsQueryHandler $searchOriginalRoomsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -83,21 +88,12 @@ class OriginalRoomsController extends AbstractController
 
         /*Валидация формы */
         $form_search_original_rooms->handleRequest($request);
-
-        try {
-
-            $participant = $adapterUserExtractionInterface->userExtraction();
-            $original_rooms = $this->mapObjectOriginalRooms($originalRooms, $participant);
-            $search_data = $findByOriginalRoomsQueryHandler->handler(new OriginalRoomsQuery($original_rooms));
-        } catch (HttpException $e) {
-
-            $errorMessageViaSession->errorMessageSession($e);
-        }
-
+        $search_data = $findByOriginalRoomsQueryHandler->handler();
         if ($form_search_original_rooms->isSubmitted()) {
             if ($form_search_original_rooms->isValid()) {
 
                 try {
+                    $participant = $adapterUserExtractionInterface->userExtraction();
                     $original_rooms = $this->mapOriginalRoomsParticipant($form_search_original_rooms->getData(), $participant);
                     $search_data = $searchOriginalRoomsQueryHandler
                         ->handler(new OriginalRoomsQuery($original_rooms));
@@ -121,8 +117,8 @@ class OriginalRoomsController extends AbstractController
     public function editOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindOneByIdOriginalRoomsQueryHandler $findOneByIdOriginalRoomsQueryHandler,
-        //EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
+        FindOneByIdOriginalRoomsQueryHandler $findOneByIdOriginalRoomsQueryHandler,
+        EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -143,7 +139,13 @@ class OriginalRoomsController extends AbstractController
 
         if (empty($form_edit_original_rooms->getData())) {
 
-            $original_rooms = $this->mapOriginalRooms($request->query->all()['id'], '', $participant);
+            $original_rooms = $this->mapOriginalRooms(
+                $request->query->all()['id'],
+                null,
+                null,
+                $participant
+            );
+
             try {
 
                 $data_form_edit_original_rooms = $findOneByIdOriginalRoomsQueryHandler
@@ -168,6 +170,7 @@ class OriginalRoomsController extends AbstractController
                 $data_edit_original_rooms = $this->mapOriginalRooms(
                     $form_edit_original_rooms->getData()['id'],
                     $form_edit_original_rooms->getData()['original_number'],
+                    $form_edit_original_rooms->getData()['original_manufacturer'],
                     $participant
                 );
 
@@ -194,8 +197,8 @@ class OriginalRoomsController extends AbstractController
     #[Route('deleteOriginalNumber', name: 'delete_original_number')]
     public function deleteOriginalNumber(
         Request $request,
-        //FindOriginalRoomsQueryHandler $findOriginalRoomsQueryHandler,
-        //DeleteOriginalRoomsCommandHandler $deleteOriginalRoomsCommandHandler,
+        FindOriginalRoomsQueryHandler $findOriginalRoomsQueryHandler,
+        DeleteOriginalRoomsCommandHandler $deleteOriginalRoomsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
@@ -233,13 +236,11 @@ class OriginalRoomsController extends AbstractController
     private function mapOriginalRooms(
         $id,
         $original_number,
-        $replacing_original_number,
         $original_manufacturer,
         $participant
     ): array {
         $arr_original_rooms['id'] = $id;
         $arr_original_rooms['original_number'] = $original_number;
-        $arr_original_rooms['replacing_original_number'] = [$replacing_original_number];
         $arr_original_rooms['original_manufacturer'] = $original_manufacturer;
         $arr_original_rooms['id_participant'] = $participant;
 
