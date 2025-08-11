@@ -2,6 +2,7 @@
 
 namespace App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Doctrine\ORM\Mapping as ORM;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers\ReplacingOriginalNumbersRepository;
@@ -19,6 +20,9 @@ class ReplacingOriginalNumbers
 
     #[ORM\ManyToOne]
     private ?OriginalRooms $id_original_number = null;
+
+    #[ORM\ManyToOne]
+    private ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -45,6 +49,18 @@ class ReplacingOriginalNumbers
     public function setIdOriginalNumber(?OriginalRooms $id_original_number): static
     {
         $this->id_original_number = $id_original_number;
+
+        return $this;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
+    }
+
+    public function setIdParticipant(?Participant $id_participant): static
+    {
+        $this->id_participant = $id_participant;
 
         return $this;
     }

@@ -118,7 +118,7 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
             FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\ReplacingOriginalNumbers r
             LEFT JOIN r.id_original_number o
             WHERE o.original_number = :original_number
-            AND o.id_participant = :id_participant
+            AND r.id_participant = :id_participant
             ORDER BY r.id ASC'
         )->setParameters(['original_number' => $original_number, 'id_participant' => $id_participant]);
 
