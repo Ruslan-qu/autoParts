@@ -4,6 +4,7 @@ twig:
         'src/Counterparty/InfrastructureCounterparty/ApiCounterparty/templatesCounterparty': 'counterparty'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesPartNumbers': 'partNumbers'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesOriginalRooms': 'originalRooms'
+        'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesReplacingOriginalNumbers': 'replacingOriginalNumbers'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/PartName': 'partName'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/CarBrands': 'сarBrands'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/Sides': 'sides'

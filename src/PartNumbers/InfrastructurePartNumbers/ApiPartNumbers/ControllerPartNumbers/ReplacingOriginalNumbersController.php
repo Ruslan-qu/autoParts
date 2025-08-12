@@ -10,11 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\ReplacingOriginalNumbers;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\EditReplacingOriginalNumbersType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SaveReplacingOriginalNumbersType;
+use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SearchReplacingOriginalNumbersType;
 
 class ReplacingOriginalNumbersController extends AbstractController
 {
-    /*Сохранения оригиналного номера детали*/
+    /*Сохранения замены оригиналного номера детали*/
     #[Route('/saveReplacingOriginalNumber', name: 'save_replacing_original_number')]
     public function saveReplacingOriginalNumber(
         Request $request,
@@ -39,7 +41,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                     $replacing_original_numbers = $this->mapReplacingOriginalNumbers(
                         null,
                         $form_save_replacing_original_numbers->getData()['replacing_original_number'],
-                        $form_save_replacing_original_numbers->getData()['original_manufacturer'],
+                        $form_save_replacing_original_numbers->getData()['id_original_number'],
                         $participant
                     );
 
@@ -54,13 +56,13 @@ class ReplacingOriginalNumbersController extends AbstractController
         }
 
         return $this->render('@replacingOriginalNumbers/saveReplacingOriginalNumber.html.twig', [
-            'title_logo' => 'Добавление оригиналного номера',
+            'title_logo' => 'Добавление замены ориг-ного номера',
             'form_save_replacing_original_numbers' => $form_save_replacing_original_numbers->createView(),
             'id' => $id
         ]);
     }
 
-    /*Поиск оригиналного номера детали*/
+    /*Поиск замены оригиналного номера детали*/
     #[Route('searchReplacingOriginalNumber', name: 'search_replacing_original_number')]
     public function searchReplacingOriginalNumber(
         Request $request,
@@ -71,7 +73,7 @@ class ReplacingOriginalNumbersController extends AbstractController
     ): Response {
 
         /*Форма поиска*/
-        $form_search_replacing_original_numbers = $this->createForm(SearchOReplacingOriginalNumbersType::class);
+        $form_search_replacing_original_numbers = $this->createForm(SearchReplacingOriginalNumbersType::class);
 
         /*Валидация формы */
         $form_search_replacing_original_numbers->handleRequest($request);
@@ -95,14 +97,14 @@ class ReplacingOriginalNumbersController extends AbstractController
         }
 
         return $this->render('@replacingOriginalNumbers/searchReplacingOriginalNumber.html.twig', [
-            'title_logo' => 'Поиск оригиналного номера детали',
+            'title_logo' => 'Поиск замены ориг-ного номера',
             'form_search_replacing_original_numbers' => $form_search_replacing_original_numbers->createView(),
             'search_data' => $search_data,
 
         ]);
     }
 
-    /*Редактирования оригиналного номера детали*/
+    /*Редактирования замены оригиналного номера*/
     #[Route('editReplacingOriginalNumber', name: 'edit_replacing_original_number')]
     public function editReplacingOriginalNumber(
         Request $request,
@@ -160,7 +162,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                 $data_edit_replacing_original_numbers = $this->mapReplacingOriginalNumbers(
                     $form_edit_replacing_original_numbers->getData()['id'],
                     $form_edit_replacing_original_numbers->getData()['replacing_original_number'],
-                    $form_edit_replacing_original_numbers->getData()['original_manufacturer'],
+                    $form_edit_replacing_original_numbers->getData()['id_original_number'],
                     $participant
                 );
 
@@ -176,15 +178,15 @@ class ReplacingOriginalNumbersController extends AbstractController
         }
 
         return $this->render('@replacingOriginalNumbers/editReplacingOriginalNumber.html.twig', [
-            'title_logo' => 'Изменение оригиналного номера детали',
+            'title_logo' => 'Изменение замены ориг-ного номера',
             'form_edit_replacing_original_numbers' => $form_edit_replacing_original_numbers->createView(),
             'id' => $id,
             'data_form_edit_replacing_original_numbers' => $data_form_edit_replacing_original_numbers
         ]);
     }
 
-    /*Удаление оригиналного номера детали*/
-    #[Route('deleteReplacingOriginalNumber', name: 'delete_original_number')]
+    /*Удаление замены оригиналного номера детали*/
+    #[Route('deleteReplacingOriginalNumber', name: 'delete_replacing_original_number')]
     public function deleteOriginalNumber(
         Request $request,
         //FindReplacingOriginalNumbersQueryHandler $findReplacingOriginalNumbersQueryHandler,
@@ -198,7 +200,7 @@ class ReplacingOriginalNumbersController extends AbstractController
 
             $deleteReplacingOriginalNumbersCommandHandler
                 ->handler(new ReplacingOriginalNumbersObjCommand($replacing_original_numbers));
-            $this->addFlash('delete', 'Оригиналный номер детали удален');
+            $this->addFlash('delete', 'Замена оригиналного номера удалена');
         } catch (HttpException $e) {
 
             $errorMessageViaSession->errorMessageSession($e);
@@ -217,12 +219,12 @@ class ReplacingOriginalNumbersController extends AbstractController
     private function mapReplacingOriginalNumbers(
         $id,
         $replacing_original_number,
-        $original_manufacturer,
+        $id_original_number,
         $participant
     ): array {
         $arr_replacing_original_numbers['id'] = $id;
         $arr_replacing_original_numbers['replacing_original_number'] = $replacing_original_number;
-        $arr_replacing_original_numbers['original_manufacturer'] = $original_manufacturer;
+        $arr_replacing_original_numbers['id_original_number'] = $id_original_number;
         $arr_replacing_original_numbers['id_participant'] = $participant;
 
         return $arr_replacing_original_numbers;

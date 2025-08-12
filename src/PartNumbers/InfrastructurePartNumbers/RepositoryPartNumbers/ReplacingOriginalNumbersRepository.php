@@ -49,7 +49,7 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
     }
 
     /**
-     * @return array Возвращается массив с данными об успешном изменения  
+     * @return int Возвращается id при успешном изменения  
      */
     public function edit(ReplacingOriginalNumbers $replacing_original_numbers): int
     {

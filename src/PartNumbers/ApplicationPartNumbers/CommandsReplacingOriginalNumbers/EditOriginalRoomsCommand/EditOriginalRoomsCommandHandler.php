@@ -1,19 +1,17 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\SaveOriginalRoomsCommand;
+namespace App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\EditOriginalRoomsCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 
-final class SaveOriginalRoomsCommandHandler
+final class EditOriginalRoomsCommandHandler
 {
-
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
         private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
@@ -21,11 +19,10 @@ final class SaveOriginalRoomsCommandHandler
 
     public function handler(OriginalRoomsCommand $originalRoomsCommand): ?int
     {
-
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
-        $original_number = strtolower(preg_replace(
+        $edit_original_number = strtolower(preg_replace(
             '#\s#u',
             '',
             $originalRoomsCommand->getOriginalNumber()
@@ -37,12 +34,10 @@ final class SaveOriginalRoomsCommandHandler
             $originalRoomsCommand->getOriginalManufacturer()
         ));
 
-        $id_participant = $originalRoomsCommand->getIdParticipant();
-
         $input = [
-            'original_number_error' => [
-                'NotBlank' => $original_number,
-                'Regex' => $original_number,
+            'edit_original_number_error' => [
+                'NotBlank' => $edit_original_number,
+                'Regex' => $edit_original_number,
             ],
             'original_manufacturer_error' => [
                 'Regex' => $original_manufacturer
@@ -50,7 +45,7 @@ final class SaveOriginalRoomsCommandHandler
         ];
 
         $constraint = new Collection([
-            'original_number_error' => new Collection([
+            'edit_original_number_error' => new Collection([
                 'NotBlank' => new NotBlank(
                     message: 'Форма оригинальный номер не может быть пустой'
                 ),
@@ -67,21 +62,36 @@ final class SaveOriginalRoomsCommandHandler
             ])
         ]);
 
+
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-        /* Валидация дублей */
-        $count_duplicate = $this->originalRoomsRepositoryInterface
-            ->numberDoubles(['original_number' => $original_number]);
-        $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
-        $original_rooms = new OriginalRooms;
-        $original_rooms->setOriginalNumber($original_number);
+        $id = $originalRoomsCommand->getId();
+        $this->inputErrorsPartNumbers->emptyData($id);
+
+        $original_rooms = $this->originalRoomsRepositoryInterface->findOriginalRooms($id);
+        $this->inputErrorsPartNumbers->emptyEntity($original_rooms);
+
+        $this->countDuplicate($edit_original_number, $original_rooms->getOriginalNumber());
+
+        $original_rooms->setOriginalNumber($edit_original_number);
         $original_rooms->setOriginalManufacturer($original_manufacturer);
-        $original_rooms->setIdParticipant($id_participant);
 
-        $id = $this->originalRoomsRepositoryInterface->save($original_rooms);
+        $id = $this->originalRoomsRepositoryInterface->edit($original_rooms);
 
         return $id;
+    }
+
+    private function countDuplicate(string $edit_original_number, string $original_number): static
+    {
+        if ($edit_original_number != $original_number) {
+            /* Валидация дублей */
+            $count_duplicate = $this->originalRoomsRepositoryInterface
+                ->numberDoubles(['original_number' => $edit_original_number]);
+            $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
+        }
+
+        return $this;
     }
 }
