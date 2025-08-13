@@ -10,9 +10,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\SearchOriginalRoomsQueryHandler;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\EditReplacingOriginalNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SaveReplacingOriginalNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SearchReplacingOriginalNumbersType;
+use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DTOQuery\DTOReplacingOriginalNumbersQuery\ReplacingOriginalNumbersQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SearchReplacingOriginalNumbersQuery\FindByReplacingOriginalNumbersQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SearchReplacingOriginalNumbersQuery\SearchReplacingOriginalNumbersQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DTOCommands\DTOReplacingOriginalNumbersCommand\ReplacingOriginalNumbersCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\EditReplacingOriginalNumbersCommand\EditReplacingOriginalNumbersCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\SaveReplacingOriginalNumbersCommand\SaveReplacingOriginalNumbersCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\EditReplacingOriginalNumbersQuery\FindOneByIdReplacingOriginalNumbersQueryHandler;
 
 class ReplacingOriginalNumbersController extends AbstractController
 {
@@ -20,7 +29,8 @@ class ReplacingOriginalNumbersController extends AbstractController
     #[Route('/saveReplacingOriginalNumber', name: 'save_replacing_original_number')]
     public function saveReplacingOriginalNumber(
         Request $request,
-        //SaveReplacingOriginalNumbersCommandHandler $saveReplacingOriginalNumbersCommandHandler,
+        SearchOriginalRoomsQueryHandler $searchOriginalRoomsQueryHandler,
+        SaveReplacingOriginalNumbersCommandHandler $saveReplacingOriginalNumbersCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -36,16 +46,22 @@ class ReplacingOriginalNumbersController extends AbstractController
             if ($form_save_replacing_original_numbers->isValid()) {
 
                 try {
-
                     $participant = $adapterUserExtractionInterface->userExtraction();
+                    $original_rooms = $this->mapOriginalRooms(
+                        null,
+                        $form_save_replacing_original_numbers->getData()['original_number'],
+                        null,
+                        $participant
+                    );
+                    $original_number = $searchOriginalRoomsQueryHandler
+                        ->handler(new OriginalRoomsQuery($original_rooms));
+
                     $replacing_original_numbers = $this->mapReplacingOriginalNumbers(
                         null,
                         $form_save_replacing_original_numbers->getData()['replacing_original_number'],
-                        $form_save_replacing_original_numbers->getData()['id_original_number'],
+                        $original_number,
                         $participant
                     );
-
-
                     $id = $saveReplacingOriginalNumbersCommandHandler
                         ->handler(new ReplacingOriginalNumbersCommand($replacing_original_numbers));
                 } catch (HttpException $e) {
@@ -67,8 +83,8 @@ class ReplacingOriginalNumbersController extends AbstractController
     public function searchReplacingOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        // FindByReplacingOriginalNumbersQueryHandler $findByReplacingOriginalNumbersQueryHandler,
-        //  SearchReplacingOriginalNumbersQueryHandler $searchReplacingOriginalNumbersQueryHandler,
+        FindByReplacingOriginalNumbersQueryHandler $findByReplacingOriginalNumbersQueryHandler,
+        SearchReplacingOriginalNumbersQueryHandler $searchReplacingOriginalNumbersQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -83,8 +99,10 @@ class ReplacingOriginalNumbersController extends AbstractController
 
                 try {
                     $participant = $adapterUserExtractionInterface->userExtraction();
-                    $replacing_original_numbers = $this->mapReplacingOriginalNumbersParticipant(
-                        $form_search_replacing_original_numbers->getData(),
+                    $replacing_original_numbers = $this->mapReplacingOriginalNumbers(
+                        null,
+                        $form_search_replacing_original_numbers->getData()['replacing_original_number'],
+                        null,
                         $participant
                     );
                     $search_data = $searchReplacingOriginalNumbersQueryHandler
@@ -109,8 +127,8 @@ class ReplacingOriginalNumbersController extends AbstractController
     public function editReplacingOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindOneByIdReplacingOriginalNumbersQueryHandler $findOneByIdReplacingOriginalNumbersQueryHandler,
-        //EditReplacingOriginalNumbersCommandHandler $editReplacingOriginalNumbersCommandHandler,
+        FindOneByIdReplacingOriginalNumbersQueryHandler $findOneByIdReplacingOriginalNumbersQueryHandler,
+        EditReplacingOriginalNumbersCommandHandler $editReplacingOriginalNumbersCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -162,7 +180,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                 $data_edit_replacing_original_numbers = $this->mapReplacingOriginalNumbers(
                     $form_edit_replacing_original_numbers->getData()['id'],
                     $form_edit_replacing_original_numbers->getData()['replacing_original_number'],
-                    $form_edit_replacing_original_numbers->getData()['id_original_number'],
+                    null,
                     $participant
                 );
 
@@ -209,11 +227,18 @@ class ReplacingOriginalNumbersController extends AbstractController
         return $this->redirectToRoute('search_replacing_original_number');
     }
 
-    private function mapReplacingOriginalNumbersParticipant(array $replacing_original_numbers, Participant $participant): array
-    {
-        $replacing_original_numbers['id_participant'] = $participant;
+    private function mapOriginalRooms(
+        $id,
+        $original_number,
+        $original_manufacturer,
+        $participant
+    ): array {
+        $arr_original_rooms['id'] = $id;
+        $arr_original_rooms['original_number'] = $original_number;
+        $arr_original_rooms['original_manufacturer'] = $original_manufacturer;
+        $arr_original_rooms['id_participant'] = $participant;
 
-        return $replacing_original_numbers;
+        return $arr_original_rooms;
     }
 
     private function mapReplacingOriginalNumbers(

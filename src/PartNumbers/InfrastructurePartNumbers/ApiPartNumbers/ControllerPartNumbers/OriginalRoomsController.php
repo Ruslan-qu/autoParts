@@ -224,15 +224,6 @@ class OriginalRoomsController extends AbstractController
         return $original_rooms;
     }
 
-    private function mapObjectOriginalRooms(OriginalRooms $original_rooms, Participant $participant): array
-    {
-        $arr_original_rooms['id'] = $original_rooms->getId();
-        $arr_original_rooms['original_number'] = $original_rooms->getOriginalNumber();
-        $arr_original_rooms['id_participant'] = $participant;
-
-        return $arr_original_rooms;
-    }
-
     private function mapOriginalRooms(
         $id,
         $original_number,

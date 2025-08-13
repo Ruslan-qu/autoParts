@@ -26,4 +26,6 @@ interface  ReplacingOriginalNumbersRepositoryInterface
     public function findByReplacingOriginalNumbers(Participant $id_participant): ?array;
 
     public function findReplacingOriginalNumbers(int $id): ?ReplacingOriginalNumbers;
+
+    public function findAllRoomsRepository(): ?array;
 }
