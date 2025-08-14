@@ -19,7 +19,7 @@
       <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
         <div class="lb">{{ form_label(form_search_replacing_original_numbers.replacing_original_number) }}</div>
         {{ form_widget(form_search_replacing_original_numbers.replacing_original_number, { 'attr': {'class': 'w-100'} }) }}
-        {{ form_errors(form_search_replacing_original_numbers.originreplacing_original_numberal_number) }}
+        {{ form_errors(form_search_replacing_original_numbers.replacing_original_number) }}
         {% for message in app.flashes('[original_number_error][Regex]') %}
         {{ message }}
         {% endfor %}

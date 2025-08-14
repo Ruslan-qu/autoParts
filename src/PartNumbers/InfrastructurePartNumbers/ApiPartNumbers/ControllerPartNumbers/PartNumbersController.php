@@ -13,18 +13,13 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\Sav
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterPartNumbersInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SearchPartNumbersType;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\SearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindAllPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditOriginalRoomsCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SaveOriginalRoomsCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindOneByOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartNumbersCommand\DeletePartNumbersCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 
 class PartNumbersController extends AbstractController
 {
@@ -33,8 +28,8 @@ class PartNumbersController extends AbstractController
     public function savePartNumbers(
         Request $request,
         SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
-        SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
-        FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
+        //SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
+        //FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -89,7 +84,7 @@ class PartNumbersController extends AbstractController
         Request $request,
         FindAllPartNumbersQueryHandler $findAllPartNumbersQueryHandler,
         SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
-        FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
+        //FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -144,9 +139,9 @@ class PartNumbersController extends AbstractController
         Request $request,
         FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
         EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
-        FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
-        EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
-        SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
+        // FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
+        //EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
+        //SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 

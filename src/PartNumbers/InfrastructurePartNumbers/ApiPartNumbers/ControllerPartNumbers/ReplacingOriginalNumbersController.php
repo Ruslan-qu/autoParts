@@ -7,21 +7,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
-use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\SearchOriginalRoomsQueryHandler;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\EditReplacingOriginalNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SaveReplacingOriginalNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SearchReplacingOriginalNumbersType;
+use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SaveReplacingOriginalNumbersQuery\FindOneByOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DTOQuery\DTOReplacingOriginalNumbersQuery\ReplacingOriginalNumbersQuery;
+use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DeleteReplacingOriginalNumbersQuery\FindReplacingOriginalNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SearchReplacingOriginalNumbersQuery\FindByReplacingOriginalNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SearchReplacingOriginalNumbersQuery\SearchReplacingOriginalNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DTOCommands\DTOReplacingOriginalNumbersCommand\ReplacingOriginalNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\EditReplacingOriginalNumbersCommand\EditReplacingOriginalNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\SaveReplacingOriginalNumbersCommand\SaveReplacingOriginalNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\EditReplacingOriginalNumbersQuery\FindOneByIdReplacingOriginalNumbersQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DeleteReplacingOriginalNumbersCommand\DeleteReplacingOriginalNumbersCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DTOCommands\DTOReplacingOriginalNumbersObjCommand\ReplacingOriginalNumbersObjCommand;
 
 class ReplacingOriginalNumbersController extends AbstractController
 {
@@ -29,7 +31,7 @@ class ReplacingOriginalNumbersController extends AbstractController
     #[Route('/saveReplacingOriginalNumber', name: 'save_replacing_original_number')]
     public function saveReplacingOriginalNumber(
         Request $request,
-        SearchOriginalRoomsQueryHandler $searchOriginalRoomsQueryHandler,
+        FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         SaveReplacingOriginalNumbersCommandHandler $saveReplacingOriginalNumbersCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
@@ -53,15 +55,16 @@ class ReplacingOriginalNumbersController extends AbstractController
                         null,
                         $participant
                     );
-                    $original_number = $searchOriginalRoomsQueryHandler
+                    $original_number = $findOneByOriginalRoomsQueryHandler
                         ->handler(new OriginalRoomsQuery($original_rooms));
 
                     $replacing_original_numbers = $this->mapReplacingOriginalNumbers(
                         null,
                         $form_save_replacing_original_numbers->getData()['replacing_original_number'],
-                        $original_number,
+                        $original_number['originalRooms'],
                         $participant
                     );
+                    //dd($replacing_original_numbers);
                     $id = $saveReplacingOriginalNumbersCommandHandler
                         ->handler(new ReplacingOriginalNumbersCommand($replacing_original_numbers));
                 } catch (HttpException $e) {
@@ -189,7 +192,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                     $id = $editReplacingOriginalNumbersCommandHandler
                         ->handler(new ReplacingOriginalNumbersCommand($data_edit_replacing_original_numbers));
                 } catch (HttpException $e) {
-
+                    dd($e);
                     $errorMessageViaSession->errorMessageSession($e);
                 }
             }
@@ -205,10 +208,10 @@ class ReplacingOriginalNumbersController extends AbstractController
 
     /*Удаление замены оригиналного номера детали*/
     #[Route('deleteReplacingOriginalNumber', name: 'delete_replacing_original_number')]
-    public function deleteOriginalNumber(
+    public function deleteReplacingOriginalNumber(
         Request $request,
-        //FindReplacingOriginalNumbersQueryHandler $findReplacingOriginalNumbersQueryHandler,
-        // DeleteReplacingOriginalNumbersCommandHandler $deleteReplacingOriginalNumbersCommandHandler,
+        FindReplacingOriginalNumbersQueryHandler $findReplacingOriginalNumbersQueryHandler,
+        DeleteReplacingOriginalNumbersCommandHandler $deleteReplacingOriginalNumbersCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {

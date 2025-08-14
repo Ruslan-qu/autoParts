@@ -1,6 +1,6 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SaveReplacingOriginalNumbersQuery;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -9,15 +9,13 @@ use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
-use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\ReplacingOriginalNumbersRepositoryInterface;
 
-final class SearchOriginalRoomsQueryHandler
+final class FindOneByOriginalRoomsQueryHandler
 {
 
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface,
-        private ReplacingOriginalNumbersRepositoryInterface $replacingOriginalNumbersRepositoryInterface
+        private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
     ) {}
 
     public function handler(OriginalRoomsQuery $originalRoomsQuery): ?array
@@ -56,18 +54,9 @@ final class SearchOriginalRoomsQueryHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-        $find_one_by_original_rooms =
-            $this->replacingOriginalNumbersRepositoryInterface->findOneByOriginalNumbers($original_number, $id_participant);
-
-        if (empty($find_one_by_original_rooms)) {
-            $find_one_by_original_rooms['originalRooms'] =
-                $this->originalRoomsRepositoryInterface->findOneByOriginalRooms($original_number, $id_participant);
-            $this->inputErrorsPartNumbers->issetEntity($find_one_by_original_rooms['originalRooms']);
-        } /*elseif (is_array($find_one_by_original_rooms)) {
-
-            $find_one_by_original_rooms['originalRooms'] = $find_one_by_original_rooms[0];
-            unset($find_one_by_original_rooms[0]);
-        }*/
+        $find_one_by_original_rooms['originalRooms'] =
+            $this->originalRoomsRepositoryInterface->findOneByOriginalRooms($original_number, $id_participant);
+        $this->inputErrorsPartNumbers->issetEntity($find_one_by_original_rooms['originalRooms']);
 
         return $find_one_by_original_rooms;
     }
