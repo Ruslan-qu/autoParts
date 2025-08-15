@@ -10,13 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
-use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\EditOriginalRoomsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SaveOriginalRoomsType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormOriginalRooms\SearchOriginalRoomsType;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DeleteOriginalRoomsQuery\FindOriginalRoomsQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\FindByOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\SearchOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\EditOriginalRoomsCommand\EditOriginalRoomsCommandHandler;
@@ -78,7 +76,6 @@ class OriginalRoomsController extends AbstractController
     public function searchOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        FindByOriginalRoomsQueryHandler $findByOriginalRoomsQueryHandler,
         SearchOriginalRoomsQueryHandler $searchOriginalRoomsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -88,7 +85,7 @@ class OriginalRoomsController extends AbstractController
 
         /*Валидация формы */
         $form_search_original_rooms->handleRequest($request);
-        $search_data = $findByOriginalRoomsQueryHandler->handler();
+
         if ($form_search_original_rooms->isSubmitted()) {
             if ($form_search_original_rooms->isValid()) {
 

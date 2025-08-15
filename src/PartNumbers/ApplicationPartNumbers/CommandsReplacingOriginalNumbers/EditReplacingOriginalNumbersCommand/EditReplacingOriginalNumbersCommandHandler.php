@@ -36,7 +36,7 @@ final class EditReplacingOriginalNumbersCommandHandler
         ];
 
         $constraint = new Collection([
-            'edit_edit_replacing_original_number_error' => new Collection([
+            'edit_replacing_original_number_error' => new Collection([
                 'NotBlank' => new NotBlank(
                     message: 'Форма Замена не может быть пустой'
                 ),
@@ -51,7 +51,7 @@ final class EditReplacingOriginalNumbersCommandHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-
+        // dd($replacingOriginalNumbersCommand);
         $id = $replacingOriginalNumbersCommand->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
 

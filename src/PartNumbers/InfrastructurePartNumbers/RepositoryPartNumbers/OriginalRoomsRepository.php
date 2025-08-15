@@ -142,12 +142,4 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
     {
         return $this->find($id);
     }
-
-    /**
-     * @return ARRAY|NULL Возвращает объект или ноль
-     */
-    public function findAllRoomsRepository(): ?array
-    {
-        return $this->findAll();
-    }
 }

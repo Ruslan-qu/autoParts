@@ -56,6 +56,8 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($replacing_original_numbers);
+        unset($entityData['id_original_number_id']);
+        unset($entityData['id_participant_id']);
 
         $exists = $this->count($entityData);
         if ($exists == 0) {

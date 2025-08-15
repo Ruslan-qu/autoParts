@@ -192,7 +192,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                     $id = $editReplacingOriginalNumbersCommandHandler
                         ->handler(new ReplacingOriginalNumbersCommand($data_edit_replacing_original_numbers));
                 } catch (HttpException $e) {
-                    dd($e);
+
                     $errorMessageViaSession->errorMessageSession($e);
                 }
             }
