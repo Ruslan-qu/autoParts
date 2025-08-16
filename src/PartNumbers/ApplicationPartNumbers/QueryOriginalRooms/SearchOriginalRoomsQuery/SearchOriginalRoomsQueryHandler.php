@@ -63,11 +63,7 @@ final class SearchOriginalRoomsQueryHandler
             $find_one_by_original_rooms['originalRooms'] =
                 $this->originalRoomsRepositoryInterface->findOneByOriginalRooms($original_number, $id_participant);
             $this->inputErrorsPartNumbers->issetEntity($find_one_by_original_rooms['originalRooms']);
-        } /*elseif (is_array($find_one_by_original_rooms)) {
-
-            $find_one_by_original_rooms['originalRooms'] = $find_one_by_original_rooms[0];
-            unset($find_one_by_original_rooms[0]);
-        }*/
+        }
 
         return $find_one_by_original_rooms;
     }

@@ -13,6 +13,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOrigin
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\EditReplacingOriginalNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SaveReplacingOriginalNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SearchReplacingOriginalNumbersType;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\FindOneByOriginalRoomsReplacingQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SaveReplacingOriginalNumbersQuery\FindOneByOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DTOQuery\DTOReplacingOriginalNumbersQuery\ReplacingOriginalNumbersQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DeleteReplacingOriginalNumbersQuery\FindReplacingOriginalNumbersQueryHandler;
@@ -30,7 +31,7 @@ class ReplacingOriginalNumbersController extends AbstractController
     #[Route('/saveReplacingOriginalNumber', name: 'save_replacing_original_number')]
     public function saveReplacingOriginalNumber(
         Request $request,
-        FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
+        FindOneByOriginalRoomsReplacingQueryHandler $findOneByOriginalRoomsReplacingQueryHandler,
         SaveReplacingOriginalNumbersCommandHandler $saveReplacingOriginalNumbersCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         ErrorMessageViaSession $errorMessageViaSession
@@ -54,7 +55,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                         null,
                         $participant
                     );
-                    $original_number = $findOneByOriginalRoomsQueryHandler
+                    $original_number = $findOneByOriginalRoomsReplacingQueryHandler
                         ->handler(new OriginalRoomsQuery($original_rooms));
 
                     $replacing_original_numbers = $this->mapReplacingOriginalNumbers(

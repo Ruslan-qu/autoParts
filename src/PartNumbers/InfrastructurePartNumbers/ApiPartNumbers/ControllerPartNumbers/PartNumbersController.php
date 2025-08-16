@@ -23,6 +23,8 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCo
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SavePartNumbersNumbersQuery\FindOneByOriginalQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartNumbersCommand\DeletePartNumbersCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
+use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\FindOneByOriginalRoomsPartNumbersQueryHandler;
 
 class PartNumbersController extends AbstractController
 {
@@ -31,8 +33,8 @@ class PartNumbersController extends AbstractController
     public function savePartNumbers(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByOriginalRoomsPartNumbersQueryHandler $findOneByOriginalRoomsPartNumbersQueryHandler,
         SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
-        FindOneByOriginalQueryHandler $findOneByOriginalQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -57,7 +59,7 @@ class PartNumbersController extends AbstractController
                             null,
                             $participant
                         );
-                        $original_number = $findOneByOriginalQueryHandler
+                        $original_number = $findOneByOriginalRoomsPartNumbersQueryHandler
                             ->handler(new OriginalRoomsQuery($original_rooms));
                     }
 
@@ -95,9 +97,10 @@ class PartNumbersController extends AbstractController
     #[Route('searchPartNumbers', name: 'search_part_numbers')]
     public function searchPartNumbers(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByOriginalRoomsPartNumbersQueryHandler $findOneByOriginalRoomsPartNumbersQueryHandler,
         FindAllPartNumbersQueryHandler $findAllPartNumbersQueryHandler,
         SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
-        //FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -110,27 +113,37 @@ class PartNumbersController extends AbstractController
         $search_data = $findAllPartNumbersQueryHandler->handler();
         if ($form_search_part_numbers->isSubmitted()) {
             if ($form_search_part_numbers->isValid()) {
-try {
-                $original_number = null;
-                if ($form_search_part_numbers->getData()['original_number'] != null) {
-
-                    $arr_original_number['original_number'] = $data_form_part_numbers['id_original_number'];
-                    
-
-                        $original_number = $findOneByOriginalRoomsQueryHandler
-                            ->handler(new OriginalRoomsQuery($arr_original_number));
-                       
-                    } catch (HttpException $e) {
-
-                        $errorMessageViaSession->errorMessageSession($e);
-
-                        return $this->redirectToRoute('search_part_numbers');
-                    
-                }
                 try {
+                    $participant = $adapterUserExtractionInterface->userExtraction();
 
+                    $original_number = null;
+                    if ($form_search_part_numbers->getData()['original_number'] != null) {
+                        $original_rooms = $this->mapOriginalRooms(
+                            null,
+                            $form_search_part_numbers->getData()['original_number'],
+                            null,
+                            $participant
+                        );
+                        $original_number = $findOneByOriginalRoomsPartNumbersQueryHandler
+                            ->handler(new OriginalRoomsQuery($original_rooms));
+                    }
+
+                    $part_numbers = $this->mapePartNumbers(
+                        null,
+                        $form_search_part_numbers->getData()['part_number'],
+                        $original_number,
+                        $form_search_part_numbers->getData()['manufacturer'],
+                        null,
+                        $form_search_part_numbers->getData()['id_part_name'],
+                        $form_search_part_numbers->getData()['id_car_brand'],
+                        $form_search_part_numbers->getData()['id_side'],
+                        $form_search_part_numbers->getData()['id_body'],
+                        $form_search_part_numbers->getData()['id_axle'],
+                        $form_search_part_numbers->getData()['id_in_stock'],
+                        $participant
+                    );
                     $search_data = $searchPartNumbersQueryHandler
-                        ->handler(new PartNumbersQuery($data_form_part_numbers));
+                        ->handler(new PartNumbersQuery($part_numbers));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
@@ -150,6 +163,8 @@ try {
     #[Route('editPartNumbers', name: 'edit_part_numbers')]
     public function editPartNumbers(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByOriginalRoomsPartNumbersQueryHandler $findOneByOriginalRoomsPartNumbersQueryHandler,
         FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
         EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
         // FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
@@ -163,6 +178,15 @@ try {
 
         /*Валидация формы */
         $form_edit_part_numbers->handleRequest($request);
+
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+        } catch (HttpException $e) {
+
+            $errorMessageViaSession->errorMessageSession($e);
+
+            return $this->redirectToRoute('search_part_numbers');
+        }
 
         if (empty($form_edit_part_numbers->getData())) {
             try {
@@ -187,13 +211,15 @@ try {
             if ($form_edit_part_numbers->isValid()) {
 
                 $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
-                $data_edit_part_numbers = $form_edit_part_numbers->getData();
-                if (!empty($data_edit_part_numbers['original_number'])) {
 
-                    $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
-                    $arr_original_number['original_number'] = $data_edit_part_numbers['original_number'];
+                try {
+                    if (!empty($data_edit_part_numbers['original_number'])) {
 
-                    try {
+                        $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
+                        $arr_original_number['original_number'] = $data_edit_part_numbers['original_number'];
+
+
+
                         if (!empty($data_edit_part_numbers['id_original_number'])) {
 
                             $editOriginalRoomsCommandHandler
@@ -206,11 +232,12 @@ try {
                         $object_original_number = $findOneByOriginalRoomsQueryHandler
                             ->handler(new OriginalRoomsQuery($arr_original_number));
                         $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
-                    } catch (HttpException $e) {
-
-                        $errorMessageViaSession->errorMessageSession($e);
                     }
+                } catch (HttpException $e) {
+
+                    $errorMessageViaSession->errorMessageSession($e);
                 }
+
 
                 unset($data_edit_part_numbers['original_number']);
 

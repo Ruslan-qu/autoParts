@@ -1,17 +1,16 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SavePartNumbersNumbersQuery;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 
-final class FindOneByOriginalQueryHandler
+final class FindOneByOriginalRoomsPartNumbersQueryHandler
 {
 
     public function __construct(

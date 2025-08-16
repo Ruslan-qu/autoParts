@@ -1,6 +1,6 @@
 <?php
 
-namespace App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SaveReplacingOriginalNumbersQuery;
+namespace App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -10,7 +10,7 @@ use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumb
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 
-final class FindOneByOriginalRoomsQueryHandler
+final class FindOneByOriginalRoomsReplacingQueryHandler
 {
 
     public function __construct(
