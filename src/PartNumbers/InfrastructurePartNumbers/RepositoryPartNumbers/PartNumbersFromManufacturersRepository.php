@@ -4,6 +4,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\RepositoryPartNumbers;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
@@ -138,6 +139,26 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     public function findOneByPartNumber(string $part_number): ?PartNumbersFromManufacturers
     {
         return $this->findOneBy(['part_number' => $part_number]);
+    }
+
+    /**
+     * @return ARRAY|NULL Возвращает массив объектов или ноль
+     */
+    public function findOneByIdPartNumber(
+        int $id,
+        Participant $id_participant
+    ): ?array {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p, o
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers p
+            LEFT JOIN p.id_original_number o
+            WHERE p.id = :id
+            AND p.id_participant = :id_participant'
+        )->setParameters(['id' => $id, 'id_participant' => $id_participant]);
+
+        return $query->getResult();
     }
 
     /**

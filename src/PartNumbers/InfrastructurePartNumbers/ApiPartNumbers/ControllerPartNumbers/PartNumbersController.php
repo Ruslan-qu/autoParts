@@ -21,6 +21,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQue
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindOneByIdPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SavePartNumbersNumbersQuery\FindOneByOriginalQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartNumbersCommand\DeletePartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
@@ -165,7 +166,7 @@ class PartNumbersController extends AbstractController
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindOneByOriginalRoomsPartNumbersQueryHandler $findOneByOriginalRoomsPartNumbersQueryHandler,
-        FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
+        FindOneByIdPartNumbersQueryHandler $findOneByIdPartNumbersQueryHandler,
         EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
         // FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
         //EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
@@ -190,9 +191,23 @@ class PartNumbersController extends AbstractController
 
         if (empty($form_edit_part_numbers->getData())) {
             try {
-
-                $data_form_edit_part_numbers = $findIdPartNumbersQueryHandler
-                    ->handler(new PartNumbersQuery($request->query->all()));
+                $part_numbers = $this->mapePartNumbers(
+                    $request->query->all()['id'],
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    $participant
+                );
+                $data_form_edit_part_numbers = $findOneByIdPartNumbersQueryHandler
+                    ->handler(new PartNumbersQuery($part_numbers))[0];
+                //dd($data_form_edit_part_numbers);
             } catch (HttpException $e) {
 
                 $errorMessageViaSession->errorMessageSession($e);
@@ -213,38 +228,40 @@ class PartNumbersController extends AbstractController
                 $data_form_edit_part_numbers = $request->request->all()['edit_part_numbers'];
 
                 try {
-                    if (!empty($data_edit_part_numbers['original_number'])) {
-
-                        $arr_original_number['id'] = $data_edit_part_numbers['id_original_number'];
-                        $arr_original_number['original_number'] = $data_edit_part_numbers['original_number'];
-
-
-
-                        if (!empty($data_edit_part_numbers['id_original_number'])) {
-
-                            $editOriginalRoomsCommandHandler
-                                ->handler(new OriginalRoomsCommand($arr_original_number));
-                        } else {
-
-                            $saveOriginalRoomsCommandHandler
-                                ->handler(new OriginalRoomsCommand($arr_original_number));
-                        }
-                        $object_original_number = $findOneByOriginalRoomsQueryHandler
-                            ->handler(new OriginalRoomsQuery($arr_original_number));
-                        $data_edit_part_numbers = array_replace($data_edit_part_numbers, $object_original_number);
+                    $original_number = null;
+                    if ($form_edit_part_numbers->getData()['original_number'] != null) {
+                        $original_rooms = $this->mapOriginalRooms(
+                            null,
+                            $form_edit_part_numbers->getData()['original_number'],
+                            null,
+                            $participant
+                        );
+                        $original_number = $findOneByOriginalRoomsPartNumbersQueryHandler
+                            ->handler(new OriginalRoomsQuery($original_rooms));
                     }
+
+                    $part_numbers = $this->mapePartNumbers(
+                        $form_edit_part_numbers->getData()['id'],
+                        $form_edit_part_numbers->getData()['part_number'],
+                        $original_number,
+                        $form_edit_part_numbers->getData()['manufacturer'],
+                        $form_edit_part_numbers->getData()['additional_descriptions'],
+                        $form_edit_part_numbers->getData()['id_part_name'],
+                        $form_edit_part_numbers->getData()['id_car_brand'],
+                        $form_edit_part_numbers->getData()['id_side'],
+                        $form_edit_part_numbers->getData()['id_body'],
+                        $form_edit_part_numbers->getData()['id_axle'],
+                        $form_edit_part_numbers->getData()['id_in_stock'],
+                        $participant
+                    );
+                    $id = $editPartNumbersCommandHandler
+                        ->handler(new PartNumbersCommand($part_numbers));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);
                 }
 
-
-                unset($data_edit_part_numbers['original_number']);
-
                 try {
-
-                    $id = $editPartNumbersCommandHandler
-                        ->handler(new PartNumbersCommand($data_edit_part_numbers));
                 } catch (HttpException $e) {
 
                     $errorMessageViaSession->errorMessageSession($e);

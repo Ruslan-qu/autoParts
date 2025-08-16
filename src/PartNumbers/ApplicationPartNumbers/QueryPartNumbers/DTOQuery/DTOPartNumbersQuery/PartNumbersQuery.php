@@ -3,6 +3,7 @@
 namespace App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery;
 
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
@@ -33,6 +34,8 @@ final class PartNumbersQuery extends MapPartNumbersQuery
     protected ?Availability $id_in_stock = null;
 
     protected ?OriginalRooms $id_original_number = null;
+
+    protected ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -82,5 +85,10 @@ final class PartNumbersQuery extends MapPartNumbersQuery
     public function getIdOriginalNumber(): ?OriginalRooms
     {
         return $this->id_original_number;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
     }
 }

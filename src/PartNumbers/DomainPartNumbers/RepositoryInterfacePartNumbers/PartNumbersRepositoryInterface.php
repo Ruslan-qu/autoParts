@@ -2,6 +2,7 @@
 
 namespace App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 
 interface  PartNumbersRepositoryInterface
@@ -17,6 +18,8 @@ interface  PartNumbersRepositoryInterface
     public function findByPartNumbers(array $parameters, string $where): ?array;
 
     public function findOneByPartNumber(string $part_number): ?PartNumbersFromManufacturers;
+
+    public function findOneByIdPartNumber(int $id, Participant $id_participant): ?array;
 
     public function findAllPartNumbers(): ?array;
 

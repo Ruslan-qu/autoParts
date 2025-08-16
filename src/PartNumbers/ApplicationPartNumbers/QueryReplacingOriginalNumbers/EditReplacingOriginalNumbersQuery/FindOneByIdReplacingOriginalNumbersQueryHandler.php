@@ -22,7 +22,8 @@ final class FindOneByIdReplacingOriginalNumbersQueryHandler
         $participant = $replacingOriginalNumbersQuery->getIdParticipant();
         $this->inputErrorsPartNumbers->userIsNotIdentified($participant);
 
-        $edit_replacing_original_number = $this->replacingOriginalNumbersRepositoryInterface->findOneByIdReplacingOriginalNumbers($id, $participant);
+        $edit_replacing_original_number = $this->replacingOriginalNumbersRepositoryInterface
+            ->findOneByIdReplacingOriginalNumbers($id, $participant);
         $this->inputErrorsPartNumbers->emptyEntity($edit_replacing_original_number);
 
         return $edit_replacing_original_number;
