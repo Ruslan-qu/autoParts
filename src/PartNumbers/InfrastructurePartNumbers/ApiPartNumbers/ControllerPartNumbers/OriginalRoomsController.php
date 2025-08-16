@@ -85,7 +85,7 @@ class OriginalRoomsController extends AbstractController
 
         /*Валидация формы */
         $form_search_original_rooms->handleRequest($request);
-
+        $search_data = '';
         if ($form_search_original_rooms->isSubmitted()) {
             if ($form_search_original_rooms->isValid()) {
 

@@ -16,7 +16,6 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOrigin
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SaveReplacingOriginalNumbersQuery\FindOneByOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DTOQuery\DTOReplacingOriginalNumbersQuery\ReplacingOriginalNumbersQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DeleteReplacingOriginalNumbersQuery\FindReplacingOriginalNumbersQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SearchReplacingOriginalNumbersQuery\FindByReplacingOriginalNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SearchReplacingOriginalNumbersQuery\SearchReplacingOriginalNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DTOCommands\DTOReplacingOriginalNumbersCommand\ReplacingOriginalNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\EditReplacingOriginalNumbersCommand\EditReplacingOriginalNumbersCommandHandler;
@@ -64,7 +63,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                         $original_number['originalRooms'],
                         $participant
                     );
-                    //dd($replacing_original_numbers);
+
                     $id = $saveReplacingOriginalNumbersCommandHandler
                         ->handler(new ReplacingOriginalNumbersCommand($replacing_original_numbers));
                 } catch (HttpException $e) {
@@ -86,7 +85,6 @@ class ReplacingOriginalNumbersController extends AbstractController
     public function searchReplacingOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        FindByReplacingOriginalNumbersQueryHandler $findByReplacingOriginalNumbersQueryHandler,
         SearchReplacingOriginalNumbersQueryHandler $searchReplacingOriginalNumbersQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -96,7 +94,8 @@ class ReplacingOriginalNumbersController extends AbstractController
 
         /*Валидация формы */
         $form_search_replacing_original_numbers->handleRequest($request);
-        $search_data = $findByReplacingOriginalNumbersQueryHandler->handler();
+
+        $search_data = '';
         if ($form_search_replacing_original_numbers->isSubmitted()) {
             if ($form_search_replacing_original_numbers->isValid()) {
 

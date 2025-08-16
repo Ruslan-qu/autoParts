@@ -6,8 +6,6 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
@@ -38,6 +36,7 @@ final class SavePartNumbersCommandHandler
             '',
             $partNumbersCommand->getManufacturer()
         ));
+
         $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
         $id_part_name = $partNumbersCommand->getIdPartName();
         $id_car_brand = $partNumbersCommand->getIdCarBrand();
@@ -46,6 +45,7 @@ final class SavePartNumbersCommandHandler
         $id_axle = $partNumbersCommand->getIdAxle();
         $id_in_stock = $partNumbersCommand->getIdInStock();
         $id_original_number = $partNumbersCommand->getIdOriginalNumber();
+        $id_participant = $partNumbersCommand->getIdParticipant();
 
         $input = [
             'part_number_error' => [
@@ -103,6 +103,7 @@ final class SavePartNumbersCommandHandler
         $partNumbersFromManufacturers->setIdAxle($id_axle);
         $partNumbersFromManufacturers->setIdInStock($id_in_stock);
         $partNumbersFromManufacturers->setIdOriginalNumber($id_original_number);
+        $partNumbersFromManufacturers->setIdParticipant($id_participant);
 
 
         $successfully_save = $this->partNumbersRepositoryInterface->save($partNumbersFromManufacturers);

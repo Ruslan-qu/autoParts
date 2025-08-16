@@ -2,6 +2,7 @@
 
 namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
@@ -16,6 +17,8 @@ final class PartNumbersCommand extends MapPartNumbersCommand
     protected ?int $id = null;
 
     protected ?string $part_number = null;
+
+    protected ?OriginalRooms $id_original_number = null;
 
     protected ?string $manufacturer = null;
 
@@ -33,7 +36,7 @@ final class PartNumbersCommand extends MapPartNumbersCommand
 
     protected ?Availability $id_in_stock = null;
 
-    protected ?OriginalRooms $id_original_number = null;
+    protected ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -88,5 +91,10 @@ final class PartNumbersCommand extends MapPartNumbersCommand
     public function getIdOriginalNumber(): ?OriginalRooms
     {
         return $this->id_original_number;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
     }
 }

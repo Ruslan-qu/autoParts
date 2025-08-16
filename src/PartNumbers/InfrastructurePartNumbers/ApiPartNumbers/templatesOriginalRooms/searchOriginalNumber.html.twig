@@ -28,7 +28,8 @@
 
     <div class="row mt-3">
       <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-        {{ form_widget(form_search_original_rooms.button_original_number, { 'attr': {'class': 'btn btn-danger w-100'}}) }}
+        {{ form_widget(form_search_original_rooms.button_original_number, { 'attr': {'class': 'btn btn-danger w-100'}})
+        }}
       </div>
     </div>
 
@@ -38,7 +39,7 @@
 
   {% for messages in app.flashes(['delete','Error']) %}
   {% for message in messages %}
-    <h2 class="mt-3 ms-3">{{ message }}</h2>
+  <h2 class="mt-3 ms-3">{{ message }}</h2>
   {% endfor %}
   {% endfor %}
 
@@ -63,27 +64,36 @@
             <th scope="col">Редактировать</th>
             <th scope="col">Удалить</th>
           </tr>
-           {% endif %}
+          {% endif %}
 
         </thead>
         <tbody class="table-group-divider">
           {% for information in search_data %}
-            {% if information %}
+          {% if information %}
 
           <tr>
-            <td>{{ information.getOriginalNumber()|default('') }}</td>
+            {% if information.getOriginalNumber() is defined %}
+            <td>{{ information.getOriginalNumber() }}</td>
+            {% set id = information.getId() %}
+            {% elseif information.getIdOriginalNumber().getOriginalNumber() is defined %}
+            <td>{{ information.getIdOriginalNumber().getOriginalNumber() }}</td>
+            {% set id = information.getIdOriginalNumber().getId() %}
+            {% endif %}
             <td>{{ information.getReplacingOriginalNumber()|default('') }}</td>
-            <td>{{ information.getOriginalManufacturer()|default('') }}</td>
+            {% if information.getOriginalManufacturer() is defined %}
+            <td>{{ information.getOriginalManufacturer() }}</td>
+            {% elseif information.getIdOriginalNumber().getOriginalManufacturer() is defined %}
+            <td>{{ information.getIdOriginalNumber().getOriginalManufacturer() }}</td>
+            {% endif %}
             <form action="{{ path('edit_original_number') }}" name="edit_original_number">
 
-              <td><button class="btn btn-outline-secondary" type="submit" name="id"
-                  value="{{ information.getId() }}">Изменить</button></td>
+              <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ id }}">Изменить</button>
+              </td>
 
             </form>
             <form action="{{ path('delete_original_number') }}" name="delete_original_number">
 
-              <td><button class="btn btn-outline-danger" type="submit" name="id"
-                  value="{{ information.getId() }}">Удалить</button></td>
+              <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ id }}">Удалить</button></td>
 
             </form>
           </tr>

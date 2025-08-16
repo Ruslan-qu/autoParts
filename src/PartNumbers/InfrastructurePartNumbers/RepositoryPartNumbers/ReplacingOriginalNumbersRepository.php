@@ -166,12 +166,4 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
     {
         return $this->find($id);
     }
-
-    /**
-     * @return ARRAY|NULL Возвращает объект или ноль
-     */
-    public function findAllRoomsRepository(): ?array
-    {
-        return $this->findAll();
-    }
 }

@@ -86,6 +86,18 @@ class InputErrorsPartNumbers
         return $this;
     }
 
+    public function issetOriginalRooms($еntity): static
+    {
+        if (!isset($еntity)) {
+
+            $arr_data_errors = ['Error' => 'Оригинальный номер не найден'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
     public function userIsNotIdentified($participant): static
     {
         if (empty($participant)) {
