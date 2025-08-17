@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
+use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
@@ -79,6 +80,14 @@ class SavePartNumbersType extends AbstractType
             ->add('id_part_name', EntityType::class, [
                 'label' => 'Название детали',
                 'class' => PartName::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    $adapterUserExtractionInterface = new AdapterUserExtractionInterface();
+                    dd($adapterUserExtractionInterface);
+                    return $er->createQueryBuilder('p')
+                        ->where('p.id_participant = :id_participant')
+                        //->setParameter('id_participant', new Security->getUser())
+                        ->orderBy('p.part_name', 'ASC');
+                },
                 'choice_label' => 'part_name',
                 'required' => false
             ])
@@ -86,8 +95,8 @@ class SavePartNumbersType extends AbstractType
                 'label' => 'Марка',
                 'class' => CarBrands::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
-                    return $er->createQueryBuilder('u')
-                        ->orderBy('u.id', 'ASC');
+                    return $er->createQueryBuilder('c')
+                        ->orderBy('c.id', 'ASC');
                 },
                 'choice_label' => 'car_brand',
                 'required' => false
