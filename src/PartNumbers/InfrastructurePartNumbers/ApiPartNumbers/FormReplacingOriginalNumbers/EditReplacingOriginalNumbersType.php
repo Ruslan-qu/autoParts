@@ -32,6 +32,18 @@ class EditReplacingOriginalNumbersType extends AbstractType
                     ])
                 ]
             ])
+            ->add('original_number', TextType::class, [
+                'label' => 'Номер оригинал',
+                'required' => false,
+                'constraints' => [
+                    new Regex([
+                        'pattern' => '/^[\da-z]*$/i',
+                        //'match' => false,
+                        'message' => 'Форма содержит 
+                    недопустимые символы'
+                    ])
+                ]
+            ])
             ->add('id', HiddenType::class)
             ->add('button_replacing_original_number', SubmitType::class, [
                 'label' => 'Изменить'

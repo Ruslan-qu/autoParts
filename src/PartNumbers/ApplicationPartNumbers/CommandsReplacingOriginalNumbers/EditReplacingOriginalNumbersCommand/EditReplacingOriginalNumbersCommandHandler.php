@@ -47,11 +47,11 @@ final class EditReplacingOriginalNumbersCommandHandler
             ])
         ]);
 
+        $id_original_number = $replacingOriginalNumbersCommand->getIdOriginalNumber();
 
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-        // dd($replacingOriginalNumbersCommand);
         $id = $replacingOriginalNumbersCommand->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
 
@@ -61,6 +61,7 @@ final class EditReplacingOriginalNumbersCommandHandler
         $this->countDuplicate($edit_replacing_original_number, $replacing_original_numbers->getReplacingOriginalNumber());
 
         $replacing_original_numbers->setReplacingOriginalNumber($edit_replacing_original_number);
+        $replacing_original_numbers->setIdOriginalNumber($id_original_number);
 
         $id = $this->replacingOriginalNumbersRepositoryInterface->edit($replacing_original_numbers);
 

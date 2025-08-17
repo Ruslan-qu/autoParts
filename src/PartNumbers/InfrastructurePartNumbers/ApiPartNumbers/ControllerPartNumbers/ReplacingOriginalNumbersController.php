@@ -14,7 +14,6 @@ use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOrigin
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SaveReplacingOriginalNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormReplacingOriginalNumbers\SearchReplacingOriginalNumbersType;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\FindOneByOriginalRoomsReplacingQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SaveReplacingOriginalNumbersQuery\FindOneByOriginalRoomsQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DTOQuery\DTOReplacingOriginalNumbersQuery\ReplacingOriginalNumbersQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\DeleteReplacingOriginalNumbersQuery\FindReplacingOriginalNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\SearchReplacingOriginalNumbersQuery\SearchReplacingOriginalNumbersQueryHandler;
@@ -61,7 +60,7 @@ class ReplacingOriginalNumbersController extends AbstractController
                     $replacing_original_numbers = $this->mapReplacingOriginalNumbers(
                         null,
                         $form_save_replacing_original_numbers->getData()['replacing_original_number'],
-                        $original_number['originalRooms'],
+                        $original_number,
                         $participant
                     );
 
@@ -130,6 +129,7 @@ class ReplacingOriginalNumbersController extends AbstractController
     public function editReplacingOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByOriginalRoomsReplacingQueryHandler $findOneByOriginalRoomsReplacingQueryHandler,
         FindOneByIdReplacingOriginalNumbersQueryHandler $findOneByIdReplacingOriginalNumbersQueryHandler,
         EditReplacingOriginalNumbersCommandHandler $editReplacingOriginalNumbersCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
@@ -162,7 +162,7 @@ class ReplacingOriginalNumbersController extends AbstractController
             try {
 
                 $data_form_edit_replacing_original_numbers = $findOneByIdReplacingOriginalNumbersQueryHandler
-                    ->handler(new ReplacingOriginalNumbersQuery($replacing_original_numbers));
+                    ->handler(new ReplacingOriginalNumbersQuery($replacing_original_numbers))[0];
             } catch (HttpException $e) {
 
                 $errorMessageViaSession->errorMessageSession($e);
@@ -180,14 +180,25 @@ class ReplacingOriginalNumbersController extends AbstractController
             if ($form_edit_replacing_original_numbers->isValid()) {
 
                 $data_form_edit_replacing_original_numbers = $request->request->all()['edit_replacing_original_numbers'];
-                $data_edit_replacing_original_numbers = $this->mapReplacingOriginalNumbers(
-                    $form_edit_replacing_original_numbers->getData()['id'],
-                    $form_edit_replacing_original_numbers->getData()['replacing_original_number'],
-                    null,
-                    $participant
-                );
-
                 try {
+                    $original_number = null;
+                    if ($form_edit_replacing_original_numbers->getData()['original_number'] != null) {
+                        $original_rooms = $this->mapOriginalRooms(
+                            null,
+                            $form_edit_replacing_original_numbers->getData()['original_number'],
+                            null,
+                            $participant
+                        );
+                        $original_number = $findOneByOriginalRoomsReplacingQueryHandler
+                            ->handler(new OriginalRoomsQuery($original_rooms));
+                    }
+
+                    $data_edit_replacing_original_numbers = $this->mapReplacingOriginalNumbers(
+                        $form_edit_replacing_original_numbers->getData()['id'],
+                        $form_edit_replacing_original_numbers->getData()['replacing_original_number'],
+                        $original_number,
+                        $participant
+                    );
 
                     $id = $editReplacingOriginalNumbersCommandHandler
                         ->handler(new ReplacingOriginalNumbersCommand($data_edit_replacing_original_numbers));

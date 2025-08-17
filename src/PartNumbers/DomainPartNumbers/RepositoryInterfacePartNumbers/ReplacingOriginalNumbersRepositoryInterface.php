@@ -19,7 +19,7 @@ interface  ReplacingOriginalNumbersRepositoryInterface
 
     public function findOneByOriginalNumbers(string $original_number, Participant $id_participant): ?array;
 
-    public function findOneByIdReplacingOriginalNumbers(int $id, Participant $id_participant): ?ReplacingOriginalNumbers;
+    public function findOneByIdReplacingOriginalNumbers(int $id, Participant $id_participant): ?array;
 
     public function countId(): ?array;
 

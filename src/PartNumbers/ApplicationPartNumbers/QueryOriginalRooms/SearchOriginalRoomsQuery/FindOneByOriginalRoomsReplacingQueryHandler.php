@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\OriginalRooms;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\OriginalRoomsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 
@@ -18,7 +19,7 @@ final class FindOneByOriginalRoomsReplacingQueryHandler
         private OriginalRoomsRepositoryInterface $originalRoomsRepositoryInterface
     ) {}
 
-    public function handler(OriginalRoomsQuery $originalRoomsQuery): ?array
+    public function handler(OriginalRoomsQuery $originalRoomsQuery): ?OriginalRooms
     {
 
         /* Подключаем валидацию и прописываем условида валидации */
@@ -54,9 +55,9 @@ final class FindOneByOriginalRoomsReplacingQueryHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-        $find_one_by_original_rooms['originalRooms'] =
+        $find_one_by_original_rooms =
             $this->originalRoomsRepositoryInterface->findOneByOriginalRooms($original_number, $id_participant);
-        $this->inputErrorsPartNumbers->issetOriginalRooms($find_one_by_original_rooms['originalRooms']);
+        $this->inputErrorsPartNumbers->issetOriginalRooms($find_one_by_original_rooms);
 
         return $find_one_by_original_rooms;
     }

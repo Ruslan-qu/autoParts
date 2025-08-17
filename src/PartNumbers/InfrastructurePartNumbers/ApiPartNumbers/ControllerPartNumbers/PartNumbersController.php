@@ -11,10 +11,9 @@ use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInt
 use App\PartNumbers\InfrastructurePartNumbers\ErrorMessageViaSession\ErrorMessageViaSession;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\EditPartNumbersType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SavePartNumbersType;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterPartNumbersInterface;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbers\SearchPartNumbersType;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindIdPartNumbersQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DeletePartNumbersQuery\FindPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\DTOQuery\DTOOriginalRoomsQuery\OriginalRoomsQuery;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\SearchPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindAllPartNumbersQueryHandler;
@@ -22,9 +21,8 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPa
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\EditPartNumbersCommand\EditPartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindOneByIdPartNumbersQueryHandler;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SavePartNumbersNumbersQuery\FindOneByOriginalQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartNumbersCommand\DeletePartNumbersCommandHandler;
-use App\PartNumbers\ApplicationPartNumbers\CommandsOriginalRooms\DTOCommands\DTOOriginalRoomsCommand\OriginalRoomsCommand;
+use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersObjCommand\PartNumbersObjCommand;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\FindOneByOriginalRoomsPartNumbersQueryHandler;
 
 class PartNumbersController extends AbstractController
@@ -168,9 +166,6 @@ class PartNumbersController extends AbstractController
         FindOneByOriginalRoomsPartNumbersQueryHandler $findOneByOriginalRoomsPartNumbersQueryHandler,
         FindOneByIdPartNumbersQueryHandler $findOneByIdPartNumbersQueryHandler,
         EditPartNumbersCommandHandler $editPartNumbersCommandHandler,
-        // FindOneByOriginalRoomsQueryHandler $findOneByOriginalRoomsQueryHandler,
-        //EditOriginalRoomsCommandHandler $editOriginalRoomsCommandHandler,
-        //SaveOriginalRoomsCommandHandler $saveOriginalRoomsCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
 
@@ -207,7 +202,6 @@ class PartNumbersController extends AbstractController
                 );
                 $data_form_edit_part_numbers = $findOneByIdPartNumbersQueryHandler
                     ->handler(new PartNumbersQuery($part_numbers))[0];
-                //dd($data_form_edit_part_numbers);
             } catch (HttpException $e) {
 
                 $errorMessageViaSession->errorMessageSession($e);
@@ -260,12 +254,6 @@ class PartNumbersController extends AbstractController
 
                     $errorMessageViaSession->errorMessageSession($e);
                 }
-
-                try {
-                } catch (HttpException $e) {
-
-                    $errorMessageViaSession->errorMessageSession($e);
-                }
             }
         }
 
@@ -281,20 +269,17 @@ class PartNumbersController extends AbstractController
     #[Route('deletePartNumbers', name: 'delete_part_numbers')]
     public function deletePartNumbers(
         Request $request,
-        FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
-        AdapterPartNumbersInterface $adapterPartNumbersInterface,
+        FindPartNumbersQueryHandler $FindPartNumbersQueryHandler,
         DeletePartNumbersCommandHandler $deletePartNumbersCommandHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
         try {
 
-            $data_part_numbers['id_details'] = $findIdPartNumbersQueryHandler
+            $part_numbers['part_numbers'] = $FindPartNumbersQueryHandler
                 ->handler(new PartNumbersQuery($request->query->all()));
 
-            $adapterPartNumbersInterface->AutoPartsWarehouseDeletePartNumbers($data_part_numbers);
-
             $deletePartNumbersCommandHandler
-                ->handler(new PartNumbersCommand($request->query->all()));
+                ->handler(new PartNumbersObjCommand($part_numbers));
             $this->addFlash('delete', 'Автодеталь удалена');
         } catch (HttpException $e) {
 

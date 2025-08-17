@@ -13,12 +13,15 @@
   {#Переменный для вывода данных в форме #}
 
   {% if data_form_edit_replacing_original_numbers is iterable %}
-  {% set replacing_original_number_find_id = 
+  {% set replacing_original_number_find_id =
   data_form_edit_replacing_original_numbers.replacing_original_number|default('') %}
+  {% set original_number_find_id = data_form_edit_replacing_original_numbers.original_number|default('') %}
   {% set id_find_id = data_form_edit_replacing_original_numbers.id|default('') %}
   {% else %}
-  {% set replacing_original_number_find_id = 
+  {% set replacing_original_number_find_id =
   data_form_edit_replacing_original_numbers.getReplacingOriginalNumber()|default('') %}
+  {% set original_number_find_id =
+  data_form_edit_replacing_original_numbers.getIdOriginalNumber().getOriginalNumber()|default('') %}
   {% set id_find_id = data_form_edit_replacing_original_numbers.getId()|default('') %}
   {% endif %}
 
@@ -40,7 +43,15 @@
             {{ message }}
             {% endfor %}
           </div>
-
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="lb">{{ form_label(form_edit_replacing_original_numbers.original_number) }}</div>
+            {{ form_widget(form_edit_replacing_original_numbers.original_number,
+            { value : original_number_find_id, 'attr': {'class': 'w-100'} }) }}
+            {{ form_errors(form_edit_replacing_original_numbers.original_number) |nl2br }}
+            {% for message in app.flashes('[original_number_error][Regex]') %}
+            {{ message }}
+            {% endfor %}
+          </div>
         </div>
       </div>
 
@@ -49,8 +60,8 @@
     {{ form_widget(form_edit_replacing_original_numbers.id, {value : id_find_id}) }}
 
     <div class="row mt-3">
-      <div class="col-sm-12 col-md-3 col-lg-2 d-grid gap-2">
-        {{ form_widget(form_edit_replacing_original_numbers.button_replacing_original_number, 
+      <div class="col-sm-12 col-md-6 col-lg-4 d-grid gap-2">
+        {{ form_widget(form_edit_replacing_original_numbers.button_replacing_original_number,
         { 'attr': {'class': 'btn btn-danger w-100'}}) }}
       </div>
     </div>

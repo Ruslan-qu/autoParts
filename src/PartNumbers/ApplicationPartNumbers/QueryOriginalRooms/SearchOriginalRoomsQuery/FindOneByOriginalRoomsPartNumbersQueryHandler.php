@@ -52,7 +52,9 @@ final class FindOneByOriginalRoomsPartNumbersQueryHandler
 
         $find_one_by_original_rooms =
             $this->originalRoomsRepositoryInterface->findOneByOriginalRooms($original_number, $id_participant);
-
+        if ($find_one_by_original_rooms === null) {
+            $this->inputErrorsPartNumbers->issetOriginalRooms($find_one_by_original_rooms);
+        }
         return $find_one_by_original_rooms;
     }
 }

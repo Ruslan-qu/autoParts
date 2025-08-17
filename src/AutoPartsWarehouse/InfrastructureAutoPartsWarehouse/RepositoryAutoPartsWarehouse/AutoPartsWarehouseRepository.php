@@ -195,22 +195,6 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findByAutoPartsWarehouseDeletePartNumbers(PartNumbersFromManufacturers $find_part_numbers): ?array
-    {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT a
-            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
-            WHERE a.id_details = :id_details'
-        )->setParameter('id_details', $find_part_numbers);
-
-        return $query->getResult();
-    }
-
-    /**
-     * @return array|NULL Возвращает массив объектов или ноль
-     */
     public function findByAutoPartsWarehouseDeleteCounterparty(Counterparty $delete_counterparty): ?array
     {
         $entityManager = $this->getEntityManager();

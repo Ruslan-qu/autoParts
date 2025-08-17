@@ -70,7 +70,7 @@ class EditPartNumbersType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё\w\s]*$/ui',
+                        'pattern' => '/^[а-яё\w\s\da-z]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                     недопустимые символы'
@@ -122,7 +122,6 @@ class EditPartNumbersType extends AbstractType
                 'required' => false
             ])
             ->add('id', HiddenType::class)
-            ->add('id_original_number', HiddenType::class)
             ->add('button_part_number', SubmitType::class)
         ;
     }

@@ -7,9 +7,9 @@ use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\P
 
 interface  PartNumbersRepositoryInterface
 {
-    public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): array;
+    public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): int;
 
-    public function edit(array $arr_edit_part_number): array;
+    public function edit(PartNumbersFromManufacturers $part_nupartNumbersFromManufacturersmber): int;
 
     public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): ?array;
 

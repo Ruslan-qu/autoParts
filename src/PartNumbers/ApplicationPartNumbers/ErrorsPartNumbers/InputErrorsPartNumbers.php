@@ -90,7 +90,7 @@ class InputErrorsPartNumbers
     {
         if (!isset($еntity)) {
 
-            $arr_data_errors = ['Error' => 'Оригинальный номер не найден'];
+            $arr_data_errors = ['Error' => 'Оригинальный номер не найден, Сохранения или Изменения небыло'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

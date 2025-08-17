@@ -56,8 +56,10 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($replacing_original_numbers);
-        unset($entityData['id_original_number_id']);
-        unset($entityData['id_participant_id']);
+        unset(
+            $entityData['id_original_number_id'],
+            $entityData['id_participant_id']
+        );
 
         $exists = $this->count($entityData);
         if ($exists == 0) {
@@ -130,9 +132,20 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
     /**
      * @return ReplacingOriginalNumbers|NULL Возвращает объект или ноль
      */
-    public function findOneByIdReplacingOriginalNumbers(int $id, Participant $id_participant): ?ReplacingOriginalNumbers
+    public function findOneByIdReplacingOriginalNumbers(int $id, Participant $id_participant): ?array
     {
-        return $this->findOneBy(['id' => $id, 'id_participant' => $id_participant]);
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT r, o
+            FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\ReplacingOriginalNumbers r
+            LEFT JOIN r.id_original_number o
+            WHERE r.id = :id
+            AND r.id_participant = :id_participant
+            ORDER BY r.id ASC'
+        )->setParameters(['id' => $id, 'id_participant' => $id_participant]);
+
+        return $query->getResult();
     }
 
     /**

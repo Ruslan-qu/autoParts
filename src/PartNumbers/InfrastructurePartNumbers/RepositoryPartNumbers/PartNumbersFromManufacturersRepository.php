@@ -31,7 +31,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
-    public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
+    public function save(PartNumbersFromManufacturers $partNumbersFromManufacturers): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->persist($partNumbersFromManufacturers);
@@ -39,32 +39,43 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($partNumbersFromManufacturers);
 
-        $exists_part_numbers = $this->count($entityData);
+        $exists_part_numbers = $this->count(['id' => $entityData['id']]);
         if ($exists_part_numbers == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['save' =>  $entityData['id']];
+        return $entityData['id'];
     }
 
     /**
      * @return array Возвращается массив с данными об успешном изменения  
      */
-    public function edit(array $arr_edit_part_number): array
+    public function edit(PartNumbersFromManufacturers $partNumbersFromManufacturers): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
 
-        $exists_part_numbers = $this->count($arr_edit_part_number);
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($partNumbersFromManufacturers);
+        unset(
+            $entityData['id_part_name_id'],
+            $entityData['id_car_brand_id'],
+            $entityData['id_side_id'],
+            $entityData['id_body_id'],
+            $entityData['id_axle_id'],
+            $entityData['id_in_stock_id'],
+            $entityData['id_original_number_id'],
+            $entityData['id_participant_id']
+        );
+        $exists_part_numbers = $this->count($entityData);
         if ($exists_part_numbers == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => $arr_edit_part_number['id']];
+        return $entityData['id'];
     }
 
     /**
@@ -72,15 +83,24 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
      */
     public function delete(PartNumbersFromManufacturers $partNumbersFromManufacturers): array
     {
-        $entityManager = $this->getEntityManager();
-        $entityManager->remove($partNumbersFromManufacturers);
-        $entityManager->flush();
+        try {
 
-        $entityData = $entityManager->contains($partNumbersFromManufacturers);
-        if ($entityData != false) {
-            $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            $entityManager = $this->getEntityManager();
+            $entityManager->remove($partNumbersFromManufacturers);
+            $entityManager->flush();
+            $entityData = $entityManager->contains($partNumbersFromManufacturers);
+            if ($entityData != false) {
+                $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
+        } catch (\Exception $e) {
+            if (!empty($e)) {
+                $arr_data_errors =
+                    ['Error' => 'Удаление запрещено, используется в таблице ' . '"' . 'Склад или Продажи ориг-ного номера' . '".'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
         }
 
         return $successfully = ['delete' => 0];
@@ -151,8 +171,14 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT p, o
+            'SELECT p, pn, c, s, b, a, i, o
             FROM App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers p
+            LEFT JOIN p.id_part_name pn
+            LEFT JOIN p.id_car_brand c
+            LEFT JOIN p.id_side s
+            LEFT JOIN p.id_body b
+            LEFT JOIN p.id_axle a
+            LEFT JOIN p.id_in_stock i
             LEFT JOIN p.id_original_number o
             WHERE p.id = :id
             AND p.id_participant = :id_participant'

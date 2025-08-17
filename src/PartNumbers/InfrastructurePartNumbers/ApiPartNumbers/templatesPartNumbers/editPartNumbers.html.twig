@@ -24,7 +24,6 @@
   {% set axle_find_id = data_form_edit_part_numbers.id_axle|default('') %}
   {% set in_stock_find_id = data_form_edit_part_numbers.id_in_stock|default('') %}
   {% set id_find_id = data_form_edit_part_numbers.id|default('') %}
-  {% set id_original_number_find_id = data_form_edit_part_numbers.id_original_number|default('') %}
 {% else %}
   {% set part_number_find_id = data_form_edit_part_numbers.getPartNumber()|default('') %}
   {% set original_number_find_id = data_form_edit_part_numbers.getIdOriginalNumber().getOriginalNumber()|default('') %}
@@ -37,7 +36,6 @@
   {% set axle_find_id = data_form_edit_part_numbers.getIdAxle().getId()|default('') %}
   {% set in_stock_find_id = data_form_edit_part_numbers.getIdInStock().getId()|default('') %}
   {% set id_find_id = data_form_edit_part_numbers.getId()|default('') %}
-  {% set id_original_number_find_id = data_form_edit_part_numbers.getIdOriginalNumber().getId()|default('') %}
 {% endif %}
 
   {#Форма изменения номеров деталей#}
@@ -62,7 +60,7 @@
             <div class="lb">{{ form_label(form_edit_part_numbers.original_number) }}</div>
             {{ form_widget(form_edit_part_numbers.original_number, { value : original_number_find_id, 'attr': {'class': 'w-100'} }) }}
             {{ form_errors(form_edit_part_numbers.original_number) |nl2br }}
-            {% for message in app.flashes('[original_number_error][Regex]') %}
+            {% for message in app.flashes('original_number_error][Regex]') %}
             {{ message }}
             <br>
             Исправьте нарушения для продолжения работы
@@ -138,7 +136,6 @@
       </div>
     </div>
     {{ form_widget(form_edit_part_numbers.id, {value : id_find_id}) }}
-    {{ form_widget(form_edit_part_numbers.id_original_number, {value : id_original_number_find_id}) }}
 
     <div class="row mt-3">
       <div class="col-12 d-grid gap-2">

@@ -22,7 +22,7 @@ final class EditPartNumbersCommandHandler
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
-        $part_number = strtolower(preg_replace(
+        $edit_part_number = strtolower(preg_replace(
             '#\s#',
             '',
             $partNumbersCommand->getPartNumber()
@@ -35,16 +35,16 @@ final class EditPartNumbersCommandHandler
         $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
 
         $input = [
-            'part_number_error' => [
-                'NotBlank' => $part_number,
-                'Regex' => $part_number,
+            'edit_part_number_error' => [
+                'NotBlank' => $edit_part_number,
+                'Regex' => $edit_part_number,
             ],
             'manufacturer_error' => $manufacturer,
             'additional_descriptions_error' => $additional_descriptions
         ];
 
         $constraint = new Collection([
-            'part_number_error' => new Collection([
+            'edit_part_number_error' => new Collection([
                 'NotBlank' => new NotBlank(
                     message: 'Форма Номер детали не может быть пустой'
                 ),
@@ -58,7 +58,7 @@ final class EditPartNumbersCommandHandler
                 message: 'Форма Производитель содержит недопустимые символы'
             ),
             'additional_descriptions_error' => new Regex(
-                pattern: '/^[а-яё\w\s]*$/ui',
+                pattern: '/^[а-яё\w\s\da-z]*$/ui',
                 message: 'Форма Описание детали содержит недопустимые символы'
             )
         ]);
@@ -66,80 +66,47 @@ final class EditPartNumbersCommandHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsPartNumbers->errorValidate($errors_validate);
 
-        $arr_edit_part_number['part_number'] = $part_number;
-
-        if (!empty($manufacturer)) {
-            $arr_edit_part_number['manufacturer'] = $manufacturer;
-        }
-
-        if (!empty($additional_descriptions)) {
-            $arr_edit_part_number['additional_descriptions'] = $additional_descriptions;
-        }
-
         $id_part_name = $partNumbersCommand->getIdPartName();
-        if (!empty($id_part_name)) {
-            $arr_edit_part_number['id_part_name'] = $id_part_name;
-        }
-
         $id_car_brand = $partNumbersCommand->getIdCarBrand();
-        if (!empty($id_car_brand)) {
-            $arr_edit_part_number['id_car_brand'] = $id_car_brand;
-        }
-
         $id_side = $partNumbersCommand->getIdSide();
-        if (!empty($id_side)) {
-            $arr_edit_part_number['id_side'] = $id_side;
-        }
-
         $id_body = $partNumbersCommand->getIdBody();
-        if (!empty($id_body)) {
-            $arr_edit_part_number['id_body'] = $id_body;
-        }
-
         $id_axle = $partNumbersCommand->getIdAxle();
-        if (!empty($id_axle)) {
-            $arr_edit_part_number['id_axle'] = $id_axle;
-        }
-
         $id_in_stock = $partNumbersCommand->getIdInStock();
-        if (!empty($id_in_stock)) {
-            $arr_edit_part_number['id_in_stock'] = $id_in_stock;
-        }
-
         $id_original_number = $partNumbersCommand->getIdOriginalNumber();
-        if (!empty($id_part_name)) {
-            $arr_edit_part_number['id_original_number'] = $id_original_number;
-        }
 
         $id = $partNumbersCommand->getId();
-        $arr_edit_part_number['id'] = $id;
         $this->inputErrorsPartNumbers->emptyData($id);
 
-        $edit_part_number = $this->partNumbersRepositoryInterface->findPartNumbersFromManufacturers($id);
+        $part_number = $this->partNumbersRepositoryInterface->findPartNumbersFromManufacturers($id);
         $this->inputErrorsPartNumbers->emptyEntity($edit_part_number);
 
-        if ($part_number != $edit_part_number->getPartNumber()) {
+        $this->countDuplicate($edit_part_number, $part_number->getPartNumber());
+
+        $part_number->setPartNumber($edit_part_number);
+        $part_number->setManufacturer($manufacturer);
+        $part_number->setAdditionalDescriptions($additional_descriptions);
+        $part_number->setIdPartName($id_part_name);
+        $part_number->setIdCarBrand($id_car_brand);
+        $part_number->setIdSide($id_side);
+        $part_number->setIdBody($id_body);
+        $part_number->setIdAxle($id_axle);
+        $part_number->setIdInStock($id_in_stock);
+        $part_number->setIdOriginalNumber($id_original_number);
+
+        $id = $this->partNumbersRepositoryInterface->edit($part_number);
+
+        return $id;
+    }
+
+    private function countDuplicate(string $edit_part_number, string $part_number): static
+    {
+        if ($edit_part_number != $part_number) {
             /* Валидация дублей */
             $count_duplicate = $this->partNumbersRepositoryInterface
-                ->numberDoubles(['part_number' => $part_number]);
+                ->numberDoubles(['part_number' => $edit_part_number]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 
-        $edit_part_number->setPartNumber($part_number);
-        $edit_part_number->setManufacturer($manufacturer);
-        $edit_part_number->setAdditionalDescriptions($additional_descriptions);
-        $edit_part_number->setIdPartName($id_part_name);
-        $edit_part_number->setIdCarBrand($id_car_brand);
-        $edit_part_number->setIdSide($id_side);
-        $edit_part_number->setIdBody($id_body);
-        $edit_part_number->setIdAxle($id_axle);
-        $edit_part_number->setIdInStock($id_in_stock);
-        $edit_part_number->setIdOriginalNumber($id_original_number);
-
-        $successfully_edit = $this->partNumbersRepositoryInterface->edit($arr_edit_part_number);
-
-        $id = $successfully_edit['edit'];
-
-        return $id;
+        return $this;
     }
 }
