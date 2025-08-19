@@ -5,6 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\FormPartNumbe
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -16,13 +17,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
-use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
+use App\Participant\InfrastructureParticipant\ApiParticipant\AdapterUserExtraction\AdapterUserExtraction;
 
 class SavePartNumbersType extends AbstractType
 {
+
+    public function __construct(
+        private Security $security
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -81,11 +87,10 @@ class SavePartNumbersType extends AbstractType
                 'label' => 'Название детали',
                 'class' => PartName::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
-                    $adapterUserExtractionInterface = new AdapterUserExtractionInterface();
-                    dd($adapterUserExtractionInterface);
+
                     return $er->createQueryBuilder('p')
                         ->where('p.id_participant = :id_participant')
-                        //->setParameter('id_participant', new Security->getUser())
+                        ->setParameter('id_participant', $this->security->getUser())
                         ->orderBy('p.part_name', 'ASC');
                 },
                 'choice_label' => 'part_name',
