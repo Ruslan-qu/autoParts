@@ -97,7 +97,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
         } catch (\Exception $e) {
             if (!empty($e)) {
                 $arr_data_errors =
-                    ['Error' => 'Удаление запрещено, используется в таблице ' . '"' . 'Склад или Продажи ориг-ного номера' . '".'];
+                    ['Error' => 'Удаление запрещено, используется в таблице ' . '"' . 'Склад или Продажи' . '".'];
                 $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
                 throw new UnprocessableEntityHttpException($json_arr_data_errors);
             }

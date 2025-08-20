@@ -69,17 +69,26 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return array Возвращается массив с данными об удаление поставщика 
      */
-    public function delete(Counterparty $entity_counterparty): array
+    public function delete(Counterparty $counterparty): array
     {
-        $entityManager = $this->getEntityManager();
-        $entityManager->remove($entity_counterparty);
-        $entityManager->flush();
+        try {
 
-        $entityData = $entityManager->contains($entity_counterparty);
-        if ($entityData != false) {
-            $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            $entityManager = $this->getEntityManager();
+            $entityManager->remove($counterparty);
+            $entityManager->flush();
+            $entityData = $entityManager->contains($counterparty);
+            if ($entityData != false) {
+                $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
+        } catch (\Exception $e) {
+            if (!empty($e)) {
+                $arr_data_errors =
+                    ['Error' => 'Удаление запрещено, используется в таблице ' . '"' . 'Склад или Продажи' . '".'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
         }
 
         return $successfully = ['delete' => 0];

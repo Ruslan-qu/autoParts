@@ -2,6 +2,7 @@
 
 namespace App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Doctrine\ORM\Mapping as ORM;
 use App\Counterparty\InfrastructureCounterparty\RepositoryCounterparty\CounterpartyRepository;
 
@@ -24,6 +25,9 @@ class Counterparty
 
     #[ORM\Column(length: 13, nullable: true)]
     private ?string $delivery_phone = null;
+
+    #[ORM\ManyToOne]
+    private ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -74,6 +78,18 @@ class Counterparty
     public function setDeliveryPhone(?string $delivery_phone): static
     {
         $this->delivery_phone = $delivery_phone;
+
+        return $this;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
+    }
+
+    public function setIdParticipant(?Participant $id_participant): static
+    {
+        $this->id_participant = $id_participant;
 
         return $this;
     }

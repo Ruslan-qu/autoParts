@@ -6,7 +6,6 @@ use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
@@ -187,22 +186,6 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN a.id_payment_method pm 
             WHERE a.id = :id'
         )->setParameter('id', $id);
-
-        return $query->getResult();
-    }
-
-    /**
-     * @return array|NULL Возвращает массив объектов или ноль
-     */
-    public function findByAutoPartsWarehouseDeleteCounterparty(Counterparty $delete_counterparty): ?array
-    {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT a
-            FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a 
-            WHERE a.id_counterparty = :id_counterparty'
-        )->setParameter('id_counterparty', $delete_counterparty);
 
         return $query->getResult();
     }

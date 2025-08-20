@@ -37,7 +37,7 @@
                     <mxGeometry y="266" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="26" value="Counterparty" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;align=center;fontSize=14;" parent="1" vertex="1">
-                    <mxGeometry y="360" width="160" height="180" as="geometry">
+                    <mxGeometry y="340" width="160" height="210" as="geometry">
                         <mxRectangle x="40" y="30" width="80" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
@@ -55,6 +55,9 @@
                 </mxCell>
                 <mxCell id="202" value="delivery_phone (int)" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="26" vertex="1">
                     <mxGeometry y="150" width="160" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="252" value="id_participant (odj)" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" vertex="1" parent="26">
+                    <mxGeometry y="180" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="61" value="AutoPartsSold" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;align=center;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry y="1050" width="160" height="260" as="geometry">
@@ -160,7 +163,7 @@
                 <mxCell id="167" value="id_original_number (odj)" style="text;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="36" vertex="1">
                     <mxGeometry y="362" width="160" height="34" as="geometry"/>
                 </mxCell>
-                <mxCell id="244" value="id_participant (odj)" style="text;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" vertex="1" parent="36">
+                <mxCell id="244" value="id_participant (odj)" style="text;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;" parent="36" vertex="1">
                     <mxGeometry y="396" width="160" height="34" as="geometry"/>
                 </mxCell>
                 <mxCell id="142" style="edgeStyle=none;html=1;" parent="1" source="111" target="118" edge="1">
@@ -279,10 +282,13 @@
                 <mxCell id="242" style="edgeStyle=none;html=1;" parent="1" source="204" target="241" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="243" style="edgeStyle=none;html=1;" edge="1" parent="1" source="204" target="220">
+                <mxCell id="243" style="edgeStyle=none;html=1;" parent="1" source="204" target="220" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="245" style="edgeStyle=none;html=1;" edge="1" parent="1" source="204" target="244">
+                <mxCell id="245" style="edgeStyle=none;html=1;" parent="1" source="204" target="244" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="253" style="edgeStyle=none;html=1;" edge="1" parent="1" source="204" target="252">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="204" value="Participant" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;align=center;fontSize=14;" parent="1" vertex="1">

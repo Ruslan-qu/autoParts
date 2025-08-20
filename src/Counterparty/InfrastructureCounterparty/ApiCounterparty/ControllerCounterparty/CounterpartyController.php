@@ -7,18 +7,19 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterCounterpartyInterface;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\EditCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SearchCounterpartyType;
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\FindIdCounterpartyQueryHandler;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\FindCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindByCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\EditCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\SaveCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\DeleteCounterpartyCommandHandler;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\DTOCounterpartyObjCommand\CounterpartyObjCommand;
 
 class CounterpartyController extends AbstractController
 {
@@ -26,6 +27,7 @@ class CounterpartyController extends AbstractController
     #[Route('/saveCounterparty', name: 'save_counterparty')]
     public function saveCounterparty(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         SaveCounterpartyCommandHandler $saveCounterpartyCommandHandler
     ): Response {
 
@@ -41,6 +43,15 @@ class CounterpartyController extends AbstractController
 
                 try {
 
+                    $participant = $adapterUserExtractionInterface->userExtraction();
+                    $counterparty = $this->mapeCounterparty(
+                        null,
+                        $form_save_counterparty->getData()['name_counterparty'],
+                        $form_save_counterparty->getData()['mail_counterparty'],
+                        $form_save_counterparty->getData()['manager_phone'],
+                        $form_save_counterparty->getData()['delivery_phone'],
+                        $participant
+                    );
                     $id_handler = $saveCounterpartyCommandHandler
                         ->handler(new CounterpartyCommand($form_save_counterparty->getData()));
                 } catch (HttpException $e) {
@@ -100,7 +111,7 @@ class CounterpartyController extends AbstractController
     #[Route('/editCounterparty', name: 'edit_counterparty')]
     public function editCounterparty(
         Request $request,
-        FindIdCounterpartyQueryHandler $findIdCounterpartyQueryHandler,
+        FindCounterpartyQueryHandler $findCounterpartyQueryHandler,
         EditCounterpartyCommandHandler $editCounterpartyCommandHandler
     ): Response {
 
@@ -114,7 +125,7 @@ class CounterpartyController extends AbstractController
 
             try {
 
-                $data_form_edit_counterparty = $findIdCounterpartyQueryHandler
+                $data_form_edit_counterparty = $findCounterpartyQueryHandler
                     ->handler(new CounterpartyQuery($request->query->all()));
             } catch (HttpException $e) {
 
@@ -154,20 +165,17 @@ class CounterpartyController extends AbstractController
     #[Route('/deleteCounterparty', name: 'delete_counterparty')]
     public function deleteCounterparty(
         Request $request,
-        FindIdCounterpartyQueryHandler $findIdCounterpartyQueryHandler,
-        AdapterCounterpartyInterface $adapterCounterpartyInterface,
+        FindCounterpartyQueryHandler $findCounterpartyQueryHandler,
         DeleteCounterpartyCommandHandler $deleteCounterpartyCommandHandler
     ): Response {
 
         try {
 
-            $arr_counterparty['id_counterparty'] = $findIdCounterpartyQueryHandler
+            $counterparty['counterparty'] = $findCounterpartyQueryHandler
                 ->handler(new CounterpartyQuery($request->query->all()));
 
-            $adapterCounterpartyInterface->autoPartsWarehouseDeleteCounterparty($arr_counterparty);
-
             $deleteCounterpartyCommandHandler
-                ->handler(new CounterpartyCommand($request->query->all()));
+                ->handler(new CounterpartyObjCommand($counterparty));
             $this->addFlash('delete', 'Поставщик удален');
         } catch (HttpException $e) {
 
@@ -199,5 +207,23 @@ class CounterpartyController extends AbstractController
         }
 
         return $this;
+    }
+
+    private function mapeCounterparty(
+        $id,
+        $name_counterparty,
+        $mail_counterparty,
+        $manager_phone,
+        $delivery_phone,
+        $participant
+    ): array {
+        $arr_counterparty['id'] = $id;
+        $arr_counterparty['name_counterparty'] = $name_counterparty;
+        $arr_counterparty['mail_counterparty'] = $mail_counterparty;
+        $arr_counterparty['manager_phone'] = $manager_phone;
+        $arr_counterparty['delivery_phone'] = $delivery_phone;
+        $arr_counterparty['id_participant'] = $participant;
+
+        return $arr_counterparty;
     }
 }

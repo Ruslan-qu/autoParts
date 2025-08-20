@@ -27,8 +27,6 @@ interface AutoPartsWarehouseRepositoryInterface
 
     public function findCartAutoPartsWarehouse(int $id): ?array;
 
-    public function findByAutoPartsWarehouseDeleteCounterparty(Counterparty $delete_counterparty): ?array;
-
     public function emptyDateAutoPartsWarehouse(DateTimeImmutable $contentHeadersDate): ?int;
 
     public function findByShipmentToDate(): ?array;

@@ -8,7 +8,7 @@ use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterpar
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 
-final class FindIdCounterpartyQueryHandler
+final class FindCounterpartyQueryHandler
 {
 
     public function __construct(

@@ -5,6 +5,7 @@ namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCo
 use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\CounterpartyCommand;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\DTOCounterpartyObjCommand\CounterpartyObjCommand;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 
 final class DeleteCounterpartyCommandHandler
@@ -16,16 +17,10 @@ final class DeleteCounterpartyCommandHandler
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
     ) {}
 
-    public function handler(CounterpartyCommand $counterpartyCommand): int
+    public function handler(CounterpartyObjCommand $counterpartyObjCommand): int
     {
-
-        $id = $counterpartyCommand->getId();
-        $this->inputErrors->emptyData($id);
-
-        $еntity = $this->counterpartyRepositoryInterface->findCounterparty($id);
-        $this->inputErrors->emptyEntity($еntity);
-
-        $successfully_save = $this->counterpartyRepositoryInterface->delete($еntity);
+        $counterparty = $counterpartyObjCommand->getCounterparty();
+        $successfully_save = $this->counterpartyRepositoryInterface->delete($counterparty);
         $id = $successfully_save['delete'];
 
         return $id;

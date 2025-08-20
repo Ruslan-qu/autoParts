@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\DTOCounterpartyObjCommand;
+
+use Symfony\Component\TypeInfo\Type;
+use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
+use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+
+abstract class MapCounterpartyObjCommand
+{
+
+    public function __construct(array $data = [])
+    {
+        $this->load($data);
+    }
+
+    private function load(array $data)
+    {
+        foreach ($data as $key => $value) {
+
+            if (!empty($value)) {
+                $type = Type::object(Counterparty::class);
+                $className = $type->getBaseType()->getClassName();
+                $input_errors = new InputErrorsPartNumbers;
+                $input_errors->comparingClassNames($className, $value, $key);
+                $this->$key = $value;
+            }
+        }
+    }
+}

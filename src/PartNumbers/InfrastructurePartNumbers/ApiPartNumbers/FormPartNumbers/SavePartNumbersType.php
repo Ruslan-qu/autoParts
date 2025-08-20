@@ -20,7 +20,6 @@ use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\B
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
-use App\Participant\InfrastructureParticipant\ApiParticipant\AdapterUserExtraction\AdapterUserExtraction;
 
 class SavePartNumbersType extends AbstractType
 {
@@ -100,8 +99,11 @@ class SavePartNumbersType extends AbstractType
                 'label' => 'Марка',
                 'class' => CarBrands::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
+
                     return $er->createQueryBuilder('c')
-                        ->orderBy('c.id', 'ASC');
+                        ->where('c.id_participant = :id_participant')
+                        ->setParameter('id_participant', $this->security->getUser())
+                        ->orderBy('c.car_brand', 'ASC');
                 },
                 'choice_label' => 'car_brand',
                 'required' => false
@@ -110,6 +112,13 @@ class SavePartNumbersType extends AbstractType
             ->add('id_side', EntityType::class, [
                 'label' => 'Сторона',
                 'class' => Sides::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+
+                    return $er->createQueryBuilder('s')
+                        ->where('s.id_participant = :id_participant')
+                        ->setParameter('id_participant', $this->security->getUser())
+                        ->orderBy('s.side', 'ASC');
+                },
                 'choice_label' => 'side',
                 'required' => false
             ])
@@ -117,6 +126,13 @@ class SavePartNumbersType extends AbstractType
             ->add('id_body', EntityType::class, [
                 'label' => 'Кузов',
                 'class' => Bodies::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+
+                    return $er->createQueryBuilder('b')
+                        ->where('b.id_participant = :id_participant')
+                        ->setParameter('id_participant', $this->security->getUser())
+                        ->orderBy('b.body', 'ASC');
+                },
                 'choice_label' => 'body',
                 'required' => false
             ])
@@ -124,6 +140,13 @@ class SavePartNumbersType extends AbstractType
             ->add('id_axle', EntityType::class, [
                 'label' => 'Перед Зад',
                 'class' => Axles::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+
+                    return $er->createQueryBuilder('ax')
+                        ->where('ax.id_participant = :id_participant')
+                        ->setParameter('id_participant', $this->security->getUser())
+                        ->orderBy('ax.axle', 'ASC');
+                },
                 'choice_label' => 'axle',
                 'required' => false
             ])
@@ -131,6 +154,13 @@ class SavePartNumbersType extends AbstractType
             ->add('id_in_stock', EntityType::class, [
                 'label' => 'Наличие',
                 'class' => Availability::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+
+                    return $er->createQueryBuilder('a')
+                        ->where('a.id_participant = :id_participant')
+                        ->setParameter('id_participant', $this->security->getUser())
+                        ->orderBy('a.in_stock', 'ASC');
+                },
                 'choice_label' => 'in_stock',
                 'required' => false
             ])
