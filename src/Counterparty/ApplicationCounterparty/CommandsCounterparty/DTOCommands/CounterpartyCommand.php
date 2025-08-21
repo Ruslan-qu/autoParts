@@ -2,6 +2,7 @@
 
 namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\MapCounterpartyCommand;
 
 
@@ -16,6 +17,8 @@ final class CounterpartyCommand extends MapCounterpartyCommand
     protected ?string $manager_phone = null;
 
     protected ?string $delivery_phone = null;
+
+    protected ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -40,5 +43,10 @@ final class CounterpartyCommand extends MapCounterpartyCommand
     public function getDeliveryPhone(): ?string
     {
         return $this->delivery_phone;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
     }
 }

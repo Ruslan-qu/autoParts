@@ -4,6 +4,7 @@ namespace App\Counterparty\InfrastructureCounterparty\RepositoryCounterparty;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
@@ -30,7 +31,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return array Возвращается массив с данными об успешном сохранении поставщика 
      */
-    public function save(Counterparty $entity_counterparty): array
+    public function save(Counterparty $entity_counterparty): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->persist($entity_counterparty);
@@ -38,23 +39,24 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($entity_counterparty);
 
-        $exists_counterparty = $this->count($entityData);
+        $exists_counterparty = $this->count(['id' => $entityData['id']]);
         if ($exists_counterparty == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => $entityData['id']];
+        return $entityData['id'];
     }
 
     /**
      * @return array Возвращается массив с данными об успешном изменения поставщика 
      */
-    public function edit(Counterparty $edit_counterparty): array
+    public function edit(Counterparty $edit_counterparty): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($edit_counterparty);
+        unset($entityData['id_participant_id']);
 
         $exists_counterparty = $this->count($entityData);
         if ($exists_counterparty == 0) {
@@ -63,7 +65,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => $entityData['id']];
+        return $entityData['id'];
     }
 
     /**
@@ -112,17 +114,21 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return Counterparty[]|NULL Возвращает массив объектов поставщиков или ноль
      */
-    public function findByCounterparty(): ?array
+    public function findByCounterparty(Participant $id_participant): ?array
     {
-        return $this->findBy([], ['id' => 'ASC']);
+        return $this->findBy(['id_participant' => $id_participant], ['id' => 'ASC']);
     }
 
     /**
      * @return Counterparty[]|NULL Возвращает массив объектов Поставщиков или ноль
      */
-    public function findOneByCounterparty($name_counterparty): ?array
+    public function findOneByCounterparty(string $name_counterparty, Participant $id_participant): ?array
     {
-        return $this->findBy(['name_counterparty' => $name_counterparty], ['id' => 'ASC']);
+        return $this->findBy(
+            ['name_counterparty' => $name_counterparty],
+            ['id_participant' => $id_participant],
+            ['id' => 'ASC']
+        );
     }
 
     /**

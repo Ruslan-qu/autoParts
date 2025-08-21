@@ -37,7 +37,7 @@ class CounterpartyController extends AbstractController
         /*Валидация формы */
         $form_save_counterparty->handleRequest($request);
 
-        $id_handler = null;
+        $id = null;
         if ($form_save_counterparty->isSubmitted()) {
             if ($form_save_counterparty->isValid()) {
 
@@ -52,8 +52,8 @@ class CounterpartyController extends AbstractController
                         $form_save_counterparty->getData()['delivery_phone'],
                         $participant
                     );
-                    $id_handler = $saveCounterpartyCommandHandler
-                        ->handler(new CounterpartyCommand($form_save_counterparty->getData()));
+                    $id = $saveCounterpartyCommandHandler
+                        ->handler(new CounterpartyCommand($counterparty));
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);
@@ -64,7 +64,7 @@ class CounterpartyController extends AbstractController
         return $this->render('@counterparty/saveCounterparty.html.twig', [
             'title_logo' => 'Добавление нового поставщика',
             'form_save_counterparty' => $form_save_counterparty->createView(),
-            'id_handler' => $id_handler
+            'id_handler' => $id
         ]);
     }
 
@@ -72,6 +72,7 @@ class CounterpartyController extends AbstractController
     #[Route('/searchCounterparty', name: 'search_counterparty')]
     public function searchCounterparty(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindByCounterpartyQueryHandler $findByCounterpartyQueryHandler,
         SearchCounterpartyQueryHandler $searchCounterpartyQueryHandler
     ): Response {
@@ -83,15 +84,37 @@ class CounterpartyController extends AbstractController
         $form_search_counterparty->handleRequest($request);
 
         /*Выводим полный список поставщиков*/
-        $search_data = $findByCounterpartyQueryHandler->handler();
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $counterparty = $this->mapeCounterparty(
+                null,
+                null,
+                null,
+                null,
+                null,
+                $participant
+            );
+            $search_data = $findByCounterpartyQueryHandler
+                ->handler(new CounterpartyQuery($counterparty));
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+        }
 
         if ($form_search_counterparty->isSubmitted()) {
             if ($form_search_counterparty->isValid()) {
 
                 try {
-
+                    $counterparty = $this->mapeCounterparty(
+                        null,
+                        $form_search_counterparty->getData()['name_counterparty'],
+                        null,
+                        null,
+                        null,
+                        $participant
+                    );
                     $search_data = $searchCounterpartyQueryHandler
-                        ->handler(new CounterpartyQuery($form_search_counterparty->getData()));
+                        ->handler(new CounterpartyQuery($counterparty));
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);

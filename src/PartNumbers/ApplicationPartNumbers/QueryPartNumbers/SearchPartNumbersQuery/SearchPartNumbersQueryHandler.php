@@ -92,6 +92,9 @@ final class SearchPartNumbersQueryHandler
 
         $this->inputErrorsPartNumbers->emptyDataTwo($where_parameter, $arr_parameters);
 
+        $id_participant = $partNumbersQuery->getIdParticipant();
+        $arr_parameters['id_participant'] = $id_participant;
+        $where_parameter = $this->whereParameter($where_parameter, 'id_participant', 'p');
 
         $find_by_part_numbers = $this->partNumbersFromManufacturersRepository->findByPartNumbers($arr_parameters, $where_parameter);
         $this->inputErrorsPartNumbers->emptyEntity($find_by_part_numbers);

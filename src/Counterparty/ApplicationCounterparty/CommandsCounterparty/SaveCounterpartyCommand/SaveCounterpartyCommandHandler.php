@@ -17,8 +17,7 @@ final class SaveCounterpartyCommandHandler
 
     public function __construct(
         private InputErrors $inputErrors,
-        private CounterpartyRepositoryInterface $counterpartyRepositoryInterface,
-        private Counterparty $counterparty
+        private CounterpartyRepositoryInterface $counterpartyRepositoryInterface
     ) {}
 
     public function handler(CounterpartyCommand $counterpartyCommand): int
@@ -47,6 +46,8 @@ final class SaveCounterpartyCommandHandler
             '',
             $counterpartyCommand->getDeliveryPhone()
         );
+
+        $id_participant = $counterpartyCommand->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -110,14 +111,13 @@ final class SaveCounterpartyCommandHandler
             ->numberDoubles(['name_counterparty' => $name_counterparty]);
         $this->inputErrors->errorDuplicate($count_duplicate);
 
-        $this->counterparty->setNameCounterparty($name_counterparty);
-        $this->counterparty->setMailCounterparty($mail_counterparty);
-        $this->counterparty->setManagerPhone($manager_phone);
-        $this->counterparty->setDeliveryPhone($delivery_phone);
+        $counterparty = new Counterparty;
+        $counterparty->setNameCounterparty($name_counterparty);
+        $counterparty->setMailCounterparty($mail_counterparty);
+        $counterparty->setManagerPhone($manager_phone);
+        $counterparty->setDeliveryPhone($delivery_phone);
+        $counterparty->setIdParticipant($id_participant);
 
-        $successfully_save = $this->counterpartyRepositoryInterface->save($this->counterparty);
-
-        $id = $successfully_save['save'];
-        return $id;
+        return $this->counterpartyRepositoryInterface->save($counterparty);
     }
 }
