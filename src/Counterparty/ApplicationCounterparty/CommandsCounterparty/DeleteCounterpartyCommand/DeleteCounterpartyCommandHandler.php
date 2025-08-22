@@ -20,9 +20,7 @@ final class DeleteCounterpartyCommandHandler
     public function handler(CounterpartyObjCommand $counterpartyObjCommand): int
     {
         $counterparty = $counterpartyObjCommand->getCounterparty();
-        $successfully_save = $this->counterpartyRepositoryInterface->delete($counterparty);
-        $id = $successfully_save['delete'];
 
-        return $id;
+        return $this->counterpartyRepositoryInterface->delete($counterparty);
     }
 }

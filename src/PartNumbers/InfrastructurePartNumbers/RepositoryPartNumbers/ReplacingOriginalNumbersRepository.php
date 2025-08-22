@@ -179,4 +179,12 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
     {
         return $this->find($id);
     }
+
+    /**
+     * @return ReplacingOriginalNumbers[]|NULL Возвращает масив объектов или ноль
+     */
+    public function findAllReplacingOriginalNumbers(): ?array
+    {
+        return $this->findAll();
+    }
 }

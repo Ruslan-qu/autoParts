@@ -44,6 +44,10 @@ final class EditCounterpartyCommandHandler
             '',
             $counterpartyCommand->getDeliveryPhone()
         );
+
+        $participant = $counterpartyCommand->getIdParticipant();
+        $this->inputErrors->userIsNotIdentified($participant);
+
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
@@ -119,9 +123,6 @@ final class EditCounterpartyCommandHandler
         $еntity->setManagerPhone($manager_phone);
         $еntity->setDeliveryPhone($delivery_phone);
 
-        $successfully_edit = $this->counterpartyRepositoryInterface->edit($еntity);
-        $id = $successfully_edit['edit'];
-
-        return $id;
+        return $this->counterpartyRepositoryInterface->edit($еntity);
     }
 }

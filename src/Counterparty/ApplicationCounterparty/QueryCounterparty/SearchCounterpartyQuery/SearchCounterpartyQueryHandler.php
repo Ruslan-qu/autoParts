@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
+use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
 
 
@@ -19,7 +20,7 @@ final class SearchCounterpartyQueryHandler
         private CounterpartyRepositoryInterface $counterpartyRepositoryInterface
     ) {}
 
-    public function handler(CounterpartyQuery $counterpartyQuery): ?array
+    public function handler(CounterpartyQuery $counterpartyQuery): ?Counterparty
     {
 
         /* Подключаем валидацию и прописываем условида валидации */

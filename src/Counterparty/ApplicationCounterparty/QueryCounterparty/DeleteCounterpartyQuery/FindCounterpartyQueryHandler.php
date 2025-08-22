@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery;
+namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\DeleteCounterpartyQuery;
 
 use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;

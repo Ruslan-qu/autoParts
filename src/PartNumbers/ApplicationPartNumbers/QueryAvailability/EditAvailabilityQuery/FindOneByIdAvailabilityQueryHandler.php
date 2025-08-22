@@ -19,6 +19,7 @@ final class FindOneByIdAvailabilityQueryHandler
     {
         $id = $availabilityQuery->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
+
         $participant = $availabilityQuery->getIdParticipant();
         $this->inputErrorsPartNumbers->userIsNotIdentified($participant);
 

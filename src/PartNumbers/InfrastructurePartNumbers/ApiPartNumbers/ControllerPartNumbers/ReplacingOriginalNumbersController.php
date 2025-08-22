@@ -85,6 +85,7 @@ class ReplacingOriginalNumbersController extends AbstractController
     public function searchReplacingOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        //FindAllReplacingOriginalNumbersQueryHandler $findAllReplacingOriginalNumbersQueryHandler,
         SearchReplacingOriginalNumbersQueryHandler $searchReplacingOriginalNumbersQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -95,6 +96,7 @@ class ReplacingOriginalNumbersController extends AbstractController
         /*Валидация формы */
         $form_search_replacing_original_numbers->handleRequest($request);
 
+        //$search_data = $findAllReplacingOriginalNumbersQueryHandler->handler();
         $search_data = '';
         if ($form_search_replacing_original_numbers->isSubmitted()) {
             if ($form_search_replacing_original_numbers->isValid()) {

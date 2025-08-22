@@ -13,18 +13,19 @@ use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\Co
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\EditCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SaveCounterpartyType;
 use App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounterparty\SearchCounterpartyType;
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\FindCounterpartyQueryHandler;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DeleteCounterpartyQuery\FindCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindByCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\EditCounterpartyCommand\EditCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\SaveCounterpartyCommand\SaveCounterpartyCommandHandler;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\EditCounterpartyQuery\FindOneByIdCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DeleteCounterpartyCommand\DeleteCounterpartyCommandHandler;
 use App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\DTOCounterpartyObjCommand\CounterpartyObjCommand;
 
 class CounterpartyController extends AbstractController
 {
     /*Сохранения постовщика*/
-    #[Route('/saveCounterparty', name: 'save_counterparty')]
+    #[Route('saveCounterparty', name: 'save_counterparty')]
     public function saveCounterparty(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
@@ -69,10 +70,11 @@ class CounterpartyController extends AbstractController
     }
 
     /*Поиск постовщика*/
-    #[Route('/searchCounterparty', name: 'search_counterparty')]
+    #[Route('searchCounterparty', name: 'search_counterparty')]
     public function searchCounterparty(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        //FindAllCounterpartyQueryHandler $findAllCounterpartyQueryHandler,
         FindByCounterpartyQueryHandler $findByCounterpartyQueryHandler,
         SearchCounterpartyQueryHandler $searchCounterpartyQueryHandler
     ): Response {
@@ -96,6 +98,7 @@ class CounterpartyController extends AbstractController
             );
             $search_data = $findByCounterpartyQueryHandler
                 ->handler(new CounterpartyQuery($counterparty));
+            //$search_data = $findAllCounterpartyQueryHandler->handler();
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
@@ -131,10 +134,11 @@ class CounterpartyController extends AbstractController
     }
 
     /*Редактирования постовщика*/
-    #[Route('/editCounterparty', name: 'edit_counterparty')]
+    #[Route('editCounterparty', name: 'edit_counterparty')]
     public function editCounterparty(
         Request $request,
-        FindCounterpartyQueryHandler $findCounterpartyQueryHandler,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByIdCounterpartyQueryHandler $findOneByIdCounterpartyQueryHandler,
         EditCounterpartyCommandHandler $editCounterpartyCommandHandler
     ): Response {
 
@@ -144,12 +148,28 @@ class CounterpartyController extends AbstractController
         /*Валидация формы */
         $form_edit_counterparty->handleRequest($request);
 
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+
+            return $this->redirectToRoute('search_counterparty');
+        }
+
         if (empty($form_edit_counterparty->getData())) {
 
             try {
-
-                $data_form_edit_counterparty = $findCounterpartyQueryHandler
-                    ->handler(new CounterpartyQuery($request->query->all()));
+                $counterparty = $this->mapeCounterparty(
+                    $request->query->all()['id'],
+                    null,
+                    null,
+                    null,
+                    null,
+                    $participant
+                );
+                $data_form_edit_counterparty = $findOneByIdCounterpartyQueryHandler
+                    ->handler(new CounterpartyQuery($counterparty));
             } catch (HttpException $e) {
 
                 $this->errorMessageViaSession($e);
@@ -166,9 +186,16 @@ class CounterpartyController extends AbstractController
 
                 $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
                 try {
-
+                    $counterparty = $this->mapeCounterparty(
+                        $form_edit_counterparty->getData()['id'],
+                        $form_edit_counterparty->getData()['name_counterparty'],
+                        $form_edit_counterparty->getData()['mail_counterparty'],
+                        $form_edit_counterparty->getData()['manager_phone'],
+                        $form_edit_counterparty->getData()['delivery_phone'],
+                        $participant
+                    );
                     $id_handler = $editCounterpartyCommandHandler
-                        ->handler(new CounterpartyCommand($form_edit_counterparty->getData()));
+                        ->handler(new CounterpartyCommand($counterparty));
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);
@@ -185,7 +212,7 @@ class CounterpartyController extends AbstractController
     }
 
     /*Удаление постовщика*/
-    #[Route('/deleteCounterparty', name: 'delete_counterparty')]
+    #[Route('deleteCounterparty', name: 'delete_counterparty')]
     public function deleteCounterparty(
         Request $request,
         FindCounterpartyQueryHandler $findCounterpartyQueryHandler,

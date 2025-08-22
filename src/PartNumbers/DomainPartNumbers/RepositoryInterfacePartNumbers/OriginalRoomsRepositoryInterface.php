@@ -24,4 +24,6 @@ interface  OriginalRoomsRepositoryInterface
     public function findByOriginalRooms(Participant $id_participant): ?array;
 
     public function findOriginalRooms(int $id): ?OriginalRooms;
+
+    public function findAllOriginalRooms(): ?array;
 }

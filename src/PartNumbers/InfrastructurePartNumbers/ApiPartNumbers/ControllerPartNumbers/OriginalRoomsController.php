@@ -76,6 +76,7 @@ class OriginalRoomsController extends AbstractController
     public function searchOriginalNumber(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        //FindAllOriginalRoomsQueryHandler $findAllOriginalRoomsQueryHandler,
         SearchOriginalRoomsQueryHandler $searchOriginalRoomsQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -85,6 +86,8 @@ class OriginalRoomsController extends AbstractController
 
         /*Валидация формы */
         $form_search_original_rooms->handleRequest($request);
+
+        //$search_data = $findAllOriginalRoomsQueryHandler->handler();
         $search_data = '';
         if ($form_search_original_rooms->isSubmitted()) {
             if ($form_search_original_rooms->isValid()) {

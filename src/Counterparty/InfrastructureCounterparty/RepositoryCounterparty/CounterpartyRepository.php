@@ -71,7 +71,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
     /**
      * @return array Возвращается массив с данными об удаление поставщика 
      */
-    public function delete(Counterparty $counterparty): array
+    public function delete(Counterparty $counterparty): int
     {
         try {
 
@@ -93,7 +93,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
             }
         }
 
-        return $successfully = ['delete' => 0];
+        return 0;
     }
 
     /**
@@ -101,14 +101,7 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
      */
     public function findAllCounterparty(): ?array
     {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT a.name_counterparty
-            FROM App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty a'
-        );
-
-        return $query->getResult();
+        return $this->findAll();
     }
 
     /**
@@ -116,34 +109,36 @@ class CounterpartyRepository extends ServiceEntityRepository implements Counterp
      */
     public function findByCounterparty(Participant $id_participant): ?array
     {
-        return $this->findBy(['id_participant' => $id_participant], ['id' => 'ASC']);
+        return $this->findBy(['id_participant' => $id_participant], ['name_counterparty' => 'ASC']);
     }
 
     /**
-     * @return Counterparty[]|NULL Возвращает массив объектов Поставщиков или ноль
+     * @return Counterparty|NULL Возвращает массив объектов Поставщиков или ноль
      */
-    public function findOneByCounterparty(string $name_counterparty, Participant $id_participant): ?array
+    public function findOneByCounterparty(string $name_counterparty, Participant $id_participant): ?Counterparty
     {
-        return $this->findBy(
-            ['name_counterparty' => $name_counterparty],
-            ['id_participant' => $id_participant],
-            ['id' => 'ASC']
+        return $this->findOneBy(
+            [
+                'name_counterparty' => $name_counterparty,
+                'id_participant' => $id_participant
+            ]
         );
     }
 
     /**
      * @return Counterparty|NULL Возвращает объект поставщика или ноль
      */
-    public function findCounterparty($id): ?Counterparty
+    public function findOneByIdCounterparty(int $id, Participant $id_participant): ?Counterparty
     {
-        return $this->find($id);
+
+        return $this->findOneBy(['id' => $id, 'id_participant' => $id_participant]);
     }
 
     /**
      * @return Counterparty|NULL Возвращает объектов или ноль
      */
-    public function findOneByIdCounterparty(string $name_counterparty): ?Counterparty
+    public function findCounterparty($id): ?Counterparty
     {
-        return $this->findOneBy(['name_counterparty' => $name_counterparty]);
+        return $this->find($id);
     }
 }

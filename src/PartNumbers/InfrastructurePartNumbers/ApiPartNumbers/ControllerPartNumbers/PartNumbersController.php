@@ -98,7 +98,7 @@ class PartNumbersController extends AbstractController
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindOneByOriginalRoomsPartNumbersQueryHandler $findOneByOriginalRoomsPartNumbersQueryHandler,
-        FindAllPartNumbersQueryHandler $findAllPartNumbersQueryHandler,
+        //FindAllPartNumbersQueryHandler $findAllPartNumbersQueryHandler,
         SearchPartNumbersQueryHandler $searchPartNumbersQueryHandler,
         ErrorMessageViaSession $errorMessageViaSession
     ): Response {
@@ -109,7 +109,8 @@ class PartNumbersController extends AbstractController
         /*Валидация формы */
         $form_search_part_numbers->handleRequest($request);
 
-        $search_data = $findAllPartNumbersQueryHandler->handler();
+        //$search_data = $findAllPartNumbersQueryHandler->handler();
+        $search_data = '';
         if ($form_search_part_numbers->isSubmitted()) {
             if ($form_search_part_numbers->isValid()) {
                 try {
