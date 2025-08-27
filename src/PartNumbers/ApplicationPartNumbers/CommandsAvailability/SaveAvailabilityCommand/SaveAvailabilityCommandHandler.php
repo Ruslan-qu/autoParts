@@ -22,12 +22,16 @@ final class SaveAvailabilityCommandHandler
     public function handler(AvailabilityCommand $availabilityCommand): ?int
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
-
-        $in_stock = $availabilityCommand->getInStock();
+        $in_stock = mb_ucfirst(mb_strtolower(preg_replace(
+            '#\s#',
+            '',
+            $availabilityCommand->getInStock()
+        )));
 
         $id_participant = $availabilityCommand->getIdParticipant();
+
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
 
         $input = [
             'in_stock_error' => [
@@ -42,7 +46,7 @@ final class SaveAvailabilityCommandHandler
                     message: 'Форма Наличие не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[а-яё]*$/ui',
                     message: 'Форма Наличие содержит недопустимые символы'
                 )
             ])

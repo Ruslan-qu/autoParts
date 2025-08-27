@@ -19,10 +19,17 @@ final class EditAvailabilityCommandHandler
 
     public function handler(AvailabilityCommand $availabilityCommand): ?int
     {
+
+        $edit_in_stock = mb_ucfirst(mb_strtolower(preg_replace(
+            '#\s#',
+            '',
+            $availabilityCommand->getInStock()
+        )));
+
+
+
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
-
-        $edit_in_stock = $availabilityCommand->getInStock();
 
         $input = [
             'in_stock_error' => [
@@ -34,11 +41,11 @@ final class EditAvailabilityCommandHandler
         $constraint = new Collection([
             'in_stock_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма Ось не может быть пустой'
+                    message: 'Форма Наличие не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
-                    message: 'Форма Ось содержит недопустимые символы'
+                    pattern: '/^[а-яё]*$/ui',
+                    message: 'Форма Наличие содержит недопустимые символы'
                 )
             ])
         ]);

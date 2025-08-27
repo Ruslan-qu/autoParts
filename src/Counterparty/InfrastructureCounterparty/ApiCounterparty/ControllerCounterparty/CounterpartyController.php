@@ -116,7 +116,8 @@ class CounterpartyController extends AbstractController
                         null,
                         $participant
                     );
-                    $search_data = $searchCounterpartyQueryHandler
+                    $search_data = [];
+                    $search_data[] = $searchCounterpartyQueryHandler
                         ->handler(new CounterpartyQuery($counterparty));
                 } catch (HttpException $e) {
 

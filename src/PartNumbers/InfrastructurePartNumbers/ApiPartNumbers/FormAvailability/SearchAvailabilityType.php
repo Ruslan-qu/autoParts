@@ -19,7 +19,7 @@ class SearchAvailabilityType extends AbstractType
                 'label' => 'Наличие',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё\s]*$/ui',
+                        'pattern' => '/^[а-яё]*$/u',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'
