@@ -19,7 +19,7 @@ class SaveAvailabilityType extends AbstractType
                 'label' => 'Наличие',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё]*$/u',
+                        'pattern' => '/^[а-яё]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                     недопустимые символы'

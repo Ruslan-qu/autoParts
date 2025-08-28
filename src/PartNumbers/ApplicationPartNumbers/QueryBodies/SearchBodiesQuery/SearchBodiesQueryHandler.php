@@ -22,12 +22,16 @@ final class SearchBodiesQueryHandler
     public function handler(BodiesQuery $bodiesQuery): ?array
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
+        $body = mb_ucfirst(mb_strtolower(preg_replace(
+            '#\s#',
+            '',
+            $bodiesQuery->getBody()
+        )));
 
-        $body = $bodiesQuery->getBody();
         $id_participant = $bodiesQuery->getIdParticipant();
 
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
         $input = [
             'body_error' => [
                 'NotBlank' => $body,
@@ -41,7 +45,7 @@ final class SearchBodiesQueryHandler
                     message: 'Форма Кузов не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[а-яё]*$/ui',
                     message: 'Форма Кузов содержит недопустимые символы'
                 )
             ])

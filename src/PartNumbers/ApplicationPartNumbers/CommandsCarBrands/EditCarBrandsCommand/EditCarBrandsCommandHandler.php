@@ -19,11 +19,15 @@ final class EditCarBrandsCommandHandler
 
     public function handler(CarBrandsCommand $carBrandsCommand): ?int
     {
+
+        $edit_car_brand = ucfirst(strtolower(preg_replace(
+            '#\s#',
+            '',
+            $carBrandsCommand->getCarBrand()
+        )));
+
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
-
-        $edit_car_brand = $carBrandsCommand->getCarBrand();
-
         $input = [
             'car_brand_error' => [
                 'NotBlank' => $edit_car_brand,
@@ -37,7 +41,7 @@ final class EditCarBrandsCommandHandler
                     message: 'Форма Марка не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[a-z\s]*$/i',
+                    pattern: '/^[a-z]*$/i',
                     message: 'Форма Марка содержит недопустимые символы'
                 )
             ])

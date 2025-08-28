@@ -22,13 +22,14 @@ final class SaveSidesCommandHandler
     public function handler(SidesCommand $sidesCommand): ?int
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
-
-        $side = $sidesCommand->getSide();
+        $side = mb_ucfirst(mb_strtolower(
+            $sidesCommand->getSide()
+        ));
 
         $id_participant = $sidesCommand->getIdParticipant();
 
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
         $input = [
             'side_error' => [
                 'NotBlank' => $side,

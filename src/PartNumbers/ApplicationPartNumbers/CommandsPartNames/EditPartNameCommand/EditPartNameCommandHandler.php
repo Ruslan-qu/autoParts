@@ -20,11 +20,13 @@ final class EditPartNameCommandHandler
 
     public function handler(PartNameCommand $partNameCommand): ?int
     {
+
+        $edit_part_name = mb_ucfirst(mb_strtolower(
+            $partNameCommand->getPartName()
+        ));
+
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
-
-        $edit_part_name = $partNameCommand->getPartName();
-
         $input = [
             'part_name_error' => [
                 'NotBlank' => $edit_part_name,
@@ -38,7 +40,7 @@ final class EditPartNameCommandHandler
                     message: 'Форма Название детали не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[а-яё/s]*$/ui',
                     message: 'Форма Название детали содержит недопустимые символы'
                 )
             ])

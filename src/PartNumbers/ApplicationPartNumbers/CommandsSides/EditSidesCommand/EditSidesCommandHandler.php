@@ -19,11 +19,13 @@ final class EditSidesCommandHandler
 
     public function handler(SidesCommand $sidesCommand): ?int
     {
+
+        $edit_side = mb_ucfirst(mb_strtolower(
+            $sidesCommand->getSide()
+        ));
+
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
-
-        $edit_side = $sidesCommand->getSide();
-
         $input = [
             'side_error' => [
                 'NotBlank' => $edit_side,

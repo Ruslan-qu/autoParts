@@ -22,12 +22,14 @@ final class SearchSidesQueryHandler
     public function handler(SidesQuery $sidesQuery): ?array
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
+        $side = mb_ucfirst(mb_strtolower(
+            $sidesQuery->getSide()
+        ));
 
-        $side = $sidesQuery->getSide();
         $id_participant = $sidesQuery->getIdParticipant();
 
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
         $input = [
             'side_error' => [
                 'NotBlank' => $side,

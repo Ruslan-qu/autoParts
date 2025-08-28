@@ -20,7 +20,7 @@ class EditAxlesType extends AbstractType
                 'label' => 'Ось',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё\s]*$/ui',
+                        'pattern' => '/^[а-яё]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'

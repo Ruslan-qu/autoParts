@@ -118,7 +118,7 @@ class SearchPartNumbersType extends AbstractType
                 'required' => false
             ])
             ->add('id_axle', EntityType::class, [
-                'label' => 'Перед Зад',
+                'label' => 'Ось',
                 'class' => Axles::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
 

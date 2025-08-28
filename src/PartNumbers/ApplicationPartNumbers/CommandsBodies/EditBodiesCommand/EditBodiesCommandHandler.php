@@ -19,11 +19,15 @@ final class EditBodiesCommandHandler
 
     public function handler(BodiesCommand $bodiesCommand): ?int
     {
+
+        $edit_body = mb_ucfirst(mb_strtolower(preg_replace(
+            '#\s#',
+            '',
+            $bodiesCommand->getBody()
+        )));
+
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
-
-        $edit_body = $bodiesCommand->getBody();
-
         $input = [
             'body_error' => [
                 'NotBlank' => $edit_body,
@@ -37,7 +41,7 @@ final class EditBodiesCommandHandler
                     message: 'Форма Кузов не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[а-яё]*$/ui',
                     message: 'Форма Кузов содержит недопустимые символы'
                 )
             ])

@@ -22,12 +22,16 @@ final class SearchCarBrandsQueryHandler
     public function handler(CarBrandsQuery $carBrandsQuery): ?array
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
+        $car_brand = ucfirst(strtolower(preg_replace(
+            '#\s#',
+            '',
+            $carBrandsQuery->getCarBrand()
+        )));
 
-        $car_brand = $carBrandsQuery->getCarBrand();
         $id_participant = $carBrandsQuery->getIdParticipant();
 
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
         $input = [
             'car_brand_error' => [
                 'NotBlank' => $car_brand,
@@ -41,7 +45,7 @@ final class SearchCarBrandsQueryHandler
                     message: 'Форма Марка не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[a-z\s]*$/i',
+                    pattern: '/^[a-z]*$/i',
                     message: 'Форма Марка содержит недопустимые символы'
                 )
             ])

@@ -22,13 +22,16 @@ final class SaveBodiesCommandHandler
     public function handler(BodiesCommand $bodiesCommand): ?int
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
-
-        $body = $bodiesCommand->getBody();
+        $body = mb_ucfirst(mb_strtolower(preg_replace(
+            '#\s#',
+            '',
+            $bodiesCommand->getBody()
+        )));
 
         $id_participant = $bodiesCommand->getIdParticipant();
 
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
         $input = [
             'body_error' => [
                 'NotBlank' => $body,
@@ -42,7 +45,7 @@ final class SaveBodiesCommandHandler
                     message: 'Форма Кузов не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[а-яё]*$/ui',
                     message: 'Форма Кузов содержит недопустимые символы'
                 )
             ])

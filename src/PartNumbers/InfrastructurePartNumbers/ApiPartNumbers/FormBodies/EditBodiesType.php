@@ -20,7 +20,7 @@ class EditBodiesType extends AbstractType
                 'label' => 'Кузов',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё\s]*$/ui',
+                        'pattern' => '/^[а-яё]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'

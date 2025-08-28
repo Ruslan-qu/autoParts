@@ -20,15 +20,17 @@ final class SearchPartNameQueryHandler
         private PartNameRepositoryInterface $partNameRepositoryInterface
     ) {}
 
-    public function handler(PartNameQuery $PartNameQuery): ?array
+    public function handler(PartNameQuery $partNameQuery): ?array
     {
+
+        $part_name = mb_ucfirst(mb_strtolower(
+            $partNameQuery->getPartName()
+        ));
+
+        $id_participant = $partNameQuery->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
-
-        $part_name = $PartNameQuery->getPartName();
-        $id_participant = $PartNameQuery->getIdParticipant();
-
         $input = [
             'part_name_error' => [
                 'NotBlank' => $part_name,
@@ -42,7 +44,7 @@ final class SearchPartNameQueryHandler
                     message: 'Форма Название детали не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[а-яё/s]*$/ui',
                     message: 'Форма Название детали содержит недопустимые символы'
                 )
             ])

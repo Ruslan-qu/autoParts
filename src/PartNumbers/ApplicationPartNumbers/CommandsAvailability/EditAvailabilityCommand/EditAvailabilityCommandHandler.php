@@ -26,8 +26,6 @@ final class EditAvailabilityCommandHandler
             $availabilityCommand->getInStock()
         )));
 
-
-
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 

@@ -19,7 +19,7 @@ class SearchCarBrandsType extends AbstractType
                 'label' => 'Марка',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[a-z\s]*$/i',
+                        'pattern' => '/^[a-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'

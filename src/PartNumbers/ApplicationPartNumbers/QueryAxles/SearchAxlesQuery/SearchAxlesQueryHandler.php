@@ -22,12 +22,16 @@ final class SearchAxlesQueryHandler
     public function handler(AxlesQuery $axlesQuery): ?array
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
+        $axle = mb_ucfirst(mb_strtolower(preg_replace(
+            '#\s#',
+            '',
+            $axlesQuery->getAxle()
+        )));
 
-        $axle = $axlesQuery->getAxle();
         $id_participant = $axlesQuery->getIdParticipant();
 
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
         $input = [
             'axle_error' => [
                 'NotBlank' => $axle,

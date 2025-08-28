@@ -22,13 +22,16 @@ final class SaveAxlesCommandHandler
     public function handler(AxlesCommand $axlesCommand): ?int
     {
 
-        /* Подключаем валидацию и прописываем условида валидации */
-        $validator = Validation::createValidator();
-
-        $axle = $axlesCommand->getAxle();
+        $axle = mb_ucfirst(mb_strtolower(preg_replace(
+            '#\s#',
+            '',
+            $axlesCommand->getAxle()
+        )));
 
         $id_participant = $axlesCommand->getIdParticipant();
 
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
         $input = [
             'axle_error' => [
                 'NotBlank' => $axle,
@@ -42,7 +45,7 @@ final class SaveAxlesCommandHandler
                     message: 'Форма Ось не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\s]*$/ui',
+                    pattern: '/^[а-яё]*$/ui',
                     message: 'Форма Ось содержит недопустимые символы'
                 )
             ])
