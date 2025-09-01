@@ -28,7 +28,7 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\DTOCommands\DTOAxlesObj
 class AxlesController extends AbstractController
 {
     /*Сохранения Оси авто*/
-    #[Route('/saveAxle', name: 'save_axle')]
+    #[Route('saveAxle', name: 'save_axle')]
     public function saveAxle(
         Request $request,
         SaveAxlesCommandHandler $saveAxlesCommandHandler,
