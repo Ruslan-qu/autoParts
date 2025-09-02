@@ -12,6 +12,7 @@ twig:
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/Axles': 'axles'
         'src/PartNumbers/InfrastructurePartNumbers/ApiPartNumbers/templatesAccessoriesParts/Availability': 'availability'
         'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesAutoPartsWarehouse': 'autoPartsWarehouse'
+        'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesPaymentMethod': 'paymentMethod'
         'src/Sales/InfrastructureSales/ApiSales/templatesSales': 'sales'
         'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'registerAuthenticationParticipant'
         'src/Main/InfrastructureMain/ApiMain/templatesMain': 'main'

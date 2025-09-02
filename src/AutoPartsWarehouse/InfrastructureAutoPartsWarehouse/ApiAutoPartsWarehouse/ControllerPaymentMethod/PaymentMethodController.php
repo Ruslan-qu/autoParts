@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\EditPaymentMethodType;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\SavePaymentMethodType;
+use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\SearchPaymentMethodType;
 
 class PaymentMethodController extends AbstractController
 {
