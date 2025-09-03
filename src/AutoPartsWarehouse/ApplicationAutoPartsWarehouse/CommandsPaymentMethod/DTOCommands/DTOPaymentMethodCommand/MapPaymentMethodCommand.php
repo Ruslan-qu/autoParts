@@ -1,13 +1,12 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DTOCommands\DTOPaymentMethodCommand;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-
-use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 
-abstract class MapPaymentMethodQuery
+abstract class MapPaymentMethodCommand
 {
 
     public function __construct(array $data = [])
@@ -18,12 +17,12 @@ abstract class MapPaymentMethodQuery
     private function load(array $data)
     {
         $typeResolver = TypeResolver::create();
-        // dd($data);
+
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                $input_errors = new InputErrors;
+                $input_errors = new InputErrorsAutoPartsWarehouse;
                 $input_errors->propertyExistsEntity(PaymentMethod::class, $key, 'PaymentMethod');
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(PaymentMethod::class, $key))
@@ -31,6 +30,15 @@ abstract class MapPaymentMethodQuery
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
+                if ($type == 'object') {
+
+                    $className = $typeResolver->resolve(new \ReflectionProperty(PaymentMethod::class, $key))
+                        ->getBaseType()
+                        ->getClassName();
+
+                    $input_errors->comparingClassNames($className, $value, $key);
+                }
+
                 $this->$key = $value;
             }
         }

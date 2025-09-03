@@ -11,6 +11,8 @@ use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInt
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\EditPaymentMethodType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\SavePaymentMethodType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\SearchPaymentMethodType;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DTOCommands\DTOPaymentMethodCommand\PaymentMethodCommand;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\SavePaymentMethodCommand\SavePaymentMethodCommandHandler;
 
 class PaymentMethodController extends AbstractController
 {
@@ -18,7 +20,7 @@ class PaymentMethodController extends AbstractController
     #[Route('saveMethod', name: 'save_method')]
     public function saveMethod(
         Request $request,
-        //SavePaymentMethodCommandHandler $savePaymentMethodCommandHandler,
+        SavePaymentMethodCommandHandler $savePaymentMethodCommandHandler,
         AdapterUserExtractionInterface $adapterUserExtractionInterface
     ): Response {
 
@@ -57,6 +59,7 @@ class PaymentMethodController extends AbstractController
     public function searchMethod(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        //FindAllPaymentMethodQueryHandler $findAllPaymentMethodQueryHandler,
         //FindByPaymentMethodQueryHandler $findByPaymentMethodQueryHandler,
         //SearchPaymentMethodQueryHandler $searchPaymentMethodQueryHandler
     ): Response {
@@ -72,6 +75,7 @@ class PaymentMethodController extends AbstractController
             $participant = $adapterUserExtractionInterface->userExtraction();
             $payment_method = $this->mapPaymentMethod(null, null, $participant);
             $search_data = $findByPaymentMethodQueryHandler->handler(new PaymentMethodQuery($payment_method));
+            //$search_data = $findAllPaymentMethodQueryHandler->handler();
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);

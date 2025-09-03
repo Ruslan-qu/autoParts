@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\DTOQuery;
 
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
-use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
-use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 
-abstract class MapCounterpartyCommand
+abstract class MapPaymentMethodQuery
 {
 
     public function __construct(array $data = [])
@@ -16,23 +16,24 @@ abstract class MapCounterpartyCommand
 
     private function load(array $data)
     {
+
         $typeResolver = TypeResolver::create();
 
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                $input_errors = new InputErrors;
-                $input_errors->propertyExistsEntity(Counterparty::class, $key, 'Counterparty');
+                $input_errors = new InputErrorsAutoPartsWarehouse;
+                $input_errors->propertyExistsEntity(PaymentMethod::class, $key, 'PaymentMethod');
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(PaymentMethod::class, $key))
                     ->getBaseType()
                     ->getTypeIdentifier()
                     ->value;
                 settype($value, $type);
                 if ($type == 'object') {
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
+                    $className = $typeResolver->resolve(new \ReflectionProperty(PaymentMethod::class, $key))
                         ->getBaseType()
                         ->getClassName();
 

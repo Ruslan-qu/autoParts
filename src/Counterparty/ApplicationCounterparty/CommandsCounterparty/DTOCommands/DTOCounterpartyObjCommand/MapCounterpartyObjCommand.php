@@ -3,7 +3,7 @@
 namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands\DTOCounterpartyObjCommand;
 
 use Symfony\Component\TypeInfo\Type;
-use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
+use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 
 abstract class MapCounterpartyObjCommand
@@ -21,7 +21,7 @@ abstract class MapCounterpartyObjCommand
             if (!empty($value)) {
                 $type = Type::object(Counterparty::class);
                 $className = $type->getBaseType()->getClassName();
-                $input_errors = new InputErrorsPartNumbers;
+                $input_errors = new InputErrors;
                 $input_errors->comparingClassNames($className, $value, $key);
                 $this->$key = $value;
             }
