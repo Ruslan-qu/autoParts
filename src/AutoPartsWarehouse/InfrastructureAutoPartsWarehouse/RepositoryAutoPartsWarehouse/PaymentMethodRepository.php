@@ -115,7 +115,7 @@ class PaymentMethodRepository extends ServiceEntityRepository implements Payment
     /**
      * @return PaymentMethod|NULL Возвращает объект или ноль
      */
-    /*public function findOneByPaymentMethod(string $method, Participant $id_participant): ?PaymentMethod
+    public function findOneByPaymentMethod(string $method, Participant $id_participant): ?PaymentMethod
     {
         return $this->findOneBy(
             [
@@ -123,7 +123,7 @@ class PaymentMethodRepository extends ServiceEntityRepository implements Payment
                 'id_participant' => $id_participant
             ]
         );
-    }*/
+    }
 
     /**
      * @return PaymentMethod|NULL Возвращает объект или ноль
@@ -145,8 +145,8 @@ class PaymentMethodRepository extends ServiceEntityRepository implements Payment
     /**
      * @return PaymentMethod|NULL Возвращает объектов или ноль
      */
-    public function findOneByPaymentMethod(int|null $id): ?PaymentMethod
+    /* public function findOneByPaymentMethod(int|null $id): ?PaymentMethod
     {
         return $this->findOneBy(['id' => $id]);
-    }
+    }*/
 }

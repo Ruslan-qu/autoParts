@@ -1,23 +1,27 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\SearchPaymentMethodQuery;
 
-use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
-use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\DTOQuery\PaymentMethodQuery;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\PaymentMethodRepositoryInterface;
 
 
-final class FindByCounterpartyQueryHandler
+final class FindByPaymentMethodQueryHandler
 {
 
     public function __construct(
-        private CounterpartyRepositoryInterface $counterpartyRepositoryInterface
+        private InputErrorsAutoPartsWarehouse $inputErrorsAutoPartsWarehouse,
+        private PaymentMethodRepositoryInterface $paymentMethodRepositoryInterface
     ) {}
 
-    public function handler(CounterpartyQuery $counterpartyQuery): ?array
+    public function handler(PaymentMethodQuery $paymentMethodQuery): ?array
     {
-        $id_participant = $counterpartyQuery->getIdParticipant();
-        $arr_counterparty = $this->counterpartyRepositoryInterface->findByCounterparty($id_participant);
+        $id_participant = $paymentMethodQuery->getIdParticipant();
+        $this->inputErrorsAutoPartsWarehouse->userIsNotIdentified($id_participant);
 
-        return $arr_counterparty;
+        $arr_payment_method = $this->paymentMethodRepositoryInterface->findByPaymentMethod($id_participant);
+
+        return $arr_payment_method;
     }
 }

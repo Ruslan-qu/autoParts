@@ -1,17 +1,16 @@
 <?php
 
-namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\SavePaymentMethodCommand;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\EditPaymentMethodCommand;
 
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\PaymentMethodRepositoryInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DTOCommands\DTOPaymentMethodCommand\PaymentMethodCommand;
 
-final class SavePaymentMethodCommandHandler
+final class EditPaymentMethodCommandHandler
 {
 
     public function __construct(
@@ -19,21 +18,20 @@ final class SavePaymentMethodCommandHandler
         private PaymentMethodRepositoryInterface $paymentMethodRepositoryInterface
     ) {}
 
-    public function handler(PaymentMethodCommand $paymentMethodCommand): int
+    public function handler(PaymentMethodCommand $paymentMethodCommand): ?int
     {
+        $edit_method = mb_ucfirst(mb_strtolower($paymentMethodCommand->getMethod()));
 
-        $method = mb_ucfirst(mb_strtolower($paymentMethodCommand->getMethod()));
-
-        $id_participant = $paymentMethodCommand->getIdParticipant();
-        $this->inputErrorsAutoPartsWarehouse->userIsNotIdentified($id_participant);
+        $participant = $paymentMethodCommand->getIdParticipant();
+        $this->inputErrorsAutoPartsWarehouse->userIsNotIdentified($participant);
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
         $input = [
             'method_error' => [
-                'NotBlank' => $method,
-                'Regex' => $method,
+                'NotBlank' => $edit_method,
+                'Regex' => $edit_method,
             ]
         ];
 
@@ -52,15 +50,28 @@ final class SavePaymentMethodCommandHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsAutoPartsWarehouse->errorValidate($errors_validate);
 
-        /* Валидация дублей */
-        $count_duplicate = $this->paymentMethodRepositoryInterface
-            ->numberDoubles(['method' => $method]);
-        $this->inputErrorsAutoPartsWarehouse->errorDuplicate($count_duplicate);
+        $id = $paymentMethodCommand->getId();
+        $this->inputErrorsAutoPartsWarehouse->emptyData($id);
 
-        $payment_method = new PaymentMethod;
-        $payment_method->setMethod($method);
-        $payment_method->setIdParticipant($id_participant);
+        $payment_method = $this->paymentMethodRepositoryInterface->findPaymentMethod($id);
+        $this->inputErrorsAutoPartsWarehouse->emptyEntity($payment_method);
 
-        return $this->paymentMethodRepositoryInterface->save($payment_method);
+        $this->countDuplicate($edit_method, $payment_method->getMethod());
+
+        $payment_method->setMethod($edit_method);
+
+        return $this->paymentMethodRepositoryInterface->edit($payment_method);
+    }
+
+    private function countDuplicate(string $edit_method, string $method): static
+    {
+        if ($edit_method != $method) {
+            /* Валидация дублей */
+            $count_duplicate = $this->paymentMethodRepositoryInterface
+                ->numberDoubles(['method' => $edit_method]);
+            $this->inputErrorsAutoPartsWarehouse->errorDuplicate($count_duplicate);
+        }
+
+        return $this;
     }
 }

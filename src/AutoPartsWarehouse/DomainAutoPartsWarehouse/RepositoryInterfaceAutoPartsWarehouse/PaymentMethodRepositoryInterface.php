@@ -20,11 +20,11 @@ interface PaymentMethodRepositoryInterface
 
     public function findByPaymentMethod(Participant $id_participant): ?array;
 
-    // public function findOneByPaymentMethod(string $method, Participant $id_participant): ?PaymentMethod;
+    public function findOneByPaymentMethod(string $method, Participant $id_participant): ?PaymentMethod;
 
     public function findPaymentMethod($id): ?PaymentMethod;
 
     public function findOneByIdPaymentMethod(int $id, Participant $id_participant): ?PaymentMethod;
 
-    public function findOneByPaymentMethod(int|null $id): ?PaymentMethod;
+    //public function findOneByPaymentMethod(int|null $id): ?PaymentMethod;
 }

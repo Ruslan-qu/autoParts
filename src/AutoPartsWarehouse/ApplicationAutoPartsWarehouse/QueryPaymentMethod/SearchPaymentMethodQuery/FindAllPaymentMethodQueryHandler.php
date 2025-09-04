@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery;
+namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\SearchPaymentMethodQuery;
 
-use App\Counterparty\DomainCounterparty\RepositoryInterfaceCounterparty\CounterpartyRepositoryInterface;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\PaymentMethodRepositoryInterface;
 
 
-final class FindAllCounterpartyQueryHandler
+final class FindAllPaymentMethodQueryHandler
 {
 
     public function __construct(
-        private CounterpartyRepositoryInterface $counterpartyRepositoryInterface
+        private PaymentMethodRepositoryInterface $paymentMethodRepositoryInterface
     ) {}
 
     public function handler(): ?array
     {
 
-        $counterparty = $this->counterpartyRepositoryInterface->findAllCounterparty();
+        $paymentMethod = $this->paymentMethodRepositoryInterface->findAllPaymentMethod();
 
-        return $counterparty;
+        return $paymentMethod;
     }
 }

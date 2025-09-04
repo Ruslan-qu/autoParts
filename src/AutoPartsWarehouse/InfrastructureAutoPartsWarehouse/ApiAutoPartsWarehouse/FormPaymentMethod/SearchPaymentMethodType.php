@@ -20,7 +20,7 @@ class SearchPaymentMethodType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё]*$/ui',
+                        'pattern' => '/^[а-яё\s]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                     недопустимые символы'

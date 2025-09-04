@@ -16,11 +16,11 @@ class EditPaymentMethodType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('$method', TextType::class, [
+            ->add('method', TextType::class, [
                 'label' => 'Способ оплаты',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[а-яё]*$/ui',
+                        'pattern' => '/^[а-яё\s]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'
@@ -32,7 +32,7 @@ class EditPaymentMethodType extends AbstractType
                 ]
             ])
             ->add('id', HiddenType::class)
-            ->add('button_$method', SubmitType::class, [
+            ->add('button_method', SubmitType::class, [
                 'label' => 'Изменить'
             ])
         ;

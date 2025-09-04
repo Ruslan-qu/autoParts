@@ -8,11 +8,20 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\DTOQuery\PaymentMethodQuery;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\EditPaymentMethodType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\SavePaymentMethodType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormPaymentMethod\SearchPaymentMethodType;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\DeletePaymentMethodQuery\FindPaymentMethodQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\SearchPaymentMethodQuery\FindByPaymentMethodQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\SearchPaymentMethodQuery\SearchPaymentMethodQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\SearchPaymentMethodQuery\FindAllPaymentMethodQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DTOCommands\DTOPaymentMethodCommand\PaymentMethodCommand;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\EditPaymentMethodCommand\EditPaymentMethodCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\SavePaymentMethodCommand\SavePaymentMethodCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\EditPaymentMethodQuery\FindOneByIdPaymentMethodQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DeletePaymentMethodCommand\DeletePaymentMethodCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DTOCommands\DTOPaymentMethodObjCommand\PaymentMethodObjCommand;
 
 class PaymentMethodController extends AbstractController
 {
@@ -37,7 +46,7 @@ class PaymentMethodController extends AbstractController
                 try {
 
                     $participant = $adapterUserExtractionInterface->userExtraction();
-                    $payment_method = $this->mapPaymentMethod(null, $form_save_payment_method->getData()['$method'], $participant);
+                    $payment_method = $this->mapPaymentMethod(null, $form_save_payment_method->getData()['method'], $participant);
                     $id = $savePaymentMethodCommandHandler
                         ->handler(new PaymentMethodCommand($payment_method));
                 } catch (HttpException $e) {
@@ -60,8 +69,8 @@ class PaymentMethodController extends AbstractController
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         //FindAllPaymentMethodQueryHandler $findAllPaymentMethodQueryHandler,
-        //FindByPaymentMethodQueryHandler $findByPaymentMethodQueryHandler,
-        //SearchPaymentMethodQueryHandler $searchPaymentMethodQueryHandler
+        FindByPaymentMethodQueryHandler $findByPaymentMethodQueryHandler,
+        SearchPaymentMethodQueryHandler $searchPaymentMethodQueryHandler
     ): Response {
 
         /*Форма поиска*/
@@ -90,7 +99,8 @@ class PaymentMethodController extends AbstractController
                         $form_search_payment_method->getData()['method'],
                         $participant
                     );
-                    $search_data = $searchPaymentMethodQueryHandler
+                    $search_data = [];
+                    $search_data['payment_method'] = $searchPaymentMethodQueryHandler
                         ->handler(new PaymentMethodQuery($payment_method));
                 } catch (HttpException $e) {
 
@@ -112,8 +122,8 @@ class PaymentMethodController extends AbstractController
     public function editMethod(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        //FindOneByIdPaymentMethodQueryHandler $findOneByIdPaymentMethodQueryHandler,
-        //EditPaymentMethodCommandHandler $editPaymentMethodCommandHandler
+        FindOneByIdPaymentMethodQueryHandler $findOneByIdPaymentMethodQueryHandler,
+        EditPaymentMethodCommandHandler $editPaymentMethodCommandHandler
     ): Response {
 
         /*Форма Редактирования*/
@@ -184,12 +194,12 @@ class PaymentMethodController extends AbstractController
     #[Route('deleteMethod', name: 'delete_method')]
     public function deleteMethod(
         Request $request,
-        //FindPaymentMethodQueryHandler $findPaymentMethodQueryHandler,
-        // DeletePaymentMethodCommandHandler $deletePaymentMethodCommandHandler,
+        FindPaymentMethodQueryHandler $findPaymentMethodQueryHandler,
+        DeletePaymentMethodCommandHandler $deletePaymentMethodCommandHandler,
     ): Response {
         try {
 
-            $payment_method = $findPaymentMethodQueryHandler
+            $payment_method['payment_method'] = $findPaymentMethodQueryHandler
                 ->handler(new PaymentMethodQuery($request->query->all()));
 
             $deletePaymentMethodCommandHandler
