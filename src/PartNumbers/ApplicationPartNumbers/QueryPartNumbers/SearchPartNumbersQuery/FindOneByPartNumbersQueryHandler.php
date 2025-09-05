@@ -25,7 +25,9 @@ final class FindOneByPartNumbersQueryHandler
         ));
         $this->inputErrorsPartNumbers->emptyData($part_number);
 
-        $findOneByPartNumbers = $this->partNumbersRepositoryInterface->findOneByPartNumber($part_number);
+        $id_participant = $partNumbersQuery->getIdParticipant();
+
+        $findOneByPartNumbers = $this->partNumbersRepositoryInterface->findOneByPartNumber($part_number, $id_participant);
 
         return $findOneByPartNumbers;
     }

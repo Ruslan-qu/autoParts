@@ -156,9 +156,9 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
     /**
      * @return PartNumbersFromManufacturers|NULL Возвращает массив объектов или ноль
      */
-    public function findOneByPartNumber(string $part_number): ?PartNumbersFromManufacturers
+    public function findOneByPartNumber(string $part_number, Participant $id_participant): ?PartNumbersFromManufacturers
     {
-        return $this->findOneBy(['part_number' => $part_number]);
+        return $this->findOneBy(['part_number' => $part_number, 'id_participant' => $id_participant]);
     }
 
     /**

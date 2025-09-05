@@ -106,9 +106,8 @@ final class SavePartNumbersCommandHandler
         $partNumbersFromManufacturers->setIdParticipant($id_participant);
 
 
-        $successfully_save = $this->partNumbersRepositoryInterface->save($partNumbersFromManufacturers);
+        $id = $this->partNumbersRepositoryInterface->save($partNumbersFromManufacturers);
 
-        $id = $successfully_save['save'];
         return $id;
     }
 }

@@ -6,7 +6,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartName
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DTOQuery\DTOPartNumbersQuery\PartNumbersQuery;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
-use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\EditPartNumbersQuery\FindIdPartNumbersQueryHandler;
+use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\DeletePartNumbersQuery\FindPartNumbersQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\QueryPartNumbers\SearchPartNumbersQuery\FindOneByPartNameQueryHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\SavePartNumbersCommand\SavePartNumbersCommandHandler;
@@ -20,7 +20,7 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
         private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
         private FindOneByPartNumbersQueryHandler $findOneByPartNumbersQueryHandler,
         private SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
-        private FindIdPartNumbersQueryHandler $findIdPartNumbersQueryHandler,
+        private FindPartNumbersQueryHandler $findPartNumbersQueryHandler,
         private FindOneByPartNameQueryHandler $findOneByPartNameQueryHandler,
     ) {}
 
@@ -28,18 +28,12 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
     public function searchIdDetails(array $arr_part_number): ?PartNumbersFromManufacturers
     {
 
-        $map_arr_part_numbers = ['part_number' => $arr_part_number['id_details']];
-        $part_number = $this->findOneByPartNumbersQueryHandler
-            ->handler(new PartNumbersQuery($map_arr_part_numbers));
+        $part_number = $this->findOneByPartNumbersQueryHandler->handler(new PartNumbersQuery($arr_part_number));
 
         if (empty($part_number)) {
 
-            $arr_saving_information['id'] = $this->savePartNumbersCommandHandler
-                ->handler(new PartNumbersCommand($map_arr_part_numbers));
-
-
-            $part_number = $this->findIdPartNumbersQueryHandler
-                ->handler(new PartNumbersQuery($arr_saving_information));
+            $id['id'] = $this->savePartNumbersCommandHandler->handler(new PartNumbersCommand($arr_part_number));
+            $part_number = $this->findPartNumbersQueryHandler->handler(new PartNumbersQuery($id));
         }
 
         return $part_number;

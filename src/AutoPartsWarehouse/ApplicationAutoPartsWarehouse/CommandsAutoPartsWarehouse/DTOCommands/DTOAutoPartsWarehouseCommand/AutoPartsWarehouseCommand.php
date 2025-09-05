@@ -2,6 +2,7 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
@@ -27,6 +28,8 @@ final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
     protected ?PaymentMethod $id_payment_method = null;
 
     protected ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
+
+    protected ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -71,5 +74,10 @@ final class AutoPartsWarehouseCommand extends MapAutoPartsWarehouseCommand
     public function getDateReceiptAutoPartsWarehouse(): ?\DateTimeImmutable
     {
         return $this->date_receipt_auto_parts_warehouse;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
     }
 }

@@ -12,6 +12,7 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingApi;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingEmail;
 use App\Sales\DomainSales\AdaptersInterface\AdapterAutoPartsWarehouseSalesInterface;
+use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
 use App\Counterparty\DomainCounterparty\AdaptersInterface\AdapterAutoPartsWarehouseCounterpartyInterface;
@@ -43,9 +44,10 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 class AutoPartsWarehouseController extends AbstractController
 {
     /*функция сохранения в ручную входящих автодеталей */
-    #[Route('/admin/saveAutoPartsManually', name: 'save_auto_parts_manually')]
+    #[Route('saveAutoPartsManually', name: 'save_auto_parts_manually')]
     public function saveAutoPartsManually(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         SaveAutoPartsWarehouseCommandHandler $saveAutoPartsWarehouseCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
     ): Response {
@@ -61,12 +63,13 @@ class AutoPartsWarehouseController extends AbstractController
             if ($form_save_auto_parts_manually->isValid()) {
 
                 try {
-
-                    $map_arr_id_details = [
-                        'id_details' => $form_save_auto_parts_manually->getData()['id_details']
-                    ];
+                    $participant = $adapterUserExtractionInterface->userExtraction();
+                    $part_number = $this->mapPartNumber(
+                        $form_save_auto_parts_manually->getData()['part_number'],
+                        $participant
+                    );
                     $part_number = $adapterAutoPartsWarehousePartNumbersInterface
-                        ->searchIdDetails($map_arr_id_details);
+                        ->searchIdDetails($part_number);
                     $map_arr_part_number_manufactur = ['id_details' => $part_number];
                     $data_save_auto_parts_manually = array_replace(
                         $form_save_auto_parts_manually->getData(),
@@ -90,7 +93,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*функция сохранения из фаил автодеталей на склад*/
-    #[Route('/admin/saveAutoPartsFile', name: 'save_auto_parts_file')]
+    #[Route('saveAutoPartsFile', name: 'save_auto_parts_file')]
     public function saveAutoPartsFile(
         Request $request,
         SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
@@ -283,7 +286,7 @@ class AutoPartsWarehouseController extends AbstractController
 
 
     /*Поиск автодеталей на сладе*/
-    #[Route('/profile/searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
+    #[Route('searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
     public function searchAutoPartsWarehouse(
         Request $request,
         FindByAutoPartsWarehouseQueryHandler $findByAutoPartsWarehouseQueryHandler,
@@ -320,7 +323,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*Редактирования наличия автодеталей на складе*/
-    #[Route('/admin/editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
+    #[Route('editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
     public function editAutoPartsWarehouse(
         Request $request,
         FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
@@ -397,7 +400,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     /*Удаление автодетали*/
-    #[Route('/admin/deleteAutoPartsWarehouse', name: 'delete_auto_parts_warehouse')]
+    #[Route('deleteAutoPartsWarehouse', name: 'delete_auto_parts_warehouse')]
     public function deleteAutoPartsWarehouse(
         Request $request,
         FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
@@ -444,6 +447,16 @@ class AutoPartsWarehouseController extends AbstractController
         }
 
         return $this;
+    }
+
+    private function mapPartNumber(
+        $part_number,
+        $participant
+    ): array {
+        $arr_part_number['part_number'] = $part_number;
+        $arr_part_number['id_participant'] = $participant;
+
+        return $arr_part_number;
     }
 
     private function mapFileData(array $file_data_array): array

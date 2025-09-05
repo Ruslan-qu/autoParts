@@ -17,7 +17,7 @@ interface  PartNumbersRepositoryInterface
 
     public function findByPartNumbers(array $parameters, string $where): ?array;
 
-    public function findOneByPartNumber(string $part_number): ?PartNumbersFromManufacturers;
+    public function findOneByPartNumber(string $part_number, Participant $id_participant): ?PartNumbersFromManufacturers;
 
     public function findOneByIdPartNumber(int $id, Participant $id_participant): ?array;
 

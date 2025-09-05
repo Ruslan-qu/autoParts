@@ -2,6 +2,7 @@
 
 namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
@@ -40,6 +41,9 @@ class AutoPartsWarehouse
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
+
+    #[ORM\ManyToOne]
+    private ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -138,6 +142,18 @@ class AutoPartsWarehouse
     public function setDateReceiptAutoPartsWarehouse(?\DateTimeImmutable $date_receipt_auto_parts_warehouse): static
     {
         $this->date_receipt_auto_parts_warehouse = $date_receipt_auto_parts_warehouse;
+
+        return $this;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
+    }
+
+    public function setIdParticipant(?Participant $id_participant): static
+    {
+        $this->id_participant = $id_participant;
 
         return $this;
     }
