@@ -11,7 +11,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehous
 
 class ReadingFileXLSX
 {
-    public function reading(AutoPartsFile $autoPartsFile)
+    public function reading(AutoPartsFile $autoPartsFile): ?array
     {
         $file = $autoPartsFile->getFileSave();
 

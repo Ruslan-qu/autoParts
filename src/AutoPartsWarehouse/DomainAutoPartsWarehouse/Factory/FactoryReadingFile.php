@@ -11,29 +11,31 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehous
 
 class FactoryReadingFile
 {
-    public static function choiceReadingFile(AutoPartsFile $autoPartsFile)
+    public static function choiceReadingFile(AutoPartsFile $autoPartsFile): ?array
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($autoPartsFile->getFileSave());
-
+        $arr_file = [];
         if ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'xlsx') {
 
             $readingFileXLSX = new ReadingFileXLSX;
-            return $readingFileXLSX->reading($autoPartsFile);
+            $arr_file = $readingFileXLSX->reading($autoPartsFile);
         } elseif ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'xml') {
 
             $readingFileXML = new ReadingFileXML;
-            return $readingFileXML->reading($autoPartsFile);
+            $arr_file = $readingFileXML->reading($autoPartsFile);
         } elseif ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'csv') {
 
             $readingFileCSV = new ReadingFileCSV;
-            return $readingFileCSV->reading($autoPartsFile);
+            $arr_file = $readingFileCSV->reading($autoPartsFile);
         } elseif ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'ods') {
 
             $readingFileODS = new ReadingFileODS;
-            return $readingFileODS->reading($autoPartsFile);
+            $arr_file = $readingFileODS->reading($autoPartsFile);
         }
 
         $input_errors->determiningFileExtension();
+
+        return $arr_file;
     }
 }
