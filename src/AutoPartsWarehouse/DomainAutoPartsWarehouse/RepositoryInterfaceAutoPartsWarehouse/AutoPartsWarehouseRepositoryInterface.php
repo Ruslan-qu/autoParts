@@ -13,7 +13,7 @@ interface AutoPartsWarehouseRepositoryInterface
 
     public function flushData($entityManager, $autoPartsWarehouse, $count_key): array;
 
-    public function save(AutoPartsWarehouse $autoPartsWarehouse): array;
+    public function save(AutoPartsWarehouse $autoPartsWarehouse): int;
 
     public function edit(AutoPartsWarehouse $autoPartsWarehouse): array;
 

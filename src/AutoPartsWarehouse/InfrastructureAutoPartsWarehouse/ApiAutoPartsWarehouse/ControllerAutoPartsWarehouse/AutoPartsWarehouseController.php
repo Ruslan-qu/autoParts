@@ -24,6 +24,7 @@ use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehous
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsEmailType;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\SearchPaymentMethodQuery\FindOneByPaymentMethodQuery;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
@@ -72,10 +73,16 @@ class AutoPartsWarehouseController extends AbstractController
                     );
                     $part_number = $adapterAutoPartsWarehousePartNumbersInterface
                         ->searchIdDetails($part_number);
-                    $map_arr_part_number_manufactur = ['id_details' => $part_number];
-                    $data_save_auto_parts_manually = array_replace(
-                        $form_save_auto_parts_manually->getData(),
-                        $map_arr_part_number_manufactur
+
+                    $data_save_auto_parts_manually = $this->mapAutoPartsWarehouse(
+                        $form_save_auto_parts_manually->getData()['id'],
+                        $part_number,
+                        $form_save_auto_parts_manually->getData()['id_counterparty'],
+                        $form_save_auto_parts_manually->getData()['quantity'],
+                        $form_save_auto_parts_manually->getData()['price'],
+                        $form_save_auto_parts_manually->getData()['date_receipt_auto_parts_warehouse'],
+                        $form_save_auto_parts_manually->getData()['id_payment_method'],
+                        $part_number->getIdParticipant()
                     );
 
                     $id = $saveAutoPartsWarehouseCommandHandler
@@ -102,7 +109,7 @@ class AutoPartsWarehouseController extends AbstractController
         SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
-        FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler
+        FindOneByPaymentMethodQuery $findOneByPaymentMethodQuery
     ): Response {
 
         /*Подключаем формы*/
@@ -129,8 +136,8 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
                         ->counterpartySearch($map_file_data['arr_counterparty']);
 
-                    $arr_method = $findOneByPaymentMethodQueryHandler
-                        ->handler(new ArrPaymentMethodQuery($map_file_data['arr_payment_method']));
+                    $arr_method = $findOneByPaymentMethodQuery
+                        ->handler($map_file_data['arr_payment_method']);
 
                     $map_processed_data = $this->mapProcessedData(
                         $file_data_array,
@@ -464,6 +471,29 @@ class AutoPartsWarehouseController extends AbstractController
         return $arr_part_number;
     }
 
+    private function mapAutoPartsWarehouse(
+        $id,
+        $part_number,
+        $counterparty,
+        $quantity,
+        $price,
+        $date_receipt_auto_parts_warehouse,
+        $payment_method,
+        $participant
+    ): array {
+        $arr_auto_parts_warehouse['id'] = $id;
+        $arr_auto_parts_warehouse['id_details'] = $part_number;
+        $arr_auto_parts_warehouse['id_counterparty'] = $counterparty;
+        $arr_auto_parts_warehouse['quantity'] = $quantity;
+        $arr_auto_parts_warehouse['price'] = $price;
+        $arr_auto_parts_warehouse['date_receipt_auto_parts_warehouse'] = $date_receipt_auto_parts_warehouse;
+        $arr_auto_parts_warehouse['id_payment_method'] = $payment_method;
+        $arr_auto_parts_warehouse['id_participant'] = $participant;
+
+        return $arr_auto_parts_warehouse;
+    }
+
+
     private function mapFileData(array $file_data_array, Participant $participant): array
     {
 
@@ -472,17 +502,17 @@ class AutoPartsWarehouseController extends AbstractController
             $arr_part_number[$key] =
                 [
                     'part_number' => $value['part_number'],
-                    'participant' => $participant
+                    'id_participant' => $participant
                 ];
             $arr_counterparty[$key] =
                 [
                     'name_counterparty' => $value['counterparty'],
-                    'participant' => $participant
+                    'id_participant' => $participant
                 ];
             $arr_payment_method[$key] =
                 [
-                    'id' => $value['payment_method'],
-                    'participant' => $participant
+                    'method' => $value['payment_method'],
+                    'id_participant' => $participant
                 ];
         }
         $map_file_data = [
@@ -501,14 +531,17 @@ class AutoPartsWarehouseController extends AbstractController
     ): array {
         $arr_processed_data = [];
         foreach ($file_data_array as $key => $value) {
-            unset(
-                $value['part_name'],
-                $value['manufacturer'],
-                $value['part_number'],
-                $value['counterparty'],
-                $value['payment_method'],
-            );
-            $arr_processed_data[$key] = $value + $arr_id_details[$key] + $arr_id_counterparty[$key] + $arr_id_method[$key];
+
+            $arr_processed_data[$key] = [
+                'id' => null,
+                'id_details' => $arr_id_details[$key]['part_number'],
+                'id_counterparty' => $arr_id_counterparty[$key]['counterparty'],
+                'quantity' => $value['quantity'],
+                'price' => $value['price'],
+                'date_receipt_auto_parts_warehouse' => $value['date_receipt_auto_parts_warehouse'],
+                'id_payment_method' => $arr_id_method[$key]['payment_method'],
+                'id_participant' => $arr_id_method[$key]['payment_method']->getIdParticipant()
+            ];
         }
 
         return $arr_processed_data;

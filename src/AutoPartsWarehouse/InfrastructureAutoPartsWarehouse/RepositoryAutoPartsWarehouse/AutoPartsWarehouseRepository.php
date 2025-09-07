@@ -54,7 +54,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
-    public function save(AutoPartsWarehouse $autoPartsWarehouse): array
+    public function save(AutoPartsWarehouse $autoPartsWarehouse): int
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyEntity($autoPartsWarehouse->getPrice());
@@ -65,13 +65,13 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse);
 
-        $exists = $this->count($entityData);
+        $exists = $this->count(['id' => $entityData['id']]);
         if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => $entityData['id']];
+        return $entityData['id'];
     }
 
     /**

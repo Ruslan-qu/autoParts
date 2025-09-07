@@ -16,6 +16,7 @@ class FactoryReadingFile
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($autoPartsFile->getFileSave());
         $arr_file = [];
+
         if ($autoPartsFile->getFileSave()->getClientOriginalExtension() == 'xlsx') {
 
             $readingFileXLSX = new ReadingFileXLSX;
@@ -32,9 +33,9 @@ class FactoryReadingFile
 
             $readingFileODS = new ReadingFileODS;
             $arr_file = $readingFileODS->reading($autoPartsFile);
+        } else {
+            $input_errors->determiningFileExtension();
         }
-
-        $input_errors->determiningFileExtension();
 
         return $arr_file;
     }
