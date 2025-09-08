@@ -13,7 +13,7 @@ final class FindOneByPaymentMethodQuery
 
     ) {}
 
-    public function handler(?array $arrPaymentMethod): ?array
+    public function paymentMethodQuery(?array $arrPaymentMethod): ?array
     {
         $arr_method = [];
         foreach ($arrPaymentMethod as $key => $value) {

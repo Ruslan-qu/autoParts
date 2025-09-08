@@ -4,28 +4,32 @@ namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory;
 
 use IMAP\Connection;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailKazanavtozapchasti\ReadingEmailQuqichbakich;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailQuqichbakich\ReadingEmailQuqichbakich;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\ReadingEmailKazanavtozapchasti\ReadingEmailKazanavtozapchasti;
 
 class FactoryReadingEmail
 {
     public function choiceReadingEmail(AutoPartsEmail $autoPartsEmail): ?array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
 
-        $mails_id = imap_search($autoPartsEmail->getEmailImap(), 'UNSEEN');
-
-        if ($mails_id == false) {
-
-            return null;
-        } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'kazan_avtozapchasti@mail.ru') {
+        $emails_id = imap_search($autoPartsEmail->getEmailImap(), 'UNSEEN');
+        $input_errors->emptyData($emails_id);
+        $arr_email = [];
+        if ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'kazan_avtozapchasti@mail.ru') {
 
             $readingEmailKazanavtozapchasti = new ReadingEmailKazanavtozapchasti;
-            return $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), 1);
+            $arr_email = $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), 1);
         } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'quqichbakich@mail.ru') {
 
             $readingEmailQuqichbakich = new ReadingEmailQuqichbakich;
-            return $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap(), 1);
+            $arr_email = $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap(), 1);
+        } else {
+            $arr_email = null;
         }
+
+        return $arr_email;
     }
 
     private function addressEmailCounterparty(Connection $imap, int $value): string

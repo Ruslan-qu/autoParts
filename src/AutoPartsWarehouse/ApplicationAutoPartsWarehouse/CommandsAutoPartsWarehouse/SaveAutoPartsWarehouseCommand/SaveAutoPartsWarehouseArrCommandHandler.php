@@ -11,7 +11,7 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehous
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\ArrAutoPartsWarehouseCommand;
 
-final class SaveAutoPartsWarehouseFileCommandHandler
+final class SaveAutoPartsWarehouseArrCommandHandler
 {
 
     public function __construct(
@@ -33,6 +33,7 @@ final class SaveAutoPartsWarehouseFileCommandHandler
             $counterparty = $value['auto_parts_data']->getIdCounterparty();
             $date_receipt_auto_parts_warehouse = $value['auto_parts_data']->getDateReceiptAutoPartsWarehouse();
             $payment_method = $value['auto_parts_data']->getIdPaymentMethod();
+            $id_participant = $value['auto_parts_data']->getIdParticipant();
 
             /* Подключаем валидацию и прописываем условия валидации */
             $validator = Validation::createValidator();
@@ -98,6 +99,7 @@ final class SaveAutoPartsWarehouseFileCommandHandler
             $autoPartsWarehouse->setIdDetails($part_number);
             $autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
             $autoPartsWarehouse->setIdPaymentMethod($payment_method);
+            $autoPartsWarehouse->setIdParticipant($id_participant);
 
             $entityManager = $this->autoPartsWarehouseRepositoryInterface->persistData($autoPartsWarehouse);
         }

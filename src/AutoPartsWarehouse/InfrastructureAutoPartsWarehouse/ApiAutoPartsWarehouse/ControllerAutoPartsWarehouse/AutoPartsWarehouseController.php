@@ -16,6 +16,7 @@ use App\Sales\DomainSales\AdaptersInterface\AdapterAutoPartsWarehouseSalesInterf
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\FileProcessing\FileProcessing;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\EmailProcessing\EmailProcessing;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
 use App\Counterparty\DomainCounterparty\AdaptersInterface\AdapterAutoPartsWarehouseCounterpartyInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts\ArrCounterparty;
@@ -40,6 +41,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\ArrAutoPartsWarehouseCommand;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseArrCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseFileCommandHandler;
 
@@ -106,7 +108,7 @@ class AutoPartsWarehouseController extends AbstractController
     public function saveAutoPartsFile(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
+        SaveAutoPartsWarehouseArrCommandHandler $saveAutoPartsWarehouseArrCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
         FindOneByPaymentMethodQuery $findOneByPaymentMethodQuery
@@ -128,7 +130,7 @@ class AutoPartsWarehouseController extends AbstractController
 
                     $participant = $adapterUserExtractionInterface->userExtraction();
 
-                    $map_file_data = $this->mapFileData($file_data_array, $participant);
+                    $map_file_data = $this->mapData($file_data_array, $participant);
 
                     $arr_part_number = $adapterAutoPartsWarehousePartNumbersInterface
                         ->partNumberSearch($map_file_data['arr_part_number']);
@@ -137,7 +139,7 @@ class AutoPartsWarehouseController extends AbstractController
                         ->counterpartySearch($map_file_data['arr_counterparty']);
 
                     $arr_method = $findOneByPaymentMethodQuery
-                        ->handler($map_file_data['arr_payment_method']);
+                        ->paymentMethodQuery($map_file_data['arr_payment_method']);
 
                     $map_processed_data = $this->mapProcessedData(
                         $file_data_array,
@@ -146,7 +148,7 @@ class AutoPartsWarehouseController extends AbstractController
                         $arr_method
                     );
 
-                    $saved = $saveAutoPartsWarehouseFileCommandHandler
+                    $saved = $saveAutoPartsWarehouseArrCommandHandler
                         ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
                 } catch (HttpException $e) {
 
@@ -166,11 +168,11 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/admin/saveAutoPartsImap', name: 'save_auto_parts_imap')]
     public function saveAutoPartsImap(
         Request $request,
-        FactoryReadingEmail $factoryReadingEmail,
-        SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        SaveAutoPartsWarehouseArrCommandHandler $saveAutoPartsWarehouseArrCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
-        FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler
+        FindOneByPaymentMethodQuery $findOneByPaymentMethodQuery
     ): Response {
 
         /*Подключаем формы*/
@@ -180,19 +182,14 @@ class AutoPartsWarehouseController extends AbstractController
         $form_save_auto_parts_email->handleRequest($request);
 
         $saved = '';
-
         try {
 
-            $imap = imap_open(
-                '{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX',
-                'imap_test_test_test@mail.ru',
-                'jVRBymTQUhzvExwcka67'
-            );
-
-            $email_data_array = $factoryReadingEmail->choiceReadingEmail(new AutoPartsEmail(['email_imap' => $imap]));
+            $email_data_array = EmailProcessing::processing();
 
             if ($email_data_array != null) {
-                $map_data_email = $this->mapEmailData($email_data_array);
+                $participant = $adapterUserExtractionInterface->userExtraction();
+
+                $map_data_email = $this->mapData($email_data_array, $participant);
 
                 $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
                     ->idPartNumbersSearch($map_data_email['arr_part_number']);
@@ -200,8 +197,8 @@ class AutoPartsWarehouseController extends AbstractController
                 $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
                     ->counterpartySearch($map_data_email['arr_counterparty']);
 
-                $arr_id_method = $findOneByPaymentMethodQueryHandler
-                    ->handler(new ArrPaymentMethodQuery($map_data_email['arr_payment_method']));
+                $arr_id_method = $findOneByPaymentMethodQuery
+                    ->paymentMethodQuery($map_data_email['arr_payment_method']);
 
                 $map_processed_data = $this->mapProcessedData(
                     $email_data_array,
@@ -210,14 +207,14 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_id_method
                 );
 
-                $saved = $saveAutoPartsWarehouseFileCommandHandler
+                $saved = $saveAutoPartsWarehouseArrCommandHandler
                     ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
         }
-        imap_close($imap);
+        imap_close($email_data_array);
 
         return $this->render('@autoPartsWarehouse/saveAutoPartsEmail.html.twig', [
             'title_logo' => 'Cохранить автодеталь через Email',
@@ -233,7 +230,7 @@ class AutoPartsWarehouseController extends AbstractController
         Request $request,
         HttpClientInterface $client,
         FactoryReadingApi $factoryReadingApi,
-        SaveAutoPartsWarehouseFileCommandHandler $saveAutoPartsWarehouseFileCommandHandler,
+        SaveAutoPartsWarehouseArrCommandHandler $saveAutoPartsWarehouseArrCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
         FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler,
@@ -278,7 +275,7 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_id_method
                 );
 
-                $saved = $saveAutoPartsWarehouseFileCommandHandler
+                $saved = $saveAutoPartsWarehouseArrCommandHandler
                     ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }
         } catch (HttpException $e) {
@@ -494,11 +491,14 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
 
-    private function mapFileData(array $file_data_array, Participant $participant): array
+    private function mapData(array $data, Participant $participant): array
     {
 
-        $map_file_data = [];
-        foreach ($file_data_array as $key => $value) {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
+        $input_errors->emptyData($data);
+
+        $map_data = [];
+        foreach ($data as $key => $value) {
             $arr_part_number[$key] =
                 [
                     'part_number' => $value['part_number'],
@@ -515,12 +515,12 @@ class AutoPartsWarehouseController extends AbstractController
                     'id_participant' => $participant
                 ];
         }
-        $map_file_data = [
+        $map_data = [
             'arr_part_number' => $arr_part_number,
             'arr_counterparty' => $arr_counterparty,
             'arr_payment_method' => $arr_payment_method
         ];
-        return $map_file_data;
+        return $map_data;
     }
 
     private function mapProcessedData(
@@ -545,74 +545,5 @@ class AutoPartsWarehouseController extends AbstractController
         }
 
         return $arr_processed_data;
-    }
-
-    private function mapEmailData($email_data_array): array
-    {
-        $input_errors = new InputErrorsAutoPartsWarehouse;
-        $input_errors->emptyData($email_data_array);
-
-        $map_data = [];
-        foreach ($email_data_array as $key => $value) {
-            $arr_part_number[$key] =
-                [
-                    'part_number' => $value['part_number']
-                ];
-            $arr_counterparty[$key] =
-                [
-                    'counterparty' => $value['counterparty']
-                ];
-            $arr_payment_method[$key] =
-                [
-                    'id' => $this->mapPaymentMethod($value['payment_method'])
-                ];
-        }
-        $map_data = [
-            'arr_part_number' => $arr_part_number,
-            'arr_counterparty' => $arr_counterparty,
-            'arr_payment_method' => $arr_payment_method
-        ];
-
-        return $map_data;
-    }
-
-    private function mapPaymentMethod(string $method): int
-    {
-
-        if ($method == 'нал') {
-            $id = 2;
-        } elseif ($method == 'без нал') {
-            $id = 1;
-        }
-        return $id;
-    }
-
-    private function mapApiData($api_data_array): array
-    {
-        $input_errors = new InputErrorsAutoPartsWarehouse;
-        $input_errors->emptyData($api_data_array);
-
-        $map_data = [];
-        foreach ($api_data_array as $key => $value) {
-            $arr_part_number[$key] =
-                [
-                    'part_number' => $value['part_number']
-                ];
-            $arr_counterparty[$key] =
-                [
-                    'counterparty' => $value['counterparty']
-                ];
-            $arr_payment_method[$key] =
-                [
-                    'id' => $this->mapPaymentMethod($value['payment_method'])
-                ];
-        }
-        $map_data = [
-            'arr_part_number' => $arr_part_number,
-            'arr_counterparty' => $arr_counterparty,
-            'arr_payment_method' => $arr_payment_method
-        ];
-
-        return $map_data;
     }
 }
