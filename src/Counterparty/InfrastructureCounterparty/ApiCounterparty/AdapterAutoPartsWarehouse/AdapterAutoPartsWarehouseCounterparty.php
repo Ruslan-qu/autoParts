@@ -2,8 +2,10 @@
 
 namespace App\Counterparty\InfrastructureCounterparty\ApiCounterparty\AdapterAutoPartsWarehouse;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\CounterpartyQuery;
 use App\Counterparty\DomainCounterparty\AdaptersInterface\AdapterAutoPartsWarehouseCounterpartyInterface;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindByCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindAllCounterpartyQueryHandler;
 
@@ -12,7 +14,7 @@ class AdapterAutoPartsWarehouseCounterparty implements AdapterAutoPartsWarehouse
 
     public function __construct(
         private SearchCounterpartyQueryHandler $searchCounterpartyQueryHandler,
-        private FindAllCounterpartyQueryHandler $findAllCounterpartyQueryHandler
+        private FindByCounterpartyQueryHandler $findByCounterpartyQueryHandler
     ) {}
 
     public function counterpartySearch(array $arr_counterparty): ?array
@@ -29,11 +31,12 @@ class AdapterAutoPartsWarehouseCounterparty implements AdapterAutoPartsWarehouse
         return $arr_processing_counterparty;
     }
 
-    public function allCounterparty(): ?array
+    public function findByCounterparty(Participant $participant): ?array
     {
+        $id_participant['id_participant'] = $participant;
 
-        $counterparty = $this->findAllCounterpartyQueryHandler
-            ->handler();
+        $counterparty = $this->findByCounterpartyQueryHandler
+            ->handler(new CounterpartyQuery($id_participant));
 
         return $counterparty;
     }

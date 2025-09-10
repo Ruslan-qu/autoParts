@@ -14,6 +14,7 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingEmail;
 use App\Sales\DomainSales\AdaptersInterface\AdapterAutoPartsWarehouseSalesInterface;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ApiProcessing\ApiProcessing;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\FileProcessing\FileProcessing;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\EmailProcessing\EmailProcessing;
@@ -228,13 +229,12 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/admin/saveAutoPartsApi', name: 'save_auto_parts_api')]
     public function saveAutoPartsApi(
         Request $request,
-        HttpClientInterface $client,
-        FactoryReadingApi $factoryReadingApi,
-        SaveAutoPartsWarehouseArrCommandHandler $saveAutoPartsWarehouseArrCommandHandler,
+        ApiProcessing $apiProcessing,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
         AdapterAutoPartsWarehouseCounterpartyInterface $adapterAutoPartsWarehouseCounterpartyInterface,
         FindOneByPaymentMethodQueryHandler $findOneByPaymentMethodQueryHandler,
-        AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
+        SaveAutoPartsWarehouseArrCommandHandler $saveAutoPartsWarehouseArrCommandHandler
     ): Response {
 
         /*Подключаем формы*/
@@ -246,15 +246,9 @@ class AutoPartsWarehouseController extends AbstractController
         $saved = '';
 
         try {
-
-            $arr_name_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->allCounterparty();
-
-
-            $api_data_array = $factoryReadingApi->choiceReadingApi(
-                new ArrCounterparty($arr_name_counterparty),
-                $client,
-                $autoPartsWarehouseRepositoryInterface
-            );
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $arr_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->findByCounterparty($participant);
+            $api_data_array = $apiProcessing->processing($arr_counterparty);
 
             if ($api_data_array != null) {
                 $map_data_email = $this->mapApiData($api_data_array);
