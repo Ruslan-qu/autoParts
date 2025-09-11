@@ -10,6 +10,32 @@
 
   {% block form %}
 
+  {#Форма сохранения стороны#}
+
+  {{ form_start(form_save_auto_parts_email) }}
+
+  <div class="container-fluid text-center mt-3">
+    <div class="row">
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        <div class="lb">{{ form_label(form_save_auto_parts_email.id_counterparty) }}</div>
+        {{ form_widget(form_save_auto_parts_email.id_counterparty, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_save_auto_parts_email.id_counterparty) }}
+        {% for message in app.flashes('[axle_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+        {{ form_widget(form_save_auto_parts_email.button_save_email, { 'attr': {'class': 'btn btn-danger w-100'}}) }}
+      </div>
+    </div>
+
+  </div>
+
+  {{ form_end(form_save_auto_parts_email) }}
+
   {#Таблица автодеталей из Email#}
   <div class="col-auto m-3">
     {% if saved %}
@@ -51,14 +77,6 @@
       </table>
     </div>
   </div>
-  {% if email_data_array %}
-  {{ form_start(form_save_auto_parts_email) }}
-  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-    {{ form_widget(form_save_auto_parts_email.button_save_Email, { 'label': 'Продолжить', 'attr': {'class':
-    'btn btn-danger w-100'}}) }}
-  </div>
-  {{ form_end(form_save_auto_parts_email) }}
-  {% endif %}
   {% if saved is empty and email_data_array == null %}
   <div class="col-auto m-3">
     <h5>Поставок нет</h5>
@@ -70,3 +88,40 @@
     {% endfor %}
   </div>
   {% endblock form %}
+
+  {% block table %}
+
+  {#Таблица автодеталей#}
+
+  <div class="container-fluid text-center pt-4 ">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
+        border-info shadow p-3 mb-5 bg-body-tertiary rounded">
+        <thead class="table-secondary">
+
+          {% if search_data %}
+          <tr>
+            <th scope="col">Поставщик</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Телефон менеджера</th>
+            <th scope="col">Телефон доставки</th>
+          </tr>
+          {% endif %}
+
+        </thead>
+        <tbody class="table-group-divider">
+          {% for information in search_data %}
+          {% if information %}
+          <tr>
+            <td>{{ information.getNameCounterparty() }}</td>
+            <td>{{ information.getMailCounterparty() }}</td>
+            <td>{{ information.getManagerPhone() }}</td>
+            <td>{{ information.getDeliveryPhone() }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endblock table %}
