@@ -45,7 +45,7 @@ class CounterpartyController extends AbstractController
                 try {
 
                     $participant = $adapterUserExtractionInterface->userExtraction();
-                    $counterparty = $this->mapeCounterparty(
+                    $counterparty = $this->mapCounterparty(
                         null,
                         $form_save_counterparty->getData()['name_counterparty'],
                         $form_save_counterparty->getData()['mail_counterparty'],
@@ -88,7 +88,7 @@ class CounterpartyController extends AbstractController
         /*Выводим полный список поставщиков*/
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
-            $counterparty = $this->mapeCounterparty(
+            $counterparty = $this->mapCounterparty(
                 null,
                 null,
                 null,
@@ -108,7 +108,7 @@ class CounterpartyController extends AbstractController
             if ($form_search_counterparty->isValid()) {
 
                 try {
-                    $counterparty = $this->mapeCounterparty(
+                    $counterparty = $this->mapCounterparty(
                         null,
                         $form_search_counterparty->getData()['name_counterparty'],
                         null,
@@ -161,7 +161,7 @@ class CounterpartyController extends AbstractController
         if (empty($form_edit_counterparty->getData())) {
 
             try {
-                $counterparty = $this->mapeCounterparty(
+                $counterparty = $this->mapCounterparty(
                     $request->query->all()['id'],
                     null,
                     null,
@@ -187,7 +187,7 @@ class CounterpartyController extends AbstractController
 
                 $data_form_edit_counterparty = $request->request->all()['edit_counterparty'];
                 try {
-                    $counterparty = $this->mapeCounterparty(
+                    $counterparty = $this->mapCounterparty(
                         $form_edit_counterparty->getData()['id'],
                         $form_edit_counterparty->getData()['name_counterparty'],
                         $form_edit_counterparty->getData()['mail_counterparty'],
@@ -260,7 +260,7 @@ class CounterpartyController extends AbstractController
         return $this;
     }
 
-    private function mapeCounterparty(
+    private function mapCounterparty(
         $id,
         $name_counterparty,
         $mail_counterparty,

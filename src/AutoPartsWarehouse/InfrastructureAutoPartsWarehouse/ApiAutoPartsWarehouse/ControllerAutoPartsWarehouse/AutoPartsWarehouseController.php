@@ -169,6 +169,7 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/admin/saveAutoPartsImap', name: 'save_auto_parts_imap')]
     public function saveAutoPartsImap(
         Request $request,
+        EmailProcessing $emailProcessing,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         SaveAutoPartsWarehouseArrCommandHandler $saveAutoPartsWarehouseArrCommandHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
@@ -184,7 +185,19 @@ class AutoPartsWarehouseController extends AbstractController
 
         $saved = '';
         $email_data_array = [];
-        $email_data_array = EmailProcessing::processing();
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $emails_counterparty = $emailProcessing->processing();
+            $map_counterparty = $this->mapArrCounterparty(
+                $emails_counterparty,
+                $participant
+            );
+            $table_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->emailCounterpartySearch($map_counterparty);
+        } catch (HttpException $e) {
+            dd($e);
+            $this->errorMessageViaSession($e);
+        }
+
         if ($form_save_auto_parts_email->isSubmitted()) {
             if ($form_save_auto_parts_email->isValid()) {
                 try {
@@ -192,7 +205,7 @@ class AutoPartsWarehouseController extends AbstractController
 
 
                     if ($email_data_array != null) {
-                        $participant = $adapterUserExtractionInterface->userExtraction();
+
 
                         $map_data_email = $this->mapData($email_data_array, $participant);
 
@@ -227,6 +240,7 @@ class AutoPartsWarehouseController extends AbstractController
         return $this->render('@autoPartsWarehouse/saveAutoPartsEmail.html.twig', [
             'title_logo' => 'Cохранить автодеталь через Email',
             'form_save_auto_parts_email' => $form_save_auto_parts_email->createView(),
+            'table_counterparty' => $table_counterparty,
             'email_data_array' => $email_data_array,
             'saved' => $saved
         ]);
@@ -467,6 +481,22 @@ class AutoPartsWarehouseController extends AbstractController
         $arr_part_number['id_participant'] = $participant;
 
         return $arr_part_number;
+    }
+
+    private function mapArrCounterparty(
+        $emails_counterparty,
+        $participant
+    ): array {
+        $arr_counterparty = [];
+        foreach ($emails_counterparty as $key => $value) {
+            $arr_counterparty[$key] = [
+                'mail_counterparty' => $value['mail_counterparty'],
+                'id_participant' => $participant
+            ];
+        }
+
+
+        return $arr_counterparty;
     }
 
     private function mapAutoPartsWarehouse(

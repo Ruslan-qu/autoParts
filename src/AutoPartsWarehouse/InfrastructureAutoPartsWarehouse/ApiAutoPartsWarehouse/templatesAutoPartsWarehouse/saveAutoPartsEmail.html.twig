@@ -99,7 +99,7 @@
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
-          {% if search_data %}
+          {% if table_counterparty %}
           <tr>
             <th scope="col">Поставщик</th>
             <th scope="col">E-mail</th>
@@ -110,7 +110,7 @@
 
         </thead>
         <tbody class="table-group-divider">
-          {% for information in search_data %}
+          {% for information in table_counterparty %}
           {% if information %}
           <tr>
             <td>{{ information.getNameCounterparty() }}</td>
