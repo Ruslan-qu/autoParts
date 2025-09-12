@@ -184,11 +184,12 @@ class AutoPartsWarehouseController extends AbstractController
 
         $saved = '';
         $email_data_array = [];
+        $email_data_array = EmailProcessing::processing();
         if ($form_save_auto_parts_email->isSubmitted()) {
             if ($form_save_auto_parts_email->isValid()) {
                 try {
 
-                    $email_data_array = EmailProcessing::processing();
+
 
                     if ($email_data_array != null) {
                         $participant = $adapterUserExtractionInterface->userExtraction();

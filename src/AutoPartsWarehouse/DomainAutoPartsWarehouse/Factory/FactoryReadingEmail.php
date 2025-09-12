@@ -15,6 +15,8 @@ class FactoryReadingEmail
         $input_errors = new InputErrorsAutoPartsWarehouse;
 
         $emails_id = imap_search($autoPartsEmail->getEmailImap(), 'UNSEEN');
+        $headers = imap_headerinfo($autoPartsEmail->getEmailImap(), 3);
+        dd($headers->fromaddress);
         $input_errors->emptyData($emails_id);
         $arr_email = [];
         if ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'kazan_avtozapchasti@mail.ru') {
