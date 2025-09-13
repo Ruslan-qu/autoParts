@@ -187,7 +187,7 @@ class AutoPartsWarehouseController extends AbstractController
         $table_counterparty = [];
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
-            $emails_counterparty = $emailProcessing->processing();
+            $emails_counterparty = $emailProcessing->emailCounterparty();
             if (!empty($emails_counterparty)) {
                 $map_counterparty = $this->mapArrCounterparty(
                     $emails_counterparty,

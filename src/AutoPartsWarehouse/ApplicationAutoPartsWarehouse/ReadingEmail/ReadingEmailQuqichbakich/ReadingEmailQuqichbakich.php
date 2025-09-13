@@ -31,7 +31,7 @@ class ReadingEmailQuqichbakich
             $data_imap[$key] = $value;
         }
 
-        $uid = imap_uid($imap, '1');
+        $uid = imap_uid($imap, 1);
         $mail_move = imap_mail_move($imap, $uid, '&BBoEPgRABDcEOAQ9BDA-', CP_UID);
         $input_errors->emptyData($mail_move);
 

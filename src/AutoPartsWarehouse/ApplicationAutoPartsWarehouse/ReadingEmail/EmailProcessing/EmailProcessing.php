@@ -2,35 +2,54 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\EmailProcessing;
 
+use stdClass;
 use IMAP\Connection;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 
 class EmailProcessing
 {
-    public function processing(): ?array
+    public function emailCounterparty(): ?array
     {
-        $input_errors = new InputErrorsAutoPartsWarehouse;
 
+        $imap = $this->imapMail();
+
+        $number_unread_emails = $this->numberUnreadEmails($imap, 'UNSEEN');
+
+        $email_address_counterparty = [];
+        foreach ($number_unread_emails as $key => $value) {
+            $headers = $this->numberUnreadEmails($imap, $value);
+            $email_address_counterparty[$key] = ['mail_counterparty' => $this->addressEmailCounterparty($headers)];
+        }
+
+        return $email_address_counterparty;
+    }
+
+    private function imapMail(): Connection
+    {
         $imap = imap_open(
             '{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX',
             'imap_test_test_test@mail.ru',
             'jVRBymTQUhzvExwcka67'
         );
-        $number_unread_emails = imap_search($imap, 'UNSEEN');
 
-        $email_address_counterparty = [];
-        if ($number_unread_emails != false) {
-            foreach ($number_unread_emails as $key => $value) {
-                $email_address_counterparty[$key] = ['mail_counterparty' => $this->addressEmailCounterparty($imap, $value)];
-            }
-        }
-        return $email_address_counterparty;
+        return $imap;
     }
 
-    private function addressEmailCounterparty(Connection $imap, int $value): string
+    private function numberUnreadEmails(Connection $imap, string $criteria): ?array
     {
+        $number_unread_emails = imap_search($imap, $criteria);
 
-        $headers = imap_headerinfo($imap, $value);
+        return $number_unread_emails;
+    }
+
+    private function headers(Connection $imap, int $num): stdClass|false
+    {
+        $headers = imap_headerinfo($imap, $num);
+
+        return $headers;
+    }
+
+    private function addressEmailCounterparty($headers): string
+    {
 
         preg_match_all(
             "/.*?<(.*?)>/",

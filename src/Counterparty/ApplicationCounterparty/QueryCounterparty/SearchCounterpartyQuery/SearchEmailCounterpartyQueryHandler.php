@@ -28,7 +28,6 @@ final class SearchEmailCounterpartyQueryHandler
             '',
             $counterpartyQuery->getMailCounterparty()
         ));
-        $this->inputErrors->emptyData($mail_counterparty);
 
         $id_participant = $counterpartyQuery->getIdParticipant();
 
@@ -56,7 +55,6 @@ final class SearchEmailCounterpartyQueryHandler
         $this->inputErrors->errorValidate($errors_validate);
 
         $counterparty = $this->counterpartyRepositoryInterface->findOneByEmailCounterparty($mail_counterparty, $id_participant);
-        $this->inputErrors->emptyEntity($counterparty);
 
         return $counterparty;
     }
