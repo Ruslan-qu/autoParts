@@ -184,17 +184,18 @@ class AutoPartsWarehouseController extends AbstractController
         $form_save_auto_parts_email->handleRequest($request);
 
         $saved = '';
-        $email_data_array = [];
+        $table_counterparty = [];
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
             $emails_counterparty = $emailProcessing->processing();
-            $map_counterparty = $this->mapArrCounterparty(
-                $emails_counterparty,
-                $participant
-            );
-            $table_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->emailCounterpartySearch($map_counterparty);
+            if (!empty($emails_counterparty)) {
+                $map_counterparty = $this->mapArrCounterparty(
+                    $emails_counterparty,
+                    $participant
+                );
+                $table_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->emailCounterpartySearch($map_counterparty);
+            }
         } catch (HttpException $e) {
-            dd($e);
             $this->errorMessageViaSession($e);
         }
 
@@ -202,32 +203,26 @@ class AutoPartsWarehouseController extends AbstractController
             if ($form_save_auto_parts_email->isValid()) {
                 try {
 
+                    $map_data_email = $this->mapData($email_data_array, $participant);
 
+                    $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
+                        ->idPartNumbersSearch($map_data_email['arr_part_number']);
 
-                    if ($email_data_array != null) {
+                    $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
+                        ->counterpartySearch($map_data_email['arr_counterparty']);
 
+                    $arr_id_method = $findOneByPaymentMethodQuery
+                        ->paymentMethodQuery($map_data_email['arr_payment_method']);
 
-                        $map_data_email = $this->mapData($email_data_array, $participant);
+                    $map_processed_data = $this->mapProcessedData(
+                        $email_data_array,
+                        $arr_id_details,
+                        $arr_id_counterparty,
+                        $arr_id_method
+                    );
 
-                        $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
-                            ->idPartNumbersSearch($map_data_email['arr_part_number']);
-
-                        $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
-                            ->counterpartySearch($map_data_email['arr_counterparty']);
-
-                        $arr_id_method = $findOneByPaymentMethodQuery
-                            ->paymentMethodQuery($map_data_email['arr_payment_method']);
-
-                        $map_processed_data = $this->mapProcessedData(
-                            $email_data_array,
-                            $arr_id_details,
-                            $arr_id_counterparty,
-                            $arr_id_method
-                        );
-
-                        $saved = $saveAutoPartsWarehouseArrCommandHandler
-                            ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
-                    }
+                    $saved = $saveAutoPartsWarehouseArrCommandHandler
+                        ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);
@@ -241,7 +236,6 @@ class AutoPartsWarehouseController extends AbstractController
             'title_logo' => 'Cохранить автодеталь через Email',
             'form_save_auto_parts_email' => $form_save_auto_parts_email->createView(),
             'table_counterparty' => $table_counterparty,
-            'email_data_array' => $email_data_array,
             'saved' => $saved
         ]);
     }
@@ -494,7 +488,6 @@ class AutoPartsWarehouseController extends AbstractController
                 'id_participant' => $participant
             ];
         }
-
 
         return $arr_counterparty;
     }

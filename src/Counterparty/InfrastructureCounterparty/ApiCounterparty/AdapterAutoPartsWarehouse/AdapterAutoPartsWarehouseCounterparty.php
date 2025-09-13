@@ -7,11 +7,13 @@ use App\Counterparty\ApplicationCounterparty\QueryCounterparty\DTOQuery\Counterp
 use App\Counterparty\DomainCounterparty\AdaptersInterface\AdapterAutoPartsWarehouseCounterpartyInterface;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\FindByCounterpartyQueryHandler;
 use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchCounterpartyQueryHandler;
+use App\Counterparty\ApplicationCounterparty\QueryCounterparty\SearchCounterpartyQuery\SearchEmailCounterpartyQueryHandler;
 
 class AdapterAutoPartsWarehouseCounterparty implements AdapterAutoPartsWarehouseCounterpartyInterface
 {
 
     public function __construct(
+        private SearchEmailCounterpartyQueryHandler $searchEmailCounterpartyQueryHandler,
         private SearchCounterpartyQueryHandler $searchCounterpartyQueryHandler,
         private FindByCounterpartyQueryHandler $findByCounterpartyQueryHandler
     ) {}
@@ -21,7 +23,7 @@ class AdapterAutoPartsWarehouseCounterparty implements AdapterAutoPartsWarehouse
         $arr_counterparty = [];
         foreach ($emails_counterparty as $key => $value) {
 
-            $counterparty = $this->searchCounterpartyQueryHandler
+            $counterparty = $this->searchEmailCounterpartyQueryHandler
                 ->handler(new CounterpartyQuery($value));
 
             $arr_counterparty[$key] = $counterparty;

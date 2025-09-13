@@ -3,11 +3,14 @@
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\EmailProcessing;
 
 use IMAP\Connection;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 
 class EmailProcessing
 {
     public function processing(): ?array
     {
+        $input_errors = new InputErrorsAutoPartsWarehouse;
+
         $imap = imap_open(
             '{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX',
             'imap_test_test_test@mail.ru',
@@ -16,10 +19,11 @@ class EmailProcessing
         $number_unread_emails = imap_search($imap, 'UNSEEN');
 
         $email_address_counterparty = [];
-        foreach ($number_unread_emails as $key => $value) {
-            $email_address_counterparty[$key] = ['mail_counterparty' => $this->addressEmailCounterparty($imap, $value)];
+        if ($number_unread_emails != false) {
+            foreach ($number_unread_emails as $key => $value) {
+                $email_address_counterparty[$key] = ['mail_counterparty' => $this->addressEmailCounterparty($imap, $value)];
+            }
         }
-
         return $email_address_counterparty;
     }
 

@@ -33,7 +33,7 @@ class SaveAutoPartsEmailType extends AbstractType
                         ->orderBy('p.name_counterparty', 'ASC');
                 },
                 'choice_label' => 'name_counterparty',
-                'required' => false,
+                'required' => false
             ])
             ->add('button_save_email', SubmitType::class, [
                 'label' => 'Принять'

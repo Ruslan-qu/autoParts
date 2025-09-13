@@ -21,6 +21,8 @@ interface  CounterpartyRepositoryInterface
 
     public function findOneByCounterparty(string $name_counterparty, Participant $id_participant): ?Counterparty;
 
+    public function findOneByEmailCounterparty(string $mail_counterparty, Participant $id_participant): ?Counterparty;
+
     public function findCounterparty($id): ?Counterparty;
 
     public function findOneByIdCounterparty(int $id, Participant $id_participant): ?Counterparty;
