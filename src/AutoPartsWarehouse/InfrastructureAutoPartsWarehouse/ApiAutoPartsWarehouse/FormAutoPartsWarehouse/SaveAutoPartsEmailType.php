@@ -22,7 +22,7 @@ class SaveAutoPartsEmailType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('id_counterparty', EntityType::class, [
+            /* ->add('id_counterparty', EntityType::class, [
                 'label' => 'Поставщик',
                 'class' => Counterparty::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
@@ -34,7 +34,7 @@ class SaveAutoPartsEmailType extends AbstractType
                 },
                 'choice_label' => 'name_counterparty',
                 'required' => false
-            ])
+            ])*/
             ->add('button_save_email', SubmitType::class, [
                 'label' => 'Принять'
             ]);

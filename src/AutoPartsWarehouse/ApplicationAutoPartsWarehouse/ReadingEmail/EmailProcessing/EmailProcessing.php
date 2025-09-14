@@ -4,6 +4,8 @@ namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\Emai
 
 use stdClass;
 use IMAP\Connection;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingEmail;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
 
 class EmailProcessing
 {
@@ -15,12 +17,23 @@ class EmailProcessing
         $number_unread_emails = $this->numberUnreadEmails($imap, 'UNSEEN');
 
         $email_address_counterparty = [];
-        foreach ($number_unread_emails as $key => $value) {
-            $headers = $this->numberUnreadEmails($imap, $value);
-            $email_address_counterparty[$key] = ['mail_counterparty' => $this->addressEmailCounterparty($headers)];
+        if ($number_unread_emails != false) {
+            foreach ($number_unread_emails as $key => $value) {
+                $headers = $this->headers($imap, $value);
+                $email_address_counterparty[$key] = ['mail_counterparty' => $this->addressEmailCounterparty($headers)];
+            }
         }
 
         return $email_address_counterparty;
+    }
+
+    public function processing(): ?array
+    {
+
+        $imap = $this->imapMail();
+        $reading = new FactoryReadingEmail;
+
+        return $reading->choiceReadingEmail(new AutoPartsEmail(['email_imap' => $imap]));
     }
 
     private function imapMail(): Connection
@@ -34,7 +47,7 @@ class EmailProcessing
         return $imap;
     }
 
-    private function numberUnreadEmails(Connection $imap, string $criteria): ?array
+    private function numberUnreadEmails(Connection $imap, string $criteria): array|false
     {
         $number_unread_emails = imap_search($imap, $criteria);
 

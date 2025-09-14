@@ -8,10 +8,10 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehous
 
 class ReadingEmailQuqichbakich
 {
-    public function reading(Connection $imap, int $email_id)
+    public function reading(Connection $imap)
     {
         $input_errors = new InputErrorsAutoPartsWarehouse;
-        $headers = imap_headerinfo($imap, $email_id);
+        $headers = imap_headerinfo($imap, 1);
         $input_errors->emptyData($headers);
 
         $counterparty_email = $this->counterpartyEmail($headers);
@@ -20,7 +20,7 @@ class ReadingEmailQuqichbakich
 
         $payment_method_email = $this->paymentMethodEmail();
 
-        $body = imap_base64(imap_fetchbody($imap, $email_id, 2));
+        $body = imap_base64(imap_fetchbody($imap, 1, 2));
 
         $part_umber_uantity_price_email = $this->partNumberQuantityPriceEmail($body);
         $data_imap = [];

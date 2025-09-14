@@ -15,22 +15,19 @@ class FactoryReadingEmail
         $input_errors = new InputErrorsAutoPartsWarehouse;
 
         $emails_id = imap_search($autoPartsEmail->getEmailImap(), 'UNSEEN');
-        //$headers = imap_headerinfo($autoPartsEmail->getEmailImap(), 1);
-        dd($emails_id);
         $input_errors->emptyData($emails_id);
+
         $arr_email = [];
         if ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'kazan_avtozapchasti@mail.ru') {
 
             $readingEmailKazanavtozapchasti = new ReadingEmailKazanavtozapchasti;
-            $arr_email = $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap(), 1);
+            $arr_email = $readingEmailKazanavtozapchasti->reading($autoPartsEmail->getEmailImap());
         } elseif ($this->addressEmailCounterparty($autoPartsEmail->getEmailImap(), 1) == 'quqichbakich@mail.ru') {
 
             $readingEmailQuqichbakich = new ReadingEmailQuqichbakich;
-            $arr_email = $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap(), 1);
-        } else {
-            $arr_email = null;
+            $arr_email = $readingEmailQuqichbakich->reading($autoPartsEmail->getEmailImap());
         }
-
+        imap_close($autoPartsEmail->getEmailImap());
         return $arr_email;
     }
 

@@ -38,6 +38,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindOneByPaymentMethodQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindByAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindIdAutoPartsWarehouseQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindAllAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
@@ -183,30 +184,23 @@ class AutoPartsWarehouseController extends AbstractController
         /*Валидация формы*/
         $form_save_auto_parts_email->handleRequest($request);
 
-        $saved = '';
-        $table_counterparty = [];
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
-            $emails_counterparty = $emailProcessing->emailCounterparty();
-            if (!empty($emails_counterparty)) {
-                $map_counterparty = $this->mapArrCounterparty(
-                    $emails_counterparty,
-                    $participant
-                );
-                $table_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->emailCounterpartySearch($map_counterparty);
-            }
         } catch (HttpException $e) {
             $this->errorMessageViaSession($e);
         }
 
+        $saved = '';
         if ($form_save_auto_parts_email->isSubmitted()) {
             if ($form_save_auto_parts_email->isValid()) {
                 try {
 
+                    $email_data_array = $emailProcessing->processing();
+
                     $map_data_email = $this->mapData($email_data_array, $participant);
 
                     $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
-                        ->idPartNumbersSearch($map_data_email['arr_part_number']);
+                        ->partNumberSearch($map_data_email['arr_part_number']);
 
                     $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
                         ->counterpartySearch($map_data_email['arr_counterparty']);
@@ -227,8 +221,21 @@ class AutoPartsWarehouseController extends AbstractController
 
                     $this->errorMessageViaSession($e);
                 }
-                //imap_close($email_data_array);
             }
+        }
+
+        $table_counterparty = [];
+        try {
+            $emails_counterparty = $emailProcessing->emailCounterparty();
+            if (!empty($emails_counterparty)) {
+                $map_counterparty = $this->mapArrCounterparty(
+                    $emails_counterparty,
+                    $participant
+                );
+                $table_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->emailCounterpartySearch($map_counterparty);
+            }
+        } catch (HttpException $e) {
+            $this->errorMessageViaSession($e);
         }
 
 
@@ -244,6 +251,8 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('/admin/saveAutoPartsApi', name: 'save_auto_parts_api')]
     public function saveAutoPartsApi(
         Request $request,
+        HttpClientInterface $client,
+        AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface,
         ApiProcessing $apiProcessing,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
@@ -263,13 +272,13 @@ class AutoPartsWarehouseController extends AbstractController
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
             $arr_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface->findByCounterparty($participant);
-            $api_data_array = $apiProcessing->processing($arr_counterparty);
+            $api_data_array = $apiProcessing->processing($arr_counterparty, $client, $autoPartsWarehouseRepositoryInterface);
 
             if ($api_data_array != null) {
                 $map_data_email = $this->mapData($api_data_array, $participant);
 
                 $arr_id_details = $adapterAutoPartsWarehousePartNumbersInterface
-                    ->idPartNumbersSearch($map_data_email['arr_part_number']);
+                    ->partNumberSearch($map_data_email['arr_part_number']);
 
                 $arr_id_counterparty = $adapterAutoPartsWarehouseCounterpartyInterface
                     ->counterpartySearch($map_data_email['arr_counterparty']);
@@ -283,12 +292,10 @@ class AutoPartsWarehouseController extends AbstractController
                     $arr_id_counterparty,
                     $arr_id_method
                 );
-
                 $saved = $saveAutoPartsWarehouseArrCommandHandler
                     ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
             }
         } catch (HttpException $e) {
-
             $this->errorMessageViaSession($e);
         }
 
@@ -307,8 +314,10 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('searchAutoPartsWarehouse', name: 'search_auto_parts_warehouse')]
     public function searchAutoPartsWarehouse(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindAllAutoPartsWarehouseQueryHandler $findAllAutoPartsWarehouseQueryHandler,
         FindByAutoPartsWarehouseQueryHandler $findByAutoPartsWarehouseQueryHandler,
-        FindByShipmentToDateQueryHandler $findByShipmentToDateQueryHandler,
+        // FindByShipmentToDateQueryHandler $findByShipmentToDateQueryHandler,
     ): Response {
 
         /*Подключаем формы*/
@@ -317,7 +326,16 @@ class AutoPartsWarehouseController extends AbstractController
         /*Валидация формы */
         $form_search_auto_parts_warehouse->handleRequest($request);
 
-        $search_data = $findByShipmentToDateQueryHandler->handler();
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            //$search_data = $findByShipmentToDateQueryHandler
+            //   ->handler(new AutoPartsWarehouseQuery(['id_participant' => $participant]));
+            // dd($search_data);
+            $search_data = $findAllAutoPartsWarehouseQueryHandler->handler();
+        } catch (HttpException $e) {
+            $this->errorMessageViaSession($e);
+        }
+
 
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {

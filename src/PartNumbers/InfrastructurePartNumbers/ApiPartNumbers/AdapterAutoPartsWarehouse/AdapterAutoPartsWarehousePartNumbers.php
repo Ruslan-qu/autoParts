@@ -56,27 +56,4 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
 
         return $arr_processing_part_number;
     }
-
-    public function idPartNumbersSearch(array $arr_part_number): ?array
-    {
-        $arr_id_details = [];
-        foreach ($arr_part_number as $key => $value) {
-
-            $part_number = $this->findOneByPartNumbersQueryHandler
-                ->handler(new PartNumbersQuery($value));
-
-            if (empty($part_number)) {
-
-                $id['id'] = $this->savePartNumbersCommandHandler
-                    ->handler(new PartNumbersCommand($value));
-
-                $part_number = $this->findPartNumbersQueryHandler
-                    ->handler(new PartNumbersQuery($id));
-            }
-
-            $arr_id_details[$key] = ['id_details' => $part_number];
-        }
-
-        return $arr_id_details;
-    }
 }

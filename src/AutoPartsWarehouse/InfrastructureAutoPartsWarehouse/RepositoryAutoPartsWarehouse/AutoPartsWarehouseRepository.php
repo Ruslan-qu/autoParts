@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAuto
 use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
@@ -113,6 +114,14 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     }
 
     /**
+     * @return AutoPartsWarehouse[]|NULL Возвращает массив объектов поставщиков или ноль
+     */
+    public function findAllAutoPartsWarehouse(): ?array
+    {
+        return $this->findAll();
+    }
+
+    /**
      * @return AutoPartsWarehouse[]|NULL Возвращает массив объектов или ноль
      */
     public function findByAutoPartsWarehouse(array $arr_parameters, string $part_number_where): ?array
@@ -201,7 +210,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findByShipmentToDate(): ?array
+    public function findByShipmentToDate(Participant $id_participant): ?array
     {
         $date = new \DateTime();
         $format_date = $date->format('Y-m-d');
@@ -222,8 +231,13 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN a.id_payment_method pm 
             WHERE a.date_receipt_auto_parts_warehouse >= :date_receipt_auto_parts_warehouse
             AND a.sales = :sales
+            AND a.id_participant = :id_participant
             ORDER BY s.id ASC'
-        )->setParameters(['date_receipt_auto_parts_warehouse' => $format_date, 'sales' => 0]);
+        )->setParameters([
+            'date_receipt_auto_parts_warehouse' => $format_date,
+            'sales' => 0,
+            'id_participant' => $id_participant
+        ]);
 
         return $query->getResult();
     }

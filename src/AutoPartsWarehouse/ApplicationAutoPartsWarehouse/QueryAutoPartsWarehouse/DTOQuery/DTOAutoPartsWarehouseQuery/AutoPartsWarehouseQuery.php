@@ -2,6 +2,7 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
@@ -23,6 +24,8 @@ final class AutoPartsWarehouseQuery extends MapAutoPartsWarehouseQuery
     protected ?Bodies $id_body = null;
 
     protected ?Axles $id_axle = null;
+
+    protected ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -52,5 +55,10 @@ final class AutoPartsWarehouseQuery extends MapAutoPartsWarehouseQuery
     public function getIdAxle(): ?Axles
     {
         return $this->id_axle;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
     }
 }

@@ -4,24 +4,23 @@ namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ApiPro
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingApi;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOAutoPartsApi\ApiAutoParts;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
 
 class ApiProcessing
 {
-
-    public function processing(?array $arr_counterparty)
-    {
+    public function processing(
+        ?array $arr_counterparty,
+        HttpClientInterface $client,
+        AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
+    ): ?array {
         $input_errors = new InputErrorsAutoPartsWarehouse;
         $input_errors->emptyData($arr_counterparty);
 
-        $client = new HttpClientInterface;
         $factoryReadingApi = new FactoryReadingApi;
-        $autoPartsWarehouseRepositoryInterface = new AutoPartsWarehouseRepositoryInterface;
 
         return $factoryReadingApi->choiceReadingApi(
-            new ApiAutoParts($arr_counterparty),
+            $arr_counterparty,
             $client,
             $autoPartsWarehouseRepositoryInterface
         );
