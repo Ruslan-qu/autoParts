@@ -62,8 +62,13 @@ final class FindByAutoPartsWarehouseQueryHandler
 
         $this->inputErrorsAutoPartsWarehouse->emptyDataTwo($where_parameter, $arr_parameters);
 
-        $where_parameter .= 'AND a.sales = :sales ';
+        $id_participant = $autoPartsWarehouseQuery->getIdParticipant();
+        $arr_parameters['id_participant'] = $id_participant;
+        $where_parameter = $this->whereParameter($where_parameter, 'id_participant', 'd');
+
         $arr_parameters['sales'] = 0;
+        $where_parameter .= 'AND a.sales = :sales ';
+
 
         $find_by_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface
             ->findByAutoPartsWarehouse($arr_parameters, $where_parameter);

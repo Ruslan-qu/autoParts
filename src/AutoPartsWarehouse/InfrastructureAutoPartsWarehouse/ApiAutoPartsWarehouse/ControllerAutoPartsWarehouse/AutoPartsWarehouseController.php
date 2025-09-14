@@ -9,18 +9,12 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingApi;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingFile;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\Factory\FactoryReadingEmail;
 use App\Sales\DomainSales\AdaptersInterface\AdapterAutoPartsWarehouseSalesInterface;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\ApiProcessing\ApiProcessing;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\FileProcessing\FileProcessing;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingFile\DTOAutoPartsFile\AutoPartsFile;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\EmailProcessing\EmailProcessing;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingEmail\DTOAutoPartsEmail\AutoPartsEmail;
 use App\Counterparty\DomainCounterparty\AdaptersInterface\AdapterAutoPartsWarehouseCounterpartyInterface;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ReadingApi\DTOCounterpartyAutoParts\ArrCounterparty;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsApiType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsFaleType;
@@ -30,12 +24,9 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\Sear
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SaveAutoPartsManuallyType;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOPaymentMethodQuery\ArrPaymentMethodQuery;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\ShipmentAutoPartsToDate\FindByShipmentToDateQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindOneByPaymentMethodQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindByAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindIdAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindAllAutoPartsWarehouseQueryHandler;
@@ -45,7 +36,6 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWareho
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\ArrAutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseArrCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseFileCommandHandler;
 
 
 class AutoPartsWarehouseController extends AbstractController
@@ -330,20 +320,25 @@ class AutoPartsWarehouseController extends AbstractController
             $participant = $adapterUserExtractionInterface->userExtraction();
             //$search_data = $findByShipmentToDateQueryHandler
             //   ->handler(new AutoPartsWarehouseQuery(['id_participant' => $participant]));
-            // dd($search_data);
             $search_data = $findAllAutoPartsWarehouseQueryHandler->handler();
         } catch (HttpException $e) {
             $this->errorMessageViaSession($e);
         }
 
-
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {
 
                 try {
-
+                    $mapDataAutoPartsWarehouse = $this->mapDataAutoPartsWarehouse(
+                        $form_search_auto_parts_warehouse->getData()['id_part_name'],
+                        $form_search_auto_parts_warehouse->getData()['id_car_brand'],
+                        $form_search_auto_parts_warehouse->getData()['id_side'],
+                        $form_search_auto_parts_warehouse->getData()['id_body'],
+                        $form_search_auto_parts_warehouse->getData()['id_axle'],
+                        $participant
+                    );
                     $search_data = $findByAutoPartsWarehouseQueryHandler
-                        ->handler(new AutoPartsWarehouseQuery($form_search_auto_parts_warehouse->getData()));
+                        ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);
@@ -587,5 +582,23 @@ class AutoPartsWarehouseController extends AbstractController
         }
 
         return $arr_processed_data;
+    }
+
+    private function mapDataAutoPartsWarehouse(
+        $id_part_name,
+        $id_car_brand,
+        $id_side,
+        $id_body,
+        $id_axle,
+        $participant
+    ): array {
+        $arr_auto_parts_warehouse['id_part_name'] = $id_part_name;
+        $arr_auto_parts_warehouse['id_car_brand'] = $id_car_brand;
+        $arr_auto_parts_warehouse['id_side'] = $id_side;
+        $arr_auto_parts_warehouse['id_body'] = $id_body;
+        $arr_auto_parts_warehouse['id_axle'] = $id_axle;
+        $arr_auto_parts_warehouse['id_participant'] = $participant;
+
+        return $arr_auto_parts_warehouse;
     }
 }

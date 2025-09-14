@@ -62,7 +62,7 @@ class PartNumbersController extends AbstractController
                             ->handler(new OriginalRoomsQuery($original_rooms));
                     }
 
-                    $part_numbers = $this->mapePartNumbers(
+                    $part_numbers = $this->mapPartNumbers(
                         null,
                         $form_save_part_numbers->getData()['part_number'],
                         $original_number,
@@ -128,7 +128,7 @@ class PartNumbersController extends AbstractController
                             ->handler(new OriginalRoomsQuery($original_rooms));
                     }
 
-                    $part_numbers = $this->mapePartNumbers(
+                    $part_numbers = $this->mapPartNumbers(
                         null,
                         $form_search_part_numbers->getData()['part_number'],
                         $original_number,
@@ -187,7 +187,7 @@ class PartNumbersController extends AbstractController
 
         if (empty($form_edit_part_numbers->getData())) {
             try {
-                $part_numbers = $this->mapePartNumbers(
+                $part_numbers = $this->mapPartNumbers(
                     $request->query->all()['id'],
                     null,
                     null,
@@ -235,7 +235,7 @@ class PartNumbersController extends AbstractController
                             ->handler(new OriginalRoomsQuery($original_rooms));
                     }
 
-                    $part_numbers = $this->mapePartNumbers(
+                    $part_numbers = $this->mapPartNumbers(
                         $form_edit_part_numbers->getData()['id'],
                         $form_edit_part_numbers->getData()['part_number'],
                         $original_number,
@@ -304,7 +304,7 @@ class PartNumbersController extends AbstractController
         return $arr_original_rooms;
     }
 
-    private function mapePartNumbers(
+    private function mapPartNumbers(
         $id,
         $part_number,
         $id_original_number,

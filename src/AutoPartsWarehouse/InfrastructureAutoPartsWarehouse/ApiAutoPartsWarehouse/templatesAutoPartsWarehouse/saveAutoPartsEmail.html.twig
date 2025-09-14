@@ -19,6 +19,17 @@
     <div class="row mt-3">
       <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
         {{ form_widget(form_save_auto_parts_email.button_save_email, { 'attr': {'class': 'btn btn-danger w-100'}}) }}
+        {% for message in app.flashes('[part_number_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+
+        {% for message in app.flashes('[name_counterparty_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+
+        {% for message in app.flashes('[method_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
       </div>
     </div>
 

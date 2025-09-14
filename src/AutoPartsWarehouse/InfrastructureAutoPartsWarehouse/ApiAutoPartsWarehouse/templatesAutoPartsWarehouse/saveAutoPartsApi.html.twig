@@ -56,6 +56,17 @@
   <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
     {{ form_widget(form_save_auto_parts_api.button_save_api, { 'label': 'Продолжить', 'attr': {'class':
     'btn btn-danger w-100'}}) }}
+    {% for message in app.flashes('[part_number_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+
+        {% for message in app.flashes('[name_counterparty_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
+
+        {% for message in app.flashes('[method_error][Regex]') %}
+        {{ message }}
+        {% endfor %}
   </div>
   {{ form_end(form_save_auto_parts_api) }}
   {% endif %}
