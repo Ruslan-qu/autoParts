@@ -8,7 +8,7 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoParts
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 
 
-final class FindIdAutoPartsWarehouseQueryHandler
+final class FindOneByAutoPartsWarehouseQueryHandler
 {
 
     public function __construct(
@@ -21,8 +21,9 @@ final class FindIdAutoPartsWarehouseQueryHandler
 
         $id = $autoPartsWarehouseQuery->getId();
         $this->inputErrorsAutoPartsWarehouse->emptyData($id);
+        $id_participant = $autoPartsWarehouseQuery->getIdParticipant();
 
-        $auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findIdAutoPartsWarehouse($id);
+        $auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findOneByAutoPartsWarehouse($id, $id_participant);
         $this->inputErrorsAutoPartsWarehouse->emptyEntity($auto_parts_warehouse);
 
         return $auto_parts_warehouse;

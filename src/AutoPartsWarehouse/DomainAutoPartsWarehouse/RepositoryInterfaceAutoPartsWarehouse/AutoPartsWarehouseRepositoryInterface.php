@@ -24,7 +24,7 @@ interface AutoPartsWarehouseRepositoryInterface
 
     public function findAutoPartsWarehouse(int $id): ?array;
 
-    public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse;
+    public function findOneByAutoPartsWarehouse(int $id, Participant $id_participant): ?AutoPartsWarehouse;
 
     public function findCartAutoPartsWarehouse(int $id): ?array;
 

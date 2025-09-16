@@ -169,9 +169,9 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     /**
      * @return AutoPartsWarehouse|NULL Возвращает объект или ноль
      */
-    public function findIdAutoPartsWarehouse(int $id): ?AutoPartsWarehouse
+    public function findOneByAutoPartsWarehouse(int $id, Participant $id_participant): ?AutoPartsWarehouse
     {
-        return $this->find($id);
+        return $this->findOneBy(['id' => $id, 'id_participant' => $id_participant]);
     }
 
     /**

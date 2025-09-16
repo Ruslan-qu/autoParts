@@ -33,6 +33,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\EditAutoPartsWarehouseCommand\EditAutoPartsWarehouseCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseCommandHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindOneByAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\ArrAutoPartsWarehouseCommand;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\SaveAutoPartsWarehouseCommand\SaveAutoPartsWarehouseArrCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand\DeleteAutoPartsWarehouseCommandHandler;
@@ -330,6 +331,7 @@ class AutoPartsWarehouseController extends AbstractController
 
                 try {
                     $mapDataAutoPartsWarehouse = $this->mapDataAutoPartsWarehouse(
+                        null,
                         $form_search_auto_parts_warehouse->getData()['id_part_name'],
                         $form_search_auto_parts_warehouse->getData()['id_car_brand'],
                         $form_search_auto_parts_warehouse->getData()['id_side'],
@@ -357,7 +359,8 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('editAutoPartsWarehouse', name: 'edit_auto_parts_warehouse')]
     public function editAutoPartsWarehouse(
         Request $request,
-        FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByAutoPartsWarehouseQueryHandler $findOneByAutoPartsWarehouseQueryHandler,
         AdapterAutoPartsWarehouseSalesInterface $adapterAutoPartsWarehouseSalesInterface,
         FindAutoPartsWarehouseQueryHandler $findAutoPartsWarehouseQueryHandler,
         AdapterAutoPartsWarehousePartNumbersInterface $adapterAutoPartsWarehousePartNumbersInterface,
@@ -371,9 +374,18 @@ class AutoPartsWarehouseController extends AbstractController
         $form_edit_auto_parts_warehouse->handleRequest($request);
 
         try {
-
-            $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findIdAutoPartsWarehouseQueryHandler
-                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $mapDataAutoPartsWarehouse = $this->mapDataAutoPartsWarehouse(
+                $request->query->all()['id'],
+                null,
+                null,
+                null,
+                null,
+                null,
+                $participant
+            );
+            $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findOneByAutoPartsWarehouseQueryHandler
+                ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
 
             $adapterAutoPartsWarehouseSalesInterface->salesDeleteEditAutoPartsWarehouse($data_auto_parts_warehouse);
         } catch (HttpException $e) {
@@ -411,7 +423,7 @@ class AutoPartsWarehouseController extends AbstractController
             }
         }
 
-        if (empty($form_edit_auto_parts_warehouse->getData()) || !empty($arr_saving_information)) {
+        if (empty($form_edit_auto_parts_warehouse->getData()) || !empty($id)) {
             try {
 
                 $data_form_edit_auto_parts_warehouse = $findAutoPartsWarehouseQueryHandler
@@ -585,6 +597,7 @@ class AutoPartsWarehouseController extends AbstractController
     }
 
     private function mapDataAutoPartsWarehouse(
+        $id,
         $id_part_name,
         $id_car_brand,
         $id_side,
@@ -592,6 +605,7 @@ class AutoPartsWarehouseController extends AbstractController
         $id_axle,
         $participant
     ): array {
+        $arr_auto_parts_warehouse['id'] = $id;
         $arr_auto_parts_warehouse['id_part_name'] = $id_part_name;
         $arr_auto_parts_warehouse['id_car_brand'] = $id_car_brand;
         $arr_auto_parts_warehouse['id_side'] = $id_side;
