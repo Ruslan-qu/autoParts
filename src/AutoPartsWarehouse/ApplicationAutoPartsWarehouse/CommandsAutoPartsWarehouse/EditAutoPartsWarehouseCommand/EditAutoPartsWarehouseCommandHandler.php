@@ -26,6 +26,7 @@ final class EditAutoPartsWarehouseCommandHandler
         $part_number = $autoPartsWarehouseCommand->getIdDetails();
         $date_receipt_auto_parts_warehouse = $autoPartsWarehouseCommand->getDateReceiptAutoPartsWarehouse();
         $payment_method = $autoPartsWarehouseCommand->getIdPaymentMethod();
+        $id_participant = $autoPartsWarehouseCommand->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условия валидации */
         $validator = Validation::createValidator();
@@ -86,7 +87,7 @@ final class EditAutoPartsWarehouseCommandHandler
         $id = $autoPartsWarehouseCommand->getId();
         $this->inputErrorsAutoPartsWarehouse->emptyData($id);
 
-        $edit_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findIdAutoPartsWarehouse($id);
+        $edit_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findOneByAutoPartsWarehouse($id, $id_participant);
         $this->inputErrorsAutoPartsWarehouse->emptyEntity($edit_auto_parts_warehouse);
 
         $edit_auto_parts_warehouse->setQuantity($quantity);

@@ -150,7 +150,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findAutoPartsWarehouse(int $id): ?array
+    public function findOneByJoinAutoPartsWarehouse(int $id, Participant $id_participant): ?array
     {
         $entityManager = $this->getEntityManager();
 
@@ -160,8 +160,9 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN a.id_details d
             LEFT JOIN a.id_counterparty c
             LEFT JOIN a.id_payment_method pm 
-            WHERE a.id = :id'
-        )->setParameter('id', $id);
+            WHERE a.id = :id
+            AND a.id_participant = :id_participant'
+        )->setParameters(['id' => $id,  'id_participant' => $id_participant]);
 
         return $query->getResult();
     }

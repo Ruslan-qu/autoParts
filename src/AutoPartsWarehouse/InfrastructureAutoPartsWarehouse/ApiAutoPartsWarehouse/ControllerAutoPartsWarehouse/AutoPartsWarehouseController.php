@@ -387,7 +387,7 @@ class AutoPartsWarehouseController extends AbstractController
             $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findOneByAutoPartsWarehouseQueryHandler
                 ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
 
-            $adapterAutoPartsWarehouseSalesInterface->salesDeleteEditAutoPartsWarehouse($data_auto_parts_warehouse);
+            $adapterAutoPartsWarehouseSalesInterface->salesEditAutoPartsWarehouse($data_auto_parts_warehouse);
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
@@ -403,17 +403,22 @@ class AutoPartsWarehouseController extends AbstractController
             if ($form_edit_auto_parts_warehouse->isValid()) {
                 try {
 
-                    $map_arr_id_details = [
-                        'id_details' => $form_edit_auto_parts_warehouse->getData()['id_details']
-                    ];
-                    $arr_part_number = $adapterAutoPartsWarehousePartNumbersInterface->searchIdDetails($map_arr_id_details);
-
-                    $map_arr_part_number = ['id_details' => $arr_part_number];
-                    $data_edit_auto_parts_manually = array_replace(
-                        $form_edit_auto_parts_warehouse->getData(),
-                        $map_arr_part_number
+                    $part_number = $this->mapPartNumber(
+                        $form_edit_auto_parts_warehouse->getData()['id_details'],
+                        $participant
                     );
+                    $part_number = $adapterAutoPartsWarehousePartNumbersInterface->searchIdDetails($part_number);
 
+                    $data_edit_auto_parts_manually = $this->mapAutoPartsWarehouse(
+                        $form_edit_auto_parts_warehouse->getData()['id'],
+                        $part_number,
+                        $form_edit_auto_parts_warehouse->getData()['id_counterparty'],
+                        $form_edit_auto_parts_warehouse->getData()['quantity'],
+                        $form_edit_auto_parts_warehouse->getData()['price'],
+                        $form_edit_auto_parts_warehouse->getData()['date_receipt_auto_parts_warehouse'],
+                        $form_edit_auto_parts_warehouse->getData()['id_payment_method'],
+                        $participant
+                    );
                     $id = $editAutoPartsWarehouseCommandHandler
                         ->handler(new AutoPartsWarehouseCommand($data_edit_auto_parts_manually));
                 } catch (HttpException $e) {
@@ -425,9 +430,17 @@ class AutoPartsWarehouseController extends AbstractController
 
         if (empty($form_edit_auto_parts_warehouse->getData()) || !empty($id)) {
             try {
-
+                $mapDataAutoPartsWarehouse = $this->mapDataAutoPartsWarehouse(
+                    $request->query->all()['id'],
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    $participant
+                );
                 $data_form_edit_auto_parts_warehouse = $findAutoPartsWarehouseQueryHandler
-                    ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+                    ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
             } catch (HttpException $e) {
 
                 $this->errorMessageViaSession($e);
@@ -446,14 +459,26 @@ class AutoPartsWarehouseController extends AbstractController
     #[Route('deleteAutoPartsWarehouse', name: 'delete_auto_parts_warehouse')]
     public function deleteAutoPartsWarehouse(
         Request $request,
-        FindIdAutoPartsWarehouseQueryHandler $findIdAutoPartsWarehouseQueryHandler,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByAutoPartsWarehouseQueryHandler $findOneByAutoPartsWarehouseQueryHandler,
         AdapterAutoPartsWarehouseSalesInterface $adapterAutoPartsWarehouseSalesInterface,
         DeleteAutoPartsWarehouseCommandHandler $deleteAutoPartsWarehouseCommandHandler
     ): Response {
         try {
 
-            $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findIdAutoPartsWarehouseQueryHandler
-                ->handler(new AutoPartsWarehouseQuery($request->query->all()));
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $mapDataAutoPartsWarehouse = $this->mapDataAutoPartsWarehouse(
+                $request->query->all()['id'],
+                null,
+                null,
+                null,
+                null,
+                null,
+                $participant
+            );
+
+            $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findOneByAutoPartsWarehouseQueryHandler
+                ->handler(new AutoPartsWarehouseQuery(mapDataAutoPartsWarehouse));
 
             $adapterAutoPartsWarehouseSalesInterface->salesDeleteEditAutoPartsWarehouse($data_auto_parts_warehouse);
 

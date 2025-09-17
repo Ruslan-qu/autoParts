@@ -22,7 +22,7 @@ interface AutoPartsWarehouseRepositoryInterface
 
     public function findByAutoPartsWarehouse(array $parameters, string $where): ?array;
 
-    public function findAutoPartsWarehouse(int $id): ?array;
+    public function findOneByJoinAutoPartsWarehouse(int $id, Participant $id_participant): ?array;
 
     public function findOneByAutoPartsWarehouse(int $id, Participant $id_participant): ?AutoPartsWarehouse;
 

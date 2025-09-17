@@ -20,8 +20,9 @@ final class FindAutoPartsWarehouseQueryHandler
 
         $id = $autoPartsWarehouseQuery->getId();
         $this->inputErrorsAutoPartsWarehouse->emptyData($id);
+        $id_participant = $autoPartsWarehouseQuery->getIdParticipant();
 
-        $edit_find_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findAutoPartsWarehouse($id);
+        $edit_find_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findOneByJoinAutoPartsWarehouse($id, $id_participant);
         $this->inputErrorsAutoPartsWarehouse->emptyEntity($edit_find_auto_parts_warehouse);
 
         return $edit_find_auto_parts_warehouse[0];

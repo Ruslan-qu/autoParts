@@ -32,5 +32,5 @@ interface AutoPartsSoldRepositoryInterface
 
     public function findBySalesToDate(): ?array;
 
-    public function findBySalesDeleteEditAutoPartsWarehouse($id_auto_parts_warehouse): ?array;
+    public function findBySalesEditAutoPartsWarehouse($id_auto_parts_warehouse): ?array;
 }

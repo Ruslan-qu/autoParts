@@ -104,7 +104,7 @@ class InputErrorsSales
     {
         if (!empty($data_delete)) {
 
-            $arr_data_errors = ['Error' => 'Удаление или Изменение запрещено, используется в других таблицах'];
+            $arr_data_errors = ['Error' => 'Изменение запрещено, используется в таблице Продажи'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

@@ -290,7 +290,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array|NULL Возвращает объект или ноль
      */
-    public function findBySalesDeleteEditAutoPartsWarehouse($id_auto_parts_warehouse): ?array
+    public function findBySalesEditAutoPartsWarehouse($id_auto_parts_warehouse): ?array
     {
         return $this->findBy(['id_auto_parts_warehouse' => $id_auto_parts_warehouse]);
     }
