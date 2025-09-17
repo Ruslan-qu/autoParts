@@ -461,7 +461,6 @@ class AutoPartsWarehouseController extends AbstractController
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindOneByAutoPartsWarehouseQueryHandler $findOneByAutoPartsWarehouseQueryHandler,
-        AdapterAutoPartsWarehouseSalesInterface $adapterAutoPartsWarehouseSalesInterface,
         DeleteAutoPartsWarehouseCommandHandler $deleteAutoPartsWarehouseCommandHandler
     ): Response {
         try {
@@ -478,9 +477,7 @@ class AutoPartsWarehouseController extends AbstractController
             );
 
             $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findOneByAutoPartsWarehouseQueryHandler
-                ->handler(new AutoPartsWarehouseQuery(mapDataAutoPartsWarehouse));
-
-            $adapterAutoPartsWarehouseSalesInterface->salesDeleteEditAutoPartsWarehouse($data_auto_parts_warehouse);
+                ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
 
             $deleteAutoPartsWarehouseCommandHandler
                 ->handler(new AutoPartsWarehouseCommand($request->query->all()));

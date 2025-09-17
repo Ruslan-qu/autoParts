@@ -14,7 +14,7 @@ class AdapterAutoPartsWarehouseSales implements AdapterAutoPartsWarehouseSalesIn
     ) {}
 
 
-    public function salesEditEAutoPartsWarehouse(array $data_auto_parts_warehouse): void
+    public function salesEditAutoPartsWarehouse(array $data_auto_parts_warehouse): void
     {
 
         $this->salesEditAutoPartsWarehouseQueryHandler
