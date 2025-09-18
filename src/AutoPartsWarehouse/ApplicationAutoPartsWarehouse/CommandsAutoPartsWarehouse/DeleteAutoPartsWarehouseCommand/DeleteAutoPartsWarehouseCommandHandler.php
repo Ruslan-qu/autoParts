@@ -2,10 +2,9 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DeleteAutoPartsWarehouseCommand;
 
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\AutoPartsWarehouseRepositoryInterface;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseCommand\AutoPartsWarehouseCommand;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsAutoPartsWarehouse\DTOCommands\DTOAutoPartsWarehouseObjCommand\AutoPartsWarehouseObjCommand;
 
 final class DeleteAutoPartsWarehouseCommandHandler
 {
@@ -14,18 +13,11 @@ final class DeleteAutoPartsWarehouseCommandHandler
         private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
     ) {}
 
-    public function handler(AutoPartsWarehouseCommand $autoPartsWarehouseCommand): ?int
+    public function handler(AutoPartsWarehouseObjCommand $autoPartsWarehouseObjCommand): ?array
     {
 
-        $id = $autoPartsWarehouseCommand->getId();
-        $this->inputErrorsAutoPartsWarehouse->emptyData($id);
+        $auto_parts_warehouse = $autoPartsWarehouseObjCommand->getAutoPartsWarehouse();
 
-        $find_auto_parts_warehouse = $this->autoPartsWarehouseRepositoryInterface->findIdAutoPartsWarehouse($id);
-        $this->inputErrorsAutoPartsWarehouse->emptyEntity($find_auto_parts_warehouse);
-
-        $successfully_delete = $this->autoPartsWarehouseRepositoryInterface->delete($find_auto_parts_warehouse);
-
-
-        return $successfully_delete['delete'];
+        return $this->autoPartsWarehouseRepositoryInterface->delete($auto_parts_warehouse);
     }
 }

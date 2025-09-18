@@ -41,8 +41,8 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($participant);
 
-        $exists_counterparty = $this->count(['id' => $entityData['id']]);
-        if ($exists_counterparty == 0) {
+        $exists = $this->count(['id' => $entityData['id']]);
+        if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);

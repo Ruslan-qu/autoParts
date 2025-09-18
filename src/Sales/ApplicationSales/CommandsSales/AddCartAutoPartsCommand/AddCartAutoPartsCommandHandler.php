@@ -25,9 +25,6 @@ final class AddCartAutoPartsCommandHandler
     public function handler(AutoPartsSoldCommand $autoPartsSoldCommand): ?int
     {
 
-        /* Подключаем валидацию и прописываем условие валидации */
-        $validator = Validation::createValidator();
-
         $auto_parts_warehouse = $autoPartsSoldCommand->getIdAutoPartsWarehouse();
 
         $quantity_auto_parts_warehouse = $auto_parts_warehouse->getQuantity();
@@ -42,6 +39,10 @@ final class AddCartAutoPartsCommandHandler
 
         $date_sold = $autoPartsSoldCommand->getDateSold();
 
+        $id_participant = $autoPartsSoldCommand->getIdParticipant();
+
+        /* Подключаем валидацию и прописываем условие валидации */
+        $validator = Validation::createValidator();
         $input = [
             'quantity_sold_error' => [
                 'NotBlank' => $quantity_sold,
@@ -110,10 +111,8 @@ final class AddCartAutoPartsCommandHandler
         $this->autoPartsSold->setPriceSold($price_sold);
         $this->autoPartsSold->setDateSold($date_sold);
         $this->autoPartsSold->setSoldStatus(false);
+        $this->autoPartsSold->setIdParticipant($id_participant);
 
-        $successfully_save = $this->autoPartsSoldRepositoryInterface->save($this->autoPartsSold);
-
-        $id = $successfully_save['save'];
-        return $id;
+        return $this->autoPartsSoldRepositoryInterface->save($this->autoPartsSold);
     }
 }

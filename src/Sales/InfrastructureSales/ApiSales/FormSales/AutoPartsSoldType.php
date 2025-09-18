@@ -9,9 +9,11 @@ use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 class AutoPartsSoldType extends AbstractType
@@ -62,6 +64,10 @@ class AutoPartsSoldType extends AbstractType
             ])
             ->add('id_auto_parts_warehouse', EntityHiddenType::class, [
                 'class' => AutoPartsWarehouse::class,
+                'choice_label' => 'id'
+            ])
+            ->add('id_participant', EntityHiddenType::class, [
+                'class' => Participant::class,
                 'choice_label' => 'id'
             ])
             ->add('button_add_cart', SubmitType::class);

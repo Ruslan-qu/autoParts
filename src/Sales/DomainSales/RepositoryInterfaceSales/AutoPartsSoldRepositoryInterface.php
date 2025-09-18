@@ -6,7 +6,7 @@ use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
 
 interface AutoPartsSoldRepositoryInterface
 {
-    public function save(AutoPartsSold $autoPartsSold): array;
+    public function save(AutoPartsSold $autoPartsSold): int;
 
     public function edit(array $arr_auto_parts_sold): array;
 

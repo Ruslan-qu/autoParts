@@ -15,6 +15,7 @@ use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOSalesQuery\SalesQuery;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\EditSalesAutoPartsType;
 use App\Sales\ApplicationSales\QuerySales\SearchSalesQuery\FindBySalesQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\SalesToDate\FindBySalesToDateQueryHandler;
+use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\AutoPartsSoldCommand;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterSalesInterface;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
@@ -35,6 +36,7 @@ class SalesController extends AbstractController
     #[Route('cartAutoPartsWarehouseSold', name: 'cart_auto_parts_warehouse_sold')]
     public function cartAutoPartsWarehouseSold(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         AdapterSalesInterface $adapterSalesInterface,
         AddCartAutoPartsCommandHandler $addCartAutoPartsCommandHandler,
         FindByCartAutoPartsSoldQueryHandler $findByCartAutoPartsSoldQueryHandler
@@ -49,8 +51,18 @@ class SalesController extends AbstractController
         $form_completion_sale->handleRequest($request);
 
         try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $mapDataAutoPartsWarehouse = $this->mapDataAutoPartsWarehouse(
+                $request->query->all()['id'],
+                null,
+                null,
+                null,
+                null,
+                null,
+                $participant
+            );
             $car_parts_for_sale = $adapterSalesInterface
-                ->findCartPartsWarehouse($request->query->all());
+                ->findOneByCartPartsWarehouse($mapDataAutoPartsWarehouse);
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
@@ -73,7 +85,6 @@ class SalesController extends AbstractController
         }
 
         $cartAutoParts = $findByCartAutoPartsSoldQueryHandler->handler();
-
         $sum = $this->sumCartAutoPartsSales($cartAutoParts);
 
         return $this->render('@sales/cartAutoPartsWarehouseSold.html.twig', [
@@ -337,6 +348,26 @@ class SalesController extends AbstractController
         }
 
         return $this;
+    }
+
+    private function mapDataAutoPartsWarehouse(
+        $id,
+        $id_part_name,
+        $id_car_brand,
+        $id_side,
+        $id_body,
+        $id_axle,
+        $participant
+    ): array {
+        $arr_auto_parts_warehouse['id'] = $id;
+        $arr_auto_parts_warehouse['id_part_name'] = $id_part_name;
+        $arr_auto_parts_warehouse['id_car_brand'] = $id_car_brand;
+        $arr_auto_parts_warehouse['id_side'] = $id_side;
+        $arr_auto_parts_warehouse['id_body'] = $id_body;
+        $arr_auto_parts_warehouse['id_axle'] = $id_axle;
+        $arr_auto_parts_warehouse['id_participant'] = $participant;
+
+        return $arr_auto_parts_warehouse;
     }
 
     private function sumCartAutoPartsSales($cartAutoParts): int

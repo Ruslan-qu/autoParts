@@ -2,15 +2,14 @@
 
 namespace App\Sales\ApplicationSales\QuerySales\DTOSales\DTOSalesQuery;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOSalesQuery\MapSalesQuery;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
-use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\MapAutoPartsSoldQuery;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
-use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 final class SalesQuery extends MapSalesQuery
 
@@ -34,6 +33,8 @@ final class SalesQuery extends MapSalesQuery
     protected ?Axles $id_axle = null;
 
     protected ?Counterparty $id_counterparty = null;
+
+    protected ?Participant $id_participant = null;
 
     public function getFromDateSold(): ?\DateTimeImmutable
     {
@@ -83,5 +84,10 @@ final class SalesQuery extends MapSalesQuery
     public function getIdCounterparty(): ?Counterparty
     {
         return $this->id_counterparty;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
     }
 }

@@ -99,15 +99,24 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
      */
     public function delete(AutoPartsWarehouse $autoPartsWarehouse): array
     {
-        $entityManager = $this->getEntityManager();
-        $entityManager->remove($autoPartsWarehouse);
-        $entityManager->flush();
+        try {
 
-        $entityData = $entityManager->contains($autoPartsWarehouse);
-        if ($entityData != false) {
-            $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
-            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
-            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            $entityManager = $this->getEntityManager();
+            $entityManager->remove($autoPartsWarehouse);
+            $entityManager->flush();
+
+            $entityData = $entityManager->contains($autoPartsWarehouse);
+            if ($entityData != false) {
+                $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
+        } catch (\Exception $e) {
+            if (!empty($e)) {
+                $arr_data_errors = ['Error' => 'Удаление запрещено, используется в таблице ' . '"' . 'Продажи' . '".'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
         }
 
         return $successfully = ['delete' => 0];
@@ -178,12 +187,12 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findCartAutoPartsWarehouse(int $id): ?array
+    public function findOneByCartAutoPartsWarehouse(int $id, Participant $id_participant): ?array
     {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT a, d, pn, cb, s, b, ax, o, c, pm
+            'SELECT a, d, pn, cb, s, b, ax, o, c, pm, i
             FROM App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse a
             LEFT JOIN a.id_details d
             LEFT JOIN d.id_part_name pn
@@ -194,8 +203,10 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN d.id_original_number o
             LEFT JOIN a.id_counterparty c
             LEFT JOIN a.id_payment_method pm 
-            WHERE a.id = :id'
-        )->setParameter('id', $id);
+            LEFT JOIN a.id_participant i 
+            WHERE a.id = :id
+            AND a.id_participant = :id_participant'
+        )->setParameters(['id' => $id,  'id_participant' => $id_participant]);
 
         return $query->getResult();
     }

@@ -21,7 +21,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array Возвращается массив с данными об успешном сохранении
      */
-    public function save(AutoPartsSold $autoPartsSold): array
+    public function save(AutoPartsSold $autoPartsSold): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->persist($autoPartsSold);
@@ -29,13 +29,13 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
 
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsSold);
 
-        $exists = $this->count($entityData);
+        $exists = $this->count(['id' => $entityData['id']]);
         if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не сохранены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
-        return $successfully = ['save' => $entityData['id']];
+        return $entityData['id'];
     }
 
     /**

@@ -5,5 +5,5 @@ namespace App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface;
 
 interface AdapterSalesInterface
 {
-    public function findCartPartsWarehouse(array $arr_part_number): ?array;
+    public function findOneByCartPartsWarehouse(array $autoPartsWarehouse): ?array;
 }

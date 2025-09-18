@@ -142,8 +142,10 @@
 
           {% for information in car_parts_for_sale %}
           {% if information %}
-          {{ form_widget(form_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, { value : information.getId() })
-          }}
+          {{ form_widget(form_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse,
+          { value : information.getId() }) }}
+          {{ form_widget(form_cart_auto_parts_warehouse_sold.id_participant,
+          { value : information.getIdParticipant().getId() }) }}
           {% endif %}
           {% endfor %}
         </div>
@@ -212,13 +214,14 @@
             <td>{{ information.getQuantitySold()|default('') }}</td>
             <td>{{ (information.getPriceSold() / 100)|default('') }}</td>
 
-            <form action="{ path('edit_cart_auto_parts_warehouse_sold') }}" name="edit_cart_auto_parts_warehouse_sold">
+            <form action="{{ path('edit_cart_auto_parts_warehouse_sold') }}" name="edit_cart_auto_parts_warehouse_sold">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('bx:edit', {'height': '30', 'width': '30'}) }}</button></td>
 
             </form>
-            <form action="{ path('delete_cart_auto_parts_warehouse_sold') }}" name="delete_cart_auto_parts_warehouse_sold">
+            <form action="{{ path('delete_cart_auto_parts_warehouse_sold') }}"
+              name="delete_cart_auto_parts_warehouse_sold">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ information.getId() }}">{{
                   ux_icon('iconoir:delete-circle', {'height': '30', 'width': '30'}) }}</button></td>

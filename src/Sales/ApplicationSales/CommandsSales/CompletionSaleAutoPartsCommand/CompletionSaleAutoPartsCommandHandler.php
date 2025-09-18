@@ -16,14 +16,11 @@ final class CompletionSaleAutoPartsCommandHandler
 
         $arr_completion_sale = $this->autoPartsSoldRepositoryInterface->findByCompletionSale();
 
-        $seed = (int)floor(time() / 2);
-
         foreach ($arr_completion_sale as $key => $value) {
             if ($value->getIdAutoPartsWarehouse()->getQuantity() == $value->getIdAutoPartsWarehouse()->getQuantitySold()) {
                 $value->getIdAutoPartsWarehouse()->setSales(1);
             }
 
-            $value->setIdSold($seed);
             $value->setSoldStatus(true);
         }
 

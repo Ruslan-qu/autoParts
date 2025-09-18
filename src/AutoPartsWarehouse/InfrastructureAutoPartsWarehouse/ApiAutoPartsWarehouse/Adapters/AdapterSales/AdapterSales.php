@@ -4,20 +4,20 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterSalesInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
-use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\CartAutoPartsWarehouseSoldQuery\FindCartAutoPartsWarehouseQueryHandler;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\CartAutoPartsWarehouseSoldQuery\FindOneByCartAutoPartsWarehouseQueryHandler;
 
 class AdapterSales implements AdapterSalesInterface
 {
 
     public function __construct(
-        private FindCartAutoPartsWarehouseQueryHandler $findCartAutoPartsWarehouseQueryHandler
+        private FindOneByCartAutoPartsWarehouseQueryHandler $findOneByCartAutoPartsWarehouseQueryHandler
     ) {}
 
-    public function findCartPartsWarehouse(array $arr_part_number): ?array
+    public function findOneByCartPartsWarehouse(array $autoPartsWarehouse): ?array
     {
 
-        $car_parts_for_sale = $this->findCartAutoPartsWarehouseQueryHandler
-            ->handler(new AutoPartsWarehouseQuery($arr_part_number));
+        $car_parts_for_sale = $this->findOneByCartAutoPartsWarehouseQueryHandler
+            ->handler(new AutoPartsWarehouseQuery($autoPartsWarehouse));
 
         return $car_parts_for_sale;
     }

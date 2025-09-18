@@ -26,7 +26,7 @@ interface AutoPartsWarehouseRepositoryInterface
 
     public function findOneByAutoPartsWarehouse(int $id, Participant $id_participant): ?AutoPartsWarehouse;
 
-    public function findCartAutoPartsWarehouse(int $id): ?array;
+    public function findOneByCartAutoPartsWarehouse(int $id, Participant $id_participant): ?array;
 
     public function emptyDateAutoPartsWarehouse(DateTimeImmutable $contentHeadersDate): ?int;
 

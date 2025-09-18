@@ -2,6 +2,7 @@
 
 namespace App\Sales\DomainSales\DomainModelSales;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Sales\InfrastructureSales\RepositorySales\AutoPartsSoldRepository;
@@ -28,10 +29,10 @@ class AutoPartsSold
     private ?\DateTimeImmutable $date_sold = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $id_sold = null;
-
-    #[ORM\Column(nullable: true)]
     private ?bool $sold_status = null;
+
+    #[ORM\ManyToOne]
+    private ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -86,18 +87,6 @@ class AutoPartsSold
         return $this;
     }
 
-    public function getIdSold(): ?int
-    {
-        return $this->id_sold;
-    }
-
-    public function setIdSold(?int $id_sold): static
-    {
-        $this->id_sold = $id_sold;
-
-        return $this;
-    }
-
     public function isSoldStatus(): ?bool
     {
         return $this->sold_status;
@@ -106,6 +95,18 @@ class AutoPartsSold
     public function setSoldStatus(?bool $sold_status): static
     {
         $this->sold_status = $sold_status;
+
+        return $this;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
+    }
+
+    public function setIdParticipant(?Participant $id_participant): static
+    {
+        $this->id_participant = $id_participant;
 
         return $this;
     }

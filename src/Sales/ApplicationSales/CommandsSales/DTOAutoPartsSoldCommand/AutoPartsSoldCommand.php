@@ -2,6 +2,7 @@
 
 namespace App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand;
 
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand\MapAutoPartsSoldCommand;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
@@ -18,9 +19,9 @@ final class AutoPartsSoldCommand extends MapAutoPartsSoldCommand
 
     protected ?\DateTimeImmutable $date_sold = null;
 
-    protected ?int $id_sold = null;
-
     protected ?bool $sold_status = null;
+
+    protected ?Participant $id_participant = null;
 
     public function getId(): ?int
     {
@@ -47,13 +48,13 @@ final class AutoPartsSoldCommand extends MapAutoPartsSoldCommand
         return $this->date_sold;
     }
 
-    public function getIdSold(): ?int
-    {
-        return $this->id_sold;
-    }
-
     public function isSoldStatus(): ?bool
     {
         return $this->sold_status;
+    }
+
+    public function getIdParticipant(): ?Participant
+    {
+        return $this->id_participant;
     }
 }
