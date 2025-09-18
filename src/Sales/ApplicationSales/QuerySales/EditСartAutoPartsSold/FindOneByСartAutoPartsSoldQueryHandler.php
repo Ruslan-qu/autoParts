@@ -8,7 +8,7 @@ use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterf
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 
 
-final class FindСartAutoPartsSoldQueryHandler
+final class FindOneByСartAutoPartsSoldQueryHandler
 {
     public function __construct(
         private InputErrorsSales $inputErrorsSales,
@@ -20,8 +20,10 @@ final class FindСartAutoPartsSoldQueryHandler
 
         $id = $autoPartsSoldQuery->getId();
         $this->inputErrorsSales->emptyData($id);
+        $id_participant = $autoPartsSoldQuery->getIdParticipant();
 
-        $edit_find_cart_auto_parts_warehouse_sold = $this->autoPartsSoldRepositoryInterface->findСartAutoPartsWarehouseSold($id);
+        $edit_find_cart_auto_parts_warehouse_sold =
+            $this->autoPartsSoldRepositoryInterface->findOneByСartAutoPartsWarehouseSold($id, $id_participant);
         $this->inputErrorsSales->emptyEntity($edit_find_cart_auto_parts_warehouse_sold);
 
         return $edit_find_cart_auto_parts_warehouse_sold[0];

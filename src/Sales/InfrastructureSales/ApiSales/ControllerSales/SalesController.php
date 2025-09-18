@@ -21,7 +21,7 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterSal
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\QuerySales\ListCartAutoParts\FindByCartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\EditSalesAutoParts\FindOneBySalesAutoPartsQueryHandler;
-use App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold\FindСartAutoPartsSoldQueryHandler;
+use App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold\FindOneByСartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\AddCartAutoPartsCommand\AddCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\EditCartAutoPartsCommand\EditCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\EditSalesAutoPartsCommand\EditSalesAutoPartsCommandHandler;
@@ -127,7 +127,8 @@ class SalesController extends AbstractController
     #[Route('editСartAutoPartsWarehouseSold', name: 'edit_cart_auto_parts_warehouse_sold')]
     public function editСartAutoPartsWarehouseSold(
         Request $request,
-        FindСartAutoPartsSoldQueryHandler $findСartAutoPartsSoldQueryHandler,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
+        FindOneByСartAutoPartsSoldQueryHandler $findOneByСartAutoPartsSoldQueryHandler,
         EditCartAutoPartsCommandHandler $editCartAutoPartsCommandHandler
     ): Response {
 
@@ -136,6 +137,15 @@ class SalesController extends AbstractController
 
         /*Валидация формы */
         $form_edit_cart_auto_parts_warehouse_sold->handleRequest($request);
+
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+
+            return $this->redirectToRoute('cart_warehouse');
+        }
 
         $valid_form_edit_cart = [];
         if (!empty($request->request->all())) {
@@ -160,9 +170,17 @@ class SalesController extends AbstractController
         }
 
         try {
-
-            $data_form_edit_cart_auto_parts_warehouse = $findСartAutoPartsSoldQueryHandler
-                ->handler(new AutoPartsSoldQuery($request->query->all()));
+            $map_auto_parts_sold = $this->mapAutoPartsSold(
+                $request->query->all()['id'],
+                null,
+                null,
+                null,
+                null,
+                null,
+                $participant
+            );
+            $data_form_edit_cart_auto_parts_warehouse = $findOneByСartAutoPartsSoldQueryHandler
+                ->handler(new AutoPartsSoldQuery($map_auto_parts_sold));
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
@@ -170,7 +188,7 @@ class SalesController extends AbstractController
         }
 
         return $this->render('@sales/editСartAutoPartsWarehouseSold.html.twig', [
-            'title_logo' => 'Изменение данных склада',
+            'title_logo' => 'Изменение данных корзины',
             'form_edit_cart_auto_parts_warehouse_sold' => $form_edit_cart_auto_parts_warehouse_sold->createView(),
             'data_form_edit_cart_auto_parts_warehouse' => $data_form_edit_cart_auto_parts_warehouse,
             'valid_form_edit_cart' => $valid_form_edit_cart
@@ -231,7 +249,7 @@ class SalesController extends AbstractController
         $form_search_sales->handleRequest($request);
 
         $list_sales_auto_parts = $findBySalesToDateQueryHandler->handler();
-        //dd($list_sales_auto_parts);
+
         if ($form_search_sales->isSubmitted()) {
             if ($form_search_sales->isValid()) {
                 try {
@@ -256,6 +274,7 @@ class SalesController extends AbstractController
     #[Route('editSalesAutoParts', name: 'edit_sales_auto_parts')]
     public function editSalesAutoParts(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindOneBySalesAutoPartsQueryHandler $findOneBySalesAutoPartsQueryHandler,
         EditSalesAutoPartsCommandHandler $editSalesAutoPartsCommandHandler
     ): Response {
@@ -265,6 +284,15 @@ class SalesController extends AbstractController
 
         /*Валидация формы */
         $form_edit_sales_auto_parts->handleRequest($request);
+
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+
+            return $this->redirectToRoute('cart_warehouse');
+        }
 
         $valid_form_edit = [];
         if (!empty($request->request->all())) {
@@ -289,9 +317,17 @@ class SalesController extends AbstractController
         }
 
         try {
-
+            $map_auto_parts_sold = $this->mapAutoPartsSold(
+                $request->query->all()['id'],
+                null,
+                null,
+                null,
+                null,
+                null,
+                $participant
+            );
             $data_form_edit_sales_auto_parts = $findOneBySalesAutoPartsQueryHandler
-                ->handler(new AutoPartsSoldQuery($request->query->all()));
+                ->handler(new AutoPartsSoldQuery($map_auto_parts_sold));
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
@@ -368,6 +404,26 @@ class SalesController extends AbstractController
         $arr_auto_parts_warehouse['id_participant'] = $participant;
 
         return $arr_auto_parts_warehouse;
+    }
+
+    private function mapAutoPartsSold(
+        $id,
+        $id_auto_parts_warehouse,
+        $quantity_sold,
+        $price_sold,
+        $date_sold,
+        $sold_status,
+        $participant
+    ): array {
+        $arr_auto_parts_sold['id'] = $id;
+        $arr_auto_parts_sold['id_auto_parts_warehouse'] = $id_auto_parts_warehouse;
+        $arr_auto_parts_sold['quantity_sold'] = $quantity_sold;
+        $arr_auto_parts_sold['price_sold'] = $price_sold;
+        $arr_auto_parts_sold['date_sold'] = $date_sold;
+        $arr_auto_parts_sold['sold_status'] = $sold_status;
+        $arr_auto_parts_sold['id_participant'] = $participant;
+
+        return $arr_auto_parts_sold;
     }
 
     private function sumCartAutoPartsSales($cartAutoParts): int

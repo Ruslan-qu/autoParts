@@ -84,8 +84,8 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsWarehouse);
 
-        $exists_part_numbers = $this->count($entityData);
-        if ($exists_part_numbers == 0) {
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);

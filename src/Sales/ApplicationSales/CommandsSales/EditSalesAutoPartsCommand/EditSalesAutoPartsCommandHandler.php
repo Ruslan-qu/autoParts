@@ -24,27 +24,24 @@ final class EditSalesAutoPartsCommandHandler
 
         $id = $autoPartsSoldCommand->getId();
         $this->inputErrorsSales->emptyData($id);
-        $arr_auto_parts_sold['id'] = $id;
 
-        $find_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findAutoPartsSold($id);
-        $this->inputErrorsSales->emptyEntity($find_auto_parts_sold);
-        $find_auto_parts_sold_quantity_sold = $find_auto_parts_sold->getQuantitySold();
+        $id_participant = $autoPartsSoldCommand->getIdParticipant();
+
+        $auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findOneByAutoPartsSold($id, $id_participant);
+        $this->inputErrorsSales->emptyEntity($auto_parts_sold);
+        $find_auto_parts_sold_quantity_sold = $auto_parts_sold->getQuantitySold();
 
         $auto_parts_warehouse = $autoPartsSoldCommand->getIdAutoPartsWarehouse();
-        $arr_auto_parts_sold['id_auto_parts_warehouse'] = $auto_parts_warehouse;
         $quantity_auto_parts_warehouse = $auto_parts_warehouse->getQuantity();
         $quantity_sold_auto_parts_warehouse = $auto_parts_warehouse->getQuantitySold();
         $subtraction_quantity_sold_auto_parts_warehouse = ($quantity_sold_auto_parts_warehouse - $find_auto_parts_sold_quantity_sold);
         $subtraction_quantity_auto_parts_warehouse = ($quantity_auto_parts_warehouse - $subtraction_quantity_sold_auto_parts_warehouse);
 
         $quantity_sold = $autoPartsSoldCommand->getQuantitySold();
-        $arr_auto_parts_sold['quantity_sold'] = $quantity_sold;
         $sum_quantity_sold_auto_parts_warehouse = ($subtraction_quantity_sold_auto_parts_warehouse + $quantity_sold);
 
         $price_sold = $autoPartsSoldCommand->getPriceSold();
-        $arr_auto_parts_sold['price_sold'] = $price_sold;
         $date_sold = $autoPartsSoldCommand->getDateSold();
-        $arr_auto_parts_sold['date_sold'] = $date_sold;
 
         /* Подключаем валидацию и прописываем условие валидации */
         $validator = Validation::createValidator();
@@ -107,19 +104,22 @@ final class EditSalesAutoPartsCommandHandler
         $this->inputErrorsSales->errorValidate($errors_validate);
 
         $auto_parts_warehouse->setQuantitySold($sum_quantity_sold_auto_parts_warehouse);
-        if ($auto_parts_warehouse->getSales() == 0 && $auto_parts_warehouse->getQuantity() == $sum_quantity_sold_auto_parts_warehouse) {
+        if (
+            $auto_parts_warehouse->getSales() == 0 &&
+            $auto_parts_warehouse->getQuantity() == $sum_quantity_sold_auto_parts_warehouse
+        ) {
             $auto_parts_warehouse->setSales(1);
         }
-        if ($auto_parts_warehouse->getSales() == 1 && $auto_parts_warehouse->getQuantity() != $sum_quantity_sold_auto_parts_warehouse) {
+        if (
+            $auto_parts_warehouse->getSales() == 1 &&
+            $auto_parts_warehouse->getQuantity() != $sum_quantity_sold_auto_parts_warehouse
+        ) {
             $auto_parts_warehouse->setSales(0);
         }
-        $find_auto_parts_sold->setQuantitySold($quantity_sold);
-        $find_auto_parts_sold->setPriceSold($price_sold);
-        $find_auto_parts_sold->setDateSold($date_sold);
+        $auto_parts_sold->setQuantitySold($quantity_sold);
+        $auto_parts_sold->setPriceSold($price_sold);
+        $auto_parts_sold->setDateSold($date_sold);
 
-        $successfully_save = $this->autoPartsSoldRepositoryInterface->edit($arr_auto_parts_sold);
-
-        $id = $successfully_save['edit'];
-        return $id;
+        return $this->autoPartsSoldRepositoryInterface->edit($auto_parts_sold);
     }
 }

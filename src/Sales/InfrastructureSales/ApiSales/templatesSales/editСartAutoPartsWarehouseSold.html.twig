@@ -16,6 +16,7 @@
   {% set quantity_sold_find_id = data_form_edit_cart_auto_parts_warehouse.getQuantitySold()|default('') %}
   {% set price_sold_find_id = (data_form_edit_cart_auto_parts_warehouse.getPriceSold() / 100)|default('') %}
   {% set id_find_id_auto_parts_warehouse = data_form_edit_cart_auto_parts_warehouse.getIdAutoPartsWarehouse().getId()|default('') %}
+  {% set id_find_id_id_participant = data_form_edit_cart_auto_parts_warehouse.getIdParticipant().getId()|default('') %}
   {% set id_find_id = data_form_edit_cart_auto_parts_warehouse.getId()|default('') %}
   {% if valid_form_edit_cart %}
   {% set date_sold_find_id = valid_form_edit_cart.date_sold|default('') %}
@@ -149,6 +150,8 @@
 
           {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse, 
           { value : id_find_id_auto_parts_warehouse }) }}
+          {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id_participant,
+          { value : id_find_id_id_participant }) }}
           {{ form_widget(form_edit_cart_auto_parts_warehouse_sold.id, { value : id_find_id }) }}
           
         </div>

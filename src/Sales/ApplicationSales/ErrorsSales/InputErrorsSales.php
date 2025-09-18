@@ -74,12 +74,12 @@ class InputErrorsSales
         return $this;
     }
 
-    public function propertyExistsEntity($еntity, $key): static
+    public function propertyExistsEntity($еntity, $key, $valeo): static
     {
         if (!property_exists($еntity, $key)) {
 
             $arr_data_errors = ['Error' => 'Свойство ' . $key .
-                '  не существует в Counterparty объекте.'];
+                '  не существует в ' . $valeo . ' объекте.'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }

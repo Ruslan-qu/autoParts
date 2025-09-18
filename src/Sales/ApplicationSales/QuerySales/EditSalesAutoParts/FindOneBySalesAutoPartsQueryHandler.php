@@ -20,8 +20,9 @@ final class FindOneBySalesAutoPartsQueryHandler
 
         $id = $autoPartsSoldQuery->getId();
         $this->inputErrorsSales->emptyData($id);
+        $id_participant = $autoPartsSoldQuery->getIdParticipant();
 
-        $edit_find_one_by_sales_auto_parts = $this->autoPartsSoldRepositoryInterface->findOneBySalesAutoParts($id);
+        $edit_find_one_by_sales_auto_parts = $this->autoPartsSoldRepositoryInterface->findOneBySalesAutoParts($id, $id_participant);
         $this->inputErrorsSales->emptyEntity($edit_find_one_by_sales_auto_parts);
 
         return $edit_find_one_by_sales_auto_parts[0];

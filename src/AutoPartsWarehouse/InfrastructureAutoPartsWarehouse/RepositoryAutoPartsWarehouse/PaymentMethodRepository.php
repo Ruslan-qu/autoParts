@@ -58,8 +58,8 @@ class PaymentMethodRepository extends ServiceEntityRepository implements Payment
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($payment_method);
         unset($entityData['id_participant_id']);
 
-        $exists_counterparty = $this->count($entityData);
-        if ($exists_counterparty == 0) {
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);

@@ -21,30 +21,33 @@ abstract class MapAutoPartsSoldQuery
 
         foreach ($data as $key => $value) {
 
-            $input_errors->propertyExistsEntity(AutoPartsSold::class, $key, 'AutoPartsSold');
+            if (!empty($value)) {
 
-            $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
-                ->getBaseType()
-                ->getTypeIdentifier()
-                ->value;
+                $input_errors->propertyExistsEntity(AutoPartsSold::class, $key, 'AutoPartsSold');
 
-            if (gettype($value) == 'double' || gettype($value) == 'float') {
-
-                $value = round($value * 100);
-            }
-
-            settype($value, $type);
-
-            if ($type == 'object') {
-
-                $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
+                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
                     ->getBaseType()
-                    ->getClassName();
+                    ->getTypeIdentifier()
+                    ->value;
 
-                $input_errors->comparingClassNames($className, $value, $key);
+                if (gettype($value) == 'double' || gettype($value) == 'float') {
+
+                    $value = round($value * 100);
+                }
+
+                settype($value, $type);
+
+                if ($type == 'object') {
+
+                    $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
+                        ->getBaseType()
+                        ->getClassName();
+
+                    $input_errors->comparingClassNames($className, $value, $key);
+                }
+
+                $this->$key = $value;
             }
-
-            $this->$key = $value;
         }
     }
 }

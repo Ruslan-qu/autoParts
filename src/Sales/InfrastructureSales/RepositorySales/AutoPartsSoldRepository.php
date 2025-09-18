@@ -5,6 +5,7 @@ namespace App\Sales\InfrastructureSales\RepositorySales;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Sales\DomainSales\RepositoryInterfaceSales\AutoPartsSoldRepositoryInterface;
 
@@ -41,26 +42,28 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array Возвращается массив с данными об успешном изменения  
      */
-    public function edit(array $arr_auto_parts_sold): array
+    public function edit(AutoPartsSold $autoPartsSold): int
     {
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($autoPartsSold);
 
-        $exists = $this->count($arr_auto_parts_sold);
+        $exists = $this->count($entityData);
         if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => $arr_auto_parts_sold['id']];
+        return $entityData['id'];
     }
 
     /**
      * @return array Возвращается массив с данными об удаление 
      */
-    public function delete(AutoPartsSold $autoPartsSold): array
+    public function delete(AutoPartsSold $autoPartsSold): int
     {
+
         $entityManager = $this->getEntityManager();
         $entityManager->remove($autoPartsSold);
         $entityManager->flush();
@@ -72,7 +75,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['delete' => $autoPartsSold->getId()];
+        return 0;
     }
 
     /**
@@ -120,12 +123,12 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findСartAutoPartsWarehouseSold(int $id): ?array
+    public function findOneByСartAutoPartsWarehouseSold(int $id, Participant $id_participant): ?array
     {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
-            'SELECT s, a, d, pn, cb, sd, b, ax, c
+            'SELECT s, a, d, pn, cb, sd, b, ax, c, i
             FROM App\Sales\DomainSales\DomainModelSales\AutoPartsSold s
             LEFT JOIN s.id_auto_parts_warehouse a
             LEFT JOIN a.id_details d
@@ -135,9 +138,15 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN d.id_body b
             LEFT JOIN d.id_axle ax
             LEFT JOIN a.id_counterparty c
+            LEFT JOIN s.id_participant i
             WHERE s.sold_status = :sold_status
-            AND s.id = :id'
-        )->setParameters(['sold_status' => false, 'id' => $id]);
+            AND s.id = :id
+            AND s.id_participant = :id_participant'
+        )->setParameters([
+            'sold_status' => false,
+            'id' => $id,
+            'id_participant' => $id_participant
+        ]);
 
         return $query->getResult();
     }
@@ -145,7 +154,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findOneBySalesAutoParts(int $id): ?array
+    public function findOneBySalesAutoParts(int $id, Participant $id_participant): ?array
     {
         $entityManager = $this->getEntityManager();
 
@@ -160,9 +169,15 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN d.id_body b
             LEFT JOIN d.id_axle ax
             LEFT JOIN a.id_counterparty c
+            LEFT JOIN s.id_participant i
             WHERE s.sold_status = :sold_status
-            AND s.id = :id'
-        )->setParameters(['sold_status' => true, 'id' => $id]);
+            AND s.id = :id
+            AND s.id_participant = :id_participant'
+        )->setParameters([
+            'sold_status' => true,
+            'id' => $id,
+            'id_participant' => $id_participant
+        ]);
 
         return $query->getResult();
     }
@@ -170,9 +185,9 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return AutoPartsSold|NULL Возвращает объект или ноль
      */
-    public function findAutoPartsSold($id): ?AutoPartsSold
+    public function findOneByAutoPartsSold(int $id, Participant $id_participant): ?AutoPartsSold
     {
-        return $this->find($id);
+        return $this->findOneBy(['id' => $id, 'id_participant' => $id_participant]);
     }
 
     /**
@@ -196,7 +211,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findOneByAutoPartsSold(int $id): ?array
+    public function findOneByJoinAutoPartsSold(int $id): ?array
     {
         $entityManager = $this->getEntityManager();
 

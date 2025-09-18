@@ -28,8 +28,6 @@ final class DeleteCartAutoPartsCommandHandler
         $subtraction_quantity_sold_auto_parts_warehouse = ($quantity_sold_auto_parts_warehouse - $quantity_sold_auto_parts_sold);
         $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->setQuantitySold($subtraction_quantity_sold_auto_parts_warehouse);
 
-        $successfully_delete = $this->autoPartsSoldRepositoryInterface->delete($find_delete_auto_parts_sold);
-
-        return $successfully_delete['delete'];
+        return  $this->autoPartsSoldRepositoryInterface->delete($find_delete_auto_parts_sold);
     }
 }
