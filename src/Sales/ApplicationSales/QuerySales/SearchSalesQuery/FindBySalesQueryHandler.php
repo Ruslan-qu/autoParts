@@ -99,6 +99,10 @@ final class FindBySalesQueryHandler
 
         $this->inputErrorsSales->emptyDataTwo($where_parameter, $arr_parameters);
 
+        $id_participant = $salesQuery->getIdParticipant();
+        $arr_parameters['id_participant'] = $id_participant;
+        $where_parameter = $this->whereParameter($where_parameter, 'id_participant', 's');
+
         $where_parameter .= 'AND s.sold_status = :sold_status ';
         $arr_parameters['sold_status'] = true;
 

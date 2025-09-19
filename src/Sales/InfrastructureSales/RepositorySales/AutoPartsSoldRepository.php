@@ -272,7 +272,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
     /**
      * @return array|NULL Возвращает массив объектов или ноль
      */
-    public function findBySalesToDate(): ?array
+    public function findBySalesToDate(Participant $id_participant): ?array
     {
         $date = new \DateTime();
         $format_date = $date->format('Y-m-d');
@@ -293,10 +293,12 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             LEFT JOIN a.id_counterparty c  
             WHERE s.date_sold = :date_sold
             AND s.sold_status = :sold_status
+            AND s.id_participant = :id_participant
             ORDER BY s.id DESC'
         )->setParameters([
             'date_sold' => $format_date,
-            'sold_status' => true
+            'sold_status' => true,
+            'id_participant' => $id_participant
         ]);
 
         return $query->getResult();

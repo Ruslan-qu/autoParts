@@ -238,6 +238,7 @@ class SalesController extends AbstractController
     #[Route('searchSales', name: 'search_sales')]
     public function searchSales(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindBySalesQueryHandler $findBySalesQueryHandler,
         FindBySalesToDateQueryHandler $findBySalesToDateQueryHandler
     ): Response {
@@ -248,14 +249,35 @@ class SalesController extends AbstractController
         /*Валидация формы*/
         $form_search_sales->handleRequest($request);
 
-        $list_sales_auto_parts = $findBySalesToDateQueryHandler->handler();
+        try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $list_sales_auto_parts = $findBySalesToDateQueryHandler->handler(new SalesQuery(['id_participant' => $participant]));
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+
+            return $this->redirectToRoute('search_sales');
+        }
 
         if ($form_search_sales->isSubmitted()) {
             if ($form_search_sales->isValid()) {
                 try {
 
+                    $map_search_sales = $this->mapSearchSales(
+                        $form_search_sales->getData()['part_number'],
+                        $form_search_sales->getData()['original_number'],
+                        $form_search_sales->getData()['from_date_sold'],
+                        $form_search_sales->getData()['to_date_sold'],
+                        $form_search_sales->getData()['id_counterparty'],
+                        $form_search_sales->getData()['id_part_name'],
+                        $form_search_sales->getData()['id_car_brand'],
+                        $form_search_sales->getData()['id_side'],
+                        $form_search_sales->getData()['id_body'],
+                        $form_search_sales->getData()['id_axle'],
+                        $participant
+                    );
                     $list_sales_auto_parts = $findBySalesQueryHandler
-                        ->handler(new SalesQuery($form_search_sales->getData()));
+                        ->handler(new SalesQuery($map_search_sales));
                 } catch (HttpException $e) {
 
                     $this->errorMessageViaSession($e);
@@ -424,6 +446,34 @@ class SalesController extends AbstractController
         $arr_auto_parts_sold['id_participant'] = $participant;
 
         return $arr_auto_parts_sold;
+    }
+
+    private function mapSearchSales(
+        $part_number,
+        $original_number,
+        $from_date_sold,
+        $to_date_sold,
+        $id_counterparty,
+        $id_part_name,
+        $id_car_brand,
+        $id_side,
+        $id_body,
+        $id_axle,
+        $participant
+    ): array {
+        $arr_search_sales['part_number'] = $part_number;
+        $arr_search_sales['original_number'] = $original_number;
+        $arr_search_sales['from_date_sold'] = $from_date_sold;
+        $arr_search_sales['to_date_sold'] = $to_date_sold;
+        $arr_search_sales['id_counterparty'] = $id_counterparty;
+        $arr_search_sales['id_part_name'] = $id_part_name;
+        $arr_search_sales['id_car_brand'] = $id_car_brand;
+        $arr_search_sales['id_side'] = $id_side;
+        $arr_search_sales['id_body'] = $id_body;
+        $arr_search_sales['id_axle'] = $id_axle;
+        $arr_search_sales['id_participant'] = $participant;
+
+        return $arr_search_sales;
     }
 
     private function sumCartAutoPartsSales($cartAutoParts): int

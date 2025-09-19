@@ -143,9 +143,9 @@
           {% for information in car_parts_for_sale %}
           {% if information %}
           {{ form_widget(form_cart_auto_parts_warehouse_sold.id_auto_parts_warehouse,
-          { value : information.getId() }) }}
+          { value : information.getId()|default('') }) }}
           {{ form_widget(form_cart_auto_parts_warehouse_sold.id_participant,
-          { value : information.getIdParticipant().getId() }) }}
+          { value : information.getIdParticipant().getId()|default('') }) }}
           {% endif %}
           {% endfor %}
         </div>
