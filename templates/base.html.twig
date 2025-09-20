@@ -49,6 +49,7 @@
                                             Сохранить из файла
                                         </a>
                                     </li>
+                                    {% if is_granted('ROLE_ADMIN') %}
                                     <li>
                                         <a class="dropdown-item" href="{{ path('save_auto_parts_imap')}}">
                                             Сохранить из майла
@@ -59,6 +60,7 @@
                                             Сохранить по API
                                         </a>
                                     </li>
+                                    {% endif %}
                                 </ul>
                             </li>
                             <li><a class="dropdown-item" href="{{ path('cart_warehouse')}}">Корзина</a></li>
@@ -137,12 +139,14 @@
                                         </a>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" href="{{ path('search_replacing_original_number')}}">
+                                                <a class="dropdown-item"
+                                                    href="{{ path('search_replacing_original_number')}}">
                                                     Поиск
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="{{ path('save_replacing_original_number')}}">
+                                                <a class="dropdown-item"
+                                                    href="{{ path('save_replacing_original_number')}}">
                                                     Сохранить
                                                 </a>
                                             </li>
@@ -237,7 +241,17 @@
                         </ul>
 
                     </li>
-
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item dropdown px-1">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Админ
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Пользователи</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
                     {% endif %}
                     {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item px-2">
