@@ -14,7 +14,7 @@ twig:
         'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesAutoPartsWarehouse': 'autoPartsWarehouse'
         'src/AutoPartsWarehouse/InfrastructureAutoPartsWarehouse/ApiAutoPartsWarehouse/templatesPaymentMethod': 'paymentMethod'
         'src/Sales/InfrastructureSales/ApiSales/templatesSales': 'sales'
-        'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'registerAuthenticationParticipant'
+        'src/Participant/InfrastructureParticipant/ApiParticipant/templatesParticipant': 'participant'
         'src/Main/InfrastructureMain/ApiMain/templatesMain': 'main'
 when@test:
     twig:

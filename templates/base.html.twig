@@ -248,7 +248,7 @@
                             Админ
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Пользователи</a></li>
+                            <li><a class="dropdown-item" href="{{ path('search_participant')}}">Пользователи</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -264,6 +264,12 @@
                     {% else %}
                     <li class="nav-item px-2">
                         <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_logout')}}">Выход</a>
+                        {% if is_granted('IS_IMPERSONATOR') %}
+                    <li class="nav-item px-2">
+                        <a class="nav-link" role="button" aria-expanded="false"
+                            href="{{ impersonation_exit_path(path('main_page')) }}">Выход из профиля</a>
+                    </li>
+                    {% endif %}
                     </li>
                     {% endif %}
                 </ul>

@@ -4,6 +4,9 @@ namespace App\Counterparty\InfrastructureCounterparty\ApiCounterparty\FormCounte
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -19,7 +22,7 @@ class EditCounterpartyType extends AbstractType
             ->add('name_counterparty', TextType::class, [
                 'label' => 'Поставщик',
                 'required' => false,
-                /* 'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/^[\da-z]*$/i',
                         //'match' => false,
@@ -31,22 +34,22 @@ class EditCounterpartyType extends AbstractType
                         пустой'
                     ])
 
-                ]*/
+                ]
             ])
             ->add('mail_counterparty', EmailType::class, [
                 'label' => 'E-mail',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Email([
                         'message' => 'Форма содержит 
                         недопустимые символы'
                     ]),
-                ]*/
+                ]
             ])
             ->add('manager_phone', TelType::class, [
                 'label' => 'Тел. менеджера',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/^\+{1}\d{11}$/',
                         //'match' => false,
@@ -55,12 +58,12 @@ class EditCounterpartyType extends AbstractType
                         или Нет знака +
                         или Неверное количество цифр'
                     ]),
-                ]*/
+                ]
             ])
             ->add('delivery_phone', TelType::class, [
                 'label' => 'Тел. доставки',
                 'required' => false,
-                /*'constraints' => [
+                'constraints' => [
                     new Regex([
                         'pattern' => '/^\+{1}\d{11}$/',
                         //'match' => false,
@@ -69,7 +72,7 @@ class EditCounterpartyType extends AbstractType
                         или Нет знака +
                         или Неверное количество цифр'
                     ])
-                ]*/
+                ]
             ])
             ->add('id', HiddenType::class)
             ->add('button_counterparty', SubmitType::class);

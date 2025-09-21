@@ -52,6 +52,69 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     }
 
     /**
+     * @return int Возвращается массив с данными об успешном изменения поставщика 
+     */
+    public function edit(Participant $participant): int
+    {
+        $entityManager = $this->getEntityManager();
+        $entityManager->flush();
+        $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($participant);
+
+        $exists = $this->count($entityData);
+        if ($exists == 0) {
+            $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new UnprocessableEntityHttpException($json_arr_data_errors);
+        }
+
+        return $entityData['id'];
+    }
+
+    /**
+     * @return int Возвращается массив с данными об удаление поставщика 
+     */
+    public function delete(Participant $participant): int
+    {
+        try {
+
+            $entityManager = $this->getEntityManager();
+            $entityManager->remove($participant);
+            $entityManager->flush();
+            $entityData = $entityManager->contains($participant);
+            if ($entityData != false) {
+                $arr_data_errors = ['Error' => 'Данные в базе данных не удалены'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
+        } catch (\Exception $e) {
+            if (!empty($e)) {
+                $arr_data_errors =
+                    ['Error' => 'Удаление запрещено, используется в других таблицах.'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * @return Participant[]|NULL Возвращает массив объектов поставщиков или ноль
+     */
+    public function findAllParticipant(): ?array
+    {
+        return $this->findAll();
+    }
+
+    /**
+     * @return Participant|NULL Возвращает объектов или ноль
+     */
+    public function findParticipant($id): ?Participant
+    {
+        return $this->find($id);
+    }
+
+    /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void

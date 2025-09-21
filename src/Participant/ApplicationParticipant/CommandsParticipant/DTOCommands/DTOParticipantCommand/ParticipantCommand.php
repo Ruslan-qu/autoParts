@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand;
+
+use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\MapParticipantCommand;
+
+final class ParticipantCommand extends MapParticipantCommand
+
+{
+    protected ?int $id = null;
+
+    protected ?string $email = null;
+
+    protected array $roles = [];
+
+    protected bool $isVerified = false;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function getRoles(): array
+    {
+
+        return $this->roles;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+}

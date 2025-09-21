@@ -42,7 +42,7 @@ class RegistrationController extends AbstractController
             }
         }
 
-        return $this->render('@registerAuthenticationParticipant/register.html.twig', [
+        return $this->render('@participant/register.html.twig', [
             'title_logo' => 'Регистрация',
             'registrationForm' => $form_registration_participant,
             'id' => $id

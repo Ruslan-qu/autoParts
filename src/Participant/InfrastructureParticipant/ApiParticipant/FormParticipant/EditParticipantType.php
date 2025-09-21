@@ -8,18 +8,17 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 
-class AuthenticationFormType extends AbstractType
+class EditParticipantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('_username', EmailType::class, [
-                'label' => 'Email',
+            ->add('email', EmailType::class, [
+                'label' => 'Email пользователя',
                 'constraints' => [
                     new Email([
                         'message' => 'Форма содержит 
@@ -32,25 +31,31 @@ class AuthenticationFormType extends AbstractType
 
                 ]
             ])
-            ->add('_password', PasswordType::class, [
-                'label' => 'Пароль',
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Форма не может быть 
-                        пустой'
-                    ])
-
+            ->add('roles', ChoiceType::class, [
+                'label' => 'Роль',
+                'choices'  => [
+                    'ADMIN' => 'ROLE_ADMIN',
+                    'USER' => 'ROLE_USER'
                 ]
             ])
-            ->add('_csrf_token', HiddenType::class)
-            ->add('button_registration_participant', SubmitType::class)
+            ->add('isVerified', ChoiceType::class, [
+                'label' => 'Блокировка',
+                'choices'  => [
+                    'нет' => false,
+                    'да' => true
+                ]
+            ])
+            ->add('id', HiddenType::class)
+            ->add('button_participant', SubmitType::class, [
+                'label' => 'Изменить'
+            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Participant::class,
+            // Configure your form options here
         ]);
     }
 }
