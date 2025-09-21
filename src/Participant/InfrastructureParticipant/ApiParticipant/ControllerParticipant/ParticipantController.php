@@ -48,7 +48,7 @@ class ParticipantController extends AbstractController
                 $search_data = $form_search_participant->getData();
             }
         }
-        // dd($search_data);
+        //dd($search_data);
         return $this->render('@participant/searchParticipant.html.twig', [
             'title_logo' => 'Поиск пользователя',
             'form_search_participant' => $form_search_participant->createView(),

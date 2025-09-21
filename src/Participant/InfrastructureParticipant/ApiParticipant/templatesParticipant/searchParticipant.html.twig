@@ -66,7 +66,7 @@
 
           <tr>
             <td>{{ information.getEmail() }}</td>
-            <td>{{ information.getRoles() }}</td>
+            <td>{{ information.getRoles()|join(', ') }}</td>
             <td>{{ information.isVerified() }}</td>
             <form action="{{ path('edit_participant') }}" name="edit_participant">
 
@@ -80,7 +80,7 @@
                   value="{{ information.getId() }}">Удалить</button></td>
 
             </form>
-           {# <td><a href="{{ impersonation_path(information.getEmail()) }}">Вход</a></td>#}                          
+            <td><a href="{{ impersonation_path(information.getEmail()) }}">Вход</a></td>                         
           </tr>
           {% endif %}
           {% endfor %}
