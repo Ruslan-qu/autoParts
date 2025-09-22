@@ -41,8 +41,8 @@ class EditParticipantType extends AbstractType
             ->add('isVerified', ChoiceType::class, [
                 'label' => 'Блокировка',
                 'choices'  => [
-                    'нет' => false,
-                    'да' => true
+                    'Разблокировать' => false,
+                    'Заблокировать' => true
                 ]
             ])
             ->add('id', HiddenType::class)

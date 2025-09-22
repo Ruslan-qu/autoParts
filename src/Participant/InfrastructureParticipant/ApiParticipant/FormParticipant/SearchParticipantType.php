@@ -24,8 +24,7 @@ class SearchParticipantType extends AbstractType
                     return $er->createQueryBuilder('p')
                         ->orderBy('p.id', 'ASC');
                 },
-                'choice_label' => 'email',
-                'required' => false
+                'choice_label' => 'email'
             ])
             ->add('button_participant', SubmitType::class, [
                 'label' => 'Поиск'

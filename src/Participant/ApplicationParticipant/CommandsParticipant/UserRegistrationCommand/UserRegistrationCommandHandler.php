@@ -11,7 +11,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
 use App\Participant\DomainParticipant\RepositoryInterfaceParticipant\ParticipantRepositoryInterface;
-use App\Participant\ApplicationParticipant\CommandsParticipant\DTOParticipantCommand\ParticipantCommand;
+use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantRegistrationCommand\ParticipantRegistrationCommand;
 
 final class UserRegistrationCommandHandler
 {
@@ -23,12 +23,12 @@ final class UserRegistrationCommandHandler
         private UserPasswordHasherInterface $userPasswordHasher,
     ) {}
 
-    public function handler(ParticipantCommand $participantCommand): int
+    public function handler(ParticipantRegistrationCommand $participantRegistrationCommand): int
     {
 
-        $emailUser = $participantCommand->getEmail();
+        $emailUser = $participantRegistrationCommand->getEmail();
 
-        $passwordUser = $participantCommand->getPassword();
+        $passwordUser = $participantRegistrationCommand->getPassword();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();

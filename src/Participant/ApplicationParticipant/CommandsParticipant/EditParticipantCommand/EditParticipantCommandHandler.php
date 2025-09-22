@@ -60,7 +60,7 @@ final class EditParticipantCommandHandler
 
         $participant->setEmail($edit_email);
         $participant->setRoles($roles);
-        $participant->isVerified($isVerified);
+        $participant->setVerified($isVerified);
 
         return $this->participantRepositoryInterface->edit($participant);
     }

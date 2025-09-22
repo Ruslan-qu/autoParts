@@ -9,8 +9,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\RegistrationFormType;
-use App\Participant\ApplicationParticipant\CommandsParticipant\DTOParticipantCommand\ParticipantCommand;
 use App\Participant\ApplicationParticipant\CommandsParticipant\UserRegistrationCommand\UserRegistrationCommandHandler;
+use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantRegistrationCommand\ParticipantRegistrationCommand;
 
 class RegistrationController extends AbstractController
 {
@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
                 try {
 
                     $id = $userRegistrationCommandHandler
-                        ->handler(new ParticipantCommand($form_registration_participant->all()));
+                        ->handler(new ParticipantRegistrationCommand($form_registration_participant->all()));
 
                     return $this->redirectToRoute('app_login');
                 } catch (HttpException $e) {

@@ -11,12 +11,11 @@ use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\Edi
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\SearchParticipantType;
 use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery\ParticipantQuery;
 use App\Participant\ApplicationParticipant\QueryParticipant\EditParticipantQuery\FindParticipantQueryHandler;
-use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantObjQuery\ParticipantObjQuery;
 use App\Participant\ApplicationParticipant\QueryParticipant\SearchParticipantQuery\FindAllParticipantQueryHandler;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
 use App\Participant\ApplicationParticipant\CommandsParticipant\EditParticipantCommand\EditParticipantCommandHandler;
+use App\Participant\ApplicationParticipant\CommandsParticipant\DeleteParticipantCommand\DeleteParticipantCommandHandler;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantObjCommand\ParticipantObjCommand;
-use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DeleteParticipantCommand\DeleteParticipantCommandHandler;
 
 class ParticipantController extends AbstractController
 {
@@ -129,7 +128,7 @@ class ParticipantController extends AbstractController
             $this->errorMessageViaSession($e);
         }
 
-        return $this->redirectToRoute('searchparticipant');
+        return $this->redirectToRoute('search_participant');
     }
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DeleteParticipantCommand;
+namespace App\Participant\ApplicationParticipant\CommandsParticipant\DeleteParticipantCommand;
 
 use App\Participant\DomainParticipant\RepositoryInterfaceParticipant\ParticipantRepositoryInterface;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantObjCommand\ParticipantObjCommand;
