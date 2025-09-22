@@ -59,7 +59,10 @@ final class SaveReplacingOriginalNumbersCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->replacingOriginalNumbersRepositoryInterface
-            ->numberDoubles(['replacing_original_number' => $replacing_original_number]);
+            ->numberDoubles([
+                'replacing_original_number' => $replacing_original_number,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $replacing_original_numbers = new ReplacingOriginalNumbers;

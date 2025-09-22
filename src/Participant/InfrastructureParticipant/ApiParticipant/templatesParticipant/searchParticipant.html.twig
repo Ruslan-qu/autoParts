@@ -67,7 +67,11 @@
           <tr>
             <td>{{ information.getEmail() }}</td>
             <td>{{ information.getRoles()|join(', ') }}</td>
-            <td>{{ information.isVerified() }}</td>
+            {% if information.isVerified() == false %}
+            <td>Заблокированный</td>
+            {% elseif information.isVerified() == true %}
+             <td>Разблокированный</td>
+            {% endif %}
             <form action="{{ path('edit_participant') }}" name="edit_participant">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
