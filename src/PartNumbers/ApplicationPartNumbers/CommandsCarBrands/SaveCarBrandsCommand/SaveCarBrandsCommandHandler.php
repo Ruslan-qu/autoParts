@@ -56,7 +56,10 @@ final class SaveCarBrandsCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->carBrandsRepositoryInterface
-            ->numberDoubles(['car_brand' => $car_brand]);
+            ->numberDoubles([
+                'car_brand' => $car_brand,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $carBrands = new CarBrands;

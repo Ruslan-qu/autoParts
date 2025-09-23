@@ -54,7 +54,10 @@ final class SavePartNameCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->partNameRepositoryInterface
-            ->numberDoubles(['part_name' => $part_name]);
+            ->numberDoubles([
+                'part_name' => $part_name,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $partName = new PartName;

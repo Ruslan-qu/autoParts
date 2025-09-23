@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\CarBrandsRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\DTOCommands\DTOCarBrandsCommand\CarBrandsCommand;
@@ -25,6 +26,8 @@ final class EditCarBrandsCommandHandler
             '',
             $carBrandsCommand->getCarBrand()
         )));
+
+        $participant = $carBrandsCommand->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -57,7 +60,7 @@ final class EditCarBrandsCommandHandler
         $car_brands = $this->carBrandsRepositoryInterface->findCarBrands($id);
         $this->inputErrorsPartNumbers->emptyEntity($car_brands);
 
-        $this->countDuplicate($edit_car_brand, $car_brands->getCarBrand());
+        $this->countDuplicate($edit_car_brand, $car_brands->getCarBrand(), $participant);
 
         $car_brands->setCarBrand($edit_car_brand);
 
@@ -69,12 +72,15 @@ final class EditCarBrandsCommandHandler
         return $id;
     }
 
-    private function countDuplicate(string $edit_car_brand, string $car_brand): static
+    private function countDuplicate(string $edit_car_brand, string $car_brand, Participant $participant): static
     {
         if ($edit_car_brand != $car_brand) {
             /* Валидация дублей */
             $count_duplicate = $this->carBrandsRepositoryInterface
-                ->numberDoubles(['car_brand' => $edit_car_brand]);
+                ->numberDoubles([
+                    'car_brand' => $edit_car_brand,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

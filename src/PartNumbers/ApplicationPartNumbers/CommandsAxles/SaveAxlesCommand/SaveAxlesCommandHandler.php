@@ -56,7 +56,10 @@ final class SaveAxlesCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->axlesRepositoryInterface
-            ->numberDoubles(['axle' => $axle]);
+            ->numberDoubles([
+                'axle' => $axle,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $axles = new Axles;

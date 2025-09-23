@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AxlesRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsAxles\DTOCommands\DTOAxlesCommand\AxlesCommand;
@@ -25,6 +26,8 @@ final class EditAxlesCommandHandler
             '',
             $axlesCommand->getAxle()
         )));
+
+        $participant = $axlesCommand->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -57,7 +60,7 @@ final class EditAxlesCommandHandler
         $axles = $this->axlesRepositoryInterface->findAxles($id);
         $this->inputErrorsPartNumbers->emptyEntity($axles);
 
-        $this->countDuplicate($edit_axle, $axles->getAxle());
+        $this->countDuplicate($edit_axle, $axles->getAxle(), $participant);
 
         $axles->setAxle($edit_axle);
 
@@ -68,12 +71,15 @@ final class EditAxlesCommandHandler
         return $id;
     }
 
-    private function countDuplicate(string $edit_axle, string $axle): static
+    private function countDuplicate(string $edit_axle, string $axle, Participant $participant): static
     {
         if ($edit_axle != $axle) {
             /* Валидация дублей */
             $count_duplicate = $this->axlesRepositoryInterface
-                ->numberDoubles(['axle' => $edit_axle]);
+                ->numberDoubles([
+                    'axle' => $edit_axle,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

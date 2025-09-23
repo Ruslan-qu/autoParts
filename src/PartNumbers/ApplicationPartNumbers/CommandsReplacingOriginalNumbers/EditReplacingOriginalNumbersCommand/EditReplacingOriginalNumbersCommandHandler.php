@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\ReplacingOriginalNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DTOCommands\DTOReplacingOriginalNumbersCommand\ReplacingOriginalNumbersCommand;
@@ -27,6 +28,8 @@ final class EditReplacingOriginalNumbersCommandHandler
             '',
             $replacingOriginalNumbersCommand->getReplacingOriginalNumber()
         ));
+
+        $participant = $replacingOriginalNumbersCommand->getIdParticipant();
 
         $input = [
             'edit_replacing_original_number_error' => [
@@ -58,7 +61,11 @@ final class EditReplacingOriginalNumbersCommandHandler
         $replacing_original_numbers = $this->replacingOriginalNumbersRepositoryInterface->findReplacingOriginalNumbers($id);
         $this->inputErrorsPartNumbers->emptyEntity($replacing_original_numbers);
 
-        $this->countDuplicate($edit_replacing_original_number, $replacing_original_numbers->getReplacingOriginalNumber());
+        $this->countDuplicate(
+            $edit_replacing_original_number,
+            $replacing_original_numbers->getReplacingOriginalNumber(),
+            $participant
+        );
 
         $replacing_original_numbers->setReplacingOriginalNumber($edit_replacing_original_number);
         $replacing_original_numbers->setIdOriginalNumber($id_original_number);
@@ -68,12 +75,18 @@ final class EditReplacingOriginalNumbersCommandHandler
         return $id;
     }
 
-    private function countDuplicate(string $edit_replacing_original_number, string $replacing_original_number): static
-    {
+    private function countDuplicate(
+        string $edit_replacing_original_number,
+        string $replacing_original_number,
+        Participant $participant
+    ): static {
         if ($edit_replacing_original_number != $replacing_original_number) {
             /* Валидация дублей */
             $count_duplicate = $this->replacingOriginalNumbersRepositoryInterface
-                ->numberDoubles(['replacing_original_number' => $edit_replacing_original_number]);
+                ->numberDoubles([
+                    'replacing_original_number' => $edit_replacing_original_number,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

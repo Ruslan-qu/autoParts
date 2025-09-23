@@ -54,7 +54,10 @@ final class SavePaymentMethodCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->paymentMethodRepositoryInterface
-            ->numberDoubles(['method' => $method]);
+            ->numberDoubles([
+                'method' => $method,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsAutoPartsWarehouse->errorDuplicate($count_duplicate);
 
         $payment_method = new PaymentMethod;

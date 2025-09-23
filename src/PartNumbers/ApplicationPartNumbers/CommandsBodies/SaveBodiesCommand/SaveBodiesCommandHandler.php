@@ -56,7 +56,10 @@ final class SaveBodiesCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->bodiesRepositoryInterface
-            ->numberDoubles(['body' => $body]);
+            ->numberDoubles([
+                'body' => $body,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $bodies = new Bodies;

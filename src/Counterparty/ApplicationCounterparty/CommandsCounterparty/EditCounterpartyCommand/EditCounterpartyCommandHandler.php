@@ -114,7 +114,10 @@ final class EditCounterpartyCommandHandler
         if ($name_counterparty != $еntity->getNameCounterparty()) {
             /* Валидация дублей */
             $count_duplicate = $this->counterpartyRepositoryInterface
-                ->numberDoubles(['name_counterparty' => $name_counterparty]);
+                ->numberDoubles([
+                    'name_counterparty' => $name_counterparty,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrors->errorDuplicate($count_duplicate);
         }
 

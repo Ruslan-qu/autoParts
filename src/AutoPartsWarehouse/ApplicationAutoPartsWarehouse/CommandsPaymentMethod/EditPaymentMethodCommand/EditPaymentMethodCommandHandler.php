@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\RepositoryInterfaceAutoPartsWarehouse\PaymentMethodRepositoryInterface;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DTOCommands\DTOPaymentMethodCommand\PaymentMethodCommand;
@@ -56,19 +57,22 @@ final class EditPaymentMethodCommandHandler
         $payment_method = $this->paymentMethodRepositoryInterface->findPaymentMethod($id);
         $this->inputErrorsAutoPartsWarehouse->emptyEntity($payment_method);
 
-        $this->countDuplicate($edit_method, $payment_method->getMethod());
+        $this->countDuplicate($edit_method, $payment_method->getMethod(), $participant);
 
         $payment_method->setMethod($edit_method);
 
         return $this->paymentMethodRepositoryInterface->edit($payment_method);
     }
 
-    private function countDuplicate(string $edit_method, string $method): static
+    private function countDuplicate(string $edit_method, string $method, Participant $participant): static
     {
         if ($edit_method != $method) {
             /* Валидация дублей */
             $count_duplicate = $this->paymentMethodRepositoryInterface
-                ->numberDoubles(['method' => $edit_method]);
+                ->numberDoubles([
+                    'method' => $edit_method,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsAutoPartsWarehouse->errorDuplicate($count_duplicate);
         }
 

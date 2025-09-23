@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityCommand\AvailabilityCommand;
@@ -25,6 +26,8 @@ final class EditAvailabilityCommandHandler
             '',
             $availabilityCommand->getInStock()
         )));
+
+        $participant = $availabilityCommand->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -58,7 +61,7 @@ final class EditAvailabilityCommandHandler
         $availability = $this->availabilityRepositoryInterface->findAvailability($id);
         $this->inputErrorsPartNumbers->emptyEntity($availability);
 
-        $this->countDuplicate($edit_in_stock, $availability->getInStock());
+        $this->countDuplicate($edit_in_stock, $availability->getInStock(), $participant);
 
         $availability->setInStock($edit_in_stock);
 
@@ -69,12 +72,15 @@ final class EditAvailabilityCommandHandler
         return $id;
     }
 
-    private function countDuplicate(string $edit_in_stock, string $in_stock): static
+    private function countDuplicate(string $edit_in_stock, string $in_stock, Participant $participant): static
     {
         if ($edit_in_stock != $in_stock) {
             /* Валидация дублей */
             $count_duplicate = $this->availabilityRepositoryInterface
-                ->numberDoubles(['in_stock' => $edit_in_stock]);
+                ->numberDoubles([
+                    'in_stock' => $edit_in_stock,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

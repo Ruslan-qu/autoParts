@@ -108,7 +108,10 @@ final class SaveCounterpartyCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->counterpartyRepositoryInterface
-            ->numberDoubles(['name_counterparty' => $name_counterparty]);
+            ->numberDoubles([
+                'name_counterparty' => $name_counterparty,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrors->errorDuplicate($count_duplicate);
 
         $counterparty = new Counterparty;

@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\BodiesRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesCommand\BodiesCommand;
@@ -25,6 +26,8 @@ final class EditBodiesCommandHandler
             '',
             $bodiesCommand->getBody()
         )));
+
+        $participant = $bodiesCommand->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -57,7 +60,7 @@ final class EditBodiesCommandHandler
         $bodies = $this->bodiesRepositoryInterface->findBodies($id);
         $this->inputErrorsPartNumbers->emptyEntity($bodies);
 
-        $this->countDuplicate($edit_body, $bodies->getBody());
+        $this->countDuplicate($edit_body, $bodies->getBody(), $participant);
 
         $bodies->setBody($edit_body);
 
@@ -68,12 +71,15 @@ final class EditBodiesCommandHandler
         return $id;
     }
 
-    private function countDuplicate(string $edit_body, string $body): static
+    private function countDuplicate(string $edit_body, string $body, Participant $participant): static
     {
         if ($edit_body != $body) {
             /* Валидация дублей */
             $count_duplicate = $this->bodiesRepositoryInterface
-                ->numberDoubles(['body' => $edit_body]);
+                ->numberDoubles([
+                    'body' => $edit_body,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

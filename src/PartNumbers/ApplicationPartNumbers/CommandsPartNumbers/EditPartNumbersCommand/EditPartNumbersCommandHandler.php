@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
@@ -33,6 +34,8 @@ final class EditPartNumbersCommandHandler
             $partNumbersCommand->getManufacturer()
         ));
         $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
+
+        $participant = $partNumbersCommand->getIdParticipant();
 
         $input = [
             'edit_part_number_error' => [
@@ -80,7 +83,7 @@ final class EditPartNumbersCommandHandler
         $part_number = $this->partNumbersRepositoryInterface->findPartNumbersFromManufacturers($id);
         $this->inputErrorsPartNumbers->emptyEntity($edit_part_number);
 
-        $this->countDuplicate($edit_part_number, $part_number->getPartNumber());
+        $this->countDuplicate($edit_part_number, $part_number->getPartNumber(), $participant);
 
         $part_number->setPartNumber($edit_part_number);
         $part_number->setManufacturer($manufacturer);
@@ -98,12 +101,15 @@ final class EditPartNumbersCommandHandler
         return $id;
     }
 
-    private function countDuplicate(string $edit_part_number, string $part_number): static
+    private function countDuplicate(string $edit_part_number, string $part_number, Participant $participant): static
     {
         if ($edit_part_number != $part_number) {
             /* Валидация дублей */
             $count_duplicate = $this->partNumbersRepositoryInterface
-                ->numberDoubles(['part_number' => $edit_part_number]);
+                ->numberDoubles([
+                    'part_number' => $edit_part_number,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

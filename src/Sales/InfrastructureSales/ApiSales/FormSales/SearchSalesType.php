@@ -4,7 +4,6 @@ namespace App\Sales\InfrastructureSales\ApiSales\FormSales;
 
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
-use App\Form\Type\EntityHiddenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;

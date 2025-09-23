@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -21,6 +22,10 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehous
 
 class SaveAutoPartsManuallyType extends AbstractType
 {
+    public function __construct(
+        private Security $security
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -42,6 +47,13 @@ class SaveAutoPartsManuallyType extends AbstractType
             ->add('id_counterparty', EntityType::class, [
                 'label' => 'Поставщик',
                 'class' => Counterparty::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+
+                    return $er->createQueryBuilder('co')
+                        ->where('co.id_participant = :id_participant')
+                        ->setParameter('id_participant', $this->security->getUser())
+                        ->orderBy('co.name_counterparty', 'ASC');
+                },
                 'choice_label' => 'name_counterparty',
                 'required' => false,
             ])
@@ -90,8 +102,11 @@ class SaveAutoPartsManuallyType extends AbstractType
                 'label' => 'Сп. оплаты',
                 'class' => PaymentMethod::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
-                    return $er->createQueryBuilder('u')
-                        ->orderBy('u.method', 'DESC');
+
+                    return $er->createQueryBuilder('p')
+                        ->where('p.id_participant = :id_participant')
+                        ->setParameter('id_participant', $this->security->getUser())
+                        ->orderBy('p.method', 'ASC');
                 },
                 'choice_label' => 'method'
             ])

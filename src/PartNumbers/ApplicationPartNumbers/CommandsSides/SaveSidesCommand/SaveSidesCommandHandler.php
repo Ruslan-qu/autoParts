@@ -54,7 +54,10 @@ final class SaveSidesCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->sidesRepositoryInterface
-            ->numberDoubles(['side' => $side]);
+            ->numberDoubles([
+                'side' => $side,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $sides = new Sides;

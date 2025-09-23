@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\SidesRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesCommand\SidesCommand;
@@ -23,6 +24,8 @@ final class EditSidesCommandHandler
         $edit_side = mb_ucfirst(mb_strtolower(
             $sidesCommand->getSide()
         ));
+
+        $participant = $sidesCommand->getIdParticipant();
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -55,7 +58,7 @@ final class EditSidesCommandHandler
         $sides = $this->sidesRepositoryInterface->findSides($id);
         $this->inputErrorsPartNumbers->emptyEntity($sides);
 
-        $this->countDuplicate($edit_side, $sides->getSide());
+        $this->countDuplicate($edit_side, $sides->getSide(), $participant);
 
         $sides->setSide($edit_side);
 
@@ -66,12 +69,15 @@ final class EditSidesCommandHandler
         return $id;
     }
 
-    private function countDuplicate(string $edit_side, string $side): static
+    private function countDuplicate(string $edit_side, string $side, Participant $participant): static
     {
         if ($edit_side != $side) {
             /* Валидация дублей */
             $count_duplicate = $this->sidesRepositoryInterface
-                ->numberDoubles(['side' => $edit_side]);
+                ->numberDoubles([
+                    'side' => $edit_side,
+                    'id_participant' => $participant
+                ]);
             $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
         }
 

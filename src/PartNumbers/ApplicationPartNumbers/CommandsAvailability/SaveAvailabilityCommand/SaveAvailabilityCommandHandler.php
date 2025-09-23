@@ -57,7 +57,10 @@ final class SaveAvailabilityCommandHandler
 
         /* Валидация дублей */
         $count_duplicate = $this->availabilityRepositoryInterface
-            ->numberDoubles(['in_stock' => $in_stock]);
+            ->numberDoubles([
+                'in_stock' => $in_stock,
+                'id_participant' => $id_participant
+            ]);
         $this->inputErrorsPartNumbers->errorDuplicate($count_duplicate);
 
         $availability = new Availability;
