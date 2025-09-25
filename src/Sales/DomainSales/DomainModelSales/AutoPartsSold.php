@@ -32,6 +32,7 @@ class AutoPartsSold
     private ?bool $sold_status = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'Cascade')]
     private ?Participant $id_participant = null;
 
     public function getId(): ?int

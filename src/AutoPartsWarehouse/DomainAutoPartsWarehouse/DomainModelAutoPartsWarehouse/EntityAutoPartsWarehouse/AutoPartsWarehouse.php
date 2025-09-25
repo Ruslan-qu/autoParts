@@ -9,6 +9,7 @@ use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterpar
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\RepositoryAutoPartsWarehouse\AutoPartsWarehouseRepository;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
+use Symfony\Component\Validator\Constraints\Cascade;
 
 #[ORM\Entity(repositoryClass: AutoPartsWarehouseRepository::class)]
 class AutoPartsWarehouse
@@ -43,6 +44,7 @@ class AutoPartsWarehouse
     private ?\DateTimeImmutable $date_receipt_auto_parts_warehouse = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'Cascade')]
     private ?Participant $id_participant = null;
 
     public function getId(): ?int

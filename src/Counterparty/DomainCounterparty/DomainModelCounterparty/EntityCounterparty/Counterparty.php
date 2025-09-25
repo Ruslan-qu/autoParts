@@ -27,6 +27,7 @@ class Counterparty
     private ?string $delivery_phone = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'Cascade')]
     private ?Participant $id_participant = null;
 
     public function getId(): ?int

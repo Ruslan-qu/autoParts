@@ -53,6 +53,7 @@ class PartNumbersFromManufacturers
     private ?OriginalRooms $id_original_number = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'Cascade')]
     private ?Participant $id_participant = null;
 
     public function getId(): ?int

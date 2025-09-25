@@ -18,6 +18,7 @@ class CarBrands
     private ?string $car_brand = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'Cascade')]
     private ?Participant $id_participant = null;
 
     public function getId(): ?int

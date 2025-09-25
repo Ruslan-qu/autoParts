@@ -17,7 +17,8 @@ class PartName
     #[ORM\Column(length: 48, nullable: true)]
     private ?string $part_name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'partNames')]
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'Cascade')]
     private ?Participant $id_participant = null;
 
     public function getId(): ?int
