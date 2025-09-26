@@ -107,6 +107,30 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     }
 
     /**
+     * @return Participant[]|NULL Возвращает массив объектов поставщиков или ноль
+     */
+    public function findByParticipant(): ?array
+    {
+        $a = json_encode([['0' => 'ROLE_USER']]);
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p
+            FROM App\Participant\DomainParticipant\DomainModelParticipant\Participant p
+            WHERE p.roles = :roles
+            ORDER BY p.id ASC'
+        )->setParameter('roles', $a);
+
+        return $query->getResult();
+        /* $a = 'ROLE_USER';
+        
+        return $this->findBy(
+            ['roles' -> $a],
+            ['id' => 'ASC']
+        );*/
+    }
+
+    /**
      * @return Participant|NULL Возвращает объектов или ноль
      */
     public function findParticipant($id): ?Participant

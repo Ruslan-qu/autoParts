@@ -2,6 +2,7 @@
 
 namespace App\Participant\ApplicationParticipant\QueryParticipant\SearchParticipantQuery;
 
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Participant\DomainParticipant\RepositoryInterfaceParticipant\ParticipantRepositoryInterface;
 
 final class FindAllParticipantQueryHandler

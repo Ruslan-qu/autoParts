@@ -11,6 +11,7 @@ use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\Edi
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\SearchParticipantType;
 use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery\ParticipantQuery;
 use App\Participant\ApplicationParticipant\QueryParticipant\EditParticipantQuery\FindParticipantQueryHandler;
+use App\Participant\ApplicationParticipant\QueryParticipant\SearchParticipantQuery\FindByParticipantQueryHandler;
 use App\Participant\ApplicationParticipant\QueryParticipant\SearchParticipantQuery\FindAllParticipantQueryHandler;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
 use App\Participant\ApplicationParticipant\CommandsParticipant\EditParticipantCommand\EditParticipantCommandHandler;
@@ -24,7 +25,8 @@ class ParticipantController extends AbstractController
     #[Route('searchParticipant', name: 'search_participant')]
     public function searchParticipant(
         Request $request,
-        FindAllParticipantQueryHandler $findAllParticipantQueryHandler,
+        // FindAllParticipantQueryHandler $findAllParticipantQueryHandler,
+        FindByParticipantQueryHandler $findByParticipantQueryHandler,
     ): Response {
 
         /*Форма*/
@@ -35,7 +37,8 @@ class ParticipantController extends AbstractController
 
         /*Выводим полный список*/
         try {
-            $search_data = $findAllParticipantQueryHandler->handler();
+            // $search_data = $findAllParticipantQueryHandler->handler();
+            $search_data = $findByParticipantQueryHandler->handler();
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
