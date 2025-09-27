@@ -9,12 +9,33 @@ final class FindAllParticipantQueryHandler
 {
 
     public function __construct(
-        private ParticipantRepositoryInterface $participantRepositoryInterface
+        private ParticipantRepositoryInterface $participantRepositoryInterface,
+        private Security $security
     ) {}
 
     public function handler(): ?array
     {
+        $participants = $this->participantRepositoryInterface->findAllParticipant();
+        $participants = $this->unsetParticipant($participants);
 
-        return $this->participantRepositoryInterface->findAllParticipant();
+        return $participants;
+    }
+
+    private function unsetParticipant(array $participants): ?array
+    {
+        //dd($this->security->isGranted('ROLE_ADMIN'));
+        if ($this->security->isGranted('ROLE_ADMIN') && !$this->security->isGranted('ROLE_BOSS')) {
+            foreach ($participants as $key => $value) {
+
+                if (in_array('ROLE_ADMIN', $value->getRoles(), true)) {
+                    unset($participants[$key]);
+                }
+                if (in_array('ROLE_BOSS', $value->getRoles(), true)) {
+                    unset($participants[$key]);
+                }
+            }
+        }
+
+        return $participants;
     }
 }

@@ -16,7 +16,5 @@ interface  ParticipantRepositoryInterface
 
     public function findAllParticipant(): ?array;
 
-    public function findByParticipant(): ?array;
-
     public function findParticipant($id): ?Participant;
 }

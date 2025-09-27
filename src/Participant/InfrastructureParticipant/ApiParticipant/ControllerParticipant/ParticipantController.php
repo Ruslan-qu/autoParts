@@ -25,8 +25,7 @@ class ParticipantController extends AbstractController
     #[Route('searchParticipant', name: 'search_participant')]
     public function searchParticipant(
         Request $request,
-        // FindAllParticipantQueryHandler $findAllParticipantQueryHandler,
-        FindByParticipantQueryHandler $findByParticipantQueryHandler,
+        FindAllParticipantQueryHandler $findAllParticipantQueryHandler
     ): Response {
 
         /*Форма*/
@@ -37,8 +36,7 @@ class ParticipantController extends AbstractController
 
         /*Выводим полный список*/
         try {
-            // $search_data = $findAllParticipantQueryHandler->handler();
-            $search_data = $findByParticipantQueryHandler->handler();
+            $search_data = $findAllParticipantQueryHandler->handler();
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
