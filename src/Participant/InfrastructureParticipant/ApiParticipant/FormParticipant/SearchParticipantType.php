@@ -20,9 +20,10 @@ class SearchParticipantType extends AbstractType
                 'label' => 'Email пользователя',
                 'class' => Participant::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
-
-                    return $er->createQueryBuilder('p')
+                    $a = $er->createQueryBuilder('p')
                         ->orderBy('p.id', 'ASC');
+                    //dd($a->getParameters());
+                    return $a;
                 },
                 'choice_label' => 'email'
             ])
