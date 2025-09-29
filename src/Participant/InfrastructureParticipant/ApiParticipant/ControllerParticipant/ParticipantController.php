@@ -11,7 +11,7 @@ use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\Edi
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\SearchParticipantType;
 use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery\ParticipantQuery;
 use App\Participant\ApplicationParticipant\QueryParticipant\EditParticipantQuery\FindParticipantQueryHandler;
-use App\Participant\ApplicationParticipant\QueryParticipant\SearchParticipantQuery\FindByParticipantQueryHandler;
+use App\Participant\ApplicationParticipant\QueryParticipant\SearchParticipantQuery\SearchParticipantQueryHandler;
 use App\Participant\ApplicationParticipant\QueryParticipant\SearchParticipantQuery\FindAllParticipantQueryHandler;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
 use App\Participant\ApplicationParticipant\CommandsParticipant\EditParticipantCommand\EditParticipantCommandHandler;
@@ -25,7 +25,8 @@ class ParticipantController extends AbstractController
     #[Route('searchParticipant', name: 'search_participant')]
     public function searchParticipant(
         Request $request,
-        FindAllParticipantQueryHandler $findAllParticipantQueryHandler
+        FindAllParticipantQueryHandler $findAllParticipantQueryHandler,
+        SearchParticipantQueryHandler $searchParticipantQueryHandler
     ): Response {
 
         /*Форма*/
@@ -44,11 +45,17 @@ class ParticipantController extends AbstractController
 
         if ($form_search_participant->isSubmitted()) {
             if ($form_search_participant->isValid()) {
+                try {
+                    $search_data = [];
+                    $search_data[] = $searchParticipantQueryHandler
+                        ->handler(new ParticipantQuery($form_search_participant->getData()));
+                } catch (HttpException $e) {
 
-                $search_data = $form_search_participant->getData();
+                    $this->errorMessageViaSession($e);
+                }
             }
         }
-        //dd($search_data);
+
         return $this->render('@participant/searchParticipant.html.twig', [
             'title_logo' => 'Поиск пользователя',
             'form_search_participant' => $form_search_participant->createView(),

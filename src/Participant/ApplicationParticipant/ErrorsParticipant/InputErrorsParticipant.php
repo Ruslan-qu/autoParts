@@ -3,9 +3,11 @@
 namespace App\Participant\ApplicationParticipant\ErrorsParticipant;
 
 use IMAP\Connection;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class InputErrorsParticipant
@@ -324,6 +326,25 @@ class InputErrorsParticipant
             $arr_data_errors = ['Error' => 'Ответ с сайта статус-' . $statusCode];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new HttpException($statusCode, $json_arr_data_errors);
+        }
+
+        return $this;
+    }
+
+    public function roleVerification(Participant $participant, Security $security): static
+    {
+        if ($security->isGranted('ROLE_ADMIN') && !$security->isGranted('ROLE_BOSS')) {
+
+            if (in_array('ROLE_ADMIN', $participant->getRoles(), true)) {
+                $arr_data_errors = ['Error' => 'У текущей роли нет доступа к поиску данного пользователя.'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
+            if (in_array('ROLE_BOSS', $participant->getRoles(), true)) {
+                $arr_data_errors = ['Error' => 'У текущей роли нет доступа к поиску данного пользователя.'];
+                $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+                throw new UnprocessableEntityHttpException($json_arr_data_errors);
+            }
         }
 
         return $this;

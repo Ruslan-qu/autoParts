@@ -26,7 +26,11 @@ final class UserRegistrationCommandHandler
     public function handler(ParticipantRegistrationCommand $participantRegistrationCommand): int
     {
 
-        $emailUser = $participantRegistrationCommand->getEmail();
+        $emailUser = strtolower(preg_replace(
+            '#\s#u',
+            '',
+            $participantRegistrationCommand->getEmail()
+        ));
 
         $passwordUser = $participantRegistrationCommand->getPassword();
 

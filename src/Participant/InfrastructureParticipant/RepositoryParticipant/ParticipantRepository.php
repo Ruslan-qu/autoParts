@@ -115,6 +115,14 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
     }
 
     /**
+     * @return Participant|NULL Возвращает объект или ноль
+     */
+    public function findOneByParticipant(string $email): ?Participant
+    {
+        return $this->findOneBy(['email' => $email]);
+    }
+
+    /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void

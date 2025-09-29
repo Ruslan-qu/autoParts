@@ -17,4 +17,6 @@ interface  ParticipantRepositoryInterface
     public function findAllParticipant(): ?array;
 
     public function findParticipant($id): ?Participant;
+
+    public function findOneByParticipant(string $email): ?Participant;
 }

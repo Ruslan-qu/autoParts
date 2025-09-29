@@ -23,7 +23,6 @@ final class FindAllParticipantQueryHandler
 
     private function unsetParticipant(array $participants): ?array
     {
-        //dd($this->security->isGranted('ROLE_ADMIN'));
         if ($this->security->isGranted('ROLE_ADMIN') && !$this->security->isGranted('ROLE_BOSS')) {
             foreach ($participants as $key => $value) {
 
