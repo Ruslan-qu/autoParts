@@ -10,7 +10,7 @@
 
   {% block form %}
 
-  {#Форма поиска постовщиков#}
+  {#Форма поиска Пользователя#}
 {#{{ dump(app.flashes('children[price]')[0]) }}#}
   {{ form_start(form_search_participant,
   {'attr': {'class': 'row row-cols-12 text-center mt-2'}}) }}
@@ -40,7 +40,7 @@
 
   {% block table %}
 
-  {#Таблица постовщиков#}
+  {#Таблица Пользователя#}
 
   <div class="container-fluid text-center pt-4 ">
     <div class="table-responsive">
@@ -50,7 +50,7 @@
 
           {% if search_data %}
           <tr>
-            <th scope="col">Поставщик</th>
+            <th scope="col">Пользователь</th>
             <th scope="col">Роль</th>
             <th scope="col">Блокировка</th>
             <th scope="col">Редактировать</th>

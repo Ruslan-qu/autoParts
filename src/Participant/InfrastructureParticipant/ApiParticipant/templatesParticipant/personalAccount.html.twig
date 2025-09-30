@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title_logo }}{% endblock title %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
+
+{% block Responsive_behaviors %}
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+  {% endblock Responsive_behaviors %}
+
+  {% block form %}{% endblock form %}
+
+  {% block table %}
+
+  {#Таблица Личный кабинет#}
+
+  <div class="container-fluid text-center pt-4 ">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover table-striped-columns table-sm align-middle 
+        border-info shadow p-3 mb-5 bg-body-tertiary rounded">
+        <thead class="table-secondary">
+
+          {% if user_data %}
+          <tr>
+            <th scope="col">Пользователь</th>
+            <th scope="col">Пороль</th>
+            <th scope="col">Редактировать</th>
+            <th scope="col">Удалить профиль</th>
+          </tr>
+          {% endif %}
+
+        </thead>
+        <tbody class="table-group-divider">
+          {% if user_data %}
+
+          <tr>
+            <td>{{ user_data.getEmail() }}</td>
+            <td>{{ user_data.getPassword() }}</td>
+            <form action="{{ path('edit_participant') }}" name="edit_participant">
+
+              <td><button class="btn btn-outline-secondary" type="submit" name="id"
+                  value="{{ user_data.getId() }}">Изменить</button></td>
+
+            </form>
+            <form action="{{ path('delete_participant') }}" name="delete_participant">
+
+              <td><button class="btn btn-outline-danger" type="submit" name="id"
+                  value="{{ user_data.getId() }}">Удалить</button></td>
+
+            </form>                         
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endblock table %}

@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Participant\InfrastructureParticipant\ApiParticipant\ControllerParticipant;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery\ParticipantQuery;
+use App\Participant\ApplicationParticipant\QueryParticipant\UserExtractionQuery\UserExtractionQueryHandler;
+use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
+use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantObjCommand\ParticipantObjCommand;
+
+class PersonalAccountController extends AbstractController
+{
+    #[Route('personalAccount', name: 'personal_account')]
+    public function personalAccount(
+        Request $request,
+        UserExtractionQueryHandler $userExtractionQueryHandler
+    ): Response {
+
+        /*Выводим полный список*/
+        try {
+            $user_data = $userExtractionQueryHandler->handler();
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+        }
+
+        return $this->render('@personalAccount/personalAccount.html.twig', [
+            'title_logo' => 'Личный кабинет',
+            'user_data' => $user_data,
+
+        ]);
+    }
+
+    /*Редактирования пользователя в Личном кабинете*/
+    #[Route('editParticipantPersonalAccount', name: 'edit_participant_personal_account')]
+    public function editParticipantPersonalAccount(
+        Request $request,
+        // FindParticipantPersonalAccountQueryHandler $findParticipantPersonalAccountQueryHandler,
+        // EditParticipantPersonalAccountCommandHandler $editParticipantPersonalAccountCommandHandler
+    ): Response {
+
+        /*Форма Редактирования*/
+        $form_edit_participant_personal_account = $this->createForm(editParticipantPersonalAccountType::class);
+
+        /*Валидация формы */
+        $form_edit_participant_personal_account->handleRequest($request);
+
+        if (empty($form_edit_participant_personal_account->getData())) {
+            try {
+                $data_form_edit_participant_personal_account = $findParticipantPersonalAccountQueryHandler
+                    ->handler(new ParticipantQuery($request->query->all()));
+            } catch (HttpException $e) {
+
+                $this->errorMessageViaSession($e);
+            }
+        }
+
+        if (!empty($request->request->all())) {
+            $data_form_edit_participant_personal_account = $request->request->all()['edit_participant'];
+        }
+
+        $id_handler = null;
+        if ($form_edit_participant_personal_account->isSubmitted()) {
+            if ($form_edit_participant_personal_account->isValid()) {
+
+                try {
+
+                    $id_handler = $editParticipantPersonalAccountCommandHandler
+                        ->handler(new ParticipantCommand($form_edit_participant_personal_account->getData()));
+                } catch (HttpException $e) {
+
+                    $this->errorMessageViaSession($e);
+                }
+            }
+        }
+
+        return $this->render('@personalAccount/editpersonalAccount.html.twig', [
+            'title_logo' => 'Изменение данных пользователя',
+            'form_edit_participant_personal_account' => $form_edit_participant_personal_account->createView(),
+            'id_handler' => $id_handler,
+            'data_form_edit_participant_personal_account' => $data_form_edit_participant_personal_account,
+        ]);
+    }
+
+    /*Удаление пользователя*/
+    #[Route('deleteParticipant', name: 'delete_participant_personal_account')]
+    public function deleteParticipant(
+        Request $request,
+        FindParticipantQueryHandler $findParticipantQueryHandler,
+        DeleteParticipantCommandHandler $deleteParticipantCommandHandler
+    ): Response {
+
+        try {
+
+            $participant['participant'] = $findParticipantQueryHandler
+                ->handler(new ParticipantQuery($request->query->all()));
+
+            $deleteParticipantCommandHandler
+                ->handler(new ParticipantObjCommand($participant));
+            $this->addFlash('delete', 'Пользователь удален');
+        } catch (HttpException $e) {
+
+            $this->errorMessageViaSession($e);
+        }
+
+        return $this->redirectToRoute('search_participant_personal_account');
+    }
+
+
+    private function errorMessageViaSession(HttpException $e): static
+    {
+
+        $arr_validator_errors = json_decode($e->getMessage(), true);
+
+        /* Выводим сообщения ошибки в форму через сессии  */
+        foreach ($arr_validator_errors as $key => $value_errors) {
+            if (is_array($value_errors)) {
+                foreach ($value_errors as $key => $value) {
+                    $message = $value;
+                    $propertyPath = $key;
+                }
+            } else {
+                $message = $value_errors;
+                $propertyPath = $key;
+            }
+
+            $this->addFlash($propertyPath, $message);
+        }
+
+        return $this;
+    }
+}

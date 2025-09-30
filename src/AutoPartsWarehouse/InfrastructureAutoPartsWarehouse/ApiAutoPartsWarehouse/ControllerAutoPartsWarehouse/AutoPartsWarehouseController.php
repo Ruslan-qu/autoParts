@@ -25,6 +25,7 @@ use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehous
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\EditAutoPartsWarehouseType;
 use App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\AdapterAutoPartsWarehouse\AdapterAutoPartsWarehousePartNumbersInterface;
 use App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWarehouse\FormAutoPartsWarehouse\SearchAutoPartsWarehouseType;
+use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\ShipmentAutoPartsToDate\FindByShipmentToDateQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery\AutoPartsWarehouseQuery;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\EditAutoPartsWarehouseQuery\FindAutoPartsWarehouseQueryHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\SearchAutoPartsWarehouseQuery\FindByAutoPartsWarehouseQueryHandler;
@@ -306,9 +307,9 @@ class AutoPartsWarehouseController extends AbstractController
     public function searchAutoPartsWarehouse(
         Request $request,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
-        FindAllAutoPartsWarehouseQueryHandler $findAllAutoPartsWarehouseQueryHandler,
+        // FindAllAutoPartsWarehouseQueryHandler $findAllAutoPartsWarehouseQueryHandler,
         FindByAutoPartsWarehouseQueryHandler $findByAutoPartsWarehouseQueryHandler,
-        // FindByShipmentToDateQueryHandler $findByShipmentToDateQueryHandler,
+        FindByShipmentToDateQueryHandler $findByShipmentToDateQueryHandler,
     ): Response {
 
         /*Подключаем формы*/
@@ -319,9 +320,9 @@ class AutoPartsWarehouseController extends AbstractController
 
         try {
             $participant = $adapterUserExtractionInterface->userExtraction();
-            //$search_data = $findByShipmentToDateQueryHandler
-            //   ->handler(new AutoPartsWarehouseQuery(['id_participant' => $participant]));
-            $search_data = $findAllAutoPartsWarehouseQueryHandler->handler();
+            $search_data = $findByShipmentToDateQueryHandler
+                ->handler(new AutoPartsWarehouseQuery(['id_participant' => $participant]));
+            //$search_data = $findAllAutoPartsWarehouseQueryHandler->handler();
         } catch (HttpException $e) {
             $this->errorMessageViaSession($e);
         }

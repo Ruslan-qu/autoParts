@@ -22,10 +22,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto pe-4 mb-2 mb-lg-0">
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <li class="nav-item pe-2">
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ path('main_page')}}">Главная</a>
                     </li>
-                    <li class="nav-item dropdown px-1">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" aria-expanded="false">
                             Склад
@@ -77,11 +77,11 @@
 
                         </ul>
                     </li>
-                    <li class="nav-item px-1">
+                    <li class="nav-item">
                         <a class="nav-link" role="button" aria-expanded="false"
                             href="{{ path('search_sales')}}">Продажи</a>
                     </li>
-                    <li class="nav-item dropdown px-1">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Контрагент
@@ -91,7 +91,7 @@
                             <li><a class="dropdown-item" href="{{ path('save_counterparty')}}">Сохранить</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown ps-1">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             data-bs-auto-close="outside" aria-expanded="false">
                             Детали
@@ -239,10 +239,12 @@
                                 </ul>
                             </li>
                         </ul>
-
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" role="button" aria-expanded="false" href="#">Личный кабинет</a>
                     </li>
                     {% if is_granted('ROLE_ADMIN') %}
-                    <li class="nav-item dropdown px-1">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Админ
@@ -262,10 +264,10 @@
                         <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_login')}}">Вход</a>
                     </li>
                     {% else %}
-                    <li class="nav-item px-2">
+                    <li class="nav-item">
                         <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_logout')}}">Выход</a>
                         {% if is_granted('IS_IMPERSONATOR') %}
-                    <li class="nav-item px-2">
+                    <li class="nav-item">
                         <a class="nav-link" role="button" aria-expanded="false"
                             href="{{ impersonation_exit_path(path('main_page')) }}">Выход из профиля</a>
                     </li>
