@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Participant\ApplicationParticipant\CommandsParticipant\EditParticipantPersonalAccountCommand;
+
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
+use App\Participant\DomainParticipant\RepositoryInterfaceParticipant\ParticipantRepositoryInterface;
+use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
+
+final class EditParticipantPersonalAccountCommandHandler
+{
+
+    public function __construct(
+        private InputErrorsParticipant $inputErrorsParticipant,
+        private ParticipantRepositoryInterface $participantRepositoryInterface,
+        private UserPasswordHasherInterface $userPasswordHasher
+    ) {}
+
+    public function handler(ParticipantCommand $participantCommand): ?int
+    {
+        $edit_email = $participantCommand->getEmail();
+
+        $password = $participantCommand->getPassword();
+
+        /* Подключаем валидацию и прописываем условида валидации */
+        $validator = Validation::createValidator();
+
+        $input = [
+            'edit_email_error' => [
+                'NotBlank' => $edit_email,
+                'Email' => $edit_email,
+            ],
+            'edit_password_error' => [
+                'NotBlank' => $password,
+            ]
+        ];
+
+        $constraint = new Collection([
+            'edit_email_error' => new Collection([
+                'NotBlank' => new NotBlank(
+                    message: 'Форма Email не может быть пустой'
+                ),
+                'Email' => new Email(
+                    message: 'Форма Email содержит недопустимые символы'
+                )
+            ]),
+            'edit_password_error' => new Collection([
+                'NotBlank' => new NotBlank(
+                    message: 'Форма Password не может быть пустой'
+                ),
+                'PasswordStrength' => new PasswordStrength(
+                    message: 'Ваш пароль слишком легко угадать. 
+                        Введите более надежный пароль.'
+                )
+            ])
+        ]);
+
+        $errors_validate = $validator->validate($input, $constraint);
+        $this->inputErrorsParticipant->errorValidate($errors_validate);
+
+        $id = $participantCommand->getId();
+        $this->inputErrorsParticipant->emptyData($id);
+
+        $participant = $this->participantRepositoryInterface->findParticipant($id);
+        $this->inputErrorsParticipant->emptyEntity($participant);
+
+        $this->countDuplicate($edit_email, $participant->getEmail());
+
+        $participant->setEmail($edit_email);
+        $participant->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $participant,
+                $passwordUser
+            )
+        );
+
+        return $this->participantRepositoryInterface->edit($participant);
+    }
+
+    private function countDuplicate(string $edit_email, string $email): static
+    {
+        if ($edit_email != $email) {
+            /* Валидация дублей */
+            $count_duplicate = $this->participantRepositoryInterface
+                ->numberDoubles(['email' => $edit_email]);
+            $this->inputErrorsParticipant->errorDuplicate($count_duplicate);
+        }
+
+        return $this;
+    }
+}

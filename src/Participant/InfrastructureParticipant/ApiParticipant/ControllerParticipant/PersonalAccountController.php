@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery\ParticipantQuery;
 use App\Participant\ApplicationParticipant\QueryParticipant\UserExtractionQuery\UserExtractionQueryHandler;
+use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\EditParticipantPersonalAccountType;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantObjCommand\ParticipantObjCommand;
 
@@ -16,7 +17,6 @@ class PersonalAccountController extends AbstractController
 {
     #[Route('personalAccount', name: 'personal_account')]
     public function personalAccount(
-        Request $request,
         UserExtractionQueryHandler $userExtractionQueryHandler
     ): Response {
 
@@ -28,7 +28,7 @@ class PersonalAccountController extends AbstractController
             $this->errorMessageViaSession($e);
         }
 
-        return $this->render('@personalAccount/personalAccount.html.twig', [
+        return $this->render('@participant/personalAccount.html.twig', [
             'title_logo' => 'Личный кабинет',
             'user_data' => $user_data,
 
@@ -39,20 +39,19 @@ class PersonalAccountController extends AbstractController
     #[Route('editParticipantPersonalAccount', name: 'edit_participant_personal_account')]
     public function editParticipantPersonalAccount(
         Request $request,
-        // FindParticipantPersonalAccountQueryHandler $findParticipantPersonalAccountQueryHandler,
+        UserExtractionQueryHandler $userExtractionQueryHandler,
         // EditParticipantPersonalAccountCommandHandler $editParticipantPersonalAccountCommandHandler
     ): Response {
 
         /*Форма Редактирования*/
-        $form_edit_participant_personal_account = $this->createForm(editParticipantPersonalAccountType::class);
+        $form_edit_participant_personal_account = $this->createForm(EditParticipantPersonalAccountType::class);
 
         /*Валидация формы */
         $form_edit_participant_personal_account->handleRequest($request);
 
         if (empty($form_edit_participant_personal_account->getData())) {
             try {
-                $data_form_edit_participant_personal_account = $findParticipantPersonalAccountQueryHandler
-                    ->handler(new ParticipantQuery($request->query->all()));
+                $data_form_edit_participant_personal_account = $userExtractionQueryHandler->handler();
             } catch (HttpException $e) {
 
                 $this->errorMessageViaSession($e);
@@ -60,16 +59,16 @@ class PersonalAccountController extends AbstractController
         }
 
         if (!empty($request->request->all())) {
-            $data_form_edit_participant_personal_account = $request->request->all()['edit_participant'];
+            $data_form_edit_participant_personal_account = $request->request->all()['edit_participant_personal_account'];
         }
 
-        $id_handler = null;
+        $id = null;
         if ($form_edit_participant_personal_account->isSubmitted()) {
             if ($form_edit_participant_personal_account->isValid()) {
 
                 try {
 
-                    $id_handler = $editParticipantPersonalAccountCommandHandler
+                    $id = $editParticipantPersonalAccountCommandHandler
                         ->handler(new ParticipantCommand($form_edit_participant_personal_account->getData()));
                 } catch (HttpException $e) {
 
@@ -78,10 +77,10 @@ class PersonalAccountController extends AbstractController
             }
         }
 
-        return $this->render('@personalAccount/editpersonalAccount.html.twig', [
+        return $this->render('@participant/editParticipantPersonalAccount.html.twig', [
             'title_logo' => 'Изменение данных пользователя',
             'form_edit_participant_personal_account' => $form_edit_participant_personal_account->createView(),
-            'id_handler' => $id_handler,
+            'id' => $id,
             'data_form_edit_participant_personal_account' => $data_form_edit_participant_personal_account,
         ]);
     }

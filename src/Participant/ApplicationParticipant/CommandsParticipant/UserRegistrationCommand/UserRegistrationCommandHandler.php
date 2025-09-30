@@ -59,7 +59,7 @@ final class UserRegistrationCommandHandler
             ]),
             'password_user_error' => new Collection([
                 'NotBlank' => new NotBlank(
-                    message: 'Форма E-mail не может быть пустой'
+                    message: 'Форма Password не может быть пустой'
                 ),
                 'PasswordStrength' => new PasswordStrength(
                     message: 'Ваш пароль слишком легко угадать. 

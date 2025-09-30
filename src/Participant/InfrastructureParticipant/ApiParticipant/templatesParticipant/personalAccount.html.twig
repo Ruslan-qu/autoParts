@@ -36,13 +36,13 @@
           <tr>
             <td>{{ user_data.getEmail() }}</td>
             <td>{{ user_data.getPassword() }}</td>
-            <form action="{{ path('edit_participant') }}" name="edit_participant">
+            <form action="{{ path('edit_participant_personal_account') }}" name="edit_participant_personal_account">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ user_data.getId() }}">Изменить</button></td>
 
             </form>
-            <form action="{{ path('delete_participant') }}" name="delete_participant">
+            <form action="{{ path('delete_participant_personal_account') }}" name="delete_participant_personal_account">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id"
                   value="{{ user_data.getId() }}">Удалить</button></td>
