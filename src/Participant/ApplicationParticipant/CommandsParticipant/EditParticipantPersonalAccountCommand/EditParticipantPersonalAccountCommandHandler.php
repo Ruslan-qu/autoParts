@@ -23,7 +23,13 @@ final class EditParticipantPersonalAccountCommandHandler
 
     public function handler(ParticipantCommand $participantCommand): ?int
     {
-        $edit_email = $participantCommand->getEmail();
+        $edit_email = strtolower(preg_replace(
+            '#\s#u',
+            '',
+            $participantCommand->getEmail()
+        ));
+
+        $old_password = $participantCommand->getOldPassword();
 
         $password = $participantCommand->getPassword();
 
@@ -36,7 +42,7 @@ final class EditParticipantPersonalAccountCommandHandler
                 'Email' => $edit_email,
             ],
             'edit_password_error' => [
-                'NotBlank' => $password,
+                'PasswordStrength' => $password,
             ]
         ];
 
@@ -50,9 +56,6 @@ final class EditParticipantPersonalAccountCommandHandler
                 )
             ]),
             'edit_password_error' => new Collection([
-                'NotBlank' => new NotBlank(
-                    message: 'Форма Password не может быть пустой'
-                ),
                 'PasswordStrength' => new PasswordStrength(
                     message: 'Ваш пароль слишком легко угадать. 
                         Введите более надежный пароль.'
@@ -70,14 +73,17 @@ final class EditParticipantPersonalAccountCommandHandler
         $this->inputErrorsParticipant->emptyEntity($participant);
 
         $this->countDuplicate($edit_email, $participant->getEmail());
-
         $participant->setEmail($edit_email);
-        $participant->setPassword(
-            $this->userPasswordHasher->hashPassword(
-                $participant,
-                $passwordUser
-            )
-        );
+
+        if (isset($old_password)) {
+            $this->inputErrorsParticipant->passValidation($this->userPasswordHasher, $participant, $old_password);
+            $participant->setPassword(
+                $this->userPasswordHasher->hashPassword(
+                    $participant,
+                    $password
+                )
+            );
+        }
 
         return $this->participantRepositoryInterface->edit($participant);
     }

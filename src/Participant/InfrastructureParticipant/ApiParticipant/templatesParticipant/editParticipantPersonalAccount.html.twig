@@ -14,11 +14,9 @@
 
   {% if data_form_edit_participant_personal_account is iterable %}
   {% set email_find_id = data_form_edit_participant.email|default('') %}
-  {% set password_find_id = data_form_edit_participant.password|default('') %}
   {% set id_find_id = data_form_edit_participant.id|default('') %}
   {% else %}
   {% set email_find_id = data_form_edit_participant.getEmail()|default('') %}
-  {% set password_find_id = data_form_edit_participant.getPassword()|default('') %}
   {% set id_find_id = data_form_edit_participant.getId()|default('') %}
   {% endif %}
 
@@ -39,9 +37,14 @@
       </div>
 
       <div class="col-sm-3 col-md-3 col-lg-2">
+        <div class="lb">{{ form_label(form_edit_participant_personal_account.old_password) }}</div>
+        {{ form_widget(form_edit_participant_personal_account.old_password, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_errors(form_edit_participant_personal_account.old_password) |nl2br }}
+      </div>
+
+      <div class="col-sm-3 col-md-3 col-lg-2">
         <div class="lb">{{ form_label(form_edit_participant_personal_account.password) }}</div>
-        {{ form_widget(form_edit_participant_personal_account.password, { value : password_find_id,
-        'attr': {'class': 'w-100'} }) }}
+        {{ form_widget(form_edit_participant_personal_account.password, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_edit_participant_personal_account.password) |nl2br }}
       </div>
 

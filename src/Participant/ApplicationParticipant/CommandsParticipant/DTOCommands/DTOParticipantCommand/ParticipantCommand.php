@@ -15,6 +15,8 @@ final class ParticipantCommand extends MapParticipantCommand
 
     protected ?string $password = null;
 
+    protected ?string $old_password = null;
+
     protected bool $isVerified = false;
 
     public function getId(): ?int
@@ -33,9 +35,14 @@ final class ParticipantCommand extends MapParticipantCommand
         return $this->roles;
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
+    }
+
+    public function getOldPassword(): ?string
+    {
+        return $this->old_password;
     }
 
     public function isVerified(): bool

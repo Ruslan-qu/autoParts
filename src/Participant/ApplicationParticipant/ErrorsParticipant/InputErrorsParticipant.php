@@ -6,7 +6,9 @@ use IMAP\Connection;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -345,6 +347,20 @@ class InputErrorsParticipant
                 $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
                 throw new UnprocessableEntityHttpException($json_arr_data_errors);
             }
+        }
+
+        return $this;
+    }
+
+    public function passValidation(
+        UserPasswordHasher $userPasswordHasher,
+        Participant $participant,
+        string $old_password
+    ): static {
+        if (!$userPasswordHasher->isPasswordValid($participant, $old_password)) {
+            $arr_data_errors = ['Error' => 'Неверный старый пароль.'];
+            $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
+            throw new AccessDeniedHttpException($json_arr_data_errors);
         }
 
         return $this;

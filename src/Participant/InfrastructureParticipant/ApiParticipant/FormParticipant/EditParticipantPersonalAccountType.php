@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 class EditParticipantPersonalAccountType extends AbstractType
 {
@@ -31,15 +32,23 @@ class EditParticipantPersonalAccountType extends AbstractType
 
                 ]
             ])
+            ->add('old_password', PasswordType::class, [
+                'label' => 'Старый Пароль',
+                'required' => false,
+            ])
             ->add('password', PasswordType::class, [
-                'label' => 'Пароль',
+                'label' => 'Новый Пароль',
+                'required' => false,
+                // instead of being set onto the object directly,
+                // this is read and encoded in the controller
+                'mapped' => false,
+                'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Форма не может быть 
-                        пустой'
-                    ])
-
-                ]
+                    new PasswordStrength([
+                        'message' => 'Ваш пароль слишком легко угадать. 
+                        Введите более надежный пароль.',
+                    ]),
+                ],
             ])
             ->add('id', HiddenType::class)
             ->add('button_participant', SubmitType::class, [

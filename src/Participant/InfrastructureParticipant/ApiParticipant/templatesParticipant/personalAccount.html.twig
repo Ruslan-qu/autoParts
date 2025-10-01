@@ -23,7 +23,6 @@
           {% if user_data %}
           <tr>
             <th scope="col">Пользователь</th>
-            <th scope="col">Пороль</th>
             <th scope="col">Редактировать</th>
             <th scope="col">Удалить профиль</th>
           </tr>
@@ -35,7 +34,6 @@
 
           <tr>
             <td>{{ user_data.getEmail() }}</td>
-            <td>{{ user_data.getPassword() }}</td>
             <form action="{{ path('edit_participant_personal_account') }}" name="edit_participant_personal_account">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"

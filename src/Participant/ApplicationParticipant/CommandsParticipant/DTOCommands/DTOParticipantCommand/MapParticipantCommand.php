@@ -21,9 +21,13 @@ abstract class MapParticipantCommand
 
         foreach ($data as $key => $value) {
 
-            $input_errors->propertyExistsEntity(Participant::class, $key, 'Participant');
-
             if (!empty($value)) {
+
+                if ($key == 'old_password') {
+                    $key =  'password';
+                }
+
+                $input_errors->propertyExistsEntity(Participant::class, $key, 'Participant');
 
                 $type = $typeResolver->resolve(new \ReflectionProperty(Participant::class, $key))
                     ->getBaseType()

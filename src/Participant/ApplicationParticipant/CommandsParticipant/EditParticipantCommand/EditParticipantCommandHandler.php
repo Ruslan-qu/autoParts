@@ -20,7 +20,11 @@ final class EditParticipantCommandHandler
 
     public function handler(ParticipantCommand $participantCommand): ?int
     {
-        $edit_email = $participantCommand->getEmail();
+        $edit_email = strtolower(preg_replace(
+            '#\s#u',
+            '',
+            $participantCommand->getEmail()
+        ));
 
         $roles = $participantCommand->getRoles();
 

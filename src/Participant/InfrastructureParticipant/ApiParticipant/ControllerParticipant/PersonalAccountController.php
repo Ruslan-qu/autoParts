@@ -12,6 +12,7 @@ use App\Participant\ApplicationParticipant\QueryParticipant\UserExtractionQuery\
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\EditParticipantPersonalAccountType;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantObjCommand\ParticipantObjCommand;
+use App\Participant\ApplicationParticipant\CommandsParticipant\EditParticipantPersonalAccountCommand\EditParticipantPersonalAccountCommandHandler;
 
 class PersonalAccountController extends AbstractController
 {
@@ -40,7 +41,7 @@ class PersonalAccountController extends AbstractController
     public function editParticipantPersonalAccount(
         Request $request,
         UserExtractionQueryHandler $userExtractionQueryHandler,
-        // EditParticipantPersonalAccountCommandHandler $editParticipantPersonalAccountCommandHandler
+        EditParticipantPersonalAccountCommandHandler $editParticipantPersonalAccountCommandHandler
     ): Response {
 
         /*Форма Редактирования*/
