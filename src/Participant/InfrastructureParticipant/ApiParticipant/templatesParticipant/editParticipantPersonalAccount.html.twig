@@ -13,15 +13,15 @@
   {#Переменный для вывода данных в форме #}
 
   {% if data_form_edit_participant_personal_account is iterable %}
-  {% set email_find_id = data_form_edit_participant.email|default('') %}
-  {% set id_find_id = data_form_edit_participant.id|default('') %}
+  {% set email_find_id = data_form_edit_participant_personal_account.email|default('') %}
+  {% set id_find_id = data_form_edit_participant_personal_account.id|default('') %}
   {% else %}
-  {% set email_find_id = data_form_edit_participant.getEmail()|default('') %}
-  {% set id_find_id = data_form_edit_participant.getId()|default('') %}
+  {% set email_find_id = data_form_edit_participant_personal_account.getEmail()|default('') %}
+  {% set id_find_id = data_form_edit_participant_personal_account.getId()|default('') %}
   {% endif %}
 
   {#Форма#}
-
+  {#{{ dump(app.flashes('children[price]')[0]) }}#}
   {{ form_start(form_edit_participant_personal_account) }}
   <div class="container-fluid text-center mt-3">
     <div class="row">
@@ -31,7 +31,7 @@
         {{ form_widget(form_edit_participant_personal_account.email, { value : email_find_id,
         'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_edit_participant_personal_account.email) |nl2br }}
-        {% for message in app.flashes('[email_error][Email]') %}
+        {% for message in app.flashes('[edit_email_error][Email]') %}
         {{ message }}
         {% endfor %}
       </div>
@@ -47,21 +47,22 @@
         {{ form_widget(form_edit_participant_personal_account.password, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_edit_participant_personal_account.password) |nl2br }}
       </div>
+    </div>
 
-  {{ form_widget(form_edit_participant_personal_account.id, {value : id_find_id}) }}
+    {{ form_widget(form_edit_participant_personal_account.id, {value : id_find_id}) }}
 
-  <div class="row my-2 pt-2">
-    <div class="col-sm-12 col-lg-8">
-      {{ form_widget(form_edit_participant_personal_account.button_participant, 
-      { 'attr': {'class': 'btn btn-secondary w-100'}}) }}
+    <div class="row my-2 pt-2">
+      <div class="col-sm-9 col-lg-6">
+        {{ form_widget(form_edit_participant_personal_account.button_participant,
+        { 'attr': {'class': 'btn btn-secondary w-100'}}) }}
+      </div>
     </div>
   </div>
-
   {{ form_end(form_edit_participant_personal_account) }}
 
   {% for messages in app.flashes(['delete','Error']) %}
   {% for message in messages %}
-    <h2 class="mt-3 ms-3">{{ message }}</h2>
+  <h5 class="mt-3 ms-3">{{ message }}</h5>
   {% endfor %}
   {% endfor %}
 

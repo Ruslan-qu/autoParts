@@ -75,7 +75,7 @@ final class EditParticipantPersonalAccountCommandHandler
         $this->countDuplicate($edit_email, $participant->getEmail());
         $participant->setEmail($edit_email);
 
-        if (isset($old_password)) {
+        if (isset($old_password) && isset($password)) {
             $this->inputErrorsParticipant->passValidation($this->userPasswordHasher, $participant, $old_password);
             $participant->setPassword(
                 $this->userPasswordHasher->hashPassword(

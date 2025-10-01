@@ -62,7 +62,7 @@ class PersonalAccountController extends AbstractController
         if (!empty($request->request->all())) {
             $data_form_edit_participant_personal_account = $request->request->all()['edit_participant_personal_account'];
         }
-
+        //dd($request);
         $id = null;
         if ($form_edit_participant_personal_account->isSubmitted()) {
             if ($form_edit_participant_personal_account->isValid()) {
