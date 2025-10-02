@@ -34,6 +34,7 @@ class EditParticipantPersonalAccountType extends AbstractType
             ])
             ->add('old_password', PasswordType::class, [
                 'label' => 'Старый Пароль',
+                'toggle' => true,
                 'required' => false,
             ])
             ->add('password', PasswordType::class, [
