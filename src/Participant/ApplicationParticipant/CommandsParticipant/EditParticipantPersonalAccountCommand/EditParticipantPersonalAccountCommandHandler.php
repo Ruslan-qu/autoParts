@@ -23,6 +23,7 @@ final class EditParticipantPersonalAccountCommandHandler
 
     public function handler(ParticipantCommand $participantCommand): ?int
     {
+
         $edit_email = strtolower(preg_replace(
             '#\s#u',
             '',

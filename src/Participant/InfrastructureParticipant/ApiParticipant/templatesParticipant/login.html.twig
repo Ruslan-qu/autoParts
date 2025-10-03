@@ -27,9 +27,15 @@
                         autocomplete="email" required autofocus>
                 </div>
                 <div class="col-sm-5 col-md-4 col-lg-3 col-xl-2">
+
                     <label for="password">Password</label>
-                    <input type="password" name="_password" id="password" class="form-control"
-                        autocomplete="current-password" required>
+                    <div class="input-group">
+                        <input type="password" name="_password" id="password" class="form-control rounded"
+                            autocomplete="current-password" required>
+                        <button id="toggle-password" type="button">
+                            {{ ux_icon('bi:eye', {'height': '22', 'width': '18'}) }}
+                        </button>
+                    </div>
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             </div>

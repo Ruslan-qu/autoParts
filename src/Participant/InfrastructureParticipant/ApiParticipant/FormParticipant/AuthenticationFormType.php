@@ -34,8 +34,6 @@ class AuthenticationFormType extends AbstractType
             ])
             ->add('_password', PasswordType::class, [
                 'label' => 'Пароль',
-                'toggle' => true,
-                'button_classes' => ["btn", "btn-primary"],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Форма не может быть 

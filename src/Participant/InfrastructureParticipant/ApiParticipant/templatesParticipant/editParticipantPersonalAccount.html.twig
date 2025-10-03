@@ -29,7 +29,7 @@
       <div class="col-sm-3 col-md-3 col-lg-2">
         <div class="lb">{{ form_label(form_edit_participant_personal_account.email) }}</div>
         {{ form_widget(form_edit_participant_personal_account.email, { value : email_find_id,
-        'attr': {'class': 'w-100'} }) }}
+        'attr': {'class': 'form-control w-100'} }) }}
         {{ form_errors(form_edit_participant_personal_account.email) |nl2br }}
         {% for message in app.flashes('[edit_email_error][Email]') %}
         {{ message }}
@@ -38,13 +38,17 @@
 
       <div class="col-sm-3 col-md-3 col-lg-2">
         <div class="lb">{{ form_label(form_edit_participant_personal_account.old_password) }}</div>
-        {{ form_widget(form_edit_participant_personal_account.old_password, { 'attr': {'class': 'w-100'} }) }}
-        {{ form_errors(form_edit_participant_personal_account.old_password) |nl2br }}
+        <div class="input-group">
+          {{ form_widget(form_edit_participant_personal_account.old_password,
+          { 'attr': {'class': 'form-control rounded w-100', id: 'password1'} }) }}
+          {{ form_errors(form_edit_participant_personal_account.old_password) |nl2br }}
+          <button id="toggle-password" type="button">{{ ux_icon('bi:eye', {'height': '22', 'width': '18'}) }}</button>
+        </div>
       </div>
 
       <div class="col-sm-3 col-md-3 col-lg-2">
         <div class="lb">{{ form_label(form_edit_participant_personal_account.password) }}</div>
-        {{ form_widget(form_edit_participant_personal_account.password, { 'attr': {'class': 'w-100'} }) }}
+        {{ form_widget(form_edit_participant_personal_account.password, { 'attr': {'class': 'form-control w-100'} }) }}
         {{ form_errors(form_edit_participant_personal_account.password) |nl2br }}
       </div>
     </div>
