@@ -40,7 +40,7 @@
         <div class="lb">{{ form_label(form_edit_participant_personal_account.old_password) }}</div>
         <div class="input-group">
           {{ form_widget(form_edit_participant_personal_account.old_password,
-          { 'attr': {'class': 'form-control rounded w-100', id: 'password1'} }) }}
+          { 'attr': {'class': 'form-control rounded w-100'} }) }}
           {{ form_errors(form_edit_participant_personal_account.old_password) |nl2br }}
           <button id="toggle-password" type="button">{{ ux_icon('bi:eye', {'height': '22', 'width': '18'}) }}</button>
         </div>

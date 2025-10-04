@@ -5,6 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\ControllerAcc
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
@@ -25,6 +26,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryAvailability\EditAvailabilityQue
 use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DeleteAvailabilityCommand\DeleteAvailabilityCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsAvailability\DTOCommands\DTOAvailabilityObjCommand\AvailabilityObjCommand;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class AvailabilityController extends AbstractController
 {
     /*Сохранения наличие детали*/

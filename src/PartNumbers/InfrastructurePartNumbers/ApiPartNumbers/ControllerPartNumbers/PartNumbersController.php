@@ -5,6 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\ControllerPar
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
@@ -25,6 +26,7 @@ use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DeletePartNumbers
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersObjCommand\PartNumbersObjCommand;
 use App\PartNumbers\ApplicationPartNumbers\QueryOriginalRooms\SearchOriginalRoomsQuery\FindOneByOriginalRoomsPartNumbersQueryHandler;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class PartNumbersController extends AbstractController
 {
     /*Сохранения автодеталей*/

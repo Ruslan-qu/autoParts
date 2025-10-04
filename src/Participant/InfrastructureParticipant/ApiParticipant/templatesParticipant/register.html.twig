@@ -49,8 +49,10 @@
         {% endif %}
     </div>
     <div>
-        {% for message in app.flashes('Error') %}
+        {% for messages in app.flashes(['Error', 'delete']) %}
+        {% for message in messages %}
         <h5 class="mt-3 ms-3">{{ message }}</h5>
+        {% endfor %}
         {% endfor %}
     </div>
     {% endblock form %}

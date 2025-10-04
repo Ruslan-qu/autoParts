@@ -5,6 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\ControllerAcc
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
@@ -25,6 +26,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryCarBrands\EditCarBrandsQuery\Fin
 use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\DeleteCarBrandsCommand\DeleteCarBrandsCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\DTOCommands\DTOCarBrandsObjCommand\CarBrandsObjCommand;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class CarBrandsController extends AbstractController
 {
     /*Сохранения марки авто*/

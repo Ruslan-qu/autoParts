@@ -5,6 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\ControllerAcc
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
@@ -25,6 +26,7 @@ use App\PartNumbers\ApplicationPartNumbers\QuerySides\EditSidesQuery\FindOneById
 use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DeleteSidesCommand\DeleteSidesCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsSides\DTOCommands\DTOSidesObjCommand\SidesObjCommand;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class SidesController extends AbstractController
 {
     /*Сохранения сторону авто*/

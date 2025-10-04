@@ -41,7 +41,7 @@ class EditParticipantPersonalAccountType extends AbstractType
                 'required' => false,
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
-                'mapped' => false,
+                //'mapped' => false,
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new PasswordStrength([

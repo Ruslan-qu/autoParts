@@ -5,6 +5,7 @@ namespace App\Participant\InfrastructureParticipant\ApiParticipant\ControllerPar
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\EditParticipantType;
@@ -18,9 +19,9 @@ use App\Participant\ApplicationParticipant\CommandsParticipant\EditParticipantCo
 use App\Participant\ApplicationParticipant\CommandsParticipant\DeleteParticipantCommand\DeleteParticipantCommandHandler;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantObjCommand\ParticipantObjCommand;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class ParticipantController extends AbstractController
 {
-
     /*Поиск пользователя*/
     #[Route('searchParticipant', name: 'search_participant')]
     public function searchParticipant(

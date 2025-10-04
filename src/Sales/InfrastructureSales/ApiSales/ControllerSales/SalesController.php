@@ -5,6 +5,7 @@ namespace App\Sales\InfrastructureSales\ApiSales\ControllerSales;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Sales\InfrastructureSales\ApiSales\FormSales\SearchSalesType;
@@ -21,17 +22,17 @@ use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\AdaptersInterface\AdapterSal
 use App\Sales\ApplicationSales\QuerySales\DTOSales\DTOAutoPartsSoldQuery\AutoPartsSoldQuery;
 use App\Sales\ApplicationSales\QuerySales\ListCartAutoParts\FindByCartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\QuerySales\EditSalesAutoParts\FindOneBySalesAutoPartsQueryHandler;
-use App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold\FindOneByСartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\AddCartAutoPartsCommand\AddCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\EditCartAutoPartsCommand\EditCartAutoPartsCommandHandler;
+use App\Sales\ApplicationSales\QuerySales\EditСartAutoPartsSold\FindOneByСartAutoPartsSoldQueryHandler;
 use App\Sales\ApplicationSales\CommandsSales\EditSalesAutoPartsCommand\EditSalesAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\DeleteCartAutoPartsCommand\DeleteCartAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\DeleteSalesAutoPartsCommand\DeleteSalesAutoPartsCommandHandler;
 use App\Sales\ApplicationSales\CommandsSales\CompletionSaleAutoPartsCommand\CompletionSaleAutoPartsCommandHandler;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class SalesController extends AbstractController
 {
-
     /*Добавляет автодетали в корзину*/
     #[Route('cartAutoPartsWarehouseSold', name: 'cart_auto_parts_warehouse_sold')]
     public function cartAutoPartsWarehouseSold(

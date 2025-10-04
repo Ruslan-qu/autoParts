@@ -5,6 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\ControllerPar
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
@@ -24,6 +25,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryReplacingOriginalNumbers\EditRep
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DeleteReplacingOriginalNumbersCommand\DeleteReplacingOriginalNumbersCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsReplacingOriginalNumbers\DTOCommands\DTOReplacingOriginalNumbersObjCommand\ReplacingOriginalNumbersObjCommand;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class ReplacingOriginalNumbersController extends AbstractController
 {
     /*Сохранения замены оригиналного номера детали*/

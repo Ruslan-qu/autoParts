@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\AdaptersInterface\AdapterUserExtractionInterface;
@@ -23,6 +24,7 @@ use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryPaymentMethod\Edit
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DeletePaymentMethodCommand\DeletePaymentMethodCommandHandler;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\CommandsPaymentMethod\DTOCommands\DTOPaymentMethodObjCommand\PaymentMethodObjCommand;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class PaymentMethodController extends AbstractController
 {
     /*Сохранения Способ оплаты*/

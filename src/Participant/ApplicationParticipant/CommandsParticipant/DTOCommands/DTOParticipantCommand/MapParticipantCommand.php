@@ -23,8 +23,10 @@ abstract class MapParticipantCommand
 
             if (!empty($value)) {
 
+                $old_password = '';
                 if ($key == 'old_password') {
-                    $key =  'password';
+                    $key = 'password';
+                    $old_password = 'old_password';
                 }
 
                 $input_errors->propertyExistsEntity(Participant::class, $key, 'Participant');
@@ -39,6 +41,13 @@ abstract class MapParticipantCommand
                 }
 
                 settype($value, $type);
+
+                if (!empty($old_password)) {
+
+                    $key = 'old_password';
+                }
+
+
                 $this->$key = $value;
             }
         }

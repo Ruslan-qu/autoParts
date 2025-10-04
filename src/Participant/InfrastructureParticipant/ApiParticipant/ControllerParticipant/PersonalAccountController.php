@@ -5,15 +5,19 @@ namespace App\Participant\InfrastructureParticipant\ApiParticipant\ControllerPar
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery\ParticipantQuery;
 use App\Participant\ApplicationParticipant\QueryParticipant\UserExtractionQuery\UserExtractionQueryHandler;
+use App\Participant\ApplicationParticipant\QueryParticipant\EditParticipantQuery\FindParticipantQueryHandler;
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\EditParticipantPersonalAccountType;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand\ParticipantCommand;
+use App\Participant\ApplicationParticipant\CommandsParticipant\DeleteParticipantCommand\DeleteParticipantCommandHandler;
 use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantObjCommand\ParticipantObjCommand;
 use App\Participant\ApplicationParticipant\CommandsParticipant\EditParticipantPersonalAccountCommand\EditParticipantPersonalAccountCommandHandler;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class PersonalAccountController extends AbstractController
 {
     #[Route('personalAccount', name: 'personal_account')]
@@ -87,8 +91,8 @@ class PersonalAccountController extends AbstractController
     }
 
     /*Удаление пользователя*/
-    #[Route('deleteParticipant', name: 'delete_participant_personal_account')]
-    public function deleteParticipant(
+    #[Route('deleteParticipantPersonalAccount', name: 'delete_participant_personal_account')]
+    public function deleteParticipantPersonalAccount(
         Request $request,
         FindParticipantQueryHandler $findParticipantQueryHandler,
         DeleteParticipantCommandHandler $deleteParticipantCommandHandler
@@ -101,13 +105,13 @@ class PersonalAccountController extends AbstractController
 
             $deleteParticipantCommandHandler
                 ->handler(new ParticipantObjCommand($participant));
-            $this->addFlash('delete', 'Пользователь удален');
+            $this->addFlash('delete', 'Профиль удален');
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
         }
 
-        return $this->redirectToRoute('search_participant_personal_account');
+        return $this->redirectToRoute('app_register');
     }
 
 

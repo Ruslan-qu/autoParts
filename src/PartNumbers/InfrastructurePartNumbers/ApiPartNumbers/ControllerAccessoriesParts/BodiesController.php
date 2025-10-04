@@ -5,6 +5,7 @@ namespace App\PartNumbers\InfrastructurePartNumbers\ApiPartNumbers\ControllerAcc
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
@@ -25,6 +26,7 @@ use App\PartNumbers\ApplicationPartNumbers\QueryBodies\EditBodiesQuery\FindOneBy
 use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DeleteBodiesCommand\DeleteBodiesCommandHandler;
 use App\PartNumbers\ApplicationPartNumbers\CommandsBodies\DTOCommands\DTOBodiesObjCommand\BodiesObjCommand;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class BodiesController extends AbstractController
 {
     /*Сохранения Кузов авто*/
