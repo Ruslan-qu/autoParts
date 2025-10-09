@@ -2,11 +2,16 @@
 
 namespace App\Participant\ApplicationParticipant\CommandsParticipant\UserRegistrationCommand;
 
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Mailer\Transport\SendmailTransport;
+use Symfony\Component\Validator\Constraints\Email as VEmail;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
@@ -21,6 +26,7 @@ final class UserRegistrationCommandHandler
         private ParticipantRepositoryInterface $participantRepositoryInterface,
         private Participant $participant,
         private UserPasswordHasherInterface $userPasswordHasher,
+        private MailerInterface $mailer
     ) {}
 
     public function handler(ParticipantRegistrationCommand $participantRegistrationCommand): int
@@ -33,6 +39,23 @@ final class UserRegistrationCommandHandler
         ));
 
         $passwordUser = $participantRegistrationCommand->getPassword();
+
+        try {
+            //$transport = new SendmailTransport('/usr/sbin/sendmail -t');
+            // $mailer = new Mailer($transport);
+            $email = (new Email())
+                ->from('hello@example.com')
+                ->to('imap_test_test_test@mail.ru')
+                //->addTo('imap_test_test_test@mail.ru')
+                ->subject('Вы зарегистрированы на сайте')
+                ->text('Вы зарегистрировались на тестовым сайте "учет автодеталей и не только" 
+            посмотрите если понравится, пишите отправлю сылку на github, 
+            Ваш Емайл : ' . $emailUser . ' Ваш пароль : ' . $passwordUser);
+
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            dd($e);
+        }
 
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
@@ -53,7 +76,7 @@ final class UserRegistrationCommandHandler
                 'NotBlank' => new NotBlank(
                     message: 'Форма E-mail не может быть пустой'
                 ),
-                'Email' => new Email(
+                'Email' => new VEmail(
                     message: 'Форма E-mail содержит недопустимые символы'
                 )
             ]),
@@ -79,7 +102,10 @@ final class UserRegistrationCommandHandler
                 $passwordUser
             )
         );
+        $id = $this->participantRepositoryInterface->save($this->participant);
 
-        return $this->participantRepositoryInterface->save($this->participant);
+
+
+        return $id;
     }
 }
