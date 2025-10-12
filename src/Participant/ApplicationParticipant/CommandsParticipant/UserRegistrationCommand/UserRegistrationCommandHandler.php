@@ -39,13 +39,18 @@ final class UserRegistrationCommandHandler
         ));
 
         $passwordUser = $participantRegistrationCommand->getPassword();
+        /*$imap = imap_open(
+            '{imap.mail.ru:993/imap/ssl/novalidate-cert}INBOX',
+            'imap_test_test_test@mail.ru',
+            'jVRBymTQUhzvExwcka67'
+        );*/
 
         try {
             //$transport = new SendmailTransport('/usr/sbin/sendmail -t');
             // $mailer = new Mailer($transport);
             $email = (new Email())
-                ->from('hello@example.com')
-                ->to('imap_test_test_test@mail.ru')
+                ->from('imap_test_test_test@mail.ru')
+                ->to('ququeptee@mail.ru')
                 //->addTo('imap_test_test_test@mail.ru')
                 ->subject('Вы зарегистрированы на сайте')
                 ->text('Вы зарегистрировались на тестовым сайте "учет автодеталей и не только" 
@@ -56,7 +61,7 @@ final class UserRegistrationCommandHandler
         } catch (TransportExceptionInterface $e) {
             dd($e);
         }
-
+        dd($email);
         /* Подключаем валидацию и прописываем условида валидации */
         $validator = Validation::createValidator();
 
