@@ -111,7 +111,7 @@ class PersonalAccountController extends AbstractController
             $this->errorMessageViaSession($e);
         }
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('main_page');
     }
 
 

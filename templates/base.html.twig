@@ -257,6 +257,15 @@
                         </ul>
                     </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_logout')}}">Выход</a>
+                    </li>
+                    {% if is_granted('IS_IMPERSONATOR') %}
+                    <li class="nav-item">
+                        <a class="nav-link" role="button" aria-expanded="false"
+                            href="{{ impersonation_exit_path(path('main_page')) }}">Выход из профиля</a>
+                    </li>
+                    {% endif %}
                     {% endif %}
                     {% if not is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item px-2">
@@ -266,17 +275,8 @@
                     <li class="nav-item px-2">
                         <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_login')}}">Вход</a>
                     </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" role="button" aria-expanded="false" href="{{ path('app_logout')}}">Выход</a>
-                        {% if is_granted('IS_IMPERSONATOR') %}
-                    <li class="nav-item">
-                        <a class="nav-link" role="button" aria-expanded="false"
-                            href="{{ impersonation_exit_path(path('main_page')) }}">Выход из профиля</a>
-                    </li>
                     {% endif %}
-                    </li>
-                    {% endif %}
+
                 </ul>
             </div>
         </div>

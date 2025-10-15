@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.smtp_email: 'imap_test_test_test@mail.ru'
+    app.smtp_pass: 'Gm24cYoMizek2fbAV7up'
 
 services:
     # default configuration for services in *this* file

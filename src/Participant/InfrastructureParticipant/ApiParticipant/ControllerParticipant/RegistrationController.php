@@ -5,7 +5,6 @@ namespace App\Participant\InfrastructureParticipant\ApiParticipant\ControllerPar
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\InfrastructureParticipant\ApiParticipant\FormParticipant\RegistrationFormType;
@@ -35,7 +34,7 @@ class RegistrationController extends AbstractController
                         ->handler(new ParticipantRegistrationCommand($form_registration_participant->all()));
 
                     return $this->redirectToRoute('app_login');
-                } catch (HttpException $e) {
+                } catch (\Exception $e) {
 
                     $this->errorMessageViaSession($e);
                 }
@@ -49,7 +48,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    private function errorMessageViaSession(HttpException $e): static
+    private function errorMessageViaSession(\Exception $e): static
     {
 
         $arr_validator_errors = json_decode($e->getMessage(), true);
