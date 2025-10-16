@@ -91,7 +91,7 @@ final class UserRegistrationCommandHandler
         );
         $id = $this->participantRepositoryInterface->save($this->participant);
 
-        // $this->sendingEmail($emailUser, $passwordUser);
+        $this->sendingEmail($emailUser, $passwordUser);
 
         return $id;
     }

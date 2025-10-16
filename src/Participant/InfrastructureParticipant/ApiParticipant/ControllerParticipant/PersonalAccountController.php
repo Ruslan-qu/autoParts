@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery\ParticipantQuery;
 use App\Participant\ApplicationParticipant\QueryParticipant\UserExtractionQuery\UserExtractionQueryHandler;
 use App\Participant\ApplicationParticipant\QueryParticipant\EditParticipantQuery\FindParticipantQueryHandler;
@@ -95,7 +96,8 @@ class PersonalAccountController extends AbstractController
     public function deleteParticipantPersonalAccount(
         Request $request,
         FindParticipantQueryHandler $findParticipantQueryHandler,
-        DeleteParticipantCommandHandler $deleteParticipantCommandHandler
+        DeleteParticipantCommandHandler $deleteParticipantCommandHandler,
+        TokenStorageInterface $tokenStorage
     ): Response {
 
         try {
@@ -105,13 +107,15 @@ class PersonalAccountController extends AbstractController
 
             $deleteParticipantCommandHandler
                 ->handler(new ParticipantObjCommand($participant));
+            $tokenStorage->setToken(null);
+            $request->getSession()->invalidate();
             $this->addFlash('delete', 'Профиль удален');
         } catch (HttpException $e) {
 
             $this->errorMessageViaSession($e);
         }
 
-        return $this->redirectToRoute('main_page');
+        return $this->redirectToRoute('app_register');
     }
 
 
