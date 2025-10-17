@@ -29,7 +29,7 @@ abstract class MapPartNameCommand
 
                 $type = $refl->getType()->getName();
 
-                dd($refl->getSettableType());
+                dd($refl->getType());
                 if ($type == 'object') {
                     dd($refl);
                     /* $className = $typeResolver->resolve(new \ReflectionProperty(PartName::class, $key))
