@@ -14,13 +14,12 @@ use App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOPa
 class RegistrationController extends AbstractController
 {
     /*Регистрация пользователя*/
-    #[Route('/register', name: 'app_register')]
+    #[Route('register', name: 'app_register')]
     public function register(
         Request $request,
-        UserRegistrationCommandHandler $userRegistrationCommandHandler,
-        Participant $participant
+        UserRegistrationCommandHandler $userRegistrationCommandHandler
     ): Response {
-
+        $participant = new Participant;
         $form_registration_participant = $this->createForm(RegistrationFormType::class, $participant);
         $form_registration_participant->handleRequest($request);
 
@@ -32,8 +31,6 @@ class RegistrationController extends AbstractController
 
                     $id = $userRegistrationCommandHandler
                         ->handler(new ParticipantRegistrationCommand($form_registration_participant->all()));
-
-                    return $this->redirectToRoute('app_login');
                 } catch (\Exception $e) {
 
                     $this->errorMessageViaSession($e);

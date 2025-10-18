@@ -2,7 +2,7 @@
 
 namespace App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantCommand;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
+use ReflectionProperty;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
 
@@ -16,7 +16,6 @@ abstract class MapParticipantCommand
 
     private function load(array $data)
     {
-        $typeResolver = TypeResolver::create();
         $input_errors = new InputErrorsParticipant;
 
         foreach ($data as $key => $value) {
@@ -31,23 +30,19 @@ abstract class MapParticipantCommand
 
                 $input_errors->propertyExistsEntity(Participant::class, $key, 'Participant');
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(Participant::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
+                $refl = new ReflectionProperty(Participant::class, $key);
+                $type = $refl->getType()->getName();
 
                 if ($type == 'array') {
                     $value = [$value];
                 }
-
-                settype($value, $type);
 
                 if (!empty($old_password)) {
 
                     $key = 'old_password';
                 }
 
-
+                settype($value, $type);
                 $this->$key = $value;
             }
         }

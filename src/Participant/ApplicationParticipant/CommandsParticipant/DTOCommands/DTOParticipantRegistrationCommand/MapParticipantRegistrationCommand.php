@@ -2,6 +2,7 @@
 
 namespace App\Participant\ApplicationParticipant\CommandsParticipant\DTOCommands\DTOParticipantRegistrationCommand;
 
+use ReflectionProperty;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
@@ -16,7 +17,6 @@ abstract class MapParticipantRegistrationCommand
 
     private function load(array $data)
     {
-        $typeResolver = TypeResolver::create();
         $input_errors = new InputErrorsParticipant;
 
         unset($data['button_registration_participant']);
@@ -28,10 +28,9 @@ abstract class MapParticipantRegistrationCommand
             if (!empty($value->getData())) {
 
                 $value = $value->getData();
-                $type = $typeResolver->resolve(new \ReflectionProperty(Participant::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
+
+                $refl = new ReflectionProperty(Participant::class, $key);
+                $type = $refl->getType()->getName();
 
                 settype($value, $type);
                 $this->$key = $value;

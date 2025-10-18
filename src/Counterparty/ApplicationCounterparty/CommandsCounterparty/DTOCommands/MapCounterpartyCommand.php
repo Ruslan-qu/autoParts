@@ -2,7 +2,7 @@
 
 namespace App\Counterparty\ApplicationCounterparty\CommandsCounterparty\DTOCommands;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
+use ReflectionProperty;
 use App\Counterparty\ApplicationCounterparty\Errors\InputErrors;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 
@@ -16,7 +16,6 @@ abstract class MapCounterpartyCommand
 
     private function load(array $data)
     {
-        $typeResolver = TypeResolver::create();
 
         foreach ($data as $key => $value) {
 
@@ -25,20 +24,16 @@ abstract class MapCounterpartyCommand
                 $input_errors = new InputErrors;
                 $input_errors->propertyExistsEntity(Counterparty::class, $key, 'Counterparty');
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
-                settype($value, $type);
-                if ($type == 'object') {
+                $refl = new ReflectionProperty(Counterparty::class, $key);
+                $type = $refl->getType()->getName();
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(Counterparty::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
+                if (is_object($value)) {
 
-                    $input_errors->comparingClassNames($className, $value, $key);
+                    $input_errors->comparingClassNames($type, $value, $key);
+                    $type = 'object';
                 }
 
+                settype($value, $type);
                 $this->$key = $value;
             }
         }

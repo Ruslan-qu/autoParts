@@ -2,14 +2,12 @@
 
 namespace App\Sales\ApplicationSales\CommandsSales\DTOAutoPartsSoldCommand;
 
+use ReflectionProperty;
 use App\Sales\DomainSales\DomainModelSales\AutoPartsSold;
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\Sales\ApplicationSales\ErrorsSales\InputErrorsSales;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 abstract class MapAutoPartsSoldCommand
 {
-
     public function __construct(array $data = [])
     {
         $this->load($data);
@@ -17,7 +15,6 @@ abstract class MapAutoPartsSoldCommand
 
     private function load(array $data)
     {
-        $typeResolver = TypeResolver::create();
         $input_errors = new InputErrorsSales;
 
         foreach ($data as $key => $value) {
@@ -26,10 +23,14 @@ abstract class MapAutoPartsSoldCommand
 
             if (!empty($value)) {
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
+                $refl = new ReflectionProperty(AutoPartsSold::class, $key);
+                $type = $refl->getType()->getName();
+
+                if (is_object($value)) {
+
+                    $input_errors->comparingClassNames($type, $value, $key);
+                    $type = 'object';
+                }
 
                 if (gettype($value) == 'double' || gettype($value) == 'float') {
 
@@ -37,16 +38,6 @@ abstract class MapAutoPartsSoldCommand
                 }
 
                 settype($value, $type);
-
-                if ($type == 'object') {
-
-                    $className = $typeResolver->resolve(new \ReflectionProperty(AutoPartsSold::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-
-                    $input_errors->comparingClassNames($className, $value, $key);
-                }
-
                 $this->$key = $value;
             }
         }

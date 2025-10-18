@@ -2,6 +2,7 @@
 
 namespace App\Participant\ApplicationParticipant\QueryParticipant\DTOQuery\DTOParticipantQuery;
 
+use ReflectionProperty;
 use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\Participant\ApplicationParticipant\ErrorsParticipant\InputErrorsParticipant;
@@ -16,32 +17,28 @@ abstract class MapParticipantQuery
 
     private function load(array $data)
     {
-        $typeResolver = TypeResolver::create();
+        $input_errors = new InputErrorsParticipant;
 
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                $input_errors = new InputErrorsParticipant;
                 $input_errors->propertyExistsEntity(Participant::class, $key, 'Participant');
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(Participant::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
+                $refl = new ReflectionProperty(Participant::class, $key);
+                $type = $refl->getType()->getName();
 
-                if ($type == 'object') {
+                if (is_object($value)) {
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(Participant::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-
-                    $input_errors->comparingClassNames($className, $value, $key);
+                    $input_errors->comparingClassNames($type, $value, $key);
+                    $type = 'object';
                 }
+
                 if ($type == 'array') {
 
                     $value = [$value];
                 }
+
                 settype($value, $type);
                 $this->$key = $value;
             }

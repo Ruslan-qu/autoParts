@@ -6,14 +6,10 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\Mailer\Transport\SendmailTransport;
-use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Validator\Constraints\Email as VEmail;
 use Symfony\Component\Validator\Constraints\PasswordStrength;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
@@ -27,7 +23,6 @@ final class UserRegistrationCommandHandler
     public function __construct(
         private InputErrorsParticipant $inputErrorsParticipant,
         private ParticipantRepositoryInterface $participantRepositoryInterface,
-        private Participant $participant,
         private UserPasswordHasherInterface $userPasswordHasher,
         private ContainerBagInterface $params
         //private MailerInterface $mailer
@@ -80,18 +75,18 @@ final class UserRegistrationCommandHandler
 
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsParticipant->errorValidate($errors_validate);
-
-        $this->participant->setEmail($emailUser);
-        $this->participant->setRoles(['ROLE_USER']);
-        $this->participant->setPassword(
+        $participant = new Participant;
+        $participant->setEmail($emailUser);
+        $participant->setRoles(['ROLE_USER']);
+        $participant->setPassword(
             $this->userPasswordHasher->hashPassword(
-                $this->participant,
+                $participant,
                 $passwordUser
             )
         );
-        $id = $this->participantRepositoryInterface->save($this->participant);
+        $id = $this->participantRepositoryInterface->save($participant);
 
-        $this->sendingEmail($emailUser, $passwordUser);
+        //$this->sendingEmail($emailUser, $passwordUser);
 
         return $id;
     }

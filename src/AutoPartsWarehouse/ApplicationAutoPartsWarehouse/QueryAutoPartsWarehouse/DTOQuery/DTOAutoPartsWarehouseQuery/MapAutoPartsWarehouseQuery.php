@@ -2,7 +2,7 @@
 
 namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWarehouse\DTOQuery\DTOAutoPartsWarehouseQuery;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
+use ReflectionProperty;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
 
@@ -16,7 +16,6 @@ abstract class MapAutoPartsWarehouseQuery
 
     private function load(array $data)
     {
-        $typeResolver = TypeResolver::create();
 
         foreach ($data as $key => $value) {
 
@@ -25,26 +24,20 @@ abstract class MapAutoPartsWarehouseQuery
                 $input_errors = new InputErrorsAutoPartsWarehouse;
                 $input_errors->propertyExistsEntity(PartNumbersFromManufacturers::class, $key, 'PartNumbersFromManufacturers');
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
+                $refl = new ReflectionProperty(PartNumbersFromManufacturers::class, $key);
+                $type = $refl->getType()->getName();
 
                 if (gettype($value) == 'double' || gettype($value) == 'float') {
                     $value = round($value * 100);
                 }
 
-                settype($value, $type);
+                if (is_object($value)) {
 
-                if ($type == 'object') {
-
-                    $className = $typeResolver->resolve(new \ReflectionProperty(PartNumbersFromManufacturers::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
-
-                    $input_errors->comparingClassNames($className, $value, $key);
+                    $input_errors->comparingClassNames($type, $value, $key);
+                    $type = 'object';
                 }
 
+                settype($value, $type);
                 $this->$key = $value;
             }
         }

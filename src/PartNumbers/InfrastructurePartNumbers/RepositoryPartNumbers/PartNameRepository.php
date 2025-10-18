@@ -33,6 +33,7 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
      */
     public function save(PartName $partName): int
     {
+        //dd($partName);
         $entityManager = $this->getEntityManager();
         $entityManager->persist($partName);
         $entityManager->flush();

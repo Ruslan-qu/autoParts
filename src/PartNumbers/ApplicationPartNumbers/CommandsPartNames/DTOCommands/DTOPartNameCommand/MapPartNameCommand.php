@@ -3,7 +3,6 @@
 namespace App\PartNumbers\ApplicationPartNumbers\CommandsPartNames\DTOCommands\DTOPartNameCommand;
 
 use ReflectionProperty;
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartName;
 
@@ -17,27 +16,25 @@ abstract class MapPartNameCommand
 
     private function load(array $data)
     {
-        unset($data['part_name']);
+
+        $input_errors = new InputErrorsPartNumbers;
+
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                $input_errors = new InputErrorsPartNumbers;
+
                 $input_errors->propertyExistsEntity(PartName::class, $key, 'PartName');
 
                 $refl = new ReflectionProperty(PartName::class, $key);
-
                 $type = $refl->getType()->getName();
 
-                dd($refl->getType());
-                if ($type == 'object') {
-                    dd($refl);
-                    /* $className = $typeResolver->resolve(new \ReflectionProperty(PartName::class, $key))
-                        ->getBaseType()
-                        ->getClassName();*/
+                if (is_object($value)) {
 
-                    $input_errors->comparingClassNames($className, $value, $key);
+                    $input_errors->comparingClassNames($type, $value, $key);
+                    $type = 'object';
                 }
+
                 settype($value, $type);
                 $this->$key = $value;
             }

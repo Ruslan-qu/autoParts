@@ -2,7 +2,7 @@
 
 namespace App\PartNumbers\ApplicationPartNumbers\CommandsCarBrands\DTOCommands\DTOCarBrandsCommand;
 
-use Symfony\Component\TypeInfo\TypeResolver\TypeResolver;
+use ReflectionProperty;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\CarBrands;
 
@@ -17,29 +17,24 @@ abstract class MapCarBrandsCommand
     private function load(array $data)
     {
 
-        $typeResolver = TypeResolver::create();
+        $input_errors = new InputErrorsPartNumbers;
 
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                $input_errors = new InputErrorsPartNumbers;
                 $input_errors->propertyExistsEntity(CarBrands::class, $key, 'CarBrands');
 
-                $type = $typeResolver->resolve(new \ReflectionProperty(CarBrands::class, $key))
-                    ->getBaseType()
-                    ->getTypeIdentifier()
-                    ->value;
-                settype($value, $type);
-                if ($type == 'object') {
+                $refl = new ReflectionProperty(CarBrands::class, $key);
+                $type = $refl->getType()->getName();
 
-                    $className = $typeResolver->resolve(new \ReflectionProperty(CarBrands::class, $key))
-                        ->getBaseType()
-                        ->getClassName();
+                if (is_object($value)) {
 
-                    $input_errors->comparingClassNames($className, $value, $key);
+                    $input_errors->comparingClassNames($type, $value, $key);
+                    $type = 'object';
                 }
 
+                settype($value, $type);
                 $this->$key = $value;
             }
         }
