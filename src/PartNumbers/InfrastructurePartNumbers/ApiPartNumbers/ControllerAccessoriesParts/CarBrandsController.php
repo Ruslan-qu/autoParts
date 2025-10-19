@@ -72,7 +72,6 @@ class CarBrandsController extends AbstractController
     #[Route('searchCarBrands', name: 'search_car_brands')]
     public function searchCarBrands(
         Request $request,
-        CarBrands $сarBrands,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindByCarBrandsQueryHandler $findByCarBrandsQueryHandler,
         SearchCarBrandsQueryHandler $searchCarBrandsQueryHandler,
@@ -86,7 +85,7 @@ class CarBrandsController extends AbstractController
         $form_search_car_brands->handleRequest($request);
 
         try {
-
+            $сarBrands = new CarBrands;
             $participant = $adapterUserExtractionInterface->userExtraction();
             $car_brands = $this->mapObjectCarBrands($сarBrands, $participant);
             $search_data = $findByCarBrandsQueryHandler->handler(new CarBrandsQuery($car_brands));

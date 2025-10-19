@@ -43,7 +43,7 @@ final class EditPartNameCommandHandler
                     message: 'Форма Название детали не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё/s]*$/ui',
+                    pattern: '/^[а-яё\s]*$/ui',
                     message: 'Форма Название детали содержит недопустимые символы'
                 )
             ])

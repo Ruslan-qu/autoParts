@@ -72,7 +72,6 @@ class SidesController extends AbstractController
     #[Route('searchSide', name: 'search_side')]
     public function searchSide(
         Request $request,
-        Sides $sides,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindBySidesQueryHandler $findBySidesQueryHandler,
         SearchSidesQueryHandler $searchSidesQueryHandler,
@@ -86,7 +85,7 @@ class SidesController extends AbstractController
         $form_search_sides->handleRequest($request);
 
         try {
-
+            $sides = new Sides;
             $participant = $adapterUserExtractionInterface->userExtraction();
             $sides = $this->mapObjectSides($sides, $participant);
             $search_data = $findBySidesQueryHandler->handler(new SidesQuery($sides));

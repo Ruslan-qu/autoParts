@@ -72,7 +72,6 @@ class AxlesController extends AbstractController
     #[Route('searchAxle', name: 'search_axle')]
     public function searchAxle(
         Request $request,
-        Axles $axles,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindByAxlesQueryHandler $findByAxlesQueryHandler,
         SearchAxlesQueryHandler $searchAxlesQueryHandler,
@@ -86,7 +85,7 @@ class AxlesController extends AbstractController
         $form_search_axles->handleRequest($request);
 
         try {
-
+            $axles = new Axles;
             $participant = $adapterUserExtractionInterface->userExtraction();
             $axles = $this->mapObjectAxles($axles, $participant);
             $search_data = $findByAxlesQueryHandler->handler(new AxlesQuery($axles));

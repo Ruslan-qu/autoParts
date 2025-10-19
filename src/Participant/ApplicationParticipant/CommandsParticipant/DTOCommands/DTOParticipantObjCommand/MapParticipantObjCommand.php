@@ -20,7 +20,7 @@ abstract class MapParticipantObjCommand
 
             if (!empty($value)) {
                 $type = Type::object(Participant::class);
-                $className = $type->getBaseType()->getClassName();
+                $className = $type->getClassName();
                 $input_errors = new InputErrorsParticipant;
                 $input_errors->comparingClassNames($className, $value, $key);
                 $this->$key = $value;

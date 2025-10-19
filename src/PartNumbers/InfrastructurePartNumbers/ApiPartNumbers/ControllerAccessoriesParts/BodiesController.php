@@ -72,7 +72,6 @@ class BodiesController extends AbstractController
     #[Route('searchBody', name: 'search_body')]
     public function searchBody(
         Request $request,
-        Bodies $bodies,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindByBodiesQueryHandler $findByBodiesQueryHandler,
         SearchBodiesQueryHandler $searchBodiesQueryHandler,
@@ -86,7 +85,7 @@ class BodiesController extends AbstractController
         $form_search_bodies->handleRequest($request);
 
         try {
-
+            $bodies = new Bodies;
             $participant = $adapterUserExtractionInterface->userExtraction();
             $bodies = $this->mapObjectBodies($bodies, $participant);
             $search_data = $findByBodiesQueryHandler->handler(new BodiesQuery($bodies));

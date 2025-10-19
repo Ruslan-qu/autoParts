@@ -20,7 +20,7 @@ abstract class MapAutoPartsWarehouseObjCommand
 
             if (!empty($value)) {
                 $type = Type::object(AutoPartsWarehouse::class);
-                $className = $type->getBaseType()->getClassName();
+                $className = $type->getClassName();
                 $input_errors = new InputErrorsAutoPartsWarehouse;
                 $input_errors->comparingClassNames($className, $value, $key);
                 $this->$key = $value;

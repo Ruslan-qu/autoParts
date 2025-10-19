@@ -20,7 +20,7 @@ abstract class MapPartNameObjCommand
 
             if (!empty($value)) {
                 $type = Type::object(PartName::class);
-                $className = $type->getBaseType()->getClassName();
+                $className = $type->getClassName();
                 $input_errors = new InputErrorsPartNumbers;
                 $input_errors->comparingClassNames($className, $value, $key);
                 $this->$key = $value;

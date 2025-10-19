@@ -72,7 +72,6 @@ class PartNameController extends AbstractController
     #[Route('searchPartName', name: 'search_part_name')]
     public function searchPartName(
         Request $request,
-        PartName $part_name,
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindByPartNameQueryHandler $findByPartNameQueryHandler,
         SearchPartNameQueryHandler $searchPartNameQueryHandler,
@@ -86,7 +85,7 @@ class PartNameController extends AbstractController
         $form_search_part_name->handleRequest($request);
 
         try {
-
+            $part_name = new PartName;
             $participant = $adapterUserExtractionInterface->userExtraction();
             $part_name = $this->mapObjectPartName($part_name, $participant);
             $search_data = $findByPartNameQueryHandler->handler(new PartNameQuery($part_name));

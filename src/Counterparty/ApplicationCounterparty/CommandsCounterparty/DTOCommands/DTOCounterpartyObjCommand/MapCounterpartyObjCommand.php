@@ -20,7 +20,7 @@ abstract class MapCounterpartyObjCommand
 
             if (!empty($value)) {
                 $type = Type::object(Counterparty::class);
-                $className = $type->getBaseType()->getClassName();
+                $className = $type->getClassName();
                 $input_errors = new InputErrors;
                 $input_errors->comparingClassNames($className, $value, $key);
                 $this->$key = $value;

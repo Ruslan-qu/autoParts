@@ -72,7 +72,7 @@ class AvailabilityController extends AbstractController
     #[Route('searchInStock', name: 'search_in_stock')]
     public function searchInStock(
         Request $request,
-        Availability $availability,
+
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindByAvailabilityQueryHandler $findByAvailabilityQueryHandler,
         SearchAvailabilityQueryHandler $searchAvailabilityQueryHandler,
@@ -86,7 +86,7 @@ class AvailabilityController extends AbstractController
         $form_search_availability->handleRequest($request);
 
         try {
-
+            $availability = new Availability;
             $participant = $adapterUserExtractionInterface->userExtraction();
             $availability = $this->mapObjectAvailability($availability, $participant);
             $search_data = $findByAvailabilityQueryHandler->handler(new AvailabilityQuery($availability));

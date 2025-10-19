@@ -20,7 +20,7 @@ abstract class MapSidesObjCommand
 
             if (!empty($value)) {
                 $type = Type::object(Sides::class);
-                $className = $type->getBaseType()->getClassName();
+                $className = $type->getClassName();
                 $input_errors = new InputErrorsPartNumbers;
                 $input_errors->comparingClassNames($className, $value, $key);
                 $this->$key = $value;
