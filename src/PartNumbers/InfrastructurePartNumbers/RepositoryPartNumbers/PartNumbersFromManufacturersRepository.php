@@ -75,7 +75,7 @@ class PartNumbersFromManufacturersRepository extends ServiceEntityRepository imp
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $entityData['id'];
+        return $partNumbersFromManufacturers->getId();
     }
 
     /**

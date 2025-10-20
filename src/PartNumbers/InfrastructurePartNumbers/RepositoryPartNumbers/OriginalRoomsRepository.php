@@ -57,7 +57,7 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($originalRooms);
         unset($entityData['id_participant_id']);
-        dd($entityData['id']);
+
         $exists = $this->count($entityData);
         if ($exists == 0) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
@@ -65,7 +65,7 @@ class OriginalRoomsRepository extends ServiceEntityRepository implements Origina
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $entityData['id'];
+        return $originalRooms->getId();
     }
 
     /**

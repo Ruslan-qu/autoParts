@@ -68,7 +68,7 @@ class ReplacingOriginalNumbersRepository extends ServiceEntityRepository impleme
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $entityData['id'];
+        return $replacing_original_numbers->getId();
     }
 
     /**
