@@ -91,7 +91,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $successfully = ['edit' => $entityData['id']];
+        return $successfully = ['edit' => $autoPartsWarehouse->getId()];
     }
 
     /**

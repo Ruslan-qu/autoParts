@@ -19,7 +19,9 @@ final class DeleteSalesAutoPartsCommandHandler
         $id = $autoPartsSoldCommand->getId();
         $this->inputErrorsSales->emptyData($id);
 
-        $find_delete_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findOneByAutoPartsSold($id)[0];
+        $id_participant = $autoPartsSoldCommand->getIdParticipant();
+
+        $find_delete_auto_parts_sold = $this->autoPartsSoldRepositoryInterface->findOneByAutoPartsSold($id, $id_participant);
         $this->inputErrorsSales->emptyEntity($find_delete_auto_parts_sold);
 
         $quantity_sold_auto_parts_sold = $find_delete_auto_parts_sold->getQuantitySold();
@@ -32,8 +34,7 @@ final class DeleteSalesAutoPartsCommandHandler
         ) {
             $find_delete_auto_parts_sold->getIdAutoPartsWarehouse()->setSales(0);
         }
-        $successfully_delete = $this->autoPartsSoldRepositoryInterface->delete($find_delete_auto_parts_sold);
 
-        return $successfully_delete['delete'];
+        return $this->autoPartsSoldRepositoryInterface->delete($find_delete_auto_parts_sold);
     }
 }

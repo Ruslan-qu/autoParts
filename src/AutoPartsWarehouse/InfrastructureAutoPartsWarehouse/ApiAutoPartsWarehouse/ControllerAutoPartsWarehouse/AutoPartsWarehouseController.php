@@ -142,7 +142,7 @@ class AutoPartsWarehouseController extends AbstractController
                         $arr_counterparty,
                         $arr_method
                     );
-
+                    //dd($map_processed_data);
                     $saved = $saveAutoPartsWarehouseArrCommandHandler
                         ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
                 } catch (HttpException $e) {

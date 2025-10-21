@@ -105,6 +105,10 @@ class PersonalAccountController extends AbstractController
             $participant['participant'] = $findParticipantQueryHandler
                 ->handler(new ParticipantQuery($request->query->all()));
 
+            if ($this->getUser() != $participant['participant']) {
+                return $this->redirectToRoute('app_logout');
+            }
+
             $deleteParticipantCommandHandler
                 ->handler(new ParticipantObjCommand($participant));
             $tokenStorage->setToken(null);

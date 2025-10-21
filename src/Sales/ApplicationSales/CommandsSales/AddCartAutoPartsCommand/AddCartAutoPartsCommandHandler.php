@@ -18,8 +18,7 @@ final class AddCartAutoPartsCommandHandler
 
     public function __construct(
         private InputErrorsSales $InputErrorsSales,
-        private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface,
-        private AutoPartsSold $autoPartsSold
+        private AutoPartsSoldRepositoryInterface $autoPartsSoldRepositoryInterface
     ) {}
 
     public function handler(AutoPartsSoldCommand $autoPartsSoldCommand): ?int
@@ -106,13 +105,14 @@ final class AddCartAutoPartsCommandHandler
         $this->InputErrorsSales->errorValidate($errors_validate);
 
         $auto_parts_warehouse->setQuantitySold($sum_quantity_sold_auto_parts_warehouse);
-        $this->autoPartsSold->setIdAutoPartsWarehouse($auto_parts_warehouse);
-        $this->autoPartsSold->setQuantitySold($quantity_sold);
-        $this->autoPartsSold->setPriceSold($price_sold);
-        $this->autoPartsSold->setDateSold($date_sold);
-        $this->autoPartsSold->setSoldStatus(false);
-        $this->autoPartsSold->setIdParticipant($id_participant);
+        $autoPartsSold = new AutoPartsSold;
+        $autoPartsSold->setIdAutoPartsWarehouse($auto_parts_warehouse);
+        $autoPartsSold->setQuantitySold($quantity_sold);
+        $autoPartsSold->setPriceSold($price_sold);
+        $autoPartsSold->setDateSold($date_sold);
+        $autoPartsSold->setSoldStatus(false);
+        $autoPartsSold->setIdParticipant($id_participant);
 
-        return $this->autoPartsSoldRepositoryInterface->save($this->autoPartsSold);
+        return $this->autoPartsSoldRepositoryInterface->save($autoPartsSold);
     }
 }

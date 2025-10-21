@@ -16,8 +16,7 @@ final class SaveAutoPartsWarehouseCommandHandler
 
     public function __construct(
         private InputErrorsAutoPartsWarehouse $inputErrorsAutoPartsWarehouse,
-        private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface,
-        private AutoPartsWarehouse $autoPartsWarehouse
+        private AutoPartsWarehouseRepositoryInterface $autoPartsWarehouseRepositoryInterface
     ) {}
 
     public function handler(AutoPartsWarehouseCommand $autoPartsWarehouseCommand): ?int
@@ -87,16 +86,17 @@ final class SaveAutoPartsWarehouseCommandHandler
         $errors_validate = $validator->validate($input, $constraint);
         $this->inputErrorsAutoPartsWarehouse->errorValidate($errors_validate);
 
-        $this->autoPartsWarehouse->setQuantity($quantity);
-        $this->autoPartsWarehouse->setPrice($price);
-        $this->autoPartsWarehouse->setSales(0);
-        $this->autoPartsWarehouse->setIdCounterparty($counterparty);
-        $this->autoPartsWarehouse->setIdDetails($part_number);
-        $this->autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
-        $this->autoPartsWarehouse->setIdPaymentMethod($payment_method);
-        $this->autoPartsWarehouse->setIdParticipant($id_participant);
+        $autoPartsWarehouse = new AutoPartsWarehouse;
+        $autoPartsWarehouse->setQuantity($quantity);
+        $autoPartsWarehouse->setPrice($price);
+        $autoPartsWarehouse->setSales(0);
+        $autoPartsWarehouse->setIdCounterparty($counterparty);
+        $autoPartsWarehouse->setIdDetails($part_number);
+        $autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
+        $autoPartsWarehouse->setIdPaymentMethod($payment_method);
+        $autoPartsWarehouse->setIdParticipant($id_participant);
 
-        $id = $this->autoPartsWarehouseRepositoryInterface->save($this->autoPartsWarehouse);
+        $id = $this->autoPartsWarehouseRepositoryInterface->save($autoPartsWarehouse);
 
         return $id;
     }

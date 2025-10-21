@@ -370,13 +370,24 @@ class SalesController extends AbstractController
     #[Route('deleteSalesAutoParts', name: 'delete_sales_auto_parts')]
     public function deleteSalesAutoParts(
         Request $request,
+        AdapterUserExtractionInterface $adapterUserExtractionInterface,
         DeleteSalesAutoPartsCommandHandler $deleteSalesAutoPartsCommandHandler
     ): Response {
 
         try {
+            $participant = $adapterUserExtractionInterface->userExtraction();
+            $map_auto_parts_sold = $this->mapAutoPartsSold(
+                $request->query->all()['id'],
+                null,
+                null,
+                null,
+                null,
+                null,
+                $participant
+            );;
 
             $deleteSalesAutoPartsCommandHandler
-                ->handler(new AutoPartsSoldCommand($request->query->all()));
+                ->handler(new AutoPartsSoldCommand($map_auto_parts_sold));
             $this->addFlash('delete', 'Продажа удалена');
         } catch (HttpException $e) {
 

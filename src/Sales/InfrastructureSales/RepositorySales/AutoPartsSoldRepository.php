@@ -55,7 +55,7 @@ class AutoPartsSoldRepository extends ServiceEntityRepository implements AutoPar
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $entityData['id'];
+        return $autoPartsSold->getId();
     }
 
     /**

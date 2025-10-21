@@ -59,15 +59,19 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         $entityManager = $this->getEntityManager();
         $entityManager->flush();
         $entityData = $entityManager->getUnitOfWork()->getOriginalEntityData($participant);
-
-        $exists = $this->count(['id' => $entityData['id']]);
-        if ($exists == 0) {
+        //dd($participant);
+        if (
+            $participant->getEmail() != $entityData['email'] &&
+            $participant->getRoles()[0] != $entityData['roles'][0] &&
+            $participant->getPassword() != $entityData['password'] &&
+            $participant->isVerified() != $entityData['isVerified']
+        ) {
             $arr_data_errors = ['Error' => 'Данные в базе данных не изменены'];
             $json_arr_data_errors = json_encode($arr_data_errors, JSON_UNESCAPED_UNICODE);
             throw new UnprocessableEntityHttpException($json_arr_data_errors);
         }
 
-        return $entityData['id'];
+        return $participant->getId();
     }
 
     /**
