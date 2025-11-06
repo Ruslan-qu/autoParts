@@ -21,11 +21,7 @@ final class EditCarBrandsCommandHandler
     public function handler(CarBrandsCommand $carBrandsCommand): ?int
     {
 
-        $edit_car_brand = ucfirst(strtolower(preg_replace(
-            '#\s#',
-            '',
-            $carBrandsCommand->getCarBrand()
-        )));
+        $edit_car_brand = ucfirst(strtolower($carBrandsCommand->getCarBrand()));
 
         $participant = $carBrandsCommand->getIdParticipant();
 
@@ -44,7 +40,7 @@ final class EditCarBrandsCommandHandler
                     message: 'Форма Марка не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[a-z]*$/i',
+                    pattern: '/^[a-z\s\d]*$/i',
                     message: 'Форма Марка содержит недопустимые символы'
                 )
             ])

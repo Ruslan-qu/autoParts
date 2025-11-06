@@ -22,11 +22,7 @@ final class SearchCarBrandsQueryHandler
     public function handler(CarBrandsQuery $carBrandsQuery): ?array
     {
 
-        $car_brand = ucfirst(strtolower(preg_replace(
-            '#\s#',
-            '',
-            $carBrandsQuery->getCarBrand()
-        )));
+        $car_brand = ucfirst(strtolower($carBrandsQuery->getCarBrand()));
 
         $id_participant = $carBrandsQuery->getIdParticipant();
 
@@ -45,7 +41,7 @@ final class SearchCarBrandsQueryHandler
                     message: 'Форма Марка не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[a-z]*$/i',
+                    pattern: '/^[a-z\s\d]*$/i',
                     message: 'Форма Марка содержит недопустимые символы'
                 )
             ])

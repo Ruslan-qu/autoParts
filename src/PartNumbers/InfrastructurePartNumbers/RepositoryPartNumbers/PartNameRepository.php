@@ -132,7 +132,7 @@ class PartNameRepository extends ServiceEntityRepository implements PartNameRepo
     public function findByPartName(Participant $id_participant): ?array
     {
 
-        return $this->findBy(['id_participant' => $id_participant]);
+        return $this->findBy(['id_participant' => $id_participant], ['part_name' => 'ASC']);
     }
 
     /**

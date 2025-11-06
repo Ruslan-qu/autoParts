@@ -20,7 +20,7 @@ class EditCarBrandsType extends AbstractType
                 'label' => 'Марка',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[a-z]*$/i',
+                        'pattern' => '/^[a-z\s\d]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                 недопустимые символы'
