@@ -18,7 +18,7 @@ class SearchCounterpartyType extends AbstractType
                 'label' => 'Поставщик',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
+                        'pattern' => '/^[\da-z\.-]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит недопустимые символы'
                     ])

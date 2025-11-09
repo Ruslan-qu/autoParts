@@ -74,7 +74,7 @@ final class SaveCounterpartyCommandHandler
                     message: 'Форма Поставщик не может быть пустой'
                 ),
                 'Regex' => new Regex(
-                    pattern: '/^[\da-z]*$/i',
+                    pattern: '/^[\da-z\.-]*$/i',
                     message: 'Форма Поставщик содержит недопустимые символы'
                 )
             ]),
