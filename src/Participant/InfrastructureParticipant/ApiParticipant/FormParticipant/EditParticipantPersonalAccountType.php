@@ -35,6 +35,7 @@ class EditParticipantPersonalAccountType extends AbstractType
             ->add('old_password', PasswordType::class, [
                 'label' => 'Старый Пароль',
                 'required' => false,
+                'attr' => ['autocomplete' => 'current-password', 'id' => 'old_password'],
             ])
             ->add('password', PasswordType::class, [
                 'label' => 'Новый Пароль',
@@ -42,7 +43,7 @@ class EditParticipantPersonalAccountType extends AbstractType
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
                 //'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
+                'attr' => ['autocomplete' => 'new-password', 'id' => 'new_password'],
                 'constraints' => [
                     new PasswordStrength([
                         'message' => 'Ваш пароль слишком легко угадать. 

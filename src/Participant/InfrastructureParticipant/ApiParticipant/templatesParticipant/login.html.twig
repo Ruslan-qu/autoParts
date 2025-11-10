@@ -28,11 +28,12 @@
                 </div>
                 <div class="col-sm-5 col-md-4 col-lg-3 col-xl-2">
 
-                    <label for="password">Password</label>
-                    <div class="input-group">
+                   <label for="password">Password</label>
+                    <div class="password">
                         <input type="password" name="_password" id="password" class="form-control rounded"
                             autocomplete="current-password" required>
-                        <button id="toggle-password" type="button">
+                            
+                        {#<button id="toggle-password" type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="22" fill="currentColor"
                                 class="bi bi-eye" viewBox="0 0 16 16">
                                 <path
@@ -40,7 +41,7 @@
                                 <path
                                     d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
                             </svg>
-                        </button>
+                        </button>#}
                     </div>
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
