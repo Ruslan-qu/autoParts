@@ -7,8 +7,7 @@
     <title>{% block title %}{% endblock title %}</title>
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/pass-toggle.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/show-password-toggle.min.css') }}" />
+    {% block css_toggle_password %}{% endblock css_toggle_password %}
 </head>
 
 <body>
@@ -291,7 +290,7 @@
     </main>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/pass-toggle.min.js') }}"></script>
-    <script src="{{ asset('js/show-password-toggle.min.js') }}"></script>
+    {% block js_toggle_password %}{% endblock js_toggle_password %}
 </body>
 
 </html>

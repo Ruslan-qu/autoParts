@@ -29,7 +29,6 @@
         "symfony/security-bundle": "7.3.*",
         "symfony/security-csrf": "7.3.*",
         "symfony/security-http": "7.3.*",
-        "symfony/translation": "7.3.*",
         "symfony/twig-bundle": "7.3.*",
         "symfony/type-info": "7.3.*",
         "symfony/ux-icons": "^2.20",
