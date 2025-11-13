@@ -2,11 +2,15 @@
 
 {% block title %}{{ title_logo }}{% endblock title %}
 
-{% block logo %}{{title_logo}}{% endblock logo %}
+{% block css_toggle_password %}
+<link rel="stylesheet" href="{{ asset('css/show-password-toggle.min.css') }}" />
+{% endblock css_toggle_password %}
 
 {% block Responsive_behaviors %}
 <nav class="navbar navbar-expand-xl bg-dark" data-bs-theme="dark">
   {% endblock Responsive_behaviors %}
+
+{% block logo %}{{title_logo}}{% endblock logo %}
 
   {% block form %}
 
@@ -83,3 +87,7 @@
     {% endif %}
   </div>
   {% endblock form %}
+
+  {% block js_toggle_password %}
+    <script src="{{ asset('js/show-password-toggle.min.js') }}"></script>
+    {% endblock js_toggle_password %}
