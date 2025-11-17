@@ -47,6 +47,9 @@ class AutoPartsWarehouse
     #[ORM\JoinColumn(onDelete: 'Cascade')]
     private ?Participant $id_participant = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $customer_order = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -156,6 +159,18 @@ class AutoPartsWarehouse
     public function setIdParticipant(?Participant $id_participant): static
     {
         $this->id_participant = $id_participant;
+
+        return $this;
+    }
+
+    public function getCustomerOrder(): ?int
+    {
+        return $this->customer_order;
+    }
+
+    public function setCustomerOrder(?int $customer_order): static
+    {
+        $this->customer_order = $customer_order;
 
         return $this;
     }
