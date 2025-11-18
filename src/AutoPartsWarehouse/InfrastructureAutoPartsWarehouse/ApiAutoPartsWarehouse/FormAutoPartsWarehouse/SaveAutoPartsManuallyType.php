@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use App\Counterparty\DomainCounterparty\DomainModelCounterparty\EntityCounterparty\Counterparty;
 use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\PaymentMethod;
 
@@ -109,6 +110,10 @@ class SaveAutoPartsManuallyType extends AbstractType
                         ->orderBy('p.method', 'ASC');
                 },
                 'choice_label' => 'method'
+            ])
+            ->add('customer_order', CheckboxType::class, [
+                'label' => 'Заказ',
+                'required' => false,
             ])
             ->add('id', HiddenType::class)
             ->add('button_save_manually', SubmitType::class);

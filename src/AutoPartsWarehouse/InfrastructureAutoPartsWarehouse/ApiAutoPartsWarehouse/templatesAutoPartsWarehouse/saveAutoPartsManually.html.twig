@@ -55,6 +55,12 @@
         {{ form_errors(form_save_auto_parts_manually.id_payment_method) }}
       </div>
 
+      <div class="col-sm-6 col-md-4 col-lg-1 col-xl-1">
+        <div class="lb">{{ form_label(form_save_auto_parts_manually.customer_order) }}</div>
+        {{ form_widget(form_save_auto_parts_manually.customer_order) }}
+        {{ form_errors(form_save_auto_parts_manually.customer_order) }}
+      </div>
+
     </div>
     {{ form_widget(form_save_auto_parts_manually.id, {value : arr_saving_information.id|default(null)}) }}
 

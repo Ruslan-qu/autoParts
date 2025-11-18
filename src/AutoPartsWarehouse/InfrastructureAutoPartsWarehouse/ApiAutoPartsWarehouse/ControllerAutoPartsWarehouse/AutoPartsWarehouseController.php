@@ -65,7 +65,7 @@ class AutoPartsWarehouseController extends AbstractController
         $id = null;
         if ($form_save_auto_parts_manually->isSubmitted()) {
             if ($form_save_auto_parts_manually->isValid()) {
-
+                dd($form_save_auto_parts_manually->getData());
                 try {
                     $participant = $adapterUserExtractionInterface->userExtraction();
                     $part_number = $this->mapPartNumber(
@@ -494,49 +494,6 @@ class AutoPartsWarehouseController extends AbstractController
         }
 
         return $this->redirectToRoute('search_auto_parts_warehouse');
-    }
-
-    /*Консольная команда make:migration*/
-    #[Route('boss/commandMigration')]
-    public function commandMigration(KernelInterface $kernel): Response
-    {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput([
-            'command' => 'make:migration',
-        ]);
-
-        // You can use NullOutput() if you don't need the output
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-
-        return new Response($content);
-    }
-
-    /*Консольная команда doctrine:migrations:migrate*/
-    #[Route('boss/commandMigrations')]
-    public function commandMigrations(KernelInterface $kernel): Response
-    {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput([
-            'command' => 'doctrine:migrations:migrate',
-            '--no-interaction' => false,
-        ]);
-        //dd($input);
-        // You can use NullOutput() if you don't need the output
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-
-        return new Response($content);
     }
 
     private function errorMessageViaSession(HttpException $e): static
