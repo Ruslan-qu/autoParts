@@ -150,6 +150,8 @@ class ReadingFileXLSX
             $input_errors->emptyFileCellsKey($value, 'H');
             $payment_method = $value['H'];
 
+            $input_errors->emptyFileCellsKey($value, 'I');
+            $is_customer_order = $value['I'];
 
             $data_file_xlsx[$key] =
                 [
@@ -160,7 +162,8 @@ class ReadingFileXLSX
                     'price' => $price,
                     'counterparty' => $counterparty,
                     'date_receipt_auto_parts_warehouse' => $date_receipt_auto_parts_warehouse,
-                    'payment_method' => $payment_method
+                    'payment_method' => $payment_method,
+                    'is_customer_order' => $is_customer_order,
                 ];
         }
         return $data_file_xlsx;

@@ -105,6 +105,9 @@ class ReadingFileODS
             $input_errors->emptyFileCells($value['7']['2']);
             $payment_method = $value['7']['2'];
 
+            $input_errors->emptyFileCells($value['8']['2']);
+            $is_customer_order = $value['8']['2'];
+
             $data_file_ods[$key] =
                 [
                     'part_name' => $part_name,
@@ -114,7 +117,8 @@ class ReadingFileODS
                     'price' => $price,
                     'counterparty' => $counterparty,
                     'date_receipt_auto_parts_warehouse' => $date_receipt_auto_parts_warehouse,
-                    'payment_method' => $payment_method
+                    'payment_method' => $payment_method,
+                    'is_customer_order' => $is_customer_order,
                 ];
         }
 

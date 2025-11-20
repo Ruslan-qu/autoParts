@@ -33,7 +33,7 @@ class ReadingFileXML
         $input_errors->errorValidate($errors_validate);
 
         $data_file = simplexml_load_file($file);
-        //dd((array)$data_file->table);
+
         $input_errors->emptyEntity($data_file);
 
         return $this->mapCSVValues($data_file);
@@ -74,6 +74,9 @@ class ReadingFileXML
             $input_errors->emptyFileCells($value->payment_method);
             $payment_method = (string)$value->payment_method;
 
+            $input_errors->emptyFileCells($value->is_customer_order);
+            $is_customer_order = (bool)$value->is_customer_order;
+
             $data_file_xml[$data_file_xml_key] =
                 [
                     'part_name' => $part_name,
@@ -83,7 +86,8 @@ class ReadingFileXML
                     'price' => $price,
                     'counterparty' => $counterparty,
                     'date_receipt_auto_parts_warehouse' => $date_receipt_auto_parts_warehouse,
-                    'payment_method' => $payment_method
+                    'payment_method' => $payment_method,
+                    'is_customer_order' => $is_customer_order,
                 ];
             $data_file_xml_key++;
         }

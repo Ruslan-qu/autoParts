@@ -9,6 +9,7 @@
       <counterparty>cserr</counterparty>
       <date_receipt_auto_parts_warehouse>27-12-2024</date_receipt_auto_parts_warehouse>
       <payment_method>нал</payment_method>
+      <is_customer_order>true</is_customer_order>
     </table>
     <table>
       <part_name>Опорный подшипник</part_name>
@@ -19,6 +20,7 @@
       <counterparty>cserr</counterparty>
       <date_receipt_auto_parts_warehouse>27-12-2024</date_receipt_auto_parts_warehouse>
       <payment_method>нал</payment_method>
+      <is_customer_order>false</is_customer_order>
     </table>
     <table>
       <part_name>Опорный подшипник</part_name>
@@ -29,6 +31,7 @@
       <counterparty>cserr</counterparty>
       <date_receipt_auto_parts_warehouse>27-12-2024</date_receipt_auto_parts_warehouse>
       <payment_method>без нал</payment_method>
+      <is_customer_order>true</is_customer_order>
     </table>
  </body>
 

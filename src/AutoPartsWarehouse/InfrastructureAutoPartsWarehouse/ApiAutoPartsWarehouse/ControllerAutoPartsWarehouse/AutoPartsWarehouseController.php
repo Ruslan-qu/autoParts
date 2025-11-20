@@ -65,7 +65,7 @@ class AutoPartsWarehouseController extends AbstractController
         $id = null;
         if ($form_save_auto_parts_manually->isSubmitted()) {
             if ($form_save_auto_parts_manually->isValid()) {
-                dd($form_save_auto_parts_manually->getData());
+
                 try {
                     $participant = $adapterUserExtractionInterface->userExtraction();
                     $part_number = $this->mapPartNumber(
@@ -83,7 +83,8 @@ class AutoPartsWarehouseController extends AbstractController
                         $form_save_auto_parts_manually->getData()['price'],
                         $form_save_auto_parts_manually->getData()['date_receipt_auto_parts_warehouse'],
                         $form_save_auto_parts_manually->getData()['id_payment_method'],
-                        $part_number->getIdParticipant()
+                        $part_number->getIdParticipant(),
+                        $form_save_auto_parts_manually->getData()['is_customer_order']
                     );
 
                     $id = $saveAutoPartsWarehouseCommandHandler

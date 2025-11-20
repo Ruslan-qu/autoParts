@@ -77,6 +77,9 @@ class ReadingFileCSV
             $input_errors->emptyFileCells($value['7']);
             $payment_method = $value['7'];
 
+            $input_errors->emptyFileCells($value['8']);
+            $is_customer_order = $value['8'];
+
 
             $data_file_csv[$key] =
                 [
@@ -87,7 +90,8 @@ class ReadingFileCSV
                     'price' => $price,
                     'counterparty' => $counterparty,
                     'date_receipt_auto_parts_warehouse' => $date_receipt_auto_parts_warehouse,
-                    'payment_method' => $payment_method
+                    'payment_method' => $payment_method,
+                    'is_customer_order' => $is_customer_order,
                 ];
         }
         return $data_file_csv;
