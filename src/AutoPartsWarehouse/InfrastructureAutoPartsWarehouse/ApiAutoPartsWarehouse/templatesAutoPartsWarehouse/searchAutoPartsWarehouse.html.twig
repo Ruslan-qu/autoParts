@@ -24,19 +24,19 @@
         {{ form_errors(form_search_auto_parts_warehouse.id_part_name) |nl2br }}
       </div>
 
-      <div class="col-sm-3 col-lg-3 col-xl-1">
+      <div class="col-sm-4 col-lg-4 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_car_brand) }}</div>
         {{ form_widget(form_search_auto_parts_warehouse.id_car_brand, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_car_brand) |nl2br }}
       </div>
 
-      <div class="col-sm-3 col-lg-3 col-xl-1">
+      <div class="col-sm-4 col-lg-4 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_side) }}</div>
         {{ form_widget(form_search_auto_parts_warehouse.id_side, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_side) |nl2br }}
       </div>
 
-      <div class="col-sm-3 col-lg-3 col-xl-1">
+      <div class="col-sm-4 col-lg-4 col-xl-1">
         <div class="lb">{{ form_label(form_search_auto_parts_warehouse.id_body) }}</div>
         {{ form_widget(form_search_auto_parts_warehouse.id_body, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_search_auto_parts_warehouse.id_body) |nl2br }}
@@ -48,10 +48,16 @@
         {{ form_errors(form_search_auto_parts_warehouse.id_axle) |nl2br }}
       </div>
 
+      <div class="col-sm-4 col-lg-4 col-xl-1">
+        <div class="lb">{{ form_label(form_search_auto_parts_warehouse.is_customer_order) }}</div>
+        {{ form_widget(form_search_auto_parts_warehouse.is_customer_order) }}
+        {{ form_errors(form_search_auto_parts_warehouse.is_customer_order) }}
+      </div>
+
     </div>
 
     <div class="row mt-3">
-      <div class="col-sm-10 col-lg-10 col-xl-6">
+      <div class="col-sm-12 col-lg-12 col-xl-7">
         {{ form_widget(form_search_auto_parts_warehouse.button_search_auto_parts_warehouse,
         { 'label': 'Поиск', 'attr': {'class': 'btn btn-primary w-100'}}) }}
       </div>

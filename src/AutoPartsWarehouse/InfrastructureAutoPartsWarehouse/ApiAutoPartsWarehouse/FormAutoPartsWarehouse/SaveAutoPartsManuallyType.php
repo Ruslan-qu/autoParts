@@ -111,7 +111,7 @@ class SaveAutoPartsManuallyType extends AbstractType
                 },
                 'choice_label' => 'method'
             ])
-            ->add('customer_order', CheckboxType::class, [
+            ->add('is_customer_order', CheckboxType::class, [
                 'label' => 'Заказ',
                 'required' => false,
             ])

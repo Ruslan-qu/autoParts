@@ -9,8 +9,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Axles;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Sides;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Bodies;
@@ -91,6 +91,10 @@ class SearchAutoPartsWarehouseType extends AbstractType
                 },
                 'choice_label' => 'axle',
                 'required' => false
+            ])
+            ->add('is_customer_order', CheckboxType::class, [
+                'label' => 'Заказ',
+                'required' => false,
             ])
             ->add('button_search_auto_parts_warehouse', SubmitType::class);
     }

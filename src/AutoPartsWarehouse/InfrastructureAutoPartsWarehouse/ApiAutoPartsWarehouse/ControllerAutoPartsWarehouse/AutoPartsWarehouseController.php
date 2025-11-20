@@ -147,7 +147,7 @@ class AutoPartsWarehouseController extends AbstractController
                         $arr_counterparty,
                         $arr_method
                     );
-                    //dd($map_processed_data);
+
                     $saved = $saveAutoPartsWarehouseArrCommandHandler
                         ->handler(new ArrAutoPartsWarehouseCommand($map_processed_data));
                 } catch (HttpException $e) {
@@ -344,7 +344,8 @@ class AutoPartsWarehouseController extends AbstractController
                         $form_search_auto_parts_warehouse->getData()['id_side'],
                         $form_search_auto_parts_warehouse->getData()['id_body'],
                         $form_search_auto_parts_warehouse->getData()['id_axle'],
-                        $participant
+                        $participant,
+                        $form_search_auto_parts_warehouse->getData()['is_customer_order']
                     );
                     $search_data = $findByAutoPartsWarehouseQueryHandler
                         ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
@@ -389,7 +390,8 @@ class AutoPartsWarehouseController extends AbstractController
                 null,
                 null,
                 null,
-                $participant
+                $participant,
+                null
             );
             $data_auto_parts_warehouse['id_auto_parts_warehouse'] = $findOneByAutoPartsWarehouseQueryHandler
                 ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
@@ -444,7 +446,8 @@ class AutoPartsWarehouseController extends AbstractController
                     null,
                     null,
                     null,
-                    $participant
+                    $participant,
+                    null
                 );
                 $data_form_edit_auto_parts_warehouse = $findAutoPartsWarehouseQueryHandler
                     ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
@@ -480,7 +483,8 @@ class AutoPartsWarehouseController extends AbstractController
                 null,
                 null,
                 null,
-                $participant
+                $participant,
+                null
             );
             $data_auto_parts_warehouse['auto_parts_warehouse'] = $findOneByAutoPartsWarehouseQueryHandler
                 ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
@@ -617,7 +621,8 @@ class AutoPartsWarehouseController extends AbstractController
                 'price' => $value['price'],
                 'date_receipt_auto_parts_warehouse' => $value['date_receipt_auto_parts_warehouse'],
                 'id_payment_method' => $arr_id_method[$key]['payment_method'],
-                'id_participant' => $arr_id_method[$key]['payment_method']->getIdParticipant()
+                'id_participant' => $arr_id_method[$key]['payment_method']->getIdParticipant(),
+                'is_customer_order' => $value['is_customer_order']
             ];
         }
 
@@ -631,7 +636,8 @@ class AutoPartsWarehouseController extends AbstractController
         $id_side,
         $id_body,
         $id_axle,
-        $participant
+        $participant,
+        $is_customer_order
     ): array {
         $arr_auto_parts_warehouse['id'] = $id;
         $arr_auto_parts_warehouse['id_part_name'] = $id_part_name;
@@ -640,6 +646,7 @@ class AutoPartsWarehouseController extends AbstractController
         $arr_auto_parts_warehouse['id_body'] = $id_body;
         $arr_auto_parts_warehouse['id_axle'] = $id_axle;
         $arr_auto_parts_warehouse['id_participant'] = $participant;
+        $arr_auto_parts_warehouse['is_customer_order'] = $is_customer_order;
 
         return $arr_auto_parts_warehouse;
     }

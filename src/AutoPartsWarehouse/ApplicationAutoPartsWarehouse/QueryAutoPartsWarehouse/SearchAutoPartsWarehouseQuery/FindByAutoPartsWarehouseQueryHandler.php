@@ -21,7 +21,6 @@ final class FindByAutoPartsWarehouseQueryHandler
         $arr_parameters = [];
 
         $id_part_name = $autoPartsWarehouseQuery->getIdPartName();
-
         if (!empty($id_part_name)) {
 
             $arr_parameters['id_part_name'] = $id_part_name;
@@ -29,7 +28,6 @@ final class FindByAutoPartsWarehouseQueryHandler
         }
 
         $id_car_brand = $autoPartsWarehouseQuery->getIdCarBrand();
-
         if (!empty($id_car_brand)) {
 
             $arr_parameters['id_car_brand'] = $id_car_brand;
@@ -37,7 +35,6 @@ final class FindByAutoPartsWarehouseQueryHandler
         }
 
         $id_side = $autoPartsWarehouseQuery->getIdSide();
-
         if (!empty($id_side)) {
 
             $arr_parameters['id_side'] = $id_side;
@@ -45,7 +42,6 @@ final class FindByAutoPartsWarehouseQueryHandler
         }
 
         $id_body = $autoPartsWarehouseQuery->getIdBody();
-
         if (!empty($id_body)) {
 
             $arr_parameters['id_body'] = $id_body;
@@ -53,12 +49,15 @@ final class FindByAutoPartsWarehouseQueryHandler
         }
 
         $id_axle = $autoPartsWarehouseQuery->getIdAxle();
-
         if (!empty($id_axle)) {
 
             $arr_parameters['id_axle'] = $id_axle;
             $where_parameter = $this->whereParameter($where_parameter, 'id_axle', 'd');
         }
+
+        $is_customer_order = $autoPartsWarehouseQuery->isCustomerOrder();
+        $arr_parameters['is_customer_order'] = $is_customer_order;
+        $where_parameter = $this->whereParameter($where_parameter, 'is_customer_order', 'a');
 
         $this->inputErrorsAutoPartsWarehouse->emptyDataTwo($where_parameter, $arr_parameters);
 

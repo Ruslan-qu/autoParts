@@ -34,6 +34,7 @@ final class SaveAutoPartsWarehouseArrCommandHandler
             $date_receipt_auto_parts_warehouse = $value['auto_parts_data']->getDateReceiptAutoPartsWarehouse();
             $payment_method = $value['auto_parts_data']->getIdPaymentMethod();
             $id_participant = $value['auto_parts_data']->getIdParticipant();
+            $is_customer_order = $value['auto_parts_data']->isCustomerOrder();
 
             /* Подключаем валидацию и прописываем условия валидации */
             $validator = Validation::createValidator();
@@ -100,6 +101,7 @@ final class SaveAutoPartsWarehouseArrCommandHandler
             $autoPartsWarehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
             $autoPartsWarehouse->setIdPaymentMethod($payment_method);
             $autoPartsWarehouse->setIdParticipant($id_participant);
+            $autoPartsWarehouse->setCustomerOrder($is_customer_order);
 
             $entityManager = $this->autoPartsWarehouseRepositoryInterface->persistData($autoPartsWarehouse);
         }

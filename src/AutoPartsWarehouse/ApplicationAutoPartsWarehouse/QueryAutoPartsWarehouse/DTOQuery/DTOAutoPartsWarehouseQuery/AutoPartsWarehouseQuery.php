@@ -27,6 +27,8 @@ final class AutoPartsWarehouseQuery extends MapAutoPartsWarehouseQuery
 
     protected ?Participant $id_participant = null;
 
+    protected bool $is_customer_order = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,5 +62,10 @@ final class AutoPartsWarehouseQuery extends MapAutoPartsWarehouseQuery
     public function getIdParticipant(): ?Participant
     {
         return $this->id_participant;
+    }
+
+    public function isCustomerOrder(): bool
+    {
+        return $this->is_customer_order;
     }
 }
