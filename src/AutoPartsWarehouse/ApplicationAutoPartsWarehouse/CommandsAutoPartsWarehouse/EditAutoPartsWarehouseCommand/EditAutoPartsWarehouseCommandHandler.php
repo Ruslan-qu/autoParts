@@ -27,6 +27,7 @@ final class EditAutoPartsWarehouseCommandHandler
         $date_receipt_auto_parts_warehouse = $autoPartsWarehouseCommand->getDateReceiptAutoPartsWarehouse();
         $payment_method = $autoPartsWarehouseCommand->getIdPaymentMethod();
         $id_participant = $autoPartsWarehouseCommand->getIdParticipant();
+        $is_customer_order = $autoPartsWarehouseCommand->isCustomerOrder();
 
         /* Подключаем валидацию и прописываем условия валидации */
         $validator = Validation::createValidator();
@@ -96,6 +97,7 @@ final class EditAutoPartsWarehouseCommandHandler
         $edit_auto_parts_warehouse->setIdDetails($part_number);
         $edit_auto_parts_warehouse->setDateReceiptAutoPartsWarehouse($date_receipt_auto_parts_warehouse);
         $edit_auto_parts_warehouse->setIdPaymentMethod($payment_method);
+        $edit_auto_parts_warehouse->setCustomerOrder($is_customer_order);
 
         $successfully_edit = $this->autoPartsWarehouseRepositoryInterface->edit($edit_auto_parts_warehouse);
 

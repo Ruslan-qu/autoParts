@@ -84,11 +84,11 @@
         border-info shadow p-3 mb-5 bg-body-tertiary rounded">
         <thead class="table-secondary">
 
+          {% if search_data %}
           {% if is_customer_order == true %}
           <h3 class="ms-3">Заказы</h3>
           {% endif %}
 
-          {% if search_data %}
           <tr>
             <th scope="col">№<br>детали</th>
             <th scope="col">№<br>оригинал</th>

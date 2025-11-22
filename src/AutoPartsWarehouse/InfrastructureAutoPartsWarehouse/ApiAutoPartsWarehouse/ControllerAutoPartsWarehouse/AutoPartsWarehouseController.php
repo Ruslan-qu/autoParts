@@ -5,11 +5,7 @@ namespace App\AutoPartsWarehouse\InfrastructureAutoPartsWarehouse\ApiAutoPartsWa
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -335,7 +331,7 @@ class AutoPartsWarehouseController extends AbstractController
         $is_customer_order = false;
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {
-
+                $search_data = '';
                 $is_customer_order = $form_search_auto_parts_warehouse->getData()['is_customer_order'];
 
                 try {

@@ -19,6 +19,7 @@
   {% set price_find_id = data_form_edit_auto_parts_warehouse.price|default('') %}
   {% set date_receipt_auto_parts_warehouse_find_id = data_form_edit_auto_parts_warehouse.date_receipt_auto_parts_warehouse|date("Y-m-d")|default('') %}
   {% set id_payment_method_find_id = data_form_edit_auto_parts_warehouse.id_payment_method.getId()|default('') %}
+  {% set is_customer_order_find_id = data_form_edit_auto_parts_warehouse.is_customer_order %}
   {% set id_find_id = data_form_edit_auto_parts_warehouse.id|default('') %}
   
 {% else %}
@@ -31,8 +32,8 @@
   - data_form_edit_auto_parts_warehouse.getQuantitySold())|default('') %}
   {% set date_receipt_auto_parts_warehouse_find_id = data_form_edit_auto_parts_warehouse.getDateReceiptAutoPartsWarehouse()|date("Y-m-d")|default('') %}
   {% set id_payment_method_find_id = data_form_edit_auto_parts_warehouse.getIdPaymentMethod().getId()|default('') %}
+  {% set is_customer_order_find_id = data_form_edit_auto_parts_warehouse.isCustomerOrder() %}
   {% set id_find_id = data_form_edit_auto_parts_warehouse.getId()|default('') %}
-  
 {% endif %}
 
   {#Форма сохранения поступления деталей#}
@@ -61,7 +62,7 @@
         {{ form_errors(form_edit_auto_parts_warehouse.quantity) }}
       </div>
 
-      <div class="col-sm-6 col-md-4 col-lg-1 col-xl-1">
+      <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
         <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.price) }}</div>
         {{ form_widget(form_edit_auto_parts_warehouse.price, { value : price_find_id, 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_edit_auto_parts_warehouse.price) }}
@@ -79,13 +80,19 @@
         {{ form_errors(form_edit_auto_parts_warehouse.id_payment_method) }}
       </div>
 
+      <div class="col-sm-6 col-md-4 col-lg-1 col-xl-1">
+        <div class="lb">{{ form_label(form_edit_auto_parts_warehouse.is_customer_order) }}</div>
+        {{ form_widget(form_edit_auto_parts_warehouse.is_customer_order, { 'attr': {'checked': is_customer_order_find_id} }) }}
+        {{ form_errors(form_edit_auto_parts_warehouse.is_customer_order) }}
+      </div>
+
     </div>
     {{ form_widget(form_edit_auto_parts_warehouse.id, { value : id_find_id }) }}
     
     <div class="row my-3">
-      <div class="col-12 d-grid">
+      <div class="col-sm-12">
         {{ form_widget(form_edit_auto_parts_warehouse.button_edit_manually, { 'label': 'Изменить', 'attr': {'class':
-        'btn btn-secondary'}}) }}
+        'btn btn-secondary w-100'}}) }}
       </div>
     </div>
 

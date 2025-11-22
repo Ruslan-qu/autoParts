@@ -36,7 +36,7 @@
         {{ form_errors(form_save_auto_parts_manually.quantity) }}
       </div>
 
-      <div class="col-sm-6 col-md-4 col-lg-1 col-xl-1">
+      <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
         <div class="lb">{{ form_label(form_save_auto_parts_manually.price) }}</div>
         {{ form_widget(form_save_auto_parts_manually.price, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_save_auto_parts_manually.price) }}
@@ -44,8 +44,7 @@
 
       <div class="col-sm-6 col-md-4 col-lg-2 col-xl-2">
         <div class="lb">{{ form_label(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse) }}</div>
-        {{ form_widget(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse, { 'attr': {'class': 'w-100'} })
-        }}
+        {{ form_widget(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse, { 'attr': {'class': 'w-100'} }) }}
         {{ form_errors(form_save_auto_parts_manually.date_receipt_auto_parts_warehouse) }}
       </div>
 
@@ -65,9 +64,9 @@
     {{ form_widget(form_save_auto_parts_manually.id, {value : arr_saving_information.id|default(null)}) }}
 
     <div class="row my-3">
-      <div class="col-12 d-grid">
+      <div class="col-sm-12">
         {{ form_widget(form_save_auto_parts_manually.button_save_manually, { 'label': 'Сохранить', 'attr': {'class':
-        'btn btn-danger'}}) }}
+        'btn btn-danger w-100'}}) }}
       </div>
     </div>
 

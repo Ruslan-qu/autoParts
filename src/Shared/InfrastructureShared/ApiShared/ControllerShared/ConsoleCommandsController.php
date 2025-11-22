@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class ConsoleCommandsController extends AbstractController
 {
-    /*Консольная команда make:migration*/
+    /*Консольная команда doctrine:migrations:diff*/
     #[Route('boss/commandMigration')]
     public function commandMigration(KernelInterface $kernel): Response
     {
@@ -22,7 +22,8 @@ class ConsoleCommandsController extends AbstractController
         $application->setAutoExit(false);
 
         $input = new ArrayInput([
-            'command' => 'make:migration',
+            'command' => 'doctrine:migrations:diff',
+            '--no-interaction' => false,
         ]);
 
         // You can use NullOutput() if you don't need the output
