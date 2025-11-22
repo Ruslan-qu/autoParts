@@ -74,7 +74,7 @@
             <td>{{ information.getQuantitySold()|default('') }}</td>
             <td>{{ (information.getPriceSold() / 100)|default('') }}</td>
 
-            <form action="{{ path('edit_auto_parts_warehouse')}}" name="edit_auto_parts_warehouse">
+             <form action="{{ path('edit_cart_auto_parts_warehouse_sold')}}" name="edit_cart_auto_parts_warehouse_sold">
 
               <td><button class="btn btn-outline-secondary" type="submit" name="id"
                   value="{{ information.getId() }}"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25"
@@ -86,7 +86,7 @@
                   </svg></button></td>
 
             </form>
-            <form action="{{ path('delete_auto_parts_warehouse')}}" name="delete_auto_parts_warehouse">
+            <form action="{{ path('delete_cart_auto_parts_warehouse_sold')}}" name="delete_cart_auto_parts_warehouse_sold">
 
               <td><button class="btn btn-outline-danger" type="submit" name="id" value="{{ information.getId() }}"><svg
                     xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-circle"
