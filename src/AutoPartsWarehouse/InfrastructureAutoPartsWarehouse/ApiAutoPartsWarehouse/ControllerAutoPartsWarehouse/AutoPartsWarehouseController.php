@@ -332,9 +332,11 @@ class AutoPartsWarehouseController extends AbstractController
         } catch (HttpException $e) {
             $this->errorMessageViaSession($e);
         }
-
+        $is_customer_order = false;
         if ($form_search_auto_parts_warehouse->isSubmitted()) {
             if ($form_search_auto_parts_warehouse->isValid()) {
+
+                $is_customer_order = $form_search_auto_parts_warehouse->getData()['is_customer_order'];
 
                 try {
                     $mapDataAutoPartsWarehouse = $this->mapDataAutoPartsWarehouse(
@@ -345,7 +347,7 @@ class AutoPartsWarehouseController extends AbstractController
                         $form_search_auto_parts_warehouse->getData()['id_body'],
                         $form_search_auto_parts_warehouse->getData()['id_axle'],
                         $participant,
-                        $form_search_auto_parts_warehouse->getData()['is_customer_order']
+                        $is_customer_order
                     );
                     $search_data = $findByAutoPartsWarehouseQueryHandler
                         ->handler(new AutoPartsWarehouseQuery($mapDataAutoPartsWarehouse));
@@ -359,6 +361,7 @@ class AutoPartsWarehouseController extends AbstractController
         return $this->render('@autoPartsWarehouse/searchAutoPartsWarehouse.html.twig', [
             'title_logo' => 'Поиск автодетали на сладе',
             'form_search_auto_parts_warehouse' => $form_search_auto_parts_warehouse->createView(),
+            'is_customer_order' => $is_customer_order,
             'search_data' => $search_data,
         ]);
     }
@@ -426,7 +429,8 @@ class AutoPartsWarehouseController extends AbstractController
                         $form_edit_auto_parts_warehouse->getData()['price'],
                         $form_edit_auto_parts_warehouse->getData()['date_receipt_auto_parts_warehouse'],
                         $form_edit_auto_parts_warehouse->getData()['id_payment_method'],
-                        $participant
+                        $participant,
+                        $form_edit_auto_parts_warehouse->getData()['is_customer_order']
                     );
                     $id = $editAutoPartsWarehouseCommandHandler
                         ->handler(new AutoPartsWarehouseCommand($data_edit_auto_parts_manually));
@@ -557,7 +561,8 @@ class AutoPartsWarehouseController extends AbstractController
         $price,
         $date_receipt_auto_parts_warehouse,
         $payment_method,
-        $participant
+        $participant,
+        $is_customer_order
     ): array {
         $arr_auto_parts_warehouse['id'] = $id;
         $arr_auto_parts_warehouse['id_details'] = $part_number;
@@ -567,6 +572,7 @@ class AutoPartsWarehouseController extends AbstractController
         $arr_auto_parts_warehouse['date_receipt_auto_parts_warehouse'] = $date_receipt_auto_parts_warehouse;
         $arr_auto_parts_warehouse['id_payment_method'] = $payment_method;
         $arr_auto_parts_warehouse['id_participant'] = $participant;
+        $arr_auto_parts_warehouse['is_customer_order'] = $is_customer_order;
 
         return $arr_auto_parts_warehouse;
     }

@@ -5,6 +5,7 @@ namespace App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\QueryAutoPartsWar
 use ReflectionProperty;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\AutoPartsWarehouse\ApplicationAutoPartsWarehouse\ErrorsAutoPartsWarehouse\InputErrorsAutoPartsWarehouse;
+use App\AutoPartsWarehouse\DomainAutoPartsWarehouse\DomainModelAutoPartsWarehouse\EntityAutoPartsWarehouse\AutoPartsWarehouse;
 
 abstract class MapAutoPartsWarehouseQuery
 {
@@ -16,15 +17,21 @@ abstract class MapAutoPartsWarehouseQuery
 
     private function load(array $data)
     {
-
+        $input_errors = new InputErrorsAutoPartsWarehouse;
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                $input_errors = new InputErrorsAutoPartsWarehouse;
-                $input_errors->propertyExistsEntity(PartNumbersFromManufacturers::class, $key, 'PartNumbersFromManufacturers');
+                if ($key === 'is_customer_order') {
+                    $input_errors->propertyExistsEntity(AutoPartsWarehouse::class, $key, 'AutoPartsWarehouse');
 
-                $refl = new ReflectionProperty(PartNumbersFromManufacturers::class, $key);
+                    $refl = new ReflectionProperty(AutoPartsWarehouse::class, $key);
+                } else {
+                    $input_errors->propertyExistsEntity(PartNumbersFromManufacturers::class, $key, 'PartNumbersFromManufacturers');
+
+                    $refl = new ReflectionProperty(PartNumbersFromManufacturers::class, $key);
+                }
+
                 $type = $refl->getType()->getName();
 
                 if (gettype($value) == 'double' || gettype($value) == 'float') {
