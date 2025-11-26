@@ -28,11 +28,7 @@ final class EditOriginalRoomsCommandHandler
             $originalRoomsCommand->getOriginalNumber()
         ));
 
-        $original_manufacturer = strtolower(preg_replace(
-            '#\s#u',
-            '',
-            $originalRoomsCommand->getOriginalManufacturer()
-        ));
+        $original_manufacturer = strtolower($originalRoomsCommand->getOriginalManufacturer());
 
         $participant = $originalRoomsCommand->getIdParticipant();
 
@@ -60,7 +56,7 @@ final class EditOriginalRoomsCommandHandler
             ]),
             'original_manufacturer_error' => new Collection([
                 'Regex' => new Regex(
-                    pattern: '/^[\da-z]*$/ui',
+                    pattern: '/^[\s\da-z]*$/ui',
                     message: 'Форма Производитель содержит недопустимые символы'
                 )
             ])

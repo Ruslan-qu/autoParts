@@ -35,25 +35,13 @@ class SaveOriginalRoomsType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
+                        'pattern' => '/^[\s\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                     недопустимые символы'
                     ])
                 ]
             ])
-            /*->add('replacing_original_number', TextType::class, [
-                'label' => 'Замена номера',
-                'required' => false,
-                'constraints' => [
-                    new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
-                        //'match' => false,
-                        'message' => 'Форма содержит 
-                    недопустимые символы'
-                    ])
-                ]
-            ])*/
             ->add('button_original_number', SubmitType::class, [
                 'label' => 'Сохранить'
             ])
