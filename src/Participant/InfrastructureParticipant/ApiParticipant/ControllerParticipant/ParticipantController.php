@@ -27,7 +27,8 @@ class ParticipantController extends AbstractController
     public function searchParticipant(
         Request $request,
         FindAllParticipantQueryHandler $findAllParticipantQueryHandler,
-        SearchParticipantQueryHandler $searchParticipantQueryHandler
+        SearchParticipantQueryHandler $searchParticipantQueryHandler,
+
     ): Response {
 
         /*Форма*/
