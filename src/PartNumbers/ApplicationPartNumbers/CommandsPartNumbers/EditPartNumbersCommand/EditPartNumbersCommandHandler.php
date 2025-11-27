@@ -28,11 +28,7 @@ final class EditPartNumbersCommandHandler
             '',
             $partNumbersCommand->getPartNumber()
         ));
-        $manufacturer = strtolower(preg_replace(
-            '#\s#',
-            '',
-            $partNumbersCommand->getManufacturer()
-        ));
+        $manufacturer = strtolower($partNumbersCommand->getManufacturer());
         $additional_descriptions = $partNumbersCommand->getAdditionalDescriptions();
 
         $participant = $partNumbersCommand->getIdParticipant();
@@ -57,7 +53,7 @@ final class EditPartNumbersCommandHandler
                 )
             ]),
             'manufacturer_error' => new Regex(
-                pattern: '/^[\da-z]*$/i',
+                pattern: '/^[\s\da-z]*$/i',
                 message: 'Форма Производитель содержит недопустимые символы'
             ),
             'additional_descriptions_error' => new Regex(

@@ -64,7 +64,7 @@ class EditPartNumbersType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[\da-z]*$/i',
+                        'pattern' => '/^[\s\da-z]*$/i',
                         //'match' => false,
                         'message' => 'Форма содержит 
                     недопустимые символы'
