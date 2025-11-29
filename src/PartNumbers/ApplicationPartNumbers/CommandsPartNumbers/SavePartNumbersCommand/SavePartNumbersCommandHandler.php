@@ -68,7 +68,7 @@ final class SavePartNumbersCommandHandler
             ]),
             'manufacturer_error' => new Collection([
                 'Regex' => new Regex(
-                    pattern: '/^[\s\da-z]*$/ui',
+                    pattern: '/^[-\s\da-z]*$/ui',
                     message: 'Форма Производитель содержит недопустимые символы'
                 )
             ]),

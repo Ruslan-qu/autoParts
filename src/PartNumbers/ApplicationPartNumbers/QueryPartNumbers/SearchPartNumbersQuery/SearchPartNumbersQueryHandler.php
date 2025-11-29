@@ -30,11 +30,7 @@ final class SearchPartNumbersQueryHandler
             $where_parameter = $this->whereParameter($where_parameter, 'part_number', 'p');
         }
 
-        $manufacturer = strtolower(preg_replace(
-            '#\s#',
-            '',
-            $partNumbersQuery->getManufacturer()
-        ));
+        $manufacturer = strtolower($partNumbersQuery->getManufacturer());
         if (!empty($manufacturer)) {
 
             $arr_parameters['manufacturer'] = $manufacturer;
