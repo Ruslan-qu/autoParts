@@ -74,7 +74,7 @@ final class SavePartNumbersCommandHandler
             ]),
             'additional_descriptions_error' => new Collection([
                 'Regex' => new Regex(
-                    pattern: '/^[а-яё\w\s]*$/ui',
+                    pattern: '/^[,а-яё\w\sa-z]*$/ui',
                     message: 'Форма Описание детали содержит недопустимые символы'
                 )
             ])

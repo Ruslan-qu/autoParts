@@ -57,7 +57,7 @@ final class EditPartNumbersCommandHandler
                 message: 'Форма Производитель содержит недопустимые символы'
             ),
             'additional_descriptions_error' => new Regex(
-                pattern: '/^[а-яё\w\s\da-z]*$/ui',
+                pattern: '/^[,а-яё\w\s\da-z]*$/ui',
                 message: 'Форма Описание детали содержит недопустимые символы'
             )
         ]);
