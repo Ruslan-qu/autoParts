@@ -353,7 +353,7 @@ class AutoPartsWarehouseController extends AbstractController
                 }
             }
         }
-
+        // dd($search_data);
         return $this->render('@autoPartsWarehouse/searchAutoPartsWarehouse.html.twig', [
             'title_logo' => 'Поиск автодетали на сладе',
             'form_search_auto_parts_warehouse' => $form_search_auto_parts_warehouse->createView(),

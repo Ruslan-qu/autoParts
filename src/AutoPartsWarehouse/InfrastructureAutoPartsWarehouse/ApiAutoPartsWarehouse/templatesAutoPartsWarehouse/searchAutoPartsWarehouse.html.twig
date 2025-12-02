@@ -92,7 +92,7 @@
           <tr>
             <th scope="col">№<br>детали</th>
             <th scope="col">№<br>оригинал</th>
-            <th scope="col">Производитель</th>
+            <th scope="col">Произво<br>дитель</th>
             <th scope="col">Описание<br>детали</th>
             <th scope="col">Название<br>детали</th>
             <th scope="col">Марка</th>
@@ -100,7 +100,8 @@
             <th scope="col">Кузов</th>
             <th scope="col">Перед<br>Зад</th>
             <th scope="col">Сп.<br>оплаты</th>
-            <th scope="col">Кол-во</th>
+            <th scope="col">Дата</th>
+            <th scope="col">Кол-<br>во</th>
             <th scope="col">Цена<br>шт</th>
             <th scope="col">Цена<br>общая</th>
             <th scope="col"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
@@ -142,6 +143,7 @@
             <td>{{ information.getIdDetails.getIdBody().getBody()|default('') }}</td>
             <td>{{ information.getIdDetails.getIdAxle().getAxle()|default('') }}</td>
             <td>{{ information.getIdPaymentMethod.getmethod()|default('') }}</td>
+            <td>{{ information.getDateReceiptAutoPartsWarehouse()|date("d-m-Y") }}</td>
             <td>{{ (information.getQuantity() - information.getQuantitySold())|default('') }}</td>
             <td>{{ ((information.getPrice() / 100) / information.getQuantity())|default('')|number_format(2, '.', '') }}
             </td>
