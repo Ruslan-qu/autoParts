@@ -106,8 +106,7 @@ class SaveAutoPartsManuallyType extends AbstractType
 
                     return $er->createQueryBuilder('p')
                         ->where('p.id_participant = :id_participant')
-                        ->setParameter('id_participant', $this->security->getUser())
-                        ->orderBy('p.method', 'ASC');
+                        ->setParameter('id_participant', $this->security->getUser());
                 },
                 'choice_label' => 'method'
             ])
