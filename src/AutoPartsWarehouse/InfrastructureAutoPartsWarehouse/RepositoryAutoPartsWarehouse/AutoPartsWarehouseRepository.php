@@ -150,7 +150,7 @@ class AutoPartsWarehouseRepository extends ServiceEntityRepository implements Au
             LEFT JOIN a.id_counterparty c
             LEFT JOIN a.id_payment_method pm '
                 .  $part_number_where .
-                'ORDER BY a.id ASC'
+                'ORDER BY a.date_receipt_auto_parts_warehouse ASC'
         )->setParameters($arr_parameters);
 
         return $query->getResult();
