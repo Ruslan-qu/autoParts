@@ -16,12 +16,12 @@ abstract class MapAutoPartsWarehouseCommand
 
     private function load(array $data)
     {
-$input_errors = new InputErrorsAutoPartsWarehouse;
+        $input_errors = new InputErrorsAutoPartsWarehouse;
         foreach ($data as $key => $value) {
 
             if (!empty($value)) {
 
-                
+
                 $input_errors->propertyExistsEntity(AutoPartsWarehouse::class, $key, 'AutoPartsWarehouse');
 
                 $refl = new ReflectionProperty(AutoPartsWarehouse::class, $key);

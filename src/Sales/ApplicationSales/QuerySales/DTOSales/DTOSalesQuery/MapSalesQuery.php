@@ -27,8 +27,11 @@ abstract class MapSalesQuery
 
                 if ($key == 'from_date_sold' || $key == 'to_date_sold') {
 
-                    $refl = new ReflectionProperty(AutoPartsSold::class, $key);
+                    $refl = new ReflectionProperty(AutoPartsSold::class, 'date_sold');
                     $type = $refl->getType()->getName();
+
+                    $input_errors->comparingClassNames($type, $value, $key);
+                    $type = 'object';
                 }
 
                 if (property_exists(AutoPartsWarehouse::class, $key)) {
@@ -68,6 +71,7 @@ abstract class MapSalesQuery
                         $type = 'object';
                     }
                 }
+
                 settype($value, $type);
                 $this->$key = $value;
             }
