@@ -15,7 +15,6 @@ class AdapterAutoPartsWarehousePartNumbers implements AdapterAutoPartsWarehouseP
 {
 
     public function __construct(
-        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
         private FindOneByPartNumbersQueryHandler $findOneByPartNumbersQueryHandler,
         private SavePartNumbersCommandHandler $savePartNumbersCommandHandler,
         private FindPartNumbersQueryHandler $findPartNumbersQueryHandler

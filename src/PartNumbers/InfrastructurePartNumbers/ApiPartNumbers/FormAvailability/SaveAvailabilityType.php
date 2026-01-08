@@ -16,7 +16,7 @@ class SaveAvailabilityType extends AbstractType
     {
         $builder
             ->add('in_stock', TextType::class, [
-                'label' => 'Наличие',
+                'label' => 'Данные',
                 'constraints' => [
                     new Regex([
                         'pattern' => '/^[а-яё]*$/ui',

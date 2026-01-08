@@ -72,7 +72,6 @@ class AvailabilityController extends AbstractController
     #[Route('searchInStock', name: 'search_in_stock')]
     public function searchInStock(
         Request $request,
-
         AdapterUserExtractionInterface $adapterUserExtractionInterface,
         FindByAvailabilityQueryHandler $findByAvailabilityQueryHandler,
         SearchAvailabilityQueryHandler $searchAvailabilityQueryHandler,

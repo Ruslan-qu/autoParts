@@ -8,14 +8,17 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
 use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 
 final class EditPartNumbersCommandHandler
 {
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface
+        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
+        private AvailabilityRepositoryInterface $availabilityRepositoryInterface
     ) {}
 
     public function handler(PartNumbersCommand $partNumbersCommand): ?int
@@ -57,7 +60,7 @@ final class EditPartNumbersCommandHandler
                 message: 'Форма Производитель содержит недопустимые символы'
             ),
             'additional_descriptions_error' => new Regex(
-                pattern: '/^[,а-яё\w\s\da-z]*$/ui',
+                pattern: '/^[,а-яё\w\s\da-z-]*$/ui',
                 message: 'Форма Описание детали содержит недопустимые символы'
             )
         ]);
@@ -72,6 +75,10 @@ final class EditPartNumbersCommandHandler
         $id_axle = $partNumbersCommand->getIdAxle();
         $id_in_stock = $partNumbersCommand->getIdInStock();
         $id_original_number = $partNumbersCommand->getIdOriginalNumber();
+
+        if ($id_part_name === null) {
+            $id_in_stock = $this->nullPartName($participant);
+        }
 
         $id = $partNumbersCommand->getId();
         $this->inputErrorsPartNumbers->emptyData($id);
@@ -110,5 +117,13 @@ final class EditPartNumbersCommandHandler
         }
 
         return $this;
+    }
+
+    private function nullPartName(Participant $id_participant): Availability
+    {
+        $availability = $this->availabilityRepositoryInterface
+            ->findByAvailability($id_participant);
+
+        return $availability[1];
     }
 }

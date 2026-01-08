@@ -6,8 +6,11 @@ use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Collection;
+use App\Participant\DomainParticipant\DomainModelParticipant\Participant;
 use App\PartNumbers\ApplicationPartNumbers\ErrorsPartNumbers\InputErrorsPartNumbers;
+use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\Availability;
 use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\PartNumbersRepositoryInterface;
+use App\PartNumbers\DomainPartNumbers\RepositoryInterfacePartNumbers\AvailabilityRepositoryInterface;
 use App\PartNumbers\DomainPartNumbers\DomainModelPartNumbers\EntityPartNumbers\PartNumbersFromManufacturers;
 use App\PartNumbers\ApplicationPartNumbers\CommandsPartNumbers\DTOCommands\DTOPartNumbersCommand\PartNumbersCommand;
 
@@ -16,7 +19,8 @@ final class SavePartNumbersCommandHandler
 
     public function __construct(
         private InputErrorsPartNumbers $inputErrorsPartNumbers,
-        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface
+        private PartNumbersRepositoryInterface $partNumbersRepositoryInterface,
+        private AvailabilityRepositoryInterface $availabilityRepositoryInterface
     ) {}
 
     public function handler(PartNumbersCommand $partNumbersCommand): ?int
@@ -42,6 +46,11 @@ final class SavePartNumbersCommandHandler
         $id_in_stock = $partNumbersCommand->getIdInStock();
         $id_original_number = $partNumbersCommand->getIdOriginalNumber();
         $id_participant = $partNumbersCommand->getIdParticipant();
+
+        if ($id_part_name === null) {
+            $id_in_stock = $this->nullPartName($id_participant);
+        }
+
 
         $input = [
             'part_number_error' => [
@@ -74,7 +83,7 @@ final class SavePartNumbersCommandHandler
             ]),
             'additional_descriptions_error' => new Collection([
                 'Regex' => new Regex(
-                    pattern: '/^[,а-яё\w\sa-z]*$/ui',
+                    pattern: '/^[,а-яё\w\sa-z-]*$/ui',
                     message: 'Форма Описание детали содержит недопустимые символы'
                 )
             ])
@@ -108,5 +117,13 @@ final class SavePartNumbersCommandHandler
         $id = $this->partNumbersRepositoryInterface->save($partNumbersFromManufacturers);
 
         return $id;
+    }
+
+    private function nullPartName(Participant $id_participant): Availability
+    {
+        $availability = $this->availabilityRepositoryInterface
+            ->findByAvailability($id_participant);
+
+        return $availability[1];
     }
 }

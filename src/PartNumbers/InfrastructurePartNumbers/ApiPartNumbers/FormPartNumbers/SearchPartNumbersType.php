@@ -131,7 +131,7 @@ class SearchPartNumbersType extends AbstractType
                 'required' => false
             ])
             ->add('id_in_stock', EntityType::class, [
-                'label' => 'Наличие',
+                'label' => 'Данные',
                 'class' => Availability::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
 

@@ -76,7 +76,7 @@ class EditPartNumbersType extends AbstractType
                 'required' => false,
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^[,а-яё\w\s\da-z]*$/ui',
+                        'pattern' => '/^[,а-яё\w\s\da-z-]*$/ui',
                         //'match' => false,
                         'message' => 'Форма содержит 
                     недопустимые символы'
@@ -153,7 +153,7 @@ class EditPartNumbersType extends AbstractType
             ])
 
             ->add('id_in_stock', EntityType::class, [
-                'label' => 'Наличие',
+                'label' => 'Данные',
                 'class' => Availability::class,
                 'query_builder' => function (EntityRepository $er): QueryBuilder {
 
@@ -163,7 +163,6 @@ class EditPartNumbersType extends AbstractType
                         ->orderBy('a.in_stock', 'ASC');
                 },
                 'choice_label' => 'in_stock',
-                'required' => false
             ])
             ->add('id', HiddenType::class)
             ->add('button_part_number', SubmitType::class)
